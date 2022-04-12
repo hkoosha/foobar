@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+import "io/koosha/foobar/header.proto";
+
+package io.koosha.foobar.product;
+
+option java_package = "io.koosha.foobar.product";
+option java_outer_classname = "AvailabilityProto";
+
+
+message Availability {
+
+  Header header = 1;
+
+  string action = 2;
+
+  string seller_id = 3;
+  string product_id = 4;
+
+  optional uint64 frozen_units = 5;
+  optional uint64 units_available = 6;
+  optional uint64 price_per_unit = 7;
+
+}

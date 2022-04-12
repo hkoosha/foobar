@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: FoobarCustomer
+  main:
+    banner-mode: off
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: ${FOOBAR_DDL_AUTO:none}
+    properties:
+      hibernate:
+        auto_quote_keyword: true
+  cloud:
+    loadbalancer:
+      cache:
+        enabled: false
+  zipkin:
+    enabled: false
+
+
+server:
+  port: ${FOOBAR_PORT_CUSTOMER:8080}
+  error:
+    include-message: always
+    include-binding-errors: always
+
+
+logging:
+  level:
+    io.koosha.foobar: ${FOOBAR_LOG_LEVEL:info}
+
+
+foobar:
+  rest:
+    on-concurrency-error-retry-after: 1s

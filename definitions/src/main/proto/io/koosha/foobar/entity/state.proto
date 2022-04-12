@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+import "io/koosha/foobar/header.proto";
+
+package io.koosha.foobar.entity;
+
+option java_package = "io.koosha.foobar.entity";
+option java_outer_classname = "StateProto";
+
+
+message State {
+
+  Header header = 1;
+
+  optional string from = 2;
+  optional string to = 3;
+
+}

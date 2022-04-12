@@ -1,0 +1,10 @@
+input: |-
+  beats {
+    port => 8080
+  }
+
+output: |-
+  elasticsearch {
+    hosts => ["elasticsearch:9200"]
+  }
+

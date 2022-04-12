@@ -1,0 +1,635 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- description: Generated server url
+  url: http://localhost:4043
+paths:
+  /foobar/customer/v1/customers:
+    get:
+      operationId: getCustomers
+      responses:
+        "404":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityNotFoundApiError'
+          description: Not Found
+        "400":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityBadValueApiError'
+          description: Bad Request
+        "403":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityIllegalStateApiError'
+          description: Forbidden
+        "503":
+          description: Service Unavailable
+        "200":
+          content:
+            '*/*':
+              schema:
+                items:
+                  $ref: '#/components/schemas/Customer'
+                type: array
+          description: OK
+      tags:
+      - customer
+      x-accepts: '*/*'
+    post:
+      operationId: postCustomer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerCreateRequest'
+        required: true
+      responses:
+        "404":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityNotFoundApiError'
+          description: Not Found
+        "400":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityBadValueApiError'
+          description: Bad Request
+        "403":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityIllegalStateApiError'
+          description: Forbidden
+        "503":
+          description: Service Unavailable
+        "201":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Customer'
+          description: Created
+      tags:
+      - customer
+      x-content-type: application/json
+      x-accepts: '*/*'
+  /foobar/customer/v1/customers/{customerId}/addresses:
+    get:
+      operationId: getAddresses
+      parameters:
+      - explode: false
+        in: path
+        name: customerId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      responses:
+        "404":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityNotFoundApiError'
+          description: Not Found
+        "400":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityBadValueApiError'
+          description: Bad Request
+        "403":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityIllegalStateApiError'
+          description: Forbidden
+        "503":
+          description: Service Unavailable
+        "200":
+          content:
+            '*/*':
+              schema:
+                items:
+                  $ref: '#/components/schemas/Address'
+                type: array
+          description: OK
+      tags:
+      - address
+      x-accepts: '*/*'
+    post:
+      operationId: postAddress
+      parameters:
+      - explode: false
+        in: path
+        name: customerId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerAddressCreateRequest'
+        required: true
+      responses:
+        "404":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityNotFoundApiError'
+          description: Not Found
+        "400":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityBadValueApiError'
+          description: Bad Request
+        "403":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityIllegalStateApiError'
+          description: Forbidden
+        "503":
+          description: Service Unavailable
+        "201":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Address'
+          description: Created
+      tags:
+      - address
+      x-content-type: application/json
+      x-accepts: '*/*'
+  /foobar/customer/v1/customers/{customerId}:
+    delete:
+      operationId: deleteCustomer
+      parameters:
+      - explode: false
+        in: path
+        name: customerId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      responses:
+        "404":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityNotFoundApiError'
+          description: Not Found
+        "400":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityBadValueApiError'
+          description: Bad Request
+        "403":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityIllegalStateApiError'
+          description: Forbidden
+        "503":
+          description: Service Unavailable
+        "204":
+          description: No Content
+      tags:
+      - customer
+      x-accepts: '*/*'
+    get:
+      operationId: getCustomer
+      parameters:
+      - explode: false
+        in: path
+        name: customerId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      responses:
+        "404":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityNotFoundApiError'
+          description: Not Found
+        "400":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityBadValueApiError'
+          description: Bad Request
+        "403":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityIllegalStateApiError'
+          description: Forbidden
+        "503":
+          description: Service Unavailable
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Customer'
+          description: OK
+      tags:
+      - customer
+      x-accepts: '*/*'
+    patch:
+      operationId: patchCustomer
+      parameters:
+      - explode: false
+        in: path
+        name: customerId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerUpdateRequest'
+        required: true
+      responses:
+        "404":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityNotFoundApiError'
+          description: Not Found
+        "400":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityBadValueApiError'
+          description: Bad Request
+        "403":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityIllegalStateApiError'
+          description: Forbidden
+        "503":
+          description: Service Unavailable
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Customer'
+          description: OK
+      tags:
+      - customer
+      x-content-type: application/json
+      x-accepts: '*/*'
+  /foobar/customer/v1/customers/{customerId}/addresses/{addressId}:
+    delete:
+      operationId: deleteAddress
+      parameters:
+      - explode: false
+        in: path
+        name: customerId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: addressId
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      responses:
+        "404":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityNotFoundApiError'
+          description: Not Found
+        "400":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityBadValueApiError'
+          description: Bad Request
+        "403":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityIllegalStateApiError'
+          description: Forbidden
+        "503":
+          description: Service Unavailable
+        "204":
+          description: No Content
+      tags:
+      - address
+      x-accepts: '*/*'
+    get:
+      operationId: getAddress
+      parameters:
+      - explode: false
+        in: path
+        name: customerId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: addressId
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      responses:
+        "404":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityNotFoundApiError'
+          description: Not Found
+        "400":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityBadValueApiError'
+          description: Bad Request
+        "403":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityIllegalStateApiError'
+          description: Forbidden
+        "503":
+          description: Service Unavailable
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Address'
+          description: OK
+      tags:
+      - address
+      x-accepts: '*/*'
+components:
+  schemas:
+    EntityInfo:
+      properties:
+        entityType:
+          type: string
+        entityId:
+          type: object
+      required:
+      - entityType
+      type: object
+    EntityNotFoundApiError:
+      properties:
+        message:
+          type: string
+        context:
+          items:
+            $ref: '#/components/schemas/EntityInfo'
+          type: array
+          uniqueItems: true
+        error:
+          type: string
+      required:
+      - context
+      - error
+      - message
+      type: object
+    EntityBadValueApiError:
+      properties:
+        message:
+          type: string
+        context:
+          additionalProperties:
+            items:
+              type: string
+            type: array
+          type: object
+        error:
+          type: string
+      required:
+      - context
+      - error
+      - message
+      type: object
+    EntityIllegalStateApiError:
+      properties:
+        message:
+          type: string
+        context:
+          items:
+            $ref: '#/components/schemas/EntityInfo'
+          type: array
+          uniqueItems: true
+        error:
+          type: string
+      required:
+      - context
+      - error
+      - message
+      type: object
+    CustomerCreateRequest:
+      example:
+        name:
+          firstName: firstName
+          lastName: lastName
+          title: MR
+      properties:
+        name:
+          $ref: '#/components/schemas/CustomerCreateRequestName'
+      required:
+      - name
+      type: object
+    CustomerCreateRequestName:
+      example:
+        firstName: firstName
+        lastName: lastName
+        title: MR
+      properties:
+        title:
+          enum:
+          - MR
+          - MS
+          - OTHER
+          - NOT_SPECIFIED
+          type: string
+        firstName:
+          maxLength: 127
+          minLength: 1
+          type: string
+        lastName:
+          maxLength: 127
+          minLength: 1
+          type: string
+      required:
+      - firstName
+      - lastName
+      - title
+      type: object
+    Customer:
+      example:
+        customerId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        name:
+          firstName: firstName
+          lastName: lastName
+          title: MR
+        isActive: true
+      properties:
+        customerId:
+          format: uuid
+          type: string
+        name:
+          $ref: '#/components/schemas/Name'
+        isActive:
+          type: boolean
+      required:
+      - customerId
+      - isActive
+      - name
+      type: object
+    Name:
+      example:
+        firstName: firstName
+        lastName: lastName
+        title: MR
+      properties:
+        title:
+          enum:
+          - MR
+          - MS
+          - OTHER
+          - NOT_SPECIFIED
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+      required:
+      - firstName
+      - lastName
+      - title
+      type: object
+    CustomerAddressCreateRequest:
+      example:
+        zipcode: zipcode
+        country: country
+        city: city
+        name: name
+        addressLine1: addressLine1
+      properties:
+        zipcode:
+          maxLength: 10
+          minLength: 1
+          type: string
+        country:
+          maxLength: 127
+          minLength: 1
+          type: string
+        city:
+          maxLength: 127
+          minLength: 1
+          type: string
+        addressLine1:
+          maxLength: 127
+          minLength: 1
+          type: string
+        name:
+          maxLength: 127
+          minLength: 1
+          type: string
+      required:
+      - addressLine1
+      - city
+      - country
+      - name
+      - zipcode
+      type: object
+    Address:
+      example:
+        zipcode: zipcode
+        country: country
+        city: city
+        name: name
+        addressLine1: addressLine1
+        addressId: 0
+      properties:
+        addressId:
+          format: int64
+          type: integer
+        name:
+          type: string
+        zipcode:
+          type: string
+        addressLine1:
+          type: string
+        country:
+          type: string
+        city:
+          type: string
+      required:
+      - addressId
+      - addressLine1
+      - city
+      - country
+      - name
+      - zipcode
+      type: object
+    CustomerUpdateRequest:
+      example:
+        name:
+          firstName: firstName
+          lastName: lastName
+          title: MR
+      properties:
+        name:
+          $ref: '#/components/schemas/CustomerUpdateRequestName'
+      type: object
+    CustomerUpdateRequestName:
+      example:
+        firstName: firstName
+        lastName: lastName
+        title: MR
+      properties:
+        title:
+          enum:
+          - MR
+          - MS
+          - OTHER
+          - NOT_SPECIFIED
+          type: string
+        firstName:
+          maxLength: 127
+          minLength: 1
+          type: string
+        lastName:
+          maxLength: 127
+          minLength: 1
+          type: string
+      type: object
+

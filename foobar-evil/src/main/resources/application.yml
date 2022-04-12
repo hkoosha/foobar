@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: FoobarEvil
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        auto_quote_keyword: true
+
+
+logging:
+  level:
+    org.hibernate: error
+    org.springframework: error
+    com.zaxxer: error
+
+
+foobar:
+  port:
+    marketplace: ${FOOBAR_PORT_MARKETPLACE:4040}
+    warehouse: ${FOOBAR_PORT_WAREHOUSE:4041}
+    shipping: ${FOOBAR_PORT_SHIPPING:4042}
+    customer: ${FOOBAR_PORT_CUSTOMER:4043}
+    seller: ${FOOBAR_PORT_SELLER:4045}
+  url:
+    defaultUrl: ${FOOBAR_URL_DEFAULT:http://localhost}
+    marketplace: ${FOOBAR_URL_MARKETPLACE:}
+    warehouse: ${FOOBAR_URL_WAREHOUSE:}
+    shipping: ${FOOBAR_URL_SHIPPING:}
+    customer: ${FOOBAR_URL_CUSTOMER:}
+    seller: ${FOOBAR_URL_SELLER:}

@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: foobar-maker
+  labels:
+    foobar-tool: maker
+spec:
+  selector:
+    matchLabels:
+      foobar-tool: maker
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        foobar-tool: maker
+    spec:
+      dnsPolicy: ClusterFirst
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: foobar-maker
+          image: 'docker.io/library/foobar-maker:0.0.1-SNAPSHOT'
+          imagePullPolicy: Never
+          terminationMessagePolicy: File
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: 'color,db-mysql,expose'
+            - name: FOOBAR_LOG_LEVEL
+              value: trace
+            - name: FOOBAR_DDL_AUTO
+              value: update
+            - name: FOOBAR_MYSQL_HOST
+              value: 'mariadb.foobar.svc.cluster.local:3306'
+            - name: FOOBAR_MYSQL_USER
+              value: root
+            - name: FOOBAR_MYSQL_PASS
+              value: '.'
+            - name: FOOBAR_PORT_MARKETPLACE
+              value: '8080'
+            - name: FOOBAR_PORT_WAREHOUSE
+              value: '8080'
+            - name: FOOBAR_PORT_SHIPPING
+              value: '8080'
+            - name: FOOBAR_PORT_CUSTOMER
+              value: '8080'
+            - name: FOOBAR_PORT_SELLER
+              value: '8080'
+            - name: FOOBAR_URL_MARKETPLACE
+              value: 'http://foobar-marketplace'
+            - name: FOOBAR_URL_WAREHOUSE
+              value: 'http://foobar-warehouse'
+            - name: FOOBAR_URL_SHIPPING
+              value: 'http://foobar-shipping'
+            - name: FOOBAR_URL_CUSTOMER
+              value: 'http://foobar-customer'
+            - name: FOOBAR_URL_SELLER
+              value: 'http://foobar-seller'
+

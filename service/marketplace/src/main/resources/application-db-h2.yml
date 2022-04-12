@@ -1,0 +1,11 @@
+spring:
+  config:
+    activate:
+      on-profile:
+        - db-h2
+  h2:
+    console:
+      enabled: true
+      path: '/h2-console'
+      settings:
+        web-admin-password: sa

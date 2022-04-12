@@ -1,0 +1,637 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- description: Generated server url
+  url: http://localhost:4040
+paths:
+  /foobar/marketplace/v1/order-requests:
+    get:
+      operationId: getOrderRequests
+      parameters:
+      - explode: true
+        in: query
+        name: customerId
+        required: false
+        schema:
+          format: uuid
+          type: string
+        style: form
+      responses:
+        "404":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityNotFoundApiError'
+          description: Not Found
+        "400":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityBadValueApiError'
+          description: Bad Request
+        "403":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityIllegalStateApiError'
+          description: Forbidden
+        "503":
+          description: Service Unavailable
+        "200":
+          content:
+            '*/*':
+              schema:
+                items:
+                  $ref: '#/components/schemas/OrderRequest'
+                type: array
+          description: OK
+      tags:
+      - order-request
+      x-accepts: '*/*'
+    post:
+      operationId: postOrderRequest
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderRequestCreateRequest'
+        required: true
+      responses:
+        "404":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityNotFoundApiError'
+          description: Not Found
+        "400":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityBadValueApiError'
+          description: Bad Request
+        "403":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityIllegalStateApiError'
+          description: Forbidden
+        "503":
+          description: Service Unavailable
+        "201":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/OrderRequest'
+          description: Created
+      tags:
+      - order-request
+      x-content-type: application/json
+      x-accepts: '*/*'
+  /foobar/marketplace/v1/order-requests/{orderRequestId}/line-items:
+    get:
+      operationId: getLineItems
+      parameters:
+      - explode: false
+        in: path
+        name: orderRequestId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      responses:
+        "404":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityNotFoundApiError'
+          description: Not Found
+        "400":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityBadValueApiError'
+          description: Bad Request
+        "403":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityIllegalStateApiError'
+          description: Forbidden
+        "503":
+          description: Service Unavailable
+        "200":
+          content:
+            '*/*':
+              schema:
+                items:
+                  $ref: '#/components/schemas/OrderRequestLineItem'
+                type: array
+          description: OK
+      tags:
+      - order-request-line-item
+      x-accepts: '*/*'
+    post:
+      operationId: postLineItem
+      parameters:
+      - explode: false
+        in: path
+        name: orderRequestId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LineItemRequest'
+        required: true
+      responses:
+        "404":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityNotFoundApiError'
+          description: Not Found
+        "400":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityBadValueApiError'
+          description: Bad Request
+        "403":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityIllegalStateApiError'
+          description: Forbidden
+        "503":
+          description: Service Unavailable
+        "201":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/OrderRequestLineItem'
+          description: Created
+      tags:
+      - order-request-line-item
+      x-content-type: application/json
+      x-accepts: '*/*'
+  /foobar/marketplace/v1/order-requests/{orderRequestId}:
+    delete:
+      operationId: deleteOrderRequest
+      parameters:
+      - explode: false
+        in: path
+        name: orderRequestId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      responses:
+        "404":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityNotFoundApiError'
+          description: Not Found
+        "400":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityBadValueApiError'
+          description: Bad Request
+        "403":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityIllegalStateApiError'
+          description: Forbidden
+        "503":
+          description: Service Unavailable
+        "204":
+          description: No Content
+      tags:
+      - order-request
+      x-accepts: '*/*'
+    get:
+      operationId: getOrderRequest
+      parameters:
+      - explode: false
+        in: path
+        name: orderRequestId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      responses:
+        "404":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityNotFoundApiError'
+          description: Not Found
+        "400":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityBadValueApiError'
+          description: Bad Request
+        "403":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityIllegalStateApiError'
+          description: Forbidden
+        "503":
+          description: Service Unavailable
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/OrderRequest'
+          description: OK
+      tags:
+      - order-request
+      x-accepts: '*/*'
+    patch:
+      operationId: patchOrderRequest
+      parameters:
+      - explode: false
+        in: path
+        name: orderRequestId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderRequestUpdateRequest'
+        required: true
+      responses:
+        "404":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityNotFoundApiError'
+          description: Not Found
+        "400":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityBadValueApiError'
+          description: Bad Request
+        "403":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityIllegalStateApiError'
+          description: Forbidden
+        "503":
+          description: Service Unavailable
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/OrderRequest'
+          description: OK
+      tags:
+      - order-request
+      x-content-type: application/json
+      x-accepts: '*/*'
+  /foobar/marketplace/v1/order-requests/{orderRequestId}/line-items/{orderRequestLineItemId}:
+    delete:
+      operationId: deleteLineItem
+      parameters:
+      - explode: false
+        in: path
+        name: orderRequestId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: orderRequestLineItemId
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      responses:
+        "404":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityNotFoundApiError'
+          description: Not Found
+        "400":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityBadValueApiError'
+          description: Bad Request
+        "403":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityIllegalStateApiError'
+          description: Forbidden
+        "503":
+          description: Service Unavailable
+        "204":
+          description: No Content
+      tags:
+      - order-request-line-item
+      x-accepts: '*/*'
+    get:
+      operationId: getLineItem
+      parameters:
+      - explode: false
+        in: path
+        name: orderRequestId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: orderRequestLineItemId
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      responses:
+        "404":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityNotFoundApiError'
+          description: Not Found
+        "400":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityBadValueApiError'
+          description: Bad Request
+        "403":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityIllegalStateApiError'
+          description: Forbidden
+        "503":
+          description: Service Unavailable
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/OrderRequestLineItem'
+          description: OK
+      tags:
+      - order-request-line-item
+      x-accepts: '*/*'
+    patch:
+      operationId: patchLineItem
+      parameters:
+      - explode: false
+        in: path
+        name: orderRequestId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: orderRequestLineItemId
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LineItemUpdateRequest'
+        required: true
+      responses:
+        "404":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityNotFoundApiError'
+          description: Not Found
+        "400":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityBadValueApiError'
+          description: Bad Request
+        "403":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityIllegalStateApiError'
+          description: Forbidden
+        "503":
+          description: Service Unavailable
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/OrderRequestLineItem'
+          description: OK
+      tags:
+      - order-request-line-item
+      x-content-type: application/json
+      x-accepts: '*/*'
+components:
+  schemas:
+    EntityInfo:
+      properties:
+        entityType:
+          type: string
+        entityId:
+          type: object
+      required:
+      - entityType
+      type: object
+    EntityNotFoundApiError:
+      properties:
+        message:
+          type: string
+        context:
+          items:
+            $ref: '#/components/schemas/EntityInfo'
+          type: array
+          uniqueItems: true
+        error:
+          type: string
+      required:
+      - context
+      - error
+      - message
+      type: object
+    EntityBadValueApiError:
+      properties:
+        message:
+          type: string
+        context:
+          additionalProperties:
+            items:
+              type: string
+            type: array
+          type: object
+        error:
+          type: string
+      required:
+      - context
+      - error
+      - message
+      type: object
+    EntityIllegalStateApiError:
+      properties:
+        message:
+          type: string
+        context:
+          items:
+            $ref: '#/components/schemas/EntityInfo'
+          type: array
+          uniqueItems: true
+        error:
+          type: string
+      required:
+      - context
+      - error
+      - message
+      type: object
+    OrderRequestCreateRequest:
+      example:
+        customerId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+      properties:
+        customerId:
+          format: uuid
+          type: string
+      required:
+      - customerId
+      type: object
+    OrderRequest:
+      example:
+        sellerId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        customerId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        orderRequestId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        state: ACTIVE
+        subTotal: 0
+      properties:
+        orderRequestId:
+          format: uuid
+          type: string
+        customerId:
+          format: uuid
+          type: string
+        sellerId:
+          format: uuid
+          type: string
+        state:
+          enum:
+          - ACTIVE
+          - LIVE
+          - NO_SELLER_FOUND
+          - WAITING_FOR_SELLER
+          - FULFILLED
+          type: string
+        subTotal:
+          format: int64
+          type: integer
+      required:
+      - customerId
+      - orderRequestId
+      - state
+      type: object
+    LineItemRequest:
+      example:
+        productId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        units: 0
+      properties:
+        productId:
+          format: uuid
+          type: string
+        units:
+          format: int64
+          minimum: 0
+          type: integer
+      required:
+      - productId
+      - units
+      type: object
+    OrderRequestLineItem:
+      example:
+        productId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        lineItemId: 0
+        orderRequestId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        units: 6
+      properties:
+        orderRequestId:
+          format: uuid
+          type: string
+        lineItemId:
+          format: int64
+          type: integer
+        productId:
+          format: uuid
+          type: string
+        units:
+          format: int64
+          type: integer
+      required:
+      - lineItemId
+      - orderRequestId
+      - productId
+      - units
+      type: object
+    OrderRequestUpdateRequest:
+      example:
+        sellerId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        state: ACTIVE
+        subTotal: 0
+      properties:
+        sellerId:
+          format: uuid
+          type: string
+        state:
+          enum:
+          - ACTIVE
+          - LIVE
+          - NO_SELLER_FOUND
+          - WAITING_FOR_SELLER
+          - FULFILLED
+          type: string
+        subTotal:
+          format: int64
+          minimum: 0
+          type: integer
+      type: object
+    LineItemUpdateRequest:
+      example:
+        units: 0
+      properties:
+        units:
+          format: int64
+          minimum: 0
+          type: integer
+      type: object
+

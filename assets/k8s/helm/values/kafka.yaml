@@ -1,0 +1,19 @@
+deleteTopicEnable: false
+autoCreateTopicsEnable: false
+containerSecurityContext:
+  enabled: true
+  runAsUser: 0
+  runAsNonRoot: false
+
+provisioning:
+  containerSecurityContext:
+    enabled: true
+    runAsUser: 0
+    runAsNonRoot: false
+
+zookeeper:
+  containerSecurityContext:
+    enabled: true
+    runAsUser: 0
+    runAsNonRoot: false
+

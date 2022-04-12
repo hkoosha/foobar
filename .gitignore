@@ -1,0 +1,23 @@
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+# Temporary stuff one doesn't want in git.
+/dumpster/
+
+# extra jar files not fetched by gradle (usually fetched by Make).
+/libs/*.jar
+
+assets/k8s/foobar/*compiled.yaml
+

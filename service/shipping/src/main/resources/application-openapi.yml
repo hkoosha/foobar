@@ -1,0 +1,13 @@
+spring:
+  config:
+    activate:
+      on-profile:
+        - openapi
+
+springdoc:
+  swagger-ui:
+    enabled: true
+    path: "/swagger"
+  api-docs:
+    enabled: true
+    path:  "/api"

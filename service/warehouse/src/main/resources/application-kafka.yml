@@ -1,0 +1,8 @@
+spring:
+  config:
+    activate:
+      on-profile:
+        - kafka
+  kafka:
+    bootstrap-servers:
+      - ${FOOBAR_KAFKA_BOOTSTRAP_SERVER:localhost:9092}

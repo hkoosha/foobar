@@ -1,0 +1,9 @@
+{
+    "name": "Important Inc.",
+    "address": {
+        "zipcode": "12345",
+        "addressLine1": "Kesselstrasse",
+        "country": "Germany",
+        "city": "Duesseldorf"
+    }
+}

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+    <springProperty name="appName" source="spring.application.name"/>
+
+    <springProfile name="json-logging">
+        <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+                <providers>
+                    <mdc/>
+                    <message/>
+                    <timestamp/>
+                    <version/>
+                    <logLevel/>
+                    <loggerName/>
+                    <nestedField>
+                        <fieldName>error</fieldName>
+                        <providers>
+                            <throwableClassName/>
+                            <throwableMessage/>
+                            <stackTrace/>
+                        </providers>
+                    </nestedField>
+                    <pattern>
+                        <pattern>
+                            {
+                                "foobarService": "${appName}",
+                                "logger": {
+                                    "class": "%class",
+                                    "file": "%file",
+                                    "logger": "%logger",
+                                    "thread": "%thread"
+                                }
+                            }
+                        </pattern>
+                    </pattern>
+                </providers>
+            </encoder>
+            <append>true</append>
+            <file>/foobar-log/foobar.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <fileNamePattern>${LOG_FILE}.%d{yyyy-MM-dd}.gz</fileNamePattern>
+                <maxHistory>1</maxHistory>
+            </rollingPolicy>
+        </appender>
+    </springProfile>
+
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+
+    <springProfile name="json-logging">
+        <root level="info">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="FILE"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="!json-logging">
+        <root level="info">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+
+</configuration>

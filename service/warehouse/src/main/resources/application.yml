@@ -1,0 +1,68 @@
+spring:
+  application:
+    name: FoobarWarehouse
+  main:
+    banner-mode: off
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: ${FOOBAR_DDL_AUTO:none}
+    properties:
+      hibernate:
+        auto_quote_keyword: true
+  cloud:
+    loadbalancer:
+      cache:
+        enabled: false
+  zipkin:
+    enabled: false
+
+
+server:
+  port: ${FOOBAR_PORT_WAREHOUSE:8080}
+  error:
+    include-message: always
+    include-binding-errors: always
+
+
+feign:
+  circuitbreaker:
+    enabled: true
+  okhttp:
+    enabled: true
+#  client:
+#    config:
+#      default:
+#        connectTimeout: 5000
+#        readTimeout: 5000
+
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      seller-service:
+        failure-rate-threshold: 30
+        wait-duration-in-open-state: 5000
+        permitted-number-of-calls-in-half-open-state: 10
+  retry:
+    instances:
+      seller-service:
+        max-attempts: 3
+        wait-duration: 1s
+        retry-exceptions:
+          - java.lang.RuntimeException
+          - java.io.IOException
+
+
+logging:
+  level:
+    org.apache.kafka: error
+    io.koosha.foobar: ${FOOBAR_LOG_LEVEL:info}
+
+
+foobar:
+  services:
+    sellerUrl: ${FOOBAR_SERVICE_URL_SELLER:http://localhost}
+    sellerPort: ${FOOBAR_SERVICE_PORT_SELLER:4045}
+  rest:
+    on-concurrency-error-retry-after: 1s

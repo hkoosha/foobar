@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package io.koosha.foobar;
+
+option java_package = "io.koosha.foobar";
+option java_outer_classname = "HeaderProto";
+
+
+message Header {
+
+  uint64 timestamp = 1;
+  string source = 2;
+  optional string request_id = 3;
+
+}

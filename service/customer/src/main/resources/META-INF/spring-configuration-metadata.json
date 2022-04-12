@@ -1,0 +1,9 @@
+{
+  "properties": [
+    {
+      "name": "foobar.rest.on-concurrency-error-retry-after",
+      "type": "java.time.Duration",
+      "description": "Desc."
+    }
+  ]
+}

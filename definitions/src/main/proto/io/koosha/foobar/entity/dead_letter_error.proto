@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+import "io/koosha/foobar/header.proto";
+
+package io.koosha.foobar.entity;
+
+option java_package = "io.koosha.foobar.entity";
+option java_outer_classname = "DeadLetterErrorProto";
+
+
+message DeadLetterError {
+
+  Header header = 1;
+
+  string error = 2;
+
+}

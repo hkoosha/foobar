@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: foobar-marketplace-engine
+  labels:
+    foobar-service: marketplace-engine
+spec:
+  selector:
+    matchLabels:
+      foobar-service: marketplace-engine
+  replicas: ${FOOBAR_MARKETPLACE_ENGINE_REPLICAS}
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        foobar-service: marketplace-engine
+        foobar-json-log: enabled
+    spec:
+      dnsPolicy: ClusterFirst
+      terminationGracePeriodSeconds: 10
+      volumes:
+        - name: foobar-log
+          emptyDir: {}
+      containers:
+        - name: foobar-logger
+          image: 'busybox'
+          args: [/bin/sh, -c, 'tail -n+1 -F /foobar-log/foobar.log 2>/dev/null']
+          volumeMounts:
+            - name: foobar-log
+              mountPath: /foobar-log
+        - name: foobar-marketplace-engine
+          image: 'docker.io/library/marketplace_engine:0.0.1-SNAPSHOT'
+          imagePullPolicy: Never
+          terminationMessagePolicy: File
+          ports:
+            - name: server
+              containerPort: 8080
+              protocol: TCP
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: 'kafka,db-mysql,json-logging,expose,zipkin'
+            - name: FOOBAR_LOG_LEVEL
+              value: trace
+            - name: FOOBAR_DDL_AUTO
+              value: update
+            - name: FOOBAR_PORT_MARKETPLACE_ENGINE
+              value: '8080'
+            - name: FOOBAR_MYSQL_HOST
+              value: 'mariadb.foobar.svc.cluster.local:3306'
+            - name: FOOBAR_MYSQL_USER
+              value: root
+            - name: FOOBAR_MYSQL_PASS
+              value: '.'
+            - name: OTEL_EXPORTER_JAEGER_ENDPOINT
+              value: 'http://jaeger-collector.foobar.svc.cluster.local:14250'
+            - name: FOOBAR_KAFKA_BOOTSTRAP_SERVER
+              value: 'kafka-0.kafka-headless.foobar.svc.cluster.local:9092'
+            - name: FOOBAR_SERVICE_URL_MARKETPLACE
+              value: 'http://foobar-marketplace.foobar.svc.cluster.local'
+            - name: FOOBAR_SERVICE_PORT_MARKETPLACE
+              value: '8080'
+            - name: OTEL_METRICS_EXPORTER
+              value: 'none'
+            - name: FOOBAR_ZIPKIN_HOST
+              value: 'http://zipkin:9411'
+          livenessProbe:
+            failureThreshold: 10
+            initialDelaySeconds: 30
+            timeoutSeconds: 10
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+              scheme: HTTP
+          readinessProbe:
+            initialDelaySeconds: 30
+            timeoutSeconds: 10
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+              scheme: HTTP
+

@@ -1,0 +1,5 @@
+{
+    "groupId": "io.koosha.foobar.seller",
+    "packageName": "io.cobalt.foobar.connect.seller.generated.api",
+    "serializationLibrary": "jackson"
+}

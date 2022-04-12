@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+import "io/koosha/foobar/header.proto";
+
+package io.koosha.foobar.order_request;
+
+option java_package = "io.koosha.foobar.order_request";
+option java_outer_classname = "OrderRequestSellerProto";
+
+
+message OrderRequestSeller {
+
+  Header header = 1;
+
+  optional string seller_id = 2;
+  optional uint64 sub_total = 3;
+
+}

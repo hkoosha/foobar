@@ -1,0 +1,16 @@
+spring:
+  config:
+    activate:
+      on-profile:
+        - test
+  jpa:
+    hibernate:
+      ddl-auto: create
+  zipkin:
+    enabled: false
+
+springdoc:
+  swagger-ui:
+    enabled: false
+  api-docs:
+    enabled: false

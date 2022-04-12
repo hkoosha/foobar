@@ -1,0 +1,19 @@
+{
+  "properties": [
+    {
+      "name": "foobar.rest.on-concurrency-error-retry-after",
+      "type": "java.time.Duration",
+      "description": "Desc."
+    },
+    {
+      "name": "foobar.services.sellerUrl",
+      "type": "java.lang.String",
+      "description": "Desc."
+    },
+    {
+      "name": "foobar.services.sellerPort",
+      "type": "java.lang.Integer",
+      "description": "Desc."
+    }
+  ]
+}
