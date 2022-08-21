@@ -1,5 +1,6 @@
 deleteTopicEnable: false
 autoCreateTopicsEnable: false
+
 containerSecurityContext:
   enabled: true
   runAsUser: 0
@@ -16,4 +17,3 @@ zookeeper:
     enabled: true
     runAsUser: 0
     runAsNonRoot: false
-

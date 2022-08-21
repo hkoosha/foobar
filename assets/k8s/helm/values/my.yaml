@@ -2,8 +2,6 @@ auth:
   rootPassword: '.'
 
 primary:
-  #persistence:
-  #  enabled: false
   containerSecurityContext:
     enabled: true
     runAsUser: 0
@@ -41,4 +39,3 @@ primary:
     port=3306
     socket=/opt/bitnami/mariadb/tmp/mysql.sock
     pid-file=/opt/bitnami/mariadb/tmp/mysqld.pid
-

@@ -109,6 +109,8 @@ structure.
 - Demonstrate Saga pattern.
 - Demonstrate event sourcing (only in one of microservices).
 - Add helm charts for foobar services.
+- Complete foobar-maker to generate a **lot** of load.
+- Complete foobar-evil to make disruptions in the services.
 
 ### Up and Running: Locally
 

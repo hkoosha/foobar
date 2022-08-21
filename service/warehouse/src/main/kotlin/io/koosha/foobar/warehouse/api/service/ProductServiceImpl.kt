@@ -271,7 +271,6 @@ class ProductServiceImpl(
         return availability
     }
 
-    // TODO use error object, throw all errors at once.
     private fun findAndApplyAvailabilityChanges(
         request: AvailabilityUpdateRequest,
         product: ProductDO,
