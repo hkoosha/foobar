@@ -72,17 +72,28 @@ local-init-recreate-db: local-init-drop-db local-init-create-db
 
 define _local_init_create_topics
 	docker exec $(1) bash -c \
-		'kafka-topics.sh --bootstrap-server localhost:9092 --create --replication-factor 1 --partitions 16 --topic foobar__marketplace__order_request__entity_state; kafka-topics.sh --bootstrap-server localhost:9092 --create --replication-factor 1 --partitions 16 --topic foobar__marketplace__order_request__entity_state__dead_letter; kafka-topics.sh --bootstrap-server localhost:9092 --create --replication-factor 1 --partitions 16 --topic foobar__marketplace_engine__order_request__seller; kafka-topics.sh --bootstrap-server localhost:9092 --create --replication-factor 1 --partitions 16 --topic foobar__warehouse__availability'
+		'kafka-topics.sh --bootstrap-server localhost:9092 --create --replication-factor 1 --partitions 16 --topic foobar__marketplace__order_request__state_changed; \
+		 kafka-topics.sh --bootstrap-server localhost:9092 --create --replication-factor 1 --partitions 16 --topic foobar__marketplace__order_request__state_changed__dead_letter; \
+		 kafka-topics.sh --bootstrap-server localhost:9092 --create --replication-factor 1 --partitions 16 --topic foobar__marketplace_engine__order_request__seller_found; \
+		 kafka-topics.sh --bootstrap-server localhost:9092 --create --replication-factor 1 --partitions 16 --topic foobar__warehouse__availability'
+endef
+
+define _local_init_drop_topics
+	docker exec $(1) bash -c \
+		'kafka-topics.sh --bootstrap-server localhost:9092 --delete --topic foobar__marketplace__order_request__state_changed; \
+		 kafka-topics.sh --bootstrap-server localhost:9092 --delete --topic foobar__marketplace__order_request__state_changed__dead_letter; \
+		 kafka-topics.sh --bootstrap-server localhost:9092 --delete --topic foobar__marketplace_engine__order_request__seller_found; \
+		 kafka-topics.sh --bootstrap-server localhost:9092 --delete --topic foobar__warehouse__availability'
 endef
 
 .PHONY: local-init-create-topics
 local-init-create-topics:
 	$(call _local_init_create_topics,kafka-kafka-1) || $(call _local_init_create_topics,all-kafka-1)
 
+
 .PHONY: local-init-drop-topics
 local-init-drop-topics:
-	docker exec kafka-kafka-1 bash -c \
-		'kafka-topics.sh --bootstrap-server localhost:9092 --delete --topic foobar__marketplace__order_request__entity_state; kafka-topics.sh --bootstrap-server localhost:9092 --delete --topic foobar__marketplace__order_request__entity_state__dead_letter; kafka-topics.sh --bootstrap-server localhost:9092 --delete --topic foobar__marketplace_engine__order_request__seller; kafka-topics.sh --bootstrap-server localhost:9092 --delete --topic foobar__warehouse__availability'
+	$(call _local_init_drop_topics,kafka-kafka-1) || $(call _local_init_drop_topics,all-kafka-1)
 
 .PHONY: local-init-recreate-topics
 local-init-recreate-topics: local-init-drop-topics local-init-create-topics
@@ -90,14 +101,11 @@ local-init-recreate-topics: local-init-drop-topics local-init-create-topics
 
 
 .PHONY: local-init
-local-init:
-	local-init-create-db local-init-create-topics
+local-init: local-init-create-db local-init-create-topics
 
 .PHONY: local-drop
-local-drop:
-	local-init-drop-db local-init-drop-topics
+local-drop: local-init-drop-db local-init-drop-topics
 
 .PHONY: local-recreate
-local-recreate:
-	local-init-recreate-db local-init-recreate-topics
+local-recreate: local-init-recreate-db local-init-recreate-topics
 

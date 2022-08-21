@@ -11,7 +11,6 @@ import io.koosha.foobar.common.model.EntityInfo
 import io.koosha.foobar.connect.customer.generated.api.CustomerApi
 import io.koosha.foobar.connect.seller.generated.api.SellerApi
 import io.koosha.foobar.connect.warehouse.generated.api.ProductApi
-import io.koosha.foobar.entity.StateProto
 import io.koosha.foobar.marketplace.SOURCE
 import io.koosha.foobar.marketplace.api.model.OrderRequestDO
 import io.koosha.foobar.marketplace.api.model.OrderRequestLineItemDO
@@ -20,6 +19,7 @@ import io.koosha.foobar.marketplace.api.model.OrderRequestProcessQueueStateChang
 import io.koosha.foobar.marketplace.api.model.OrderRequestProcessQueueStateChangeRepository
 import io.koosha.foobar.marketplace.api.model.OrderRequestRepository
 import io.koosha.foobar.marketplace.api.model.OrderRequestState
+import io.koosha.foobar.order_request.OrderRequestStateChangedProto
 import mu.KotlinLogging
 import org.openapitools.client.model.Seller
 import org.springframework.beans.factory.annotation.Qualifier
@@ -34,17 +34,22 @@ import javax.validation.Validator
 
 @Service
 class OrderRequestServiceImpl(
+
+    private val clock: Clock,
+    private val validator: Validator,
+
     private val sellerClient: SellerApi,
     private val productClient: ProductApi,
     private val customerClient: CustomerApi,
+
     private val orderRequestRepo: OrderRequestRepository,
     private val lineItemRepo: OrderRequestLineItemRepository,
     private val orderRequestProcessQueueStateChangeRepo: OrderRequestProcessQueueStateChangeRepository,
-    @Qualifier(KafkaConfig.TEMPLATE__ORDER_REQUEST__ENTITY_STATE)
-    private val kafka: KafkaTemplate<UUID, StateProto.State>,
-    private val clock: Clock,
-    private val validator: Validator,
-) : OrderRequestService {
+
+    @Qualifier(KafkaConfig.TEMPLATE__ORDER_REQUEST__STATE_CHANGED)
+    private val kafka: KafkaTemplate<UUID, OrderRequestStateChangedProto.OrderRequestStateChanged>,
+
+    ) : OrderRequestService {
 
     private val log = KotlinLogging.logger {}
 
@@ -215,7 +220,7 @@ class OrderRequestServiceImpl(
     private fun setState(
         orderRequest: OrderRequestDO,
         request: OrderRequestUpdateRequest,
-    ): StateProto.State {
+    ): OrderRequestStateChangedProto.OrderRequestStateChanged {
 
         if (!isStateTransitionValid(orderRequest, request.state!!)) {
             log.trace {
@@ -237,7 +242,10 @@ class OrderRequestServiceImpl(
 
         orderRequest.state = request.state
 
-        return StateProto.State.newBuilder()
+        val lineItems =
+            this.lineItemRepo.findAllByOrderRequestLineItemPk_OrderRequest_orderRequestId(orderRequest.orderRequestId!!)
+
+        val builder = OrderRequestStateChangedProto.OrderRequestStateChanged.newBuilder()
             .setFrom(orderRequest.state.toString())
             .setTo(request.state.toString())
             .setHeader(
@@ -245,13 +253,23 @@ class OrderRequestServiceImpl(
                     .setTimestamp(this.clock.millis())
                     .setSource(SOURCE)
             )
-            .build()
+            .addAllLineItems(
+                lineItems.map {
+                    OrderRequestStateChangedProto.OrderRequestStateChanged.LineItem
+                        .newBuilder()
+                        .setProductId(it.productId.toString())
+                        .setUnits(it.units!!)
+                        .build()
+                }
+            )
+
+        return builder.build()
     }
 
     internal fun updateDb(
         orderRequestId: UUID,
         request: OrderRequestUpdateRequest,
-    ): Pair<OrderRequestDO, StateProto.State?> {
+    ): Pair<OrderRequestDO, OrderRequestStateChangedProto.OrderRequestStateChanged?> {
 
         val orderRequest: OrderRequestDO = this.findOrderRequestOrFail(orderRequestId)
 
@@ -271,10 +289,11 @@ class OrderRequestServiceImpl(
             anyChange = true
         }
 
-        val stateChange: StateProto.State? = if (request.state != null)
-            this.setState(orderRequest, request)
-        else
-            null
+        val stateChange: OrderRequestStateChangedProto.OrderRequestStateChanged? =
+            if (request.state != null)
+                this.setState(orderRequest, request)
+            else
+                null
 
         if (stateChange != null)
             anyChange = true
@@ -305,7 +324,7 @@ class OrderRequestServiceImpl(
 
     internal fun updateKafka(
         orderRequestId: UUID,
-        stateChange: StateProto.State,
+        stateChange: OrderRequestStateChangedProto.OrderRequestStateChanged,
     ) {
 
         val orderRequest: OrderRequestDO = this.findOrderRequestOrFail(orderRequestId)

@@ -25,6 +25,7 @@ class EvilService(
 
     private fun doRun() {
 
+        Thread.sleep(1000)
     }
 
 }

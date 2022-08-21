@@ -11,9 +11,9 @@ public final class EntityHelper {
     }
 
 
-    public static DeadLetterErrorProto.DeadLetterError createError(String source,
-                                                                   long timestamp,
-                                                                   String error) {
+    public static DeadLetterErrorProto.DeadLetterError deadLetterErrorOf(String source,
+                                                                         long timestamp,
+                                                                         String error) {
 
         return DeadLetterErrorProto.DeadLetterError.newBuilder()
                 .setHeader(HeaderHelper.create(source, timestamp))

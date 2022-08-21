@@ -71,7 +71,7 @@ class WarehouseKafkaConfig {
     @Qualifier(KafkaConfig.CONSUMER_FACTORY__AVAILABILITY)
     @Lazy
     @Bean(KafkaConfig.CONSUMER_FACTORY__AVAILABILITY)
-    fun availabilityKafkaListenerContainerFactory(
+    fun availabilityKafkaListenerConsumerFactory(
         prop: KafkaProperties,
     ): ConsumerFactory<UUID, AvailabilityProto.Availability> =
         DefaultKafkaConsumerFactory(

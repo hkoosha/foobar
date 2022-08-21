@@ -1,8 +1,8 @@
 package io.koosha.foobar.common.cfg
 
 import io.koosha.foobar.common.PROFILE__KAFKA
-import io.koosha.foobar.order_request.OrderRequestSellerProto
-import io.koosha.foobar.order_request.OrderRequestSellerProtoSerde
+import io.koosha.foobar.order_request.OrderRequestSellerFoundProto
+import io.koosha.foobar.order_request.OrderRequestSellerFoundProtoSerde
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.producer.ProducerConfig
 import org.apache.kafka.common.serialization.UUIDDeserializer
@@ -29,57 +29,57 @@ import java.util.*
 @Configuration
 class MarketplaceEngineKafkaConfig {
 
-    @Qualifier(KafkaConfig.PROD_FACTORY__ORDER_REQUEST__SELLER)
+    @Qualifier(KafkaConfig.PROD_FACTORY__ORDER_REQUEST__SELLER_FOUND)
     @Lazy
-    @Bean(KafkaConfig.PROD_FACTORY__ORDER_REQUEST__SELLER)
+    @Bean(KafkaConfig.PROD_FACTORY__ORDER_REQUEST__SELLER_FOUND)
     fun orderRequestSellerKafkaProducerFactory(
         prop: KafkaProperties,
-    ): ProducerFactory<UUID, OrderRequestSellerProto.OrderRequestSeller> =
+    ): ProducerFactory<UUID, OrderRequestSellerFoundProto.OrderRequestSellerFound> =
         DefaultKafkaProducerFactory(
             mutableMapOf<String, Any>(
                 ProducerConfig.BOOTSTRAP_SERVERS_CONFIG to prop.bootstrapServers.joinToString(","),
                 ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG to UUIDSerializer::class.java,
-                ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG to OrderRequestSellerProtoSerde.Ser::class.java,
+                ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG to OrderRequestSellerFoundProtoSerde.Ser::class.java,
             ),
         )
 
-    @Qualifier(KafkaConfig.TEMPLATE__ORDER_REQUEST__SELLER)
+    @Qualifier(KafkaConfig.TEMPLATE__ORDER_REQUEST__SELLER_FOUND)
     @Lazy
-    @Bean(KafkaConfig.TEMPLATE__ORDER_REQUEST__SELLER)
+    @Bean(KafkaConfig.TEMPLATE__ORDER_REQUEST__SELLER_FOUND)
     fun orderRequestSellerKafkaTemplate(
-        @Qualifier(KafkaConfig.PROD_FACTORY__ORDER_REQUEST__SELLER)
-        producerFactory: ProducerFactory<UUID, OrderRequestSellerProto.OrderRequestSeller>,
-    ): KafkaTemplate<UUID, OrderRequestSellerProto.OrderRequestSeller> =
+        @Qualifier(KafkaConfig.PROD_FACTORY__ORDER_REQUEST__SELLER_FOUND)
+        producerFactory: ProducerFactory<UUID, OrderRequestSellerFoundProto.OrderRequestSellerFound>,
+    ): KafkaTemplate<UUID, OrderRequestSellerFoundProto.OrderRequestSellerFound> =
         KafkaTemplate(producerFactory).apply {
-            this.defaultTopic = KafkaConfig.TOPIC__ORDER_REQUEST__SELLER
+            this.defaultTopic = KafkaConfig.TOPIC__ORDER_REQUEST__SELLER_FOUND
         }
 
-    @Qualifier(KafkaConfig.LISTENER_CONTAINER_FACTORY__ORDER_REQUEST__SELLER)
+    @Qualifier(KafkaConfig.LISTENER_CONTAINER_FACTORY__ORDER_REQUEST__SELLER_FOUND)
     @Lazy
-    @Bean(KafkaConfig.LISTENER_CONTAINER_FACTORY__ORDER_REQUEST__SELLER)
+    @Bean(KafkaConfig.LISTENER_CONTAINER_FACTORY__ORDER_REQUEST__SELLER_FOUND)
     fun orderRequestSellerKafkaListenerContainerFactory(
-        @Qualifier(KafkaConfig.CONSUMER_FACTORY__ORDER_REQUEST__SELLER)
-        consumerFactory: ConsumerFactory<UUID, OrderRequestSellerProto.OrderRequestSeller>,
-    ): KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<UUID, OrderRequestSellerProto.OrderRequestSeller>> =
-        ConcurrentKafkaListenerContainerFactory<UUID, OrderRequestSellerProto.OrderRequestSeller>().apply {
+        @Qualifier(KafkaConfig.CONSUMER_FACTORY__ORDER_REQUEST__SELLER_FOUND)
+        consumerFactory: ConsumerFactory<UUID, OrderRequestSellerFoundProto.OrderRequestSellerFound>,
+    ): KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<UUID, OrderRequestSellerFoundProto.OrderRequestSellerFound>> =
+        ConcurrentKafkaListenerContainerFactory<UUID, OrderRequestSellerFoundProto.OrderRequestSellerFound>().apply {
             this.consumerFactory = consumerFactory
             this.setConcurrency(4)
             this.containerProperties.pollTimeout = 3000
             this.containerProperties.ackMode = ContainerProperties.AckMode.MANUAL
         }
 
-    @Qualifier(KafkaConfig.CONSUMER_FACTORY__ORDER_REQUEST__SELLER)
+    @Qualifier(KafkaConfig.CONSUMER_FACTORY__ORDER_REQUEST__SELLER_FOUND)
     @Lazy
-    @Bean(KafkaConfig.CONSUMER_FACTORY__ORDER_REQUEST__SELLER)
-    fun orderRequestSellerKafkaListenerContainerFactory(
+    @Bean(KafkaConfig.CONSUMER_FACTORY__ORDER_REQUEST__SELLER_FOUND)
+    fun orderRequestSellerKafkaListenerConsumerFactory(
         prop: KafkaProperties,
-    ): ConsumerFactory<UUID, OrderRequestSellerProto.OrderRequestSeller> =
+    ): ConsumerFactory<UUID, OrderRequestSellerFoundProto.OrderRequestSellerFound> =
         DefaultKafkaConsumerFactory(
             mutableMapOf<String, Any>(
                 ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG to prop.bootstrapServers.joinToString(","),
                 ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG to "false",
                 ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG to UUIDDeserializer::class.java,
-                ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG to OrderRequestSellerProtoSerde.Deser::class.java,
+                ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG to OrderRequestSellerFoundProtoSerde.Deser::class.java,
             ),
         )
 

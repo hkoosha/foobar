@@ -3,8 +3,8 @@ package io.koosha.foobar.common.cfg
 import io.koosha.foobar.common.PROFILE__KAFKA
 import io.koosha.foobar.entity.DeadLetterErrorProto
 import io.koosha.foobar.entity.DeadLetterErrorProtoSerde
-import io.koosha.foobar.entity.StateProto
-import io.koosha.foobar.entity.StateProtoSerde
+import io.koosha.foobar.order_request.OrderRequestStateChangedProto
+import io.koosha.foobar.order_request.OrderRequestStateChangedProtoSerde
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.producer.ProducerConfig
 import org.apache.kafka.common.serialization.UUIDDeserializer
@@ -31,66 +31,66 @@ import java.util.*
 @Configuration
 class MarketplaceKafkaConfig {
 
-    @Qualifier(KafkaConfig.PROD_FACTORY__ORDER_REQUEST__ENTITY_STATE)
+    @Qualifier(KafkaConfig.PROD_FACTORY__ORDER_REQUEST__STATE_CHANGED)
     @Lazy
-    @Bean(KafkaConfig.PROD_FACTORY__ORDER_REQUEST__ENTITY_STATE)
-    fun orderRequestEntityStateKafkaProducerFactory(
+    @Bean(KafkaConfig.PROD_FACTORY__ORDER_REQUEST__STATE_CHANGED)
+    fun orderRequestStateChangedKafkaProducerFactory(
         prop: KafkaProperties,
-    ): ProducerFactory<UUID, StateProto.State> =
+    ): ProducerFactory<UUID, OrderRequestStateChangedProto.OrderRequestStateChanged> =
         DefaultKafkaProducerFactory(
             mutableMapOf<String, Any>(
                 ProducerConfig.BOOTSTRAP_SERVERS_CONFIG to prop.bootstrapServers.joinToString(","),
                 ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG to UUIDSerializer::class.java,
-                ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG to StateProtoSerde.Ser::class.java,
+                ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG to OrderRequestStateChangedProtoSerde.Ser::class.java,
             ),
         )
 
-    @Qualifier(KafkaConfig.TEMPLATE__ORDER_REQUEST__ENTITY_STATE)
+    @Qualifier(KafkaConfig.TEMPLATE__ORDER_REQUEST__STATE_CHANGED)
     @Lazy
-    @Bean(KafkaConfig.TEMPLATE__ORDER_REQUEST__ENTITY_STATE)
-    fun orderRequestEntityStateKafkaTemplate(
-        @Qualifier(KafkaConfig.PROD_FACTORY__ORDER_REQUEST__ENTITY_STATE)
-        producerFactory: ProducerFactory<UUID, StateProto.State>,
-    ): KafkaTemplate<UUID, StateProto.State> =
+    @Bean(KafkaConfig.TEMPLATE__ORDER_REQUEST__STATE_CHANGED)
+    fun orderRequestStateChangedKafkaTemplate(
+        @Qualifier(KafkaConfig.PROD_FACTORY__ORDER_REQUEST__STATE_CHANGED)
+        producerFactory: ProducerFactory<UUID, OrderRequestStateChangedProto.OrderRequestStateChanged>,
+    ): KafkaTemplate<UUID, OrderRequestStateChangedProto.OrderRequestStateChanged> =
         KafkaTemplate(producerFactory).apply {
-            this.defaultTopic = KafkaConfig.TOPIC__ORDER_REQUEST__ENTITY_STATE
+            this.defaultTopic = KafkaConfig.TOPIC__ORDER_REQUEST__STATE_CHANGED
         }
 
-    @Qualifier(KafkaConfig.LISTENER_CONTAINER_FACTORY__ORDER_REQUEST__ENTITY_STATE)
+    @Qualifier(KafkaConfig.LISTENER_CONTAINER_FACTORY__ORDER_REQUEST__STATE_CHANGED)
     @Lazy
-    @Bean(KafkaConfig.LISTENER_CONTAINER_FACTORY__ORDER_REQUEST__ENTITY_STATE)
-    fun orderRequestEntityStateKafkaListenerContainerFactory(
-        @Qualifier(KafkaConfig.CONSUMER_FACTORY__ORDER_REQUEST__ENTITY_STATE)
-        consumerFactory: ConsumerFactory<UUID, StateProto.State>,
-    ): KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<UUID, StateProto.State>> =
-        ConcurrentKafkaListenerContainerFactory<UUID, StateProto.State>().apply {
+    @Bean(KafkaConfig.LISTENER_CONTAINER_FACTORY__ORDER_REQUEST__STATE_CHANGED)
+    fun orderRequestStateChangedKafkaListenerContainerFactory(
+        @Qualifier(KafkaConfig.CONSUMER_FACTORY__ORDER_REQUEST__STATE_CHANGED)
+        consumerFactory: ConsumerFactory<UUID, OrderRequestStateChangedProto.OrderRequestStateChanged>,
+    ): KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<UUID, OrderRequestStateChangedProto.OrderRequestStateChanged>> =
+        ConcurrentKafkaListenerContainerFactory<UUID, OrderRequestStateChangedProto.OrderRequestStateChanged>().apply {
             this.consumerFactory = consumerFactory
             this.setConcurrency(4)
             this.containerProperties.pollTimeout = 3000
             this.containerProperties.ackMode = ContainerProperties.AckMode.MANUAL
         }
 
-    @Qualifier(KafkaConfig.CONSUMER_FACTORY__ORDER_REQUEST__ENTITY_STATE)
+    @Qualifier(KafkaConfig.CONSUMER_FACTORY__ORDER_REQUEST__STATE_CHANGED)
     @Lazy
-    @Bean(KafkaConfig.CONSUMER_FACTORY__ORDER_REQUEST__ENTITY_STATE)
-    fun orderRequestEntityStateKafkaListenerContainerFactory(
+    @Bean(KafkaConfig.CONSUMER_FACTORY__ORDER_REQUEST__STATE_CHANGED)
+    fun orderRequestStateChangedKafkaListenerConsumerFactory(
         prop: KafkaProperties,
-    ): ConsumerFactory<UUID, StateProto.State> =
+    ): ConsumerFactory<UUID, OrderRequestStateChangedProto.OrderRequestStateChanged> =
         DefaultKafkaConsumerFactory(
             mutableMapOf<String, Any>(
                 ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG to prop.bootstrapServers.joinToString(","),
                 ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG to "false",
                 ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG to UUIDDeserializer::class.java,
-                ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG to StateProtoSerde.Deser::class.java,
+                ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG to OrderRequestStateChangedProtoSerde.Deser::class.java,
             ),
         )
 
     // ==================================================================
 
-    @Qualifier(KafkaConfig.PROD_FACTORY__ORDER_REQUEST__ENTITY_STATE__DEAD_LETTER)
+    @Qualifier(KafkaConfig.PROD_FACTORY__ORDER_REQUEST__STATE_CHANGED__DEAD_LETTER)
     @Lazy
-    @Bean(KafkaConfig.PROD_FACTORY__ORDER_REQUEST__ENTITY_STATE__DEAD_LETTER)
-    fun orderRequestEntityStateDeadLetterKafkaProducerFactory(
+    @Bean(KafkaConfig.PROD_FACTORY__ORDER_REQUEST__STATE_CHANGED__DEAD_LETTER)
+    fun orderRequestStateChangedDeadLetterKafkaProducerFactory(
         prop: KafkaProperties,
     ): ProducerFactory<UUID, DeadLetterErrorProto.DeadLetterError> =
         DefaultKafkaProducerFactory(
@@ -101,15 +101,15 @@ class MarketplaceKafkaConfig {
             ),
         )
 
-    @Qualifier(KafkaConfig.TEMPLATE__ORDER_REQUEST__ENTITY_STATE__DEAD_LETTER)
+    @Qualifier(KafkaConfig.TEMPLATE__ORDER_REQUEST__STATE_CHANGED__DEAD_LETTER)
     @Lazy
-    @Bean(KafkaConfig.TEMPLATE__ORDER_REQUEST__ENTITY_STATE__DEAD_LETTER)
-    fun orderRequestEntityStateDeadLetterKafkaTemplate(
-        @Qualifier(KafkaConfig.PROD_FACTORY__ORDER_REQUEST__ENTITY_STATE__DEAD_LETTER)
+    @Bean(KafkaConfig.TEMPLATE__ORDER_REQUEST__STATE_CHANGED__DEAD_LETTER)
+    fun orderRequestStateChangedDeadLetterKafkaTemplate(
+        @Qualifier(KafkaConfig.PROD_FACTORY__ORDER_REQUEST__STATE_CHANGED__DEAD_LETTER)
         producerFactory: ProducerFactory<UUID, DeadLetterErrorProto.DeadLetterError>,
     ): KafkaTemplate<UUID, DeadLetterErrorProto.DeadLetterError> =
         KafkaTemplate(producerFactory).apply {
-            this.defaultTopic = KafkaConfig.TOPIC__ORDER_REQUEST__ENTITY_STATE__DEAD_LETTER
+            this.defaultTopic = KafkaConfig.TOPIC__ORDER_REQUEST__STATE_CHANGED__DEAD_LETTER
         }
 
 }

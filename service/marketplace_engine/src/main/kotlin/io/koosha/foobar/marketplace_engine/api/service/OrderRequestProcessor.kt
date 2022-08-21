@@ -2,19 +2,17 @@ package io.koosha.foobar.marketplace_engine.api.service
 
 import io.koosha.foobar.HeaderHelper
 import io.koosha.foobar.common.cfg.KafkaConfig
-import io.koosha.foobar.connect.marketplace.generated.api.OrderRequestApi
-import io.koosha.foobar.connect.marketplace.generated.api.OrderRequestLineItemApi
+import io.koosha.foobar.common.toUUID
 import io.koosha.foobar.entity.DeadLetterErrorProto
 import io.koosha.foobar.entity.EntityHelper
-import io.koosha.foobar.entity.StateProto
 import io.koosha.foobar.marketplace_engine.SOURCE
 import io.koosha.foobar.marketplace_engine.api.model.AvailabilityRepository
 import io.koosha.foobar.marketplace_engine.api.model.ProcessedOrderRequestDO
 import io.koosha.foobar.marketplace_engine.api.model.ProcessedOrderRequestRepository
-import io.koosha.foobar.order_request.OrderRequestSellerProto
+import io.koosha.foobar.order_request.OrderRequestSellerFoundProto
+import io.koosha.foobar.order_request.OrderRequestStateChangedProto
 import mu.KotlinLogging
 import org.apache.kafka.common.TopicPartition
-import org.openapitools.client.model.OrderRequestLineItem
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.kafka.core.KafkaTemplate
@@ -33,14 +31,12 @@ import java.util.stream.Collectors
 @Component
 class OrderRequestProcessor(
     private val clock: Clock,
-    private val lineItemsClient: OrderRequestLineItemApi,
-    private val orderRequestClient: OrderRequestApi,
     private val availabilityRepo: AvailabilityRepository,
     private val processedRepo: ProcessedOrderRequestRepository,
-    @Qualifier(KafkaConfig.TEMPLATE__ORDER_REQUEST__ENTITY_STATE__DEAD_LETTER)
+    @Qualifier(KafkaConfig.TEMPLATE__ORDER_REQUEST__STATE_CHANGED__DEAD_LETTER)
     private val deadLetter: KafkaTemplate<UUID, DeadLetterErrorProto.DeadLetterError>,
-    @Qualifier(KafkaConfig.TEMPLATE__ORDER_REQUEST__SELLER)
-    private val kafka: KafkaTemplate<UUID, OrderRequestSellerProto.OrderRequestSeller>,
+    @Qualifier(KafkaConfig.TEMPLATE__ORDER_REQUEST__SELLER_FOUND)
+    private val kafka: KafkaTemplate<UUID, OrderRequestSellerFoundProto.OrderRequestSellerFound>,
 ) : ConsumerSeekAware {
 
     private val log = KotlinLogging.logger {}
@@ -48,15 +44,15 @@ class OrderRequestProcessor(
     @KafkaListener(
         groupId = "${SOURCE}__state_change",
         concurrency = "2",
-        topics = [KafkaConfig.TOPIC__ORDER_REQUEST__ENTITY_STATE],
-        containerFactory = KafkaConfig.LISTENER_CONTAINER_FACTORY__ORDER_REQUEST__ENTITY_STATE,
+        topics = [KafkaConfig.TOPIC__ORDER_REQUEST__STATE_CHANGED],
+        containerFactory = KafkaConfig.LISTENER_CONTAINER_FACTORY__ORDER_REQUEST__STATE_CHANGED,
     )
     @Transactional(
         rollbackForClassName = ["java.lang.Exception"]
     )
     fun onEntityStateChanged(
         @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) key: UUID,
-        @Payload stateChange: StateProto.State,
+        @Payload stateChange: OrderRequestStateChangedProto.OrderRequestStateChanged,
         ack: Acknowledgment,
     ) {
 
@@ -66,7 +62,7 @@ class OrderRequestProcessor(
 
     private fun onEntityStateChanged0(
         orderRequestId: UUID,
-        stateChange: StateProto.State,
+        stateChange: OrderRequestStateChangedProto.OrderRequestStateChanged,
     ) {
 
         if (stateChange.to != "LIVE")
@@ -80,14 +76,13 @@ class OrderRequestProcessor(
 
         log.trace { "going live, orderRequestId=$orderRequestId" }
 
-        this.orderRequestClient.getOrderRequest(orderRequestId)
-        val lineItems: List<OrderRequestLineItem> = this.lineItemsClient.getLineItems(orderRequestId)
+        val lineItems: List<OrderRequestStateChangedProto.OrderRequestStateChanged.LineItem> = stateChange.lineItemsList
         if (lineItems.isEmpty()) {
             log.warn { "order request has no line item, sending to dead letter queue. orderRequestId=$orderRequestId" }
             this.storeUUIDAsProcessed(orderRequestId)
             this.deadLetter.sendDefault(
                 orderRequestId,
-                EntityHelper.createError(
+                EntityHelper.deadLetterErrorOf(
                     SOURCE,
                     this.clock.millis(),
                     "order request has no line item"
@@ -102,10 +97,10 @@ class OrderRequestProcessor(
                     .stream()
                     .collect(
                         Collectors.toUnmodifiableMap(
-                            { lineItem -> lineItem.productId },
+                            { lineItem -> lineItem.productId.toUUID() },
                             { lineItem ->
                                 this.availabilityRepo.findAllByProductIdAndUnitsAvailableGreaterThanEqual(
-                                    lineItem.productId,
+                                    lineItem.productId.toUUID(),
                                     lineItem.units,
                                 ).map { availability -> availability.availabilityPk.sellerId!! }
                             }
@@ -123,7 +118,7 @@ class OrderRequestProcessor(
                     this.storeUUIDAsProcessed(orderRequestId)
                     this.deadLetter.sendDefault(
                         orderRequestId,
-                        EntityHelper.createError(
+                        EntityHelper.deadLetterErrorOf(
                             SOURCE,
                             this.clock.millis(),
                             "order request has duplicated line item"
@@ -151,13 +146,13 @@ class OrderRequestProcessor(
         if (luckySeller != null)
             for (lineItem in lineItems) {
                 val availability =
-                    this.availabilityRepo.findAllByproductIdAndSellerId(lineItem.productId, luckySeller).get()
+                    this.availabilityRepo.findAllByproductIdAndSellerId(lineItem.productId.toUUID(), luckySeller).get()
                 availability.unitsAvailable = availability.unitsAvailable!! - lineItem.units
                 subTotal += availability.pricePerUnit!! * lineItem.units
                 this.availabilityRepo.save(availability)
             }
 
-        val send = OrderRequestSellerProto.OrderRequestSeller
+        val send = OrderRequestSellerFoundProto.OrderRequestSellerFound
             .newBuilder()
             .setHeader(HeaderHelper.create(SOURCE, this.clock.millis()))
 

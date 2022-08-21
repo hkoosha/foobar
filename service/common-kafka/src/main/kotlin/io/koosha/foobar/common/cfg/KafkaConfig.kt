@@ -11,54 +11,55 @@ class KafkaConfig {
 
     companion object {
 
-        const val TOPIC__ORDER_REQUEST__ENTITY_STATE = "foobar__marketplace__order_request__entity_state"
-        const val TOPIC__ORDER_REQUEST__ENTITY_STATE__DEAD_LETTER = "${TOPIC__ORDER_REQUEST__ENTITY_STATE}__dead_letter"
-        const val TOPIC__ORDER_REQUEST__SELLER = "foobar__marketplace_engine__order_request__seller"
+        const val TOPIC__ORDER_REQUEST__STATE_CHANGED = "foobar__marketplace__order_request__state_changed"
+        const val TOPIC__ORDER_REQUEST__STATE_CHANGED__DEAD_LETTER = "${TOPIC__ORDER_REQUEST__STATE_CHANGED}__dead_letter"
+        const val TOPIC__ORDER_REQUEST__SELLER_FOUND = "foobar__marketplace_engine__order_request__seller_found"
         const val TOPIC__AVAILABILITY = "foobar__warehouse__availability"
 
 
         // =====================================================================
 
 
-        private const val K__ORDER_REQUEST__ENTITY_STATE =
-            "marketplace__order_request__entity_state"
+        private const val K__ORDER_REQUEST__STATE_CHANGED =
+            "marketplace__order_request__state_changed"
 
-        const val TEMPLATE__ORDER_REQUEST__ENTITY_STATE =
-            "foobar_kafka_template__$K__ORDER_REQUEST__ENTITY_STATE"
+        const val TEMPLATE__ORDER_REQUEST__STATE_CHANGED =
+            "foobar_kafka_template__$K__ORDER_REQUEST__STATE_CHANGED"
 
-        const val PROD_FACTORY__ORDER_REQUEST__ENTITY_STATE =
-            "foobar_kafka_producer_factory__$K__ORDER_REQUEST__ENTITY_STATE"
+        const val PROD_FACTORY__ORDER_REQUEST__STATE_CHANGED =
+            "foobar_kafka_producer_factory__$K__ORDER_REQUEST__STATE_CHANGED"
 
-        const val LISTENER_CONTAINER_FACTORY__ORDER_REQUEST__ENTITY_STATE =
-            "foobar_kafka_listener_container_factory__$K__ORDER_REQUEST__ENTITY_STATE"
+        const val LISTENER_CONTAINER_FACTORY__ORDER_REQUEST__STATE_CHANGED =
+            "foobar_kafka_listener_container_factory__$K__ORDER_REQUEST__STATE_CHANGED"
 
-        const val CONSUMER_FACTORY__ORDER_REQUEST__ENTITY_STATE =
-            "foobar_kafka_consumer_factory__$K__ORDER_REQUEST__ENTITY_STATE"
+        const val CONSUMER_FACTORY__ORDER_REQUEST__STATE_CHANGED =
+            "foobar_kafka_consumer_factory__$K__ORDER_REQUEST__STATE_CHANGED"
 
 
-        const val TEMPLATE__ORDER_REQUEST__ENTITY_STATE__DEAD_LETTER =
-            "${TEMPLATE__ORDER_REQUEST__ENTITY_STATE}__dead_letter"
-        const val PROD_FACTORY__ORDER_REQUEST__ENTITY_STATE__DEAD_LETTER =
-            "${PROD_FACTORY__ORDER_REQUEST__ENTITY_STATE}__dead_letter"
+        const val TEMPLATE__ORDER_REQUEST__STATE_CHANGED__DEAD_LETTER =
+            "${TEMPLATE__ORDER_REQUEST__STATE_CHANGED}__dead_letter"
+
+        const val PROD_FACTORY__ORDER_REQUEST__STATE_CHANGED__DEAD_LETTER =
+            "${PROD_FACTORY__ORDER_REQUEST__STATE_CHANGED}__dead_letter"
 
 
         // =====================================================================
 
 
-        private const val K__ORDER_REQUEST__SELLER =
-            "marketplace_engine__order_request__seller"
+        private const val K__ORDER_REQUEST__SELLER_FOUND =
+            "marketplace_engine__order_request__seller_found"
 
-        const val TEMPLATE__ORDER_REQUEST__SELLER =
-            "foobar_kafka_template__$K__ORDER_REQUEST__SELLER"
+        const val TEMPLATE__ORDER_REQUEST__SELLER_FOUND =
+            "foobar_kafka_template__$K__ORDER_REQUEST__SELLER_FOUND"
 
-        const val PROD_FACTORY__ORDER_REQUEST__SELLER =
-            "foobar_kafka_producer_factory__$K__ORDER_REQUEST__SELLER"
+        const val PROD_FACTORY__ORDER_REQUEST__SELLER_FOUND =
+            "foobar_kafka_producer_factory__$K__ORDER_REQUEST__SELLER_FOUND"
 
-        const val LISTENER_CONTAINER_FACTORY__ORDER_REQUEST__SELLER =
-            "foobar_kafka_listener_container_factory__$K__ORDER_REQUEST__SELLER"
+        const val LISTENER_CONTAINER_FACTORY__ORDER_REQUEST__SELLER_FOUND =
+            "foobar_kafka_listener_container_factory__$K__ORDER_REQUEST__SELLER_FOUND"
 
-        const val CONSUMER_FACTORY__ORDER_REQUEST__SELLER =
-            "foobar_kafka_consumer_factory__$K__ORDER_REQUEST__SELLER"
+        const val CONSUMER_FACTORY__ORDER_REQUEST__SELLER_FOUND =
+            "foobar_kafka_consumer_factory__$K__ORDER_REQUEST__SELLER_FOUND"
 
 
         // =====================================================================

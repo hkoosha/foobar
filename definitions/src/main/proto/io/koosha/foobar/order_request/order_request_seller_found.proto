@@ -5,10 +5,10 @@ import "io/koosha/foobar/header.proto";
 package io.koosha.foobar.order_request;
 
 option java_package = "io.koosha.foobar.order_request";
-option java_outer_classname = "OrderRequestSellerProto";
+option java_outer_classname = "OrderRequestSellerFoundProto";
 
 
-message OrderRequestSeller {
+message OrderRequestSellerFound {
 
   Header header = 1;
 

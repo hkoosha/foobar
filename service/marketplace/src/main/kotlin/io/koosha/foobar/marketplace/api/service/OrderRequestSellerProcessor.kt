@@ -7,7 +7,7 @@ import io.koosha.foobar.marketplace.api.model.OrderRequestDO
 import io.koosha.foobar.marketplace.api.model.OrderRequestState
 import io.koosha.foobar.marketplace.api.model.ProcessedOrderRequestSellerDO
 import io.koosha.foobar.marketplace.api.model.ProcessedOrderRequestSellerRepository
-import io.koosha.foobar.order_request.OrderRequestSellerProto
+import io.koosha.foobar.order_request.OrderRequestSellerFoundProto
 import mu.KotlinLogging
 import org.apache.kafka.common.TopicPartition
 import org.springframework.kafka.annotation.KafkaListener
@@ -33,15 +33,15 @@ class OrderRequestSellerProcessor(
     @KafkaListener(
         groupId = "${SOURCE}__order_request_seller",
         concurrency = "2",
-        topics = [KafkaConfig.TOPIC__ORDER_REQUEST__SELLER],
-        containerFactory = KafkaConfig.LISTENER_CONTAINER_FACTORY__ORDER_REQUEST__SELLER,
+        topics = [KafkaConfig.TOPIC__ORDER_REQUEST__SELLER_FOUND],
+        containerFactory = KafkaConfig.LISTENER_CONTAINER_FACTORY__ORDER_REQUEST__SELLER_FOUND,
     )
     @Transactional(
         rollbackForClassName = ["java.lang.Exception"]
     )
     fun onOrderRequestSeller(
         @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) key: UUID,
-        @Payload payload: OrderRequestSellerProto.OrderRequestSeller,
+        @Payload payload: OrderRequestSellerFoundProto.OrderRequestSellerFound,
         ack: Acknowledgment,
     ) {
 
@@ -51,7 +51,7 @@ class OrderRequestSellerProcessor(
 
     private fun onOrderRequestSeller0(
         orderRequestId: UUID,
-        payload: OrderRequestSellerProto.OrderRequestSeller,
+        payload: OrderRequestSellerFoundProto.OrderRequestSellerFound,
     ) {
 
         val already = this.processedRepo.findById(orderRequestId)

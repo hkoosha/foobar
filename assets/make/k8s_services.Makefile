@@ -272,7 +272,21 @@ k8s-init-drop-db:
 .PHONY: k8s-init-create-topics
 k8s-init-create-topics:
 	kubectl run kafka-client --rm --tty -i --restart='Never' --image docker.io/bitnami/kafka:3.2.1-debian-11-r4 --namespace $(FOOBAR_NAMESPACE) --command -- bash -c \
-		'kafka-topics.sh --bootstrap-server kafka-0.kafka-headless.foobar.svc.cluster.local:9092 --create  --replication-factor 1 --partitions 16 --topic foobar__marketplace__order_request__entity_state; kafka-topics.sh --bootstrap-server kafka-0.kafka-headless.foobar.svc.cluster.local:9092 --create  --replication-factor 1 --partitions 16 --topic foobar__marketplace__order_request__entity_state__dead_letter; kafka-topics.sh --bootstrap-server kafka-0.kafka-headless.foobar.svc.cluster.local:9092 --create  --replication-factor 1 --partitions 16 --topic foobar__marketplace_engine__order_request__seller; kafka-topics.sh --bootstrap-server kafka-0.kafka-headless.foobar.svc.cluster.local:9092 --create  --replication-factor 1 --partitions 16 --topic foobar__warehouse__availability'
+		'kafka-topics.sh --bootstrap-server kafka-0.kafka-headless.foobar.svc.cluster.local:9092 --create --replication-factor 1 --partitions 16 --topic foobar__marketplace__order_request__state_changed; \
+		 kafka-topics.sh --bootstrap-server kafka-0.kafka-headless.foobar.svc.cluster.local:9092 --create --replication-factor 1 --partitions 16 --topic foobar__marketplace__order_request__state_changed__dead_letter; \
+		 kafka-topics.sh --bootstrap-server kafka-0.kafka-headless.foobar.svc.cluster.local:9092 --create --replication-factor 1 --partitions 16 --topic foobar__marketplace_engine__order_request__seller_found; \
+		 kafka-topics.sh --bootstrap-server kafka-0.kafka-headless.foobar.svc.cluster.local:9092 --create --replication-factor 1 --partitions 16 --topic foobar__warehouse__availability'
+
+.PHONY: k8s-init-drop-topics
+k8s-init-drop-topics:
+	kubectl run kafka-client --rm --tty -i --restart='Never' --image docker.io/bitnami/kafka:3.2.1-debian-11-r4 --namespace $(FOOBAR_NAMESPACE) --command -- bash -c \
+		'kafka-topics.sh --bootstrap-server kafka-0.kafka-headless.foobar.svc.cluster.local:9092 --delete --topic foobar__marketplace__order_request__state_changed; \
+		 kafka-topics.sh --bootstrap-server kafka-0.kafka-headless.foobar.svc.cluster.local:9092 --delete --topic foobar__marketplace__order_request__state_changed__dead_letter; \
+		 kafka-topics.sh --bootstrap-server kafka-0.kafka-headless.foobar.svc.cluster.local:9092 --delete --topic foobar__marketplace_engine__order_request__seller_found; \
+		 kafka-topics.sh --bootstrap-server kafka-0.kafka-headless.foobar.svc.cluster.local:9092 --delete --topic foobar__warehouse__availability'
+
+.PHONY: k8s-init-recreate-topics
+k8s-init-recreate-topics: k8s-init-drop-topics k8s-init-create-topics
 
 
 .PHONY: k8s-deploy-deps
