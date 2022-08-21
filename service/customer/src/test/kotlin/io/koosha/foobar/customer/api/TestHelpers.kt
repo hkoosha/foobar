@@ -88,7 +88,7 @@ fun addressReq1() = CustomerAddressCreateRequest(
 fun addressDO0() = AddressDO(
     addressPk = AddressDO.Pk(
         addressId = 3,
-        customer= customer0(),
+        customer = customer0(),
     ),
     version = null,
     created = null,
@@ -118,8 +118,9 @@ fun addressDO1() = AddressDO(
 
 fun strOfLen(len: Int): String {
     val sb = StringBuilder(len)
-    for (i in 0 until len)
+    repeat(len) {
         sb.append('x')
+    }
     assertThat(sb).hasSize(len)
     return sb.toString()
 }

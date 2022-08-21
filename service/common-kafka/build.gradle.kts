@@ -1,3 +1,5 @@
+import io.gitlab.arturbosch.detekt.Detekt
+import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
 import io.koosha.foobar.Foobar
 import io.koosha.foobar.Libraries
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -8,6 +10,7 @@ plugins {
     @Suppress("RemoveRedundantQualifierName")
     val k = io.koosha.foobar.Libraries.Kotlin
 
+    id("io.gitlab.arturbosch.detekt") version k.detekt
     id("org.springframework.boot") version s.springBoot2
     id("io.spring.dependency-management") version s.DependencyManagement
     kotlin("jvm") version k.jvm
@@ -67,4 +70,12 @@ dependencies {
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     // testImplementation("io.projectreactor:reactor-test")
+}
+
+tasks.withType<Detekt>().configureEach {
+    jvmTarget = Foobar.kotlinJvmTarget
+}
+
+tasks.withType<DetektCreateBaselineTask>().configureEach {
+    jvmTarget = Foobar.kotlinJvmTarget
 }

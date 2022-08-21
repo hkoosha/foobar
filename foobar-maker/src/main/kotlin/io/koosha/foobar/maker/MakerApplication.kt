@@ -10,6 +10,6 @@ import org.springframework.boot.runApplication
 class MakerApplication
 
 
-fun main(args: Array<String>) {
+fun main(vararg args: String) {
     runApplication<MakerApplication>(*args)
 }

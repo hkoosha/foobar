@@ -11,6 +11,6 @@ import org.springframework.boot.runApplication
 class SellerServiceApplication
 
 
-fun main(args: Array<String>) {
+fun main(vararg args: String) {
     runApplication<SellerServiceApplication>(*args)
 }

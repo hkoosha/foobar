@@ -1,14 +1,14 @@
-package io.koosha.foobar.marketplace_engine.api.service
+package io.koosha.foobar.marketplaceengine.api.service
 
 import io.koosha.foobar.HeaderHelper
 import io.koosha.foobar.common.cfg.KafkaConfig
 import io.koosha.foobar.common.toUUID
 import io.koosha.foobar.entity.DeadLetterErrorProto
 import io.koosha.foobar.entity.EntityHelper
-import io.koosha.foobar.marketplace_engine.SOURCE
-import io.koosha.foobar.marketplace_engine.api.model.AvailabilityRepository
-import io.koosha.foobar.marketplace_engine.api.model.ProcessedOrderRequestDO
-import io.koosha.foobar.marketplace_engine.api.model.ProcessedOrderRequestRepository
+import io.koosha.foobar.marketplaceengine.SOURCE
+import io.koosha.foobar.marketplaceengine.api.model.AvailabilityRepository
+import io.koosha.foobar.marketplaceengine.api.model.ProcessedOrderRequestDO
+import io.koosha.foobar.marketplaceengine.api.model.ProcessedOrderRequestRepository
 import io.koosha.foobar.order_request.OrderRequestSellerFoundProto
 import io.koosha.foobar.order_request.OrderRequestStateChangedProto
 import mu.KotlinLogging
@@ -25,6 +25,7 @@ import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import java.time.Clock
 import java.util.*
+import java.util.concurrent.TimeUnit
 import java.util.stream.Collectors
 
 
@@ -38,6 +39,10 @@ class OrderRequestProcessor(
     @Qualifier(KafkaConfig.TEMPLATE__ORDER_REQUEST__SELLER_FOUND)
     private val kafka: KafkaTemplate<UUID, OrderRequestSellerFoundProto.OrderRequestSellerFound>,
 ) : ConsumerSeekAware {
+
+    companion object {
+        private const val KAFKA_TIMEOUT_MILLIS = 3000L
+    }
 
     private val log = KotlinLogging.logger {}
 
@@ -60,24 +65,15 @@ class OrderRequestProcessor(
         ack.acknowledge()
     }
 
-    private fun onEntityStateChanged0(
+
+    private fun getLineItemsOf(
         orderRequestId: UUID,
         stateChange: OrderRequestStateChangedProto.OrderRequestStateChanged,
-    ) {
-
-        if (stateChange.to != "LIVE")
-            return
-
-        val already = this.processedRepo.findById(orderRequestId)
-        if (already.isPresent && already.get().processed == true) {
-            log.debug { "record already processed, skipping. orderRequestId=$orderRequestId" }
-            return
-        }
-
-        log.trace { "going live, orderRequestId=$orderRequestId" }
+    ): List<OrderRequestStateChangedProto.OrderRequestStateChanged.LineItem>? {
 
         val lineItems: List<OrderRequestStateChangedProto.OrderRequestStateChanged.LineItem> = stateChange.lineItemsList
-        if (lineItems.isEmpty()) {
+
+        return lineItems.ifEmpty {
             log.warn { "order request has no line item, sending to dead letter queue. orderRequestId=$orderRequestId" }
             this.storeUUIDAsProcessed(orderRequestId)
             this.deadLetter.sendDefault(
@@ -88,8 +84,14 @@ class OrderRequestProcessor(
                     "order request has no line item"
                 ),
             )
-            return
+            null
         }
+    }
+
+    private fun getProductToSellers(
+        orderRequestId: UUID,
+        lineItems: List<OrderRequestStateChangedProto.OrderRequestStateChanged.LineItem>,
+    ): Map<UUID, List<UUID>>? {
 
         val productToSellers: Map<UUID, List<UUID>> =
             try {
@@ -124,16 +126,23 @@ class OrderRequestProcessor(
                             "order request has duplicated line item"
                         ),
                     )
-                    return
+                    return null
                 }
                 else
                     throw ex
             }
 
-        val sellers: List<UUID> = productToSellers.values.flatten()
+        return productToSellers
+    }
+
+    private fun findLuckySeller(
+        sellers: List<UUID>,
+        productToSellers: Map<UUID, List<UUID>>,
+    ): UUID? {
+
+        var luckySeller: UUID? = null
 
         // A seller who has availability for all line items
-        var luckySeller: UUID? = null
         next_seller@ for (seller in sellers) {
             for ((_, productSeller) in productToSellers)
                 if (!productSeller.contains(seller))
@@ -142,7 +151,16 @@ class OrderRequestProcessor(
             break
         }
 
+        return luckySeller
+    }
+
+    private fun getSubTotal(
+        luckySeller: UUID?,
+        lineItems: List<OrderRequestStateChangedProto.OrderRequestStateChanged.LineItem>,
+    ): Long {
+
         var subTotal = 0L
+
         if (luckySeller != null)
             for (lineItem in lineItems) {
                 val availability =
@@ -151,6 +169,33 @@ class OrderRequestProcessor(
                 subTotal += availability.pricePerUnit!! * lineItem.units
                 this.availabilityRepo.save(availability)
             }
+
+        return subTotal
+    }
+
+    @Suppress("ReturnCount")
+    private fun onEntityStateChanged0(
+        orderRequestId: UUID,
+        stateChange: OrderRequestStateChangedProto.OrderRequestStateChanged,
+    ) {
+
+        if (stateChange.to != "LIVE")
+            return
+
+        val already = this.processedRepo.findById(orderRequestId)
+        if (already.isPresent && already.get().processed == true) {
+            log.debug { "record already processed, skipping. orderRequestId=$orderRequestId" }
+            return
+        }
+
+        log.trace { "going live, orderRequestId=$orderRequestId" }
+
+        val lineItems: List<OrderRequestStateChangedProto.OrderRequestStateChanged.LineItem> =
+            this.getLineItemsOf(orderRequestId, stateChange) ?: return
+        val productToSellers = this.getProductToSellers(orderRequestId, lineItems) ?: return
+        val sellers: List<UUID> = productToSellers.values.flatten()
+        val luckySeller: UUID? = this.findLuckySeller(sellers, productToSellers)
+        val subTotal = this.getSubTotal(luckySeller, lineItems)
 
         val send = OrderRequestSellerFoundProto.OrderRequestSellerFound
             .newBuilder()
@@ -171,7 +216,8 @@ class OrderRequestProcessor(
         this.kafka.sendDefault(
             orderRequestId,
             send.build(),
-        )
+        ).get(KAFKA_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)
+
         this.storeUUIDAsProcessed(orderRequestId)
     }
 

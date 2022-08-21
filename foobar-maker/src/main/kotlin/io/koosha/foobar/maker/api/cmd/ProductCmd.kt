@@ -35,12 +35,10 @@ class ProductCmd(
     ) = when {
         freeArgs.isEmpty() -> this.postProduct(
             args,
-            freeArgs,
         )
 
         matches("post", freeArgs[0]) -> this.postProduct(
             args,
-            freeArgs.subList(1, freeArgs.size)
         )
 
         matches("patch", freeArgs[0]) -> this.patchProduct(
@@ -49,7 +47,6 @@ class ProductCmd(
         )
 
         matches("get", freeArgs[0]) -> this.getProduct(
-            args,
             freeArgs.subList(1, freeArgs.size)
         )
 
@@ -58,7 +55,6 @@ class ProductCmd(
 
     fun postProduct(
         args: ApplicationArguments,
-        freeArgs: List<String>,
     ) {
 
         val req = ProductCreateRequest()
@@ -108,7 +104,6 @@ class ProductCmd(
     }
 
     fun getProduct(
-        args: ApplicationArguments,
         freeArgs: List<String>,
     ) = if (freeArgs.isEmpty()) {
 

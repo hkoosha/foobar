@@ -36,12 +36,10 @@ class SellerCmd(
     ) = when {
         freeArgs.isEmpty() -> this.postSeller(
             args,
-            freeArgs,
         )
 
         matches("post", freeArgs[0]) -> this.postSeller(
             args,
-            freeArgs.subList(1, freeArgs.size)
         )
 
         matches("patch", freeArgs[0]) -> this.patchSeller(
@@ -50,7 +48,6 @@ class SellerCmd(
         )
 
         matches("get", freeArgs[0]) -> this.getSeller(
-            args,
             freeArgs.subList(1, freeArgs.size)
         )
 
@@ -59,7 +56,6 @@ class SellerCmd(
 
     fun postSeller(
         args: ApplicationArguments,
-        freeArgs: List<String>,
     ) {
 
         val req = SellerCreateRequest()
@@ -113,7 +109,6 @@ class SellerCmd(
     }
 
     fun getSeller(
-        args: ApplicationArguments,
         freeArgs: List<String>,
     ) = if (freeArgs.isEmpty()) {
 

@@ -5,6 +5,7 @@ import org.springframework.data.repository.CrudRepository
 import java.util.*
 import javax.persistence.LockModeType
 
+
 @Suppress("FunctionName")
 interface OrderRequestLineItemRepository :
     CrudRepository<OrderRequestLineItemDO, OrderRequestLineItemDO.Pk> {
@@ -23,6 +24,8 @@ interface OrderRequestLineItemRepository :
     fun deleteAllByOrderRequestLineItemPk_OrderRequest_orderRequestId(orderRequestId: UUID)
 
     @Lock(LockModeType.OPTIMISTIC)
-    fun findAllByOrderRequestLineItemPk_OrderRequest_orderRequestId(orderRequestId: UUID): Iterable<OrderRequestLineItemDO>
+    fun findAllByOrderRequestLineItemPk_OrderRequest_orderRequestId(
+        orderRequestId: UUID,
+    ): Iterable<OrderRequestLineItemDO>
 
 }

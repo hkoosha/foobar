@@ -15,6 +15,7 @@ import io.koosha.foobar.shipping.api.model.ShippingState
 import mu.KotlinLogging
 import org.openapitools.client.model.Address
 import org.openapitools.client.model.OrderRequest
+import org.openapitools.client.model.Seller
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
@@ -68,10 +69,10 @@ class ShippingServiceImpl(
 
     override fun findAll(): Iterable<ShippingDO> = this.repository.findAll()
 
-    @Transactional(
-        rollbackForClassName = ["java.lang.Exception"]
-    )
-    override fun create(request: ShippingCreateRequest): ShippingDO {
+
+    private fun createValidate(
+        request: ShippingCreateRequest,
+    ) {
 
         val errors = this.validator.validate(request)
         if (errors.isNotEmpty()) {
@@ -82,11 +83,14 @@ class ShippingServiceImpl(
                 errors,
             )
         }
+    }
 
-        val shipping = ShippingDO()
-        shipping.orderRequestId = request.orderRequestId
+    private fun createFetchSeller(
+        request: ShippingCreateRequest,
+    ): Seller {
 
         log.trace { "fetching seller, sellerId=${request.sellerId}" }
+
         val seller = try {
             this.sellerClient.getSeller(request.sellerId)
         }
@@ -103,7 +107,15 @@ class ShippingServiceImpl(
             throw ResourceCurrentlyUnavailableException(ex)
         }
 
+        return seller
+    }
+
+    private fun createFetchOrderRequest(
+        request: ShippingCreateRequest,
+    ): OrderRequest {
+
         log.trace { "fetching orderRequest, orderRequestId=${request.orderRequestId}" }
+
         val orderRequest: OrderRequest = try {
             this.orderRequestClient.getOrderRequest(request.orderRequestId)
         }
@@ -120,7 +132,16 @@ class ShippingServiceImpl(
             throw ResourceCurrentlyUnavailableException(ex)
         }
 
+        return orderRequest
+    }
+
+    private fun createFetchCustomerAddress(
+        request: ShippingCreateRequest,
+        orderRequest: OrderRequest,
+    ): Address {
+
         log.trace { "fetching customer addresses, customerId=${orderRequest.customerId}" }
+
         val customerAddress: List<Address> = try {
             this.customerAddressClient.getAddresses(orderRequest.customerId)
         }
@@ -145,15 +166,32 @@ class ShippingServiceImpl(
             )
         }
 
+        return customerAddress.last()
+    }
+
+    @Transactional(
+        rollbackForClassName = ["java.lang.Exception"]
+    )
+    override fun create(request: ShippingCreateRequest): ShippingDO {
+
+        this.createValidate(request)
+
+        val seller = this.createFetchSeller(request)
+        val orderRequest = this.createFetchOrderRequest(request)
+        val customerAddress = this.createFetchCustomerAddress(request, orderRequest)
+
+        val shipping = ShippingDO()
+        shipping.orderRequestId = request.orderRequestId
+
         shipping.pickupAddress.zipcode = seller.address.zipcode
         shipping.pickupAddress.city = seller.address.city
         shipping.pickupAddress.country = seller.address.country
         shipping.pickupAddress.addressLine1 = seller.address.addressLine1
 
-        shipping.deliveryAddress.zipcode = customerAddress.first().zipcode
-        shipping.deliveryAddress.city = customerAddress.first().city
-        shipping.deliveryAddress.country = customerAddress.first().country
-        shipping.deliveryAddress.addressLine1 = customerAddress.first().addressLine1
+        shipping.deliveryAddress.zipcode = customerAddress.zipcode
+        shipping.deliveryAddress.city = customerAddress.city
+        shipping.deliveryAddress.country = customerAddress.country
+        shipping.deliveryAddress.addressLine1 = customerAddress.addressLine1
 
         shipping.state = ShippingState.ON_WAY_TO_CUSTOMER
         shipping.shippingId = UUID.randomUUID()

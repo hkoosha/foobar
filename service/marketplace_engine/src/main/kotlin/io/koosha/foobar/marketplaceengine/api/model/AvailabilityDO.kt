@@ -1,6 +1,6 @@
-package io.koosha.foobar.marketplace_engine.api.model
+package io.koosha.foobar.marketplaceengine.api.model
 
-import io.koosha.foobar.marketplace_engine.API_PREFIX
+import io.koosha.foobar.marketplaceengine.API_PREFIX
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import java.io.Serializable
@@ -116,6 +116,10 @@ open class AvailabilityDO(
         open var productId: UUID? = null,
 
         ) : Serializable {
+
+        companion object {
+            private const val serialVersionUID = 0L
+        }
 
         override fun equals(other: Any?): Boolean {
             if (this === other)

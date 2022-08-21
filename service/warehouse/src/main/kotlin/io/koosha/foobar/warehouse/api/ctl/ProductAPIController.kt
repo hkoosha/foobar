@@ -7,7 +7,6 @@ import io.koosha.foobar.warehouse.api.service.ProductService
 import io.koosha.foobar.warehouse.api.service.ProductUpdateRequest
 import io.swagger.v3.oas.annotations.tags.Tag
 import io.swagger.v3.oas.annotations.tags.Tags
-import org.springframework.cloud.sleuth.Tracer
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -32,7 +31,6 @@ import javax.servlet.http.HttpServletResponse
 )
 class ProductAPIController(
     private val service: ProductService,
-    private val tracer: Tracer,
 ) {
 
     companion object {

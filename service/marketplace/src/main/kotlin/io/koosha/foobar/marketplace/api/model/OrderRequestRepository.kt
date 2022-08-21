@@ -5,6 +5,7 @@ import org.springframework.data.repository.CrudRepository
 import java.util.*
 import javax.persistence.LockModeType
 
+
 interface OrderRequestRepository : CrudRepository<OrderRequestDO, UUID> {
 
     @Lock(LockModeType.OPTIMISTIC)

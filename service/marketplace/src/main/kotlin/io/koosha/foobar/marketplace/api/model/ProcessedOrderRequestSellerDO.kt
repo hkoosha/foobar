@@ -67,6 +67,10 @@ open class ProcessedOrderRequestSellerDO(
 
     ) : Serializable {
 
+    companion object {
+        private const val serialVersionUID = 0L
+    }
+
     @PrePersist
     fun updateCreatedAt() {
         this.created = ZonedDateTime.now(ZoneOffset.UTC)

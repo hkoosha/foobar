@@ -46,7 +46,6 @@ class AvailabilityCmd(
         )
 
         matches("get", freeArgs[0]) -> this.getAvailability(
-            args,
             freeArgs.subList(1, freeArgs.size)
         )
 
@@ -87,7 +86,6 @@ class AvailabilityCmd(
     }
 
     fun getAvailability(
-        args: ApplicationArguments,
         freeArgs: List<String>,
     ) {
 

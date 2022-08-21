@@ -18,22 +18,17 @@ class PortlessUrlConstraintValidator : ConstraintValidator<PortlessUrl, String> 
     override fun isValid(
         value: String?,
         context: ConstraintValidatorContext?,
-    ): Boolean {
-
-        if (value == null)
-            return this.annon.allowNull
-
-        if (value.isEmpty())
-            return this.annon.allowEmpty
-
-        return try {
-            val url = URL(value)
-            url.port == -1
+    ): Boolean =
+        when {
+            value == null -> this.annon.allowNull
+            value.isEmpty() -> this.annon.allowEmpty
+            else -> try {
+                val url = URL(value)
+                url.port == -1
+            }
+            catch (e: MalformedURLException) {
+                false
+            }
         }
-        catch (e: MalformedURLException) {
-            false
-        }
-
-    }
 
 }

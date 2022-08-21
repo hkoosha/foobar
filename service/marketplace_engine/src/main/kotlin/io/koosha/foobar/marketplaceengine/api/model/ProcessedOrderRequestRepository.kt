@@ -1,4 +1,4 @@
-package io.koosha.foobar.marketplace_engine.api.model
+package io.koosha.foobar.marketplaceengine.api.model
 
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Lock

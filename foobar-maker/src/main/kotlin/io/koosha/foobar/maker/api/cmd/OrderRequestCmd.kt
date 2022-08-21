@@ -34,12 +34,10 @@ class OrderRequestCmd(
         freeArgs: List<String>,
     ) = when {
         freeArgs.isEmpty() -> this.postOrderRequest(
-            args,
             freeArgs,
         )
 
         matches("post", freeArgs[0]) -> this.postOrderRequest(
-            args,
             freeArgs.subList(1, freeArgs.size)
         )
 
@@ -49,7 +47,6 @@ class OrderRequestCmd(
         )
 
         matches("get", freeArgs[0]) -> this.getOrderRequest(
-            args,
             freeArgs.subList(1, freeArgs.size)
         )
 
@@ -57,7 +54,6 @@ class OrderRequestCmd(
     }
 
     fun postOrderRequest(
-        args: ApplicationArguments,
         freeArgs: List<String>,
     ) {
 
@@ -122,7 +118,6 @@ class OrderRequestCmd(
     }
 
     fun getOrderRequest(
-        args: ApplicationArguments,
         freeArgs: List<String>,
     ) {
 
@@ -153,4 +148,5 @@ class OrderRequestCmd(
         }
 
     }
+
 }

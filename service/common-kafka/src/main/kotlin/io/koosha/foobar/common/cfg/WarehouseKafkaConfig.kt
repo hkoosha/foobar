@@ -29,6 +29,11 @@ import java.util.*
 @Configuration
 class WarehouseKafkaConfig {
 
+    companion object {
+        private const val CONCURRENCY = 4
+        private const val POLL_TIMEOUT_MILLIS = 3000L
+    }
+
     @Qualifier(KafkaConfig.PROD_FACTORY__AVAILABILITY)
     @Lazy
     @Bean(KafkaConfig.PROD_FACTORY__AVAILABILITY)
@@ -62,8 +67,8 @@ class WarehouseKafkaConfig {
     ): KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<UUID, AvailabilityProto.Availability>> {
         return ConcurrentKafkaListenerContainerFactory<UUID, AvailabilityProto.Availability>().apply {
             this.consumerFactory = consumerFactory
-            this.setConcurrency(4)
-            this.containerProperties.pollTimeout = 3000
+            this.setConcurrency(CONCURRENCY)
+            this.containerProperties.pollTimeout = POLL_TIMEOUT_MILLIS
             this.containerProperties.ackMode = ContainerProperties.AckMode.MANUAL
         }
     }

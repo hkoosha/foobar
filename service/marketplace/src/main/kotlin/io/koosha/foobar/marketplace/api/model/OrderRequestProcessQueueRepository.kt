@@ -5,17 +5,18 @@ import org.springframework.data.repository.CrudRepository
 import java.util.*
 import javax.persistence.LockModeType
 
-interface OrderRequestProcessQueueStateChangeRepository :
-    CrudRepository<OrderRequestProcessQueueStateChangeDO, UUID> {
+
+interface OrderRequestProcessQueueRepository :
+    CrudRepository<OrderRequestProcessQueueDO, UUID> {
 
     @Lock(LockModeType.OPTIMISTIC)
-    override fun <S : OrderRequestProcessQueueStateChangeDO> save(entity: S): S
+    override fun <S : OrderRequestProcessQueueDO> save(entity: S): S
 
     @Lock(LockModeType.OPTIMISTIC)
     @Suppress("SpringDataMethodInconsistencyInspection")
-    override fun findById(id: UUID): Optional<OrderRequestProcessQueueStateChangeDO>
+    override fun findById(id: UUID): Optional<OrderRequestProcessQueueDO>
 
     @Lock(LockModeType.OPTIMISTIC)
-    override fun delete(entity: OrderRequestProcessQueueStateChangeDO)
+    override fun delete(entity: OrderRequestProcessQueueDO)
 
 }

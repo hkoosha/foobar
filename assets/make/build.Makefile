@@ -26,6 +26,10 @@ retest:
 .PHONY: prepare
 prepare: build-proto build-generator build-api build-maker build-only 
 
+.PHONY: check
+check:
+	$(GRADLE_RUNNER) detekt
+
 
 
 

@@ -174,13 +174,10 @@ class ProductServiceImpl(
         this.productRepo.delete(product)
     }
 
-    @Transactional(
-        rollbackForClassName = ["java.lang.Exception"]
-    )
-    override fun addAvailability(
-        productId: UUID,
+
+    private fun addAvailabilityValidate(
         request: AvailabilityCreateRequest,
-    ): AvailabilityDO {
+    ) {
 
         val errors = this.validator.validate(request)
         if (errors.isNotEmpty()) {
@@ -192,7 +189,15 @@ class ProductServiceImpl(
             )
         }
 
+    }
+
+    private fun addAvailabilityFindProduct(
+        productId: UUID,
+        request: AvailabilityCreateRequest,
+    ): ProductDO {
+
         val product: ProductDO = this.findProductOrFail(productId)
+
         if (product.active != true) {
             log.debug { "refused to add availability in current state, product=$product, req=$request" }
             throw EntityInIllegalStateException(
@@ -202,7 +207,16 @@ class ProductServiceImpl(
             )
         }
 
+        return product
+    }
+
+    private fun addAvailabilityFetchAndEnsureSellerExists(
+        product: ProductDO,
+        request: AvailabilityCreateRequest,
+    ) {
+
         log.trace { "fetching seller, sellerId=${request.sellerId}" }
+
         try {
             this.sellerClient.getSeller(request.sellerId)
         }
@@ -218,6 +232,46 @@ class ProductServiceImpl(
             log.warn("failure while fetching seller", ex)
             throw ResourceCurrentlyUnavailableException(ex)
         }
+
+    }
+
+    private fun addAvailabilitySendKafka(
+        product: ProductDO,
+        availability: AvailabilityDO,
+        request: AvailabilityCreateRequest,
+    ) {
+
+        log.trace {
+            "sending new availability to kafka, " +
+                    "productId=${product.productId} sellerId=${request.sellerId}, availability=$availability"
+        }
+        val send = AvailabilityProto.Availability
+            .newBuilder()
+            .setHeader(HeaderHelper.create(SOURCE, this.clock.millis()))
+            .setAction("add")
+            .setSellerId(availability.availabilityPk.sellerId.toString())
+            .setProductId(product.productId.toString())
+            .setUnitsAvailable(availability.unitsAvailable!!)
+            .setFrozenUnits(availability.frozenUnits!!)
+            .setPricePerUnit(availability.pricePerUnit!!)
+        this.kafka
+            .sendDefault(send.build())
+            .completable()
+            .join()
+    }
+
+    @Transactional(
+        rollbackForClassName = ["java.lang.Exception"]
+    )
+    override fun addAvailability(
+        productId: UUID,
+        request: AvailabilityCreateRequest,
+    ): AvailabilityDO {
+
+        this.addAvailabilityValidate(request)
+
+        val product = this.addAvailabilityFindProduct(productId, request)
+        this.addAvailabilityFetchAndEnsureSellerExists(product, request)
 
         val availability = AvailabilityDO()
         availability.availabilityPk.sellerId = request.sellerId
@@ -246,38 +300,22 @@ class ProductServiceImpl(
         }
 
         log.info {
-            "adding product availability, productId=${product.productId} sellerId=${request.sellerId}, availability=$availability"
+            "adding product availability, " +
+                    "productId=${product.productId} sellerId=${request.sellerId}, availability=$availability"
         }
         this.availabilityRepo.save(availability)
 
-        log.trace {
-            "sending new availability to kafka, " +
-                    "productId=${product.productId} sellerId=${request.sellerId}, availability=$availability"
-        }
-        val send = AvailabilityProto.Availability
-            .newBuilder()
-            .setHeader(HeaderHelper.create(SOURCE, this.clock.millis()))
-            .setAction("add")
-            .setSellerId(availability.availabilityPk.sellerId.toString())
-            .setProductId(product.productId.toString())
-            .setUnitsAvailable(availability.unitsAvailable!!)
-            .setFrozenUnits(availability.frozenUnits!!)
-            .setPricePerUnit(availability.pricePerUnit!!)
-        this.kafka
-            .sendDefault(send.build())
-            .completable()
-            .join()
+        this.addAvailabilitySendKafka(product, availability, request)
 
         return availability
     }
 
-    private fun findAndApplyAvailabilityChanges(
+
+    private fun findAndApplyAvailabilityChangesValidate(
         request: AvailabilityUpdateRequest,
         product: ProductDO,
         availability: AvailabilityDO,
-    ): Boolean {
-
-        var anyChange = false
+    ) {
 
         if (request.unitsAvailable != null && request.unitsToFreeze != null) {
             log.debug {
@@ -299,62 +337,92 @@ class ProductServiceImpl(
             )
         }
 
-        if (request.unitsAvailable != null) {
+    }
 
-            if (request.unitsAvailable > availability.unitsAvailable!! && !product.active!!) {
-                log.debug {
-                    "update availability validation error: product is not active, can not increase availability," +
-                            " product=$product, availability=$availability request=$request"
-                }
-                throw EntityInIllegalStateException(
-                    context = setOf(
-                        EntityInfo(
-                            entityType = ProductDO.ENTITY_TYPE,
-                            entityId = product.productId,
-                        ),
-                        EntityInfo(
-                            entityType = SellerApi.ENTITY_TYPE,
-                            entityId = availability.availabilityPk.sellerId,
-                        ),
-                    ),
-                    msg = "product is not active, can not increase availability",
-                )
+    private fun findAndApplyAvailabilityUnitsAvailable(
+        request: AvailabilityUpdateRequest,
+        product: ProductDO,
+        availability: AvailabilityDO,
+    ) {
+
+        if (request.unitsAvailable!! > availability.unitsAvailable!! && !product.active!!) {
+            log.debug {
+                "update availability validation error: product is not active, can not increase availability," +
+                        " product=$product, availability=$availability request=$request"
             }
-
-            if (request.unitsAvailable < availability.frozenUnits!!)
-                log.warn { "available units going under frozen units, product=$product availability=$availability request=$request" }
-
-            availability.unitsAvailable = request.unitsAvailable
-            anyChange = true
+            throw EntityInIllegalStateException(
+                context = setOf(
+                    EntityInfo(
+                        entityType = ProductDO.ENTITY_TYPE,
+                        entityId = product.productId,
+                    ),
+                    EntityInfo(
+                        entityType = SellerApi.ENTITY_TYPE,
+                        entityId = availability.availabilityPk.sellerId,
+                    ),
+                ),
+                msg = "product is not active, can not increase availability",
+            )
         }
 
-        if (request.unitsToFreeze != null) {
-
-            if (request.unitsToFreeze > availability.unitsAvailable!!) {
-                log.debug {
-                    "update availability validation error: not enough units to freeze," +
-                            " product=$product, availability=$availability request=$request"
-                }
-                throw EntityInIllegalStateException(
-                    context = setOf(
-                        EntityInfo(
-                            entityType = ProductDO.ENTITY_TYPE,
-                            entityId = product.productId,
-                        ),
-                        EntityInfo(
-                            entityType = SellerApi.ENTITY_TYPE,
-                            entityId = availability.availabilityPk.sellerId,
-                        ),
-                        EntityInfo(
-                            entityType = AvailabilityDO.ENTITY_TYPE,
-                            entityId = null,
-                        ),
-                    ),
-                    msg = "not enough units to freeze",
-                )
+        if (request.unitsAvailable < availability.frozenUnits!!)
+            log.warn {
+                "available units going under frozen units, " +
+                        "product=$product availability=$availability request=$request"
             }
 
-            availability.frozenUnits = request.unitsToFreeze
+        availability.unitsAvailable = request.unitsAvailable
+    }
+
+    private fun findAndApplyAvailabilityUnitsToFreeze(
+        request: AvailabilityUpdateRequest,
+        product: ProductDO,
+        availability: AvailabilityDO,
+    ) {
+
+        if (request.unitsToFreeze!! > availability.unitsAvailable!!) {
+            log.debug {
+                "update availability validation error: not enough units to freeze," +
+                        " product=$product, availability=$availability request=$request"
+            }
+            throw EntityInIllegalStateException(
+                context = setOf(
+                    EntityInfo(
+                        entityType = ProductDO.ENTITY_TYPE,
+                        entityId = product.productId,
+                    ),
+                    EntityInfo(
+                        entityType = SellerApi.ENTITY_TYPE,
+                        entityId = availability.availabilityPk.sellerId,
+                    ),
+                    EntityInfo(
+                        entityType = AvailabilityDO.ENTITY_TYPE,
+                        entityId = null,
+                    ),
+                ),
+                msg = "not enough units to freeze",
+            )
+        }
+
+        availability.frozenUnits = request.unitsToFreeze
+    }
+
+    private fun findAndApplyAvailabilityChanges(
+        request: AvailabilityUpdateRequest,
+        product: ProductDO,
+        availability: AvailabilityDO,
+    ): Boolean {
+
+        this.findAndApplyAvailabilityChangesValidate(request, product, availability)
+
+        var anyChange = false
+
+        if (request.unitsAvailable != null) {
+            this.findAndApplyAvailabilityUnitsAvailable(request, product, availability)
+            anyChange = true
+        }
+        if (request.unitsToFreeze != null) {
+            this.findAndApplyAvailabilityUnitsToFreeze(request, product, availability)
             anyChange = true
         }
 
@@ -367,14 +435,11 @@ class ProductServiceImpl(
         return anyChange
     }
 
-    @Transactional(
-        rollbackForClassName = ["java.lang.Exception"]
-    )
-    override fun updateAvailability(
+    private fun updateAvailabilityValidate(
         productId: UUID,
         sellerId: UUID,
         request: AvailabilityUpdateRequest,
-    ): AvailabilityDO {
+    ) {
 
         val errors = this.validator.validate(request)
         if (errors.isNotEmpty()) {
@@ -393,20 +458,30 @@ class ProductServiceImpl(
                 errors
             )
         }
+    }
 
-        val product = this.findProductOrFail(productId)
-        val availability = this.availabilityRepo.findById(
+    private fun updateAvailabilityFindAvailability(
+        product: ProductDO,
+        sellerId: UUID,
+        request: AvailabilityUpdateRequest,
+    ): AvailabilityDO = this
+        .availabilityRepo
+        .findById(
             AvailabilityDO.AvailabilityPk(
                 sellerId = sellerId,
                 product = product,
             )
-        ).orElseThrow {
-            log.trace { "availability for update not found, productId=$productId, sellerId=$sellerId, request=$request" }
+        )
+        .orElseThrow {
+            log.trace {
+                "availability for update not found, " +
+                        "productId=${product.productId}, sellerId=$sellerId, request=$request"
+            }
             EntityNotFoundException(
                 context = setOf(
                     EntityInfo(
                         entityType = ProductDO.ENTITY_TYPE,
-                        entityId = productId,
+                        entityId = product.productId,
                     ),
                     EntityInfo(
                         entityType = "seller",
@@ -416,23 +491,18 @@ class ProductServiceImpl(
             )
         }
 
-        val anyChange = this.findAndApplyAvailabilityChanges(
-            request,
-            product,
-            availability,
-        )
-        if (!anyChange)
-            return availability
-
-        log.info { "updating product availability, productId=${product.productId} sellerId=$sellerId" }
-        this.availabilityRepo.save(availability)
+    private fun updateAvailabilitySendKafka(
+        product: ProductDO,
+        availability: AvailabilityDO,
+        sellerId: UUID,
+    ) {
 
         val send = AvailabilityProto.Availability
             .newBuilder()
             .setHeader(HeaderHelper.create(SOURCE, this.clock.millis()))
             .setAction("update")
             .setSellerId(sellerId.toString())
-            .setProductId(productId.toString())
+            .setProductId(product.productId.toString())
             .setFrozenUnits(availability.frozenUnits!!)
             .setUnitsAvailable(availability.unitsAvailable!!)
             .setPricePerUnit(availability.pricePerUnit!!)
@@ -446,6 +516,34 @@ class ProductServiceImpl(
             .sendDefault(send)
             .completable()
             .join()
+
+    }
+
+    @Transactional(
+        rollbackForClassName = ["java.lang.Exception"]
+    )
+    override fun updateAvailability(
+        productId: UUID,
+        sellerId: UUID,
+        request: AvailabilityUpdateRequest,
+    ): AvailabilityDO {
+
+        this.updateAvailabilityValidate(productId, sellerId, request)
+
+        val product = this.findProductOrFail(productId)
+        val availability = this.updateAvailabilityFindAvailability(product, sellerId, request)
+
+        val anyChange = this.findAndApplyAvailabilityChanges(
+            request,
+            product,
+            availability,
+        )
+        if (!anyChange)
+            return availability
+
+        log.info { "updating product availability, productId=${product.productId} sellerId=$sellerId" }
+        this.availabilityRepo.save(availability)
+        this.updateAvailabilitySendKafka(product, availability, sellerId)
 
         return availability
     }

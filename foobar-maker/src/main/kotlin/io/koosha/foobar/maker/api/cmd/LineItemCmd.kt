@@ -46,7 +46,6 @@ class LineItemCmd(
         )
 
         matches("get", freeArgs[0]) -> this.getLineItem(
-            args,
             freeArgs.subList(1, freeArgs.size)
         )
 
@@ -87,7 +86,6 @@ class LineItemCmd(
     }
 
     fun getLineItem(
-        args: ApplicationArguments,
         freeArgs: List<String>,
     ) {
 

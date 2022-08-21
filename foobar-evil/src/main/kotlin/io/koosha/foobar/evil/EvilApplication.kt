@@ -4,7 +4,6 @@ import io.koosha.foobar.evil.api.svc.EvilService
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 import org.springframework.boot.runApplication
-import java.io.InterruptedIOException
 
 
 @SpringBootApplication(scanBasePackages = ["io.koosha.foobar"])
@@ -12,7 +11,7 @@ import java.io.InterruptedIOException
 class EvilApplication
 
 
-fun main(args: Array<String>) {
+fun main(vararg args: String) {
 
     val ctx = runApplication<EvilApplication>(*args)
 
@@ -24,7 +23,7 @@ fun main(args: Array<String>) {
         try {
             Thread.sleep(10_000)
         }
-        catch (ex: InterruptedIOException) {
+        catch (ex: InterruptedException) {
             Thread.currentThread().interrupt()
             evil.running = false
             return

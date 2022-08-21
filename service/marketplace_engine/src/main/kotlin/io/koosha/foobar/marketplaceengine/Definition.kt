@@ -1,4 +1,4 @@
-package io.koosha.foobar.marketplace_engine
+package io.koosha.foobar.marketplaceengine
 
 
 const val SOURCE = "marketplace_engine"

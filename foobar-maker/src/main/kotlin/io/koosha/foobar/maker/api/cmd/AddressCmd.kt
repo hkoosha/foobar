@@ -44,7 +44,6 @@ class AddressCmd(
         )
 
         matches("get", freeArgs[0]) -> this.getAddress(
-            args,
             freeArgs.subList(1, freeArgs.size)
         )
 
@@ -86,7 +85,6 @@ class AddressCmd(
     }
 
     fun getAddress(
-        args: ApplicationArguments,
         freeArgs: List<String>,
     ) {
 

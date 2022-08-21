@@ -1,11 +1,11 @@
-package io.koosha.foobar.marketplace_engine.api.service
+package io.koosha.foobar.marketplaceengine.api.service
 
 
 import io.koosha.foobar.common.cfg.KafkaConfig
 import io.koosha.foobar.common.toUUID
-import io.koosha.foobar.marketplace_engine.SOURCE
-import io.koosha.foobar.marketplace_engine.api.model.AvailabilityDO
-import io.koosha.foobar.marketplace_engine.api.model.AvailabilityRepository
+import io.koosha.foobar.marketplaceengine.SOURCE
+import io.koosha.foobar.marketplaceengine.api.model.AvailabilityDO
+import io.koosha.foobar.marketplaceengine.api.model.AvailabilityRepository
 import io.koosha.foobar.product.AvailabilityProto
 import mu.KotlinLogging
 import org.springframework.kafka.annotation.KafkaListener

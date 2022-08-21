@@ -11,6 +11,6 @@ import org.springframework.boot.runApplication
 class CustomerServiceApplication
 
 
-fun main(args: Array<String>) {
+fun main(vararg args: String) {
     runApplication<CustomerServiceApplication>(*args)
 }

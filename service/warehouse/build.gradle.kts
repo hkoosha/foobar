@@ -1,3 +1,5 @@
+import io.gitlab.arturbosch.detekt.Detekt
+import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
 import io.koosha.foobar.Foobar
 import io.koosha.foobar.Libraries
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -17,6 +19,7 @@ plugins {
     @Suppress("RemoveRedundantQualifierName")
     val d = io.koosha.foobar.Libraries.OpenApi
 
+    id("io.gitlab.arturbosch.detekt") version k.detekt
     id("com.google.cloud.tools.jib") version j.gradlePlugin
     id("org.springdoc.openapi-gradle-plugin") version d.gradlePlugin
     id("org.springframework.boot") version s.springBoot2
@@ -154,4 +157,12 @@ jib {
         ports = listOf("8080")
         jvmFlags = Foobar.Jib.jvmFlags(project)
     }
+}
+
+tasks.withType<Detekt>().configureEach {
+    jvmTarget = Foobar.kotlinJvmTarget
+}
+
+tasks.withType<DetektCreateBaselineTask>().configureEach {
+    jvmTarget = Foobar.kotlinJvmTarget
 }

@@ -100,6 +100,10 @@ open class AvailabilityDO(
 
         ) : Serializable {
 
+        companion object {
+            private const val serialVersionUID = 0L
+        }
+
         override fun equals(other: Any?): Boolean {
             if (this === other)
                 return true

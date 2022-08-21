@@ -29,8 +29,9 @@ class InitCmd(
 
         for (i in 0 until magic) {
             this.customerCmd.handle(args, emptyList())
-            for (j in 0 until subMagic)
+            repeat(subMagic) {
                 this.addressCmd.handle(args, emptyList())
+            }
         }
 
         for (i in 0 until magic)
@@ -47,7 +48,7 @@ class InitCmd(
             this.lineItemCmd.handle(args, emptyList())
         }
 
-        if(args.containsOption("live"))
+        if (args.containsOption("live"))
             this.orderRequestCmd.patchOrderRequest2()
     }
 

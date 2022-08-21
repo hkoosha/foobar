@@ -39,12 +39,10 @@ class CustomerCmd(
     ) = when {
         freeArgs.isEmpty() -> this.postCustomer(
             args,
-            freeArgs,
         )
 
         matches("post", freeArgs[0]) -> this.postCustomer(
             args,
-            freeArgs.subList(1, freeArgs.size)
         )
 
         matches("patch", freeArgs[0]) -> this.patchCustomer(
@@ -53,7 +51,6 @@ class CustomerCmd(
         )
 
         matches("get", freeArgs[0]) -> this.getCustomer(
-            args,
             freeArgs.subList(1, freeArgs.size)
         )
 
@@ -62,7 +59,6 @@ class CustomerCmd(
 
     fun postCustomer(
         args: ApplicationArguments,
-        freeArgs: List<String>,
     ) {
 
         val req = CustomerCreateRequest()
@@ -120,25 +116,25 @@ class CustomerCmd(
     }
 
     fun getCustomer(
-        args: ApplicationArguments,
         freeArgs: List<String>,
-    ) = if (freeArgs.isEmpty()) {
+    ) =
+        if (freeArgs.isEmpty()) {
 
-        val response = this.customerApi.customersWithHttpInfo
-        assertStatusCode(response.statusCode)
-        val all = response.data
-        val s = stringAll(this.repo, CustomerApi.ENTITY_TYPE, all) { it.customerId.toString() }
-        log.info { s }
+            val response = this.customerApi.customersWithHttpInfo
+            assertStatusCode(response.statusCode)
+            val all = response.data
+            val s = stringAll(this.repo, CustomerApi.ENTITY_TYPE, all) { it.customerId.toString() }
+            log.info { s }
 
-    }
-    else {
+        }
+        else {
 
-        val customerId = this.entityIdService.findUUID(CustomerApi.ENTITY_TYPE, freeArgs.first())
-        val response = this.customerApi.getCustomerWithHttpInfo(customerId)
-        assertStatusCode(response.statusCode)
-        val entity = response.data
-        log.info { "customer:\n${response.headers}\n$entity" }
+            val customerId = this.entityIdService.findUUID(CustomerApi.ENTITY_TYPE, freeArgs.first())
+            val response = this.customerApi.getCustomerWithHttpInfo(customerId)
+            assertStatusCode(response.statusCode)
+            val entity = response.data
+            log.info { "customer:\n${response.headers}\n$entity" }
 
-    }
+        }
 
 }

@@ -1,21 +1,14 @@
-package io.koosha.foobar.marketplace.api.model
+package io.koosha.foobar.marketplaceengine.api.model
 
-
-import io.koosha.foobar.marketplace.API_PREFIX
+import io.koosha.foobar.marketplaceengine.API_PREFIX
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
-import java.io.Serializable
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.util.*
-import javax.persistence.CascadeType
 import javax.persistence.Column
 import javax.persistence.Entity
-import javax.persistence.FetchType
 import javax.persistence.Id
-import javax.persistence.JoinColumn
-import javax.persistence.MapsId
-import javax.persistence.OneToOne
 import javax.persistence.PrePersist
 import javax.persistence.PreUpdate
 import javax.persistence.Table
@@ -23,24 +16,17 @@ import javax.persistence.Version
 
 
 @Entity
-@Table(name = "${API_PREFIX}__order_request_process_queue_state_change")
-open class OrderRequestProcessQueueStateChangeDO(
+@Table(name = "${API_PREFIX}__processed_uuid")
+open class ProcessedOrderRequestDO(
 
     @Id
     @Column(
         name = "ORDER_REQUEST_ID",
-        length = 36,
         nullable = false,
-        insertable = false,
-        updatable = false,
+        length = 36,
     )
     @org.hibernate.annotations.Type(type = "uuid-char")
-    open var orderRequestProcessQueueStateChangeId: UUID? = null,
-
-    @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.DETACH])
-    @MapsId("ORDER_REQUEST_ID")
-    @JoinColumn(name = "ORDER_REQUEST_ID")
-    open var orderRequest: OrderRequestDO? = null,
+    open var orderRequestId: UUID? = null,
 
     @Version
     @Column(name = "VERSION")
@@ -61,12 +47,12 @@ open class OrderRequestProcessQueueStateChangeDO(
     open var updated: ZonedDateTime? = null,
 
     @Column(
-        name = "SYNCED",
+        name = "PROCESSED",
         nullable = false,
     )
-    open var synced: Boolean? = null,
+    open var processed: Boolean? = null,
 
-    ) : Serializable {
+    ) {
 
     @PrePersist
     fun updateCreatedAt() {
@@ -85,19 +71,17 @@ open class OrderRequestProcessQueueStateChangeDO(
             return true
         if (this.javaClass != other?.javaClass)
             return false
-        val rhs = other as OrderRequestProcessQueueStateChangeDO
-        return this.orderRequestProcessQueueStateChangeId != null
-                && this.orderRequestProcessQueueStateChangeId == rhs.orderRequestProcessQueueStateChangeId
+        val rhs = other as ProcessedOrderRequestDO
+        return this.orderRequestId == rhs.orderRequestId
     }
 
     override fun hashCode(): Int = this.javaClass.hashCode()
 
     override fun toString(): String = this.javaClass.simpleName + "(" +
-            "orderRequestProcessQueueStateChangeId=" + this.orderRequestProcessQueueStateChangeId +
-            ", version=" + this.version +
+            "orderRequestId=" + this.orderRequestId +
             ", created=" + this.created +
             ", updated=" + this.updated +
-            ", synced=" + this.synced +
+            ", processed=" + this.processed +
             ")"
 
 }

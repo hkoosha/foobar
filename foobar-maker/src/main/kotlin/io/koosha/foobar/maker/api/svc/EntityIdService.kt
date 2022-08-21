@@ -38,7 +38,7 @@ class EntityIdService(
                 try {
                     UUID.fromString(givenId)
                 }
-                catch (ex: IllegalArgumentException) {
+                catch (@Suppress("SwallowedException") ex: IllegalArgumentException) {
                     throw CliException("invalid id, neither valid UUID nor a valid long, id=$givenId")
                 }
 

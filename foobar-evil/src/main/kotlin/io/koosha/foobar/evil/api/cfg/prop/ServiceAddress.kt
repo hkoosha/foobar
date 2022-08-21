@@ -12,6 +12,11 @@ import javax.validation.constraints.Min
 @Validated
 class ServiceAddress {
 
+    companion object {
+        private const val PORT_MAX = 65535L
+        private const val PORT_MIN = 1L
+    }
+
     @field:PortlessUrl
     var defaultUrl: String? = null
 
@@ -30,24 +35,24 @@ class ServiceAddress {
     @field:PortlessUrl(allowNull = true, allowEmpty = true)
     var sellerUrl: String? = null
 
-    @field:Min(1)
-    @field:Max(65535)
+    @field:Min(PORT_MIN)
+    @field:Max(PORT_MAX)
     var marketplacePort: Int? = null
 
-    @field:Min(1)
-    @field:Max(65535)
+    @field:Min(PORT_MIN)
+    @field:Max(PORT_MAX)
     var warehousePort: Int? = null
 
-    @field:Min(1)
-    @field:Max(65535)
+    @field:Min(PORT_MIN)
+    @field:Max(PORT_MAX)
     var shippingPort: Int? = null
 
-    @field:Min(1)
-    @field:Max(65535)
+    @field:Min(PORT_MIN)
+    @field:Max(PORT_MAX)
     var customerPort: Int? = null
 
-    @field:Min(1)
-    @field:Max(65535)
+    @field:Min(PORT_MIN)
+    @field:Max(PORT_MAX)
     var sellerPort: Int? = null
 
 

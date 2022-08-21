@@ -1,11 +1,15 @@
 package io.koosha.foobar
 
+import org.gradle.internal.file.impl.DefaultFileMetadata.file
+
 object Libraries {
 
     object Kotlin {
         const val jvm = "1.7.10"
         const val spring = jvm
         const val jpa = jvm
+
+        const val detekt = "1.21.0"
     }
 
     object Spring {

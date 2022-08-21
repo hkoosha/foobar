@@ -1,4 +1,4 @@
-package io.koosha.foobar.marketplace_engine
+package io.koosha.foobar.marketplaceengine
 
 import io.koosha.foobar.common.PACKAGE
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -11,6 +11,6 @@ import org.springframework.boot.runApplication
 class MarketplaceEngineApplication
 
 
-fun main(args: Array<String>) {
+fun main(vararg args: String) {
     runApplication<MarketplaceEngineApplication>(*args)
 }

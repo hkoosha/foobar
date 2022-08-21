@@ -15,12 +15,13 @@ import io.koosha.foobar.marketplace.SOURCE
 import io.koosha.foobar.marketplace.api.model.OrderRequestDO
 import io.koosha.foobar.marketplace.api.model.OrderRequestLineItemDO
 import io.koosha.foobar.marketplace.api.model.OrderRequestLineItemRepository
-import io.koosha.foobar.marketplace.api.model.OrderRequestProcessQueueStateChangeDO
-import io.koosha.foobar.marketplace.api.model.OrderRequestProcessQueueStateChangeRepository
+import io.koosha.foobar.marketplace.api.model.OrderRequestProcessQueueDO
+import io.koosha.foobar.marketplace.api.model.OrderRequestProcessQueueRepository
 import io.koosha.foobar.marketplace.api.model.OrderRequestRepository
 import io.koosha.foobar.marketplace.api.model.OrderRequestState
 import io.koosha.foobar.order_request.OrderRequestStateChangedProto
 import mu.KotlinLogging
+import org.openapitools.client.model.Product
 import org.openapitools.client.model.Seller
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.kafka.core.KafkaTemplate
@@ -44,12 +45,16 @@ class OrderRequestServiceImpl(
 
     private val orderRequestRepo: OrderRequestRepository,
     private val lineItemRepo: OrderRequestLineItemRepository,
-    private val orderRequestProcessQueueStateChangeRepo: OrderRequestProcessQueueStateChangeRepository,
+    private val orderRequestProcessQueueStateChangeRepo: OrderRequestProcessQueueRepository,
 
     @Qualifier(KafkaConfig.TEMPLATE__ORDER_REQUEST__STATE_CHANGED)
     private val kafka: KafkaTemplate<UUID, OrderRequestStateChangedProto.OrderRequestStateChanged>,
 
     ) : OrderRequestService {
+
+    companion object {
+        private const val KAFKA_TIMEOUT_MILLIS = 3000L
+    }
 
     private val log = KotlinLogging.logger {}
 
@@ -160,19 +165,26 @@ class OrderRequestServiceImpl(
 
     // =========================================================================
 
-    private fun setSeller(
+    private fun setSellerCheckSubTotal(
         orderRequest: OrderRequestDO,
         request: OrderRequestUpdateRequest,
     ) {
 
         if (request.subTotal == null) {
-            log.trace { "update orderRequest validation error: subTotal not set, orderRequest=$orderRequest, request=$request" }
+            log.trace {
+                "update orderRequest validation error: subTotal not set, orderRequest=$orderRequest, request=$request"
+            }
             throw EntityBadValueException(
                 entityType = OrderRequestDO.ENTITY_TYPE,
                 entityId = orderRequest.orderRequestId,
                 msg = "subTotal not set",
             )
         }
+    }
+
+    private fun setSellerCheckState(
+        orderRequest: OrderRequestDO,
+    ) {
 
         if (orderRequest.state != OrderRequestState.LIVE) {
             log.debug { "refused to update orderRequest in current state, orderRequest=$orderRequest" }
@@ -182,9 +194,16 @@ class OrderRequestServiceImpl(
                 msg = "order request is not live, can not update seller"
             )
         }
+    }
+
+    private fun setSellerFindSeller(
+        orderRequest: OrderRequestDO,
+        request: OrderRequestUpdateRequest,
+    ): Seller {
 
         log.trace { "fetching seller, sellerId=${request.sellerId}" }
-        val seller: Seller = try {
+
+        val seller = try {
             this.sellerClient.getSeller(request.sellerId!!)
         }
         catch (ex: FeignException.NotFound) {
@@ -211,6 +230,19 @@ class OrderRequestServiceImpl(
                 msg = "seller is not active, can not update order request"
             )
         }
+
+        return seller
+    }
+
+    private fun setSeller(
+        orderRequest: OrderRequestDO,
+        request: OrderRequestUpdateRequest,
+    ) {
+
+        this.setSellerCheckSubTotal(orderRequest, request)
+        this.setSellerCheckState(orderRequest)
+
+        val seller = this.setSellerFindSeller(orderRequest, request)
 
         orderRequest.state = OrderRequestState.WAITING_FOR_SELLER
         orderRequest.sellerId = seller.sellerId
@@ -303,7 +335,7 @@ class OrderRequestServiceImpl(
 
         val queueStateChange =
             orderRequestProcessQueueStateChangeRepo.findById(orderRequest.orderRequestId!!).orElseGet {
-                OrderRequestProcessQueueStateChangeDO(
+                OrderRequestProcessQueueDO(
                     orderRequest.orderRequestId,
                     orderRequest,
                     null,
@@ -339,7 +371,7 @@ class OrderRequestServiceImpl(
         }
         this.kafka
             .sendDefault(orderRequestId, stateChange)
-            .get(3000, TimeUnit.MILLISECONDS)
+            .get(KAFKA_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)
 
         this.orderRequestProcessQueueStateChangeRepo.save(queueStateChange)
     }
@@ -373,13 +405,7 @@ class OrderRequestServiceImpl(
 
     // =========================================================================
 
-    @Transactional(
-        rollbackForClassName = ["java.lang.Exception"]
-    )
-    override fun addLineItem(
-        orderRequestId: UUID,
-        request: LineItemRequest,
-    ): OrderRequestLineItemDO {
+    private fun addLineItemValidateArgs(request: LineItemRequest) {
 
         val errors = this.validator.validate(request)
         if (errors.isNotEmpty()) {
@@ -390,8 +416,15 @@ class OrderRequestServiceImpl(
                 errors,
             )
         }
+    }
+
+    private fun addLineItemGetOrderRequest(
+        orderRequestId: UUID,
+        request: LineItemRequest,
+    ): OrderRequestDO {
 
         val orderRequest: OrderRequestDO = this.findOrderRequestOrFail(orderRequestId)
+
         if (orderRequest.state != OrderRequestState.ACTIVE) {
             log.debug {
                 "refused to add lineItem in current state of orderRequest, orderRequest=$orderRequest, request=$request"
@@ -403,7 +436,16 @@ class OrderRequestServiceImpl(
             )
         }
 
+        return orderRequest
+    }
+
+    private fun addLineItemGetProduct(
+        orderRequest: OrderRequestDO,
+        request: LineItemRequest,
+    ): Product {
+
         log.trace { "fetching product, productId=${request.productId}" }
+
         val product = try {
             this.productClient.getProduct(request.productId)
         }
@@ -432,15 +474,33 @@ class OrderRequestServiceImpl(
             )
         }
 
-        for (existingLineItem in getLineItems(orderRequestId))
-            if (existingLineItem.productId == product.productId) {
-                log.trace { "orderRequest already has a line item for productId=${product.productId}" }
-                throw EntityBadValueException(
-                    entityType = OrderRequestLineItemDO.ENTITY_TYPE,
-                    entityId = null,
-                    "orderRequest already has a line item for productId=${product.productId}",
-                )
-            }
+        return product
+    }
+
+    private fun addLineItemValidateLineItems(
+        orderRequestId: UUID,
+        product: Product,
+    ) {
+
+        val existing: List<UUID> = this
+            .getLineItems(orderRequestId)
+            .filter { it.productId == product.productId }
+            .map { it.productId!! }
+
+        if (existing.isNotEmpty()) {
+            log.trace { "orderRequest already has a line item for productIds=${existing.joinToString(", ")}" }
+            throw EntityBadValueException(
+                entityType = OrderRequestLineItemDO.ENTITY_TYPE,
+                entityId = null,
+                "orderRequest already has a line item for productIds=${existing.joinToString(", ")}",
+            )
+        }
+    }
+
+    private fun addLineItemSaveLineItem(
+        orderRequest: OrderRequestDO,
+        request: LineItemRequest,
+    ): OrderRequestLineItemDO {
 
         val lineItemId = orderRequest.lineItemIdPool!! + 1
         orderRequest.lineItemIdPool = lineItemId
@@ -451,19 +511,41 @@ class OrderRequestServiceImpl(
         lineItem.units = request.units
         lineItem.productId = request.productId
 
-        if (this.lineItemRepo.findById(
-                OrderRequestLineItemDO.Pk(
-                    lineItemId,
-                    orderRequest,
-                )
-            ).isPresent
+        val existingLineItem = this.lineItemRepo.findById(
+            OrderRequestLineItemDO.Pk(
+                lineItemId,
+                orderRequest,
+            )
         )
-            throw IllegalStateException("duplicate line item")
+        check(existingLineItem.isPresent) {
+            "duplicate lineItem=${existingLineItem.get().orderRequestLineItemPk}"
+        }
 
         log.info { "adding order request line item, orderRequestId=${orderRequest.orderRequestId} lineItem=$lineItem" }
-        this.lineItemRepo.save(lineItem)
+        val saved = this.lineItemRepo.save(lineItem)
+
+        return saved
+    }
+
+    @Transactional(
+        rollbackForClassName = ["java.lang.Exception"]
+    )
+    override fun addLineItem(
+        orderRequestId: UUID,
+        request: LineItemRequest,
+    ): OrderRequestLineItemDO {
+
+        this.addLineItemValidateArgs(request)
+
+        val orderRequest = this.addLineItemGetOrderRequest(orderRequestId, request)
+        val product = this.addLineItemGetProduct(orderRequest, request)
+        this.addLineItemValidateLineItems(orderRequestId, product)
+        val lineItem = this.addLineItemSaveLineItem(orderRequest, request)
+
         return lineItem
     }
+
+    // =========================================================================
 
     @Transactional(
         rollbackForClassName = ["java.lang.Exception"]

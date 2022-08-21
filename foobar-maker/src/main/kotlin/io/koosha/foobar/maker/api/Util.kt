@@ -23,18 +23,16 @@ fun ApplicationArguments.first(name: String): String =
 fun matches(
     s0: String?,
     s1: String?,
-): Boolean {
-
-    if (s0 == null || s1 == null)
-        return false
-
-    if (s0.length == s1.length)
-        return s0 == s1
-
-    val longStr = if (s0.length > s1.length) s0 else s1
-    val shortStr = if (s0.length > s1.length) s1 else s0
-    return longStr.substring(0, shortStr.length) == shortStr
-}
+): Boolean =
+    when {
+        s0 == null || s1 == null -> false
+        s0.length == s1.length -> s0 == s1
+        else -> {
+            val longStr = if (s0.length > s1.length) s0 else s1
+            val shortStr = if (s0.length > s1.length) s1 else s0
+            longStr.substring(0, shortStr.length) == shortStr
+        }
+    }
 
 fun <T> stringAll(
     repo: EntityIdRepository,
@@ -62,6 +60,7 @@ fun <T> stringAll(
     return sb.toString()
 }
 
+@Suppress("MagicNumber")
 fun assertStatusCode(statusCode: Int) {
     if (statusCode < 200 || statusCode > 299)
         throw CliException("status_code=$statusCode")

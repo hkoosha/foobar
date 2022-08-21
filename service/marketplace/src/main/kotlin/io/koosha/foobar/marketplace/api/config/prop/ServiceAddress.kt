@@ -13,27 +13,32 @@ import javax.validation.constraints.NotNull
 @Validated
 class ServiceAddress {
 
+    companion object {
+        private const val PORT_MAX = 65535L
+        private const val PORT_MIN = 1L
+    }
+
     @field:PortlessUrl
     var customerUrl: String? = null
 
-    @field:Min(1)
-    @field:Max(65535)
+    @field:Min(PORT_MIN)
+    @field:Max(PORT_MAX)
     @field:NotNull
     var customerPort: Int? = null
 
     @field:PortlessUrl
     var sellerUrl: String? = null
 
-    @field:Min(1)
-    @field:Max(65535)
+    @field:Min(PORT_MIN)
+    @field:Max(PORT_MAX)
     @field:NotNull
     var sellerPort: Int? = null
 
     @field:PortlessUrl
     var warehouseUrl: String? = null
 
-    @field:Min(1)
-    @field:Max(65535)
+    @field:Min(PORT_MIN)
+    @field:Max(PORT_MAX)
     @field:NotNull
     var warehousePort: Int? = null
 

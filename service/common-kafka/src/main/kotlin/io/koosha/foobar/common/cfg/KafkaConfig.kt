@@ -1,10 +1,13 @@
 package io.koosha.foobar.common.cfg
 
 import io.koosha.foobar.common.PROFILE__KAFKA
+import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
 import org.springframework.kafka.annotation.EnableKafka
 
 
+@Suppress("UtilityClassWithPublicConstructor")
+@Configuration
 @EnableKafka
 @Profile(PROFILE__KAFKA)
 class KafkaConfig {
@@ -12,7 +15,8 @@ class KafkaConfig {
     companion object {
 
         const val TOPIC__ORDER_REQUEST__STATE_CHANGED = "foobar__marketplace__order_request__state_changed"
-        const val TOPIC__ORDER_REQUEST__STATE_CHANGED__DEAD_LETTER = "${TOPIC__ORDER_REQUEST__STATE_CHANGED}__dead_letter"
+        const val TOPIC__ORDER_REQUEST__STATE_CHANGED__DEAD_LETTER =
+            "${TOPIC__ORDER_REQUEST__STATE_CHANGED}__dead_letter"
         const val TOPIC__ORDER_REQUEST__SELLER_FOUND = "foobar__marketplace_engine__order_request__seller_found"
         const val TOPIC__AVAILABILITY = "foobar__warehouse__availability"
 

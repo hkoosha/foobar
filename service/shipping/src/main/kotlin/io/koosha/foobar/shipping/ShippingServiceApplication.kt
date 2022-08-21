@@ -11,6 +11,6 @@ import org.springframework.boot.runApplication
 class ShippingServiceApplication
 
 
-fun main(args: Array<String>) {
+fun main(vararg args: String) {
     runApplication<ShippingServiceApplication>(*args)
 }

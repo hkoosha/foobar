@@ -24,6 +24,7 @@ annotation class UrlOrEmpty(
 
 class UrlOrEmptyConstraintValidator : ConstraintValidator<UrlOrEmpty, String> {
 
+    @Suppress("SwallowedException")
     override fun isValid(
         value: String?,
         context: ConstraintValidatorContext?,
@@ -36,7 +37,7 @@ class UrlOrEmptyConstraintValidator : ConstraintValidator<UrlOrEmpty, String> {
             URL(value)
             true
         }
-        catch (e: Exception) {
+        catch (@Suppress("SwallowedException") e: Exception) {
             false
         }
     }

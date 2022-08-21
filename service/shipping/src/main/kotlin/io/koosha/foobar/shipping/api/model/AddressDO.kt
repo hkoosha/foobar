@@ -5,6 +5,7 @@ import javax.persistence.Column
 import javax.persistence.Embeddable
 import javax.validation.constraints.Size
 
+
 @Embeddable
 open class AddressDO(
 

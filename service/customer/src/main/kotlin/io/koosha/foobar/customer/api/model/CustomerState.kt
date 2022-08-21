@@ -1,5 +1,6 @@
 package io.koosha.foobar.customer.api.model
 
+
 enum class CustomerState {
 
     ACTIVE,

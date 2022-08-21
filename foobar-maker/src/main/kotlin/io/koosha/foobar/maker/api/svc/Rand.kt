@@ -14,8 +14,9 @@ class Rand {
     fun string(len: Int, prefix: String): String {
 
         val buffer = StringBuilder(len)
-        for (i in 0 until len)
+        repeat(len) {
             buffer.append(('a'.code + r().nextInt(0, 'z'.code - 'a'.code + 1)).toChar())
+        }
 
         return prefix + buffer.toString()
     }

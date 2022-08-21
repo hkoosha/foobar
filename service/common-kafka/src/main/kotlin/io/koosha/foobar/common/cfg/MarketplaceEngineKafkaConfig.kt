@@ -29,6 +29,11 @@ import java.util.*
 @Configuration
 class MarketplaceEngineKafkaConfig {
 
+    companion object {
+        private const val CONCURRENCY = 4
+        private const val POLL_TIMEOUT_MILLIS = 3000L
+    }
+
     @Qualifier(KafkaConfig.PROD_FACTORY__ORDER_REQUEST__SELLER_FOUND)
     @Lazy
     @Bean(KafkaConfig.PROD_FACTORY__ORDER_REQUEST__SELLER_FOUND)
@@ -60,11 +65,13 @@ class MarketplaceEngineKafkaConfig {
     fun orderRequestSellerKafkaListenerContainerFactory(
         @Qualifier(KafkaConfig.CONSUMER_FACTORY__ORDER_REQUEST__SELLER_FOUND)
         consumerFactory: ConsumerFactory<UUID, OrderRequestSellerFoundProto.OrderRequestSellerFound>,
-    ): KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<UUID, OrderRequestSellerFoundProto.OrderRequestSellerFound>> =
+    ): KafkaListenerContainerFactory<
+            ConcurrentMessageListenerContainer<UUID, OrderRequestSellerFoundProto.OrderRequestSellerFound>
+            > =
         ConcurrentKafkaListenerContainerFactory<UUID, OrderRequestSellerFoundProto.OrderRequestSellerFound>().apply {
             this.consumerFactory = consumerFactory
-            this.setConcurrency(4)
-            this.containerProperties.pollTimeout = 3000
+            this.setConcurrency(CONCURRENCY)
+            this.containerProperties.pollTimeout = POLL_TIMEOUT_MILLIS
             this.containerProperties.ackMode = ContainerProperties.AckMode.MANUAL
         }
 

@@ -1,14 +1,21 @@
-package io.koosha.foobar.marketplace_engine.api.model
+package io.koosha.foobar.marketplace.api.model
 
-import io.koosha.foobar.marketplace_engine.API_PREFIX
+
+import io.koosha.foobar.marketplace.API_PREFIX
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
+import java.io.Serializable
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.util.*
+import javax.persistence.CascadeType
 import javax.persistence.Column
 import javax.persistence.Entity
+import javax.persistence.FetchType
 import javax.persistence.Id
+import javax.persistence.JoinColumn
+import javax.persistence.MapsId
+import javax.persistence.OneToOne
 import javax.persistence.PrePersist
 import javax.persistence.PreUpdate
 import javax.persistence.Table
@@ -16,17 +23,24 @@ import javax.persistence.Version
 
 
 @Entity
-@Table(name = "${API_PREFIX}__processed_uuid")
-open class ProcessedOrderRequestDO(
+@Table(name = "${API_PREFIX}__order_request_process_queue")
+open class OrderRequestProcessQueueDO(
 
     @Id
     @Column(
-        name = "ORDER_REQUEST_ID",
-        nullable = false,
+        name = "ORDER_REQUEST_PROCESS_QUEUE_ID",
         length = 36,
+        nullable = false,
+        insertable = false,
+        updatable = false,
     )
     @org.hibernate.annotations.Type(type = "uuid-char")
-    open var orderRequestId: UUID? = null,
+    open var orderRequestProcessQueueId: UUID? = null,
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.DETACH])
+    @MapsId("ORDER_REQUEST_PROCESS_QUEUE_ID")
+    @JoinColumn(name = "ORDER_REQUEST_ID")
+    open var orderRequest: OrderRequestDO? = null,
 
     @Version
     @Column(name = "VERSION")
@@ -47,12 +61,16 @@ open class ProcessedOrderRequestDO(
     open var updated: ZonedDateTime? = null,
 
     @Column(
-        name = "PROCESSED",
+        name = "SYNCED",
         nullable = false,
     )
-    open var processed: Boolean? = null,
+    open var synced: Boolean? = null,
 
-    ) {
+    ) : Serializable {
+
+    companion object {
+        private const val serialVersionUID = 0L
+    }
 
     @PrePersist
     fun updateCreatedAt() {
@@ -71,17 +89,19 @@ open class ProcessedOrderRequestDO(
             return true
         if (this.javaClass != other?.javaClass)
             return false
-        val rhs = other as ProcessedOrderRequestDO
-        return this.orderRequestId == rhs.orderRequestId
+        val rhs = other as OrderRequestProcessQueueDO
+        return this.orderRequestProcessQueueId != null
+                && this.orderRequestProcessQueueId == rhs.orderRequestProcessQueueId
     }
 
     override fun hashCode(): Int = this.javaClass.hashCode()
 
     override fun toString(): String = this.javaClass.simpleName + "(" +
-            "orderRequestId=" + this.orderRequestId +
+            "orderRequestProcessQueueId=" + this.orderRequestProcessQueueId +
+            ", version=" + this.version +
             ", created=" + this.created +
             ", updated=" + this.updated +
-            ", processed=" + this.processed +
+            ", synced=" + this.synced +
             ")"
 
 }
