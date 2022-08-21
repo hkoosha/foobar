@@ -121,7 +121,7 @@ public final class ProtoSerde {
                     return t;
                 }
                 catch (final IllegalAccessException | InvocationTargetException e) {
-                    throw new InvalidProtocolBufferException(e);
+                    throw new IllegalStateException(e);
                 }
             };
         }
@@ -154,7 +154,7 @@ public final class ProtoSerde {
                     return t;
                 }
                 catch (final IllegalAccessException | InvocationTargetException e) {
-                    throw new InvalidProtocolBufferException(e);
+                    throw new IllegalStateException(e);
                 }
             };
         }
