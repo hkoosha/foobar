@@ -50,6 +50,11 @@ class InitCmd(
 
         if (args.containsOption("live"))
             this.orderRequestCmd.patchOrderRequest2()
+
+        @Suppress("MagicNumber")
+        Thread.sleep(500)
+        this.orderRequestCmd.getOrderRequest(emptyList())
+        this.lineItemCmd.getLineItem(emptyList())
     }
 
 }
