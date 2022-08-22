@@ -41,25 +41,18 @@ class OrderRequestApiController(
     fun getOrderRequests(
         @RequestParam(required = false)
         customerId: UUID?,
-    ): List<OrderRequest> {
-
-        val entities: Iterable<OrderRequestDO> = when (customerId) {
+    ): List<OrderRequest> =
+        when (customerId) {
             null -> this.service.findAll()
             else -> this.service.findAllOrderRequestsOfCustomer(customerId)
-        }
-        return entities.map(::OrderRequest)
-    }
+        }.map(::OrderRequest)
 
     @GetMapping("/{orderRequestId}")
     @ResponseBody
     fun getOrderRequest(
         @PathVariable
         orderRequestId: UUID,
-    ): OrderRequest {
-
-        val entity: OrderRequestDO = this.service.findByIdOrFail(orderRequestId)
-        return OrderRequest(entity)
-    }
+    ): OrderRequest = OrderRequest(this.service.findByIdOrFail(orderRequestId))
 
     @PostMapping
     @ResponseBody
@@ -96,11 +89,7 @@ class OrderRequestApiController(
         orderRequestId: UUID,
         @RequestBody
         request: OrderRequestUpdateRequest,
-    ): OrderRequest {
-
-        val entity: OrderRequestDO = this.service.update(orderRequestId, request)
-        return OrderRequest(entity)
-    }
+    ): OrderRequest = OrderRequest(this.service.update(orderRequestId, request))
 
     @DeleteMapping("/{orderRequestId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

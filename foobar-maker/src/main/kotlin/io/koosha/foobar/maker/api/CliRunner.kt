@@ -51,7 +51,7 @@ class CliRunner(
     private fun tryRun(args: ApplicationArguments) = when {
         args.nonOptionArgs.size == 0 -> throw CliException("expecting a command, got none")
 
-        matches("init", args.nonOptionArgs.first()) -> this.initCommand.handle(
+        matches(this.initCommand.commandName, args.nonOptionArgs.first()) -> this.initCommand.handle(
             args,
             args.nonOptionArgs.subList(1, args.nonOptionArgs.size),
         )

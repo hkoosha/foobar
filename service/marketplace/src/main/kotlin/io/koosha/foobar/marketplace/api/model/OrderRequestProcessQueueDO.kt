@@ -31,15 +31,19 @@ open class OrderRequestProcessQueueDO(
         name = "ORDER_REQUEST_PROCESS_QUEUE_ID",
         length = 36,
         nullable = false,
-        insertable = false,
-        updatable = false,
     )
     @org.hibernate.annotations.Type(type = "uuid-char")
     open var orderRequestProcessQueueId: UUID? = null,
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.DETACH])
-    @MapsId("ORDER_REQUEST_PROCESS_QUEUE_ID")
-    @JoinColumn(name = "ORDER_REQUEST_ID")
+    @OneToOne(
+        fetch = FetchType.LAZY,
+        cascade = [CascadeType.DETACH]
+    )
+    @JoinColumn(
+        name = "ORDER_REQUEST_ID",
+        nullable = false
+    )
+    @MapsId
     open var orderRequest: OrderRequestDO? = null,
 
     @Version

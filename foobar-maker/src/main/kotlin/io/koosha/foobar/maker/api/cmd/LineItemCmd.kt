@@ -29,7 +29,7 @@ class LineItemCmd(
 
     private val log = KotlinLogging.logger {}
 
-    override val commandName: String = OrderRequestLineItemApi.ENTITY_TYPE.replace('-', '_')
+    override val commandName: String = "line-item"
 
     override fun handle(
         args: ApplicationArguments,

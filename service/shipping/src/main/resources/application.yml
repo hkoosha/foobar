@@ -55,6 +55,11 @@ resilience4j:
         retry-exceptions:
           - java.lang.RuntimeException
           - java.io.IOException
+  bulkhead:
+    instances:
+      patch-shipping:
+        max-concurrent-calls: 16
+        max-wait-duration: 0ms
 
 
 logging:

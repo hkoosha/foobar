@@ -11,6 +11,7 @@
 - Make write to DB and kafka transactional or at least recover from crashes
   and failures, aka, make sure write to db == write to kafka.
 
+- Critical: Finish DB tx before sending something to kafka
 - Critical: cases when service dies before sending message to kafka, is not 
   handled.
 - Recovery service that runs initially for case above, and *then*, the original

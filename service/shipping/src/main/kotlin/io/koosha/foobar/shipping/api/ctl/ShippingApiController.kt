@@ -1,5 +1,6 @@
 package io.koosha.foobar.shipping.api.ctl
 
+import io.github.resilience4j.bulkhead.annotation.Bulkhead
 import io.koosha.foobar.shipping.API_PATH_PREFIX
 import io.koosha.foobar.shipping.api.model.ShippingDO
 import io.koosha.foobar.shipping.api.model.ShippingState
@@ -44,6 +45,7 @@ class ShippingApiController(
 
     @PatchMapping("/{$URI__PART__SHIPPING_ID}")
     @ResponseBody
+    @Bulkhead(name = "patch-shipping")
     fun patchShipping(
         @PathVariable
         shippingId: UUID,

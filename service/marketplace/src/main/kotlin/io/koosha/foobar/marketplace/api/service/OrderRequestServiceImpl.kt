@@ -303,8 +303,6 @@ class OrderRequestServiceImpl(
         request: OrderRequestUpdateRequest,
     ): Pair<OrderRequestDO, OrderRequestStateChangedProto.OrderRequestStateChanged?> {
 
-        val orderRequest: OrderRequestDO = this.findOrderRequestOrFail(orderRequestId)
-
         if (request.sellerId != null && request.state != null) {
             log.trace { "update orderRequest validation error: can not set both sellerId and state at the same time" }
             throw EntityBadValueException(
@@ -313,6 +311,8 @@ class OrderRequestServiceImpl(
                 msg = "can not set both sellerId and state at the same time"
             )
         }
+
+        val orderRequest: OrderRequestDO = this.findOrderRequestOrFail(orderRequestId)
 
         var anyChange = false
 
@@ -326,7 +326,6 @@ class OrderRequestServiceImpl(
                 this.setState(orderRequest, request)
             else
                 null
-
         if (stateChange != null)
             anyChange = true
 
@@ -517,7 +516,7 @@ class OrderRequestServiceImpl(
                 orderRequest,
             )
         )
-        check(existingLineItem.isPresent) {
+        check(!existingLineItem.isPresent) {
             "duplicate lineItem=${existingLineItem.get().orderRequestLineItemPk}"
         }
 
