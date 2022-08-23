@@ -29,6 +29,11 @@ microservices, distributed tracing, monitoring, and ... using Spring Boot.
 
 - ELK stack: to collect logs. elasticsearch and Kibana are there, but the L in
   ELK is replaced by filebeat, which directly sends the logs to elasticsearch.
+  With ELK, also comes structured logging. So the application _can_ log in json
+  format too. On local deployments it is not enabled by default. On k8s, json
+  logs are appended to a file, a second container in the pod dumps it to stdout
+  and finally filebeat DeamonSet scraps it and sends to elasticsearch. This way
+  normal readable logs are available too alongside machine readable json logs.
 
 - Kubernetes: it's possible to deploy all the services to kubernetes. The way
   services are wired together are not currently the best way or even the right
