@@ -11,6 +11,7 @@ import io.koosha.foobar.customer.api.model.CustomerDO
 import io.koosha.foobar.customer.api.model.CustomerRepository
 import io.koosha.foobar.customer.api.model.CustomerState
 import mu.KotlinLogging
+import net.logstash.logback.argument.StructuredArguments.kv
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.Clock
@@ -29,10 +30,12 @@ class CustomerServiceImpl(
 ) : CustomerService {
 
     private val log = KotlinLogging.logger {}
+    // private val log = LoggerFactory.getLogger(this::class.java)
 
     override fun findByCustomerIdOrFail(customerId: UUID): CustomerDO =
         this.customerRepo.findById(customerId).orElseThrow {
-            log.trace { "customer not found, customerId=$customerId" }
+            // log.trace { "customer not found, customerId=$customerId" }
+            log.trace("customer not found", kv("customerId", customerId))
             EntityNotFoundException(
                 entityType = CustomerDO.ENTITY_TYPE,
                 entityId = customerId,
@@ -55,7 +58,8 @@ class CustomerServiceImpl(
 
         val errors = this.validator.validate(request)
         if (errors.isNotEmpty()) {
-            log.trace { "create customer validation error: $errors" }
+            // log.trace { "create customer validation error: $errors" }
+            log.trace("create customer validation error", kv("errors", errors))
             throw EntityBadValueException(
                 entityType = CustomerDO.ENTITY_TYPE,
                 entityId = null,
@@ -65,7 +69,8 @@ class CustomerServiceImpl(
 
         val customer = this.create0(request)
 
-        log.info { "creating new customer, customer=$customer" }
+        // log.info { "creating new customer, customer=$customer" }
+        log.info("creating new customer", kv("customer", customer))
         val saved = this.customerRepo.save(customer)
         return saved
     }
