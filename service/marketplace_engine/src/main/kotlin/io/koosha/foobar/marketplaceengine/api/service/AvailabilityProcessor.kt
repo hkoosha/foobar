@@ -8,6 +8,7 @@ import io.koosha.foobar.marketplaceengine.api.model.AvailabilityDO
 import io.koosha.foobar.marketplaceengine.api.model.AvailabilityRepository
 import io.koosha.foobar.product.AvailabilityProto
 import mu.KotlinLogging
+import net.logstash.logback.argument.StructuredArguments.kv
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.kafka.support.Acknowledgment
 import org.springframework.messaging.handler.annotation.Payload
@@ -53,7 +54,7 @@ class AvailabilityProcessor(
             pricePerUnit = payload.pricePerUnit,
         )
 
-        log.info { "adding availability: $availability" }
+        log.info("adding availability={}", availability, kv("availability", availability))
         this.availabilityRepo.save(availability)
     }
 

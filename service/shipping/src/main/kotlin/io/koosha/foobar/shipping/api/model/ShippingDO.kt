@@ -88,6 +88,16 @@ open class ShippingDO(
         this.updated = ZonedDateTime.now(ZoneOffset.UTC)
     }
 
+    fun detachedCopy(): ShippingDO = ShippingDO(
+        shippingId = this.shippingId,
+        version = this.version,
+        created = this.created,
+        updated = this.updated,
+        orderRequestId = this.orderRequestId,
+        pickupAddress = this.pickupAddress.detachedCopy(),
+        deliveryAddress = this.deliveryAddress.detachedCopy(),
+        state = this.state,
+    )
 
     override fun equals(other: Any?): Boolean {
         if (this === other)

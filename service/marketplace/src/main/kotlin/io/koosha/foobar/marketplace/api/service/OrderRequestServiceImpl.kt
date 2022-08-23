@@ -21,6 +21,7 @@ import io.koosha.foobar.marketplace.api.model.OrderRequestRepository
 import io.koosha.foobar.marketplace.api.model.OrderRequestState
 import io.koosha.foobar.order_request.OrderRequestStateChangedProto
 import mu.KotlinLogging
+import net.logstash.logback.argument.StructuredArguments.kv
 import org.openapitools.client.model.Product
 import org.openapitools.client.model.Seller
 import org.springframework.beans.factory.annotation.Qualifier
@@ -60,7 +61,7 @@ class OrderRequestServiceImpl(
 
     private fun findOrderRequestOrFail(orderRequestId: UUID): OrderRequestDO =
         this.orderRequestRepo.findById(orderRequestId).orElseThrow {
-            log.trace { "orderRequest not found, orderRequestId=$orderRequestId" }
+            log.trace("orderRequest not found, orderRequestId={}", orderRequestId, kv("orderRequestId", orderRequestId))
             EntityNotFoundException(
                 entityType = OrderRequestDO.ENTITY_TYPE,
                 entityId = orderRequestId,
@@ -85,7 +86,7 @@ class OrderRequestServiceImpl(
 
         val errors = this.validator.validate(request)
         if (errors.isNotEmpty()) {
-            log.trace { "create orderRequest validation error: $errors" }
+            log.trace("create orderRequest validation error, errors={}", errors, kv("validationErrors", errors))
             throw EntityBadValueException(
                 entityType = OrderRequestDO.ENTITY_TYPE,
                 entityId = null,
@@ -93,12 +94,12 @@ class OrderRequestServiceImpl(
             )
         }
 
-        log.trace { "fetching customer, customerId=${request.customerId}" }
+        log.trace("fetching customer, customerId={}", request.customerId, kv("customerId", request.customerId))
         val customer = try {
             this.customerClient.getCustomer(request.customerId!!)
         }
         catch (ex: FeignException.NotFound) {
-            log.debug { "refused to add orderRequest, customer not found, req=$request" }
+            log.debug("refused to add orderRequest, customer not found, req={}", request, kv("request", request))
             throw EntityNotFoundException(
                 context = setOf(
                     EntityInfo(
@@ -113,11 +114,14 @@ class OrderRequestServiceImpl(
             log.warn("failure while fetching customer", ex)
             throw ResourceCurrentlyUnavailableException(ex)
         }
-
         if (!customer.isActive) {
-            log.debug {
-                "refused to create order request in current state of customer, customer=$customer, request=$request"
-            }
+            log.debug(
+                "refused to create order request in current state of customer, customer={}, request={}",
+                customer,
+                request,
+                kv("customer", customer),
+                kv("request", request),
+            )
             throw EntityInIllegalStateException(
                 entityType = CustomerApi.ENTITY_TYPE,
                 entityId = request.customerId,
@@ -131,7 +135,7 @@ class OrderRequestServiceImpl(
         orderRequest.lineItemIdPool = 0
         orderRequest.state = OrderRequestState.ACTIVE
 
-        log.info { "creating new orderRequest, orderRequest=$orderRequest" }
+        log.info("creating new orderRequest, orderRequest={}", orderRequest, kv("orderRequest", orderRequest))
         this.orderRequestRepo.save(orderRequest)
         return orderRequest
     }
@@ -143,14 +147,22 @@ class OrderRequestServiceImpl(
 
         val maybeEntity: Optional<OrderRequestDO> = this.findById(orderRequestId)
         if (!maybeEntity.isPresent) {
-            log.debug { "not deleting order request, entity does not exist, orderRequestId=$orderRequestId" }
+            log.debug(
+                "not deleting order request, entity does not exist, orderRequestId={}",
+                orderRequestId,
+                kv("orderRequestId", orderRequestId),
+            )
             return
         }
 
         val orderRequest: OrderRequestDO = maybeEntity.get()
 
         if (orderRequest.state?.deletionAllowed != true) {
-            log.debug { "refused to delete orderRequest in current state, orderRequest=$orderRequest" }
+            log.debug(
+                "refused to delete orderRequest in current state, orderRequest={}",
+                orderRequest,
+                kv("orderRequest", orderRequest),
+            )
             throw EntityInIllegalStateException(
                 entityType = OrderRequestDO.ENTITY_TYPE,
                 entityId = orderRequestId,
@@ -158,7 +170,7 @@ class OrderRequestServiceImpl(
             )
         }
 
-        log.info { "deleting orderRequest and lineItems, orderRequest=$orderRequest" }
+        log.info("deleting orderRequest and lineItems, orderRequest={}", orderRequest, kv("orderRequest", orderRequest))
         this.lineItemRepo.deleteAllByOrderRequestLineItemPk_OrderRequest_orderRequestId(orderRequestId)
         this.orderRequestRepo.delete(orderRequest)
     }
@@ -171,9 +183,13 @@ class OrderRequestServiceImpl(
     ) {
 
         if (request.subTotal == null) {
-            log.trace {
-                "update orderRequest validation error: subTotal not set, orderRequest=$orderRequest, request=$request"
-            }
+            log.trace(
+                "update orderRequest validation error: subTotal not set, orderRequest={}, request={}",
+                orderRequest,
+                request,
+                kv("orderRequest", orderRequest),
+                kv("request", request),
+            )
             throw EntityBadValueException(
                 entityType = OrderRequestDO.ENTITY_TYPE,
                 entityId = orderRequest.orderRequestId,
@@ -187,7 +203,10 @@ class OrderRequestServiceImpl(
     ) {
 
         if (orderRequest.state != OrderRequestState.LIVE) {
-            log.debug { "refused to update orderRequest in current state, orderRequest=$orderRequest" }
+            log.debug(
+                "refused to update orderRequest in current state, orderRequest={}",
+                kv("orderRequest", orderRequest),
+            )
             throw EntityInIllegalStateException(
                 entityType = OrderRequestDO.ENTITY_TYPE,
                 entityId = orderRequest.orderRequestId,
@@ -201,13 +220,18 @@ class OrderRequestServiceImpl(
         request: OrderRequestUpdateRequest,
     ): Seller {
 
-        log.trace { "fetching seller, sellerId=${request.sellerId}" }
-
+        log.trace("fetching seller, sellerId={}", request.sellerId, kv("sellerId", request.sellerId))
         val seller = try {
             this.sellerClient.getSeller(request.sellerId!!)
         }
         catch (ex: FeignException.NotFound) {
-            log.debug { "refused to update orderRequest, seller not found, orderRequest=$orderRequest, req=$request" }
+            log.debug(
+                "refused to update orderRequest, seller not found, orderRequest={}, request={}",
+                orderRequest,
+                request,
+                kv("orderRequest", orderRequest),
+                kv("request", request),
+            )
             throw EntityNotFoundException(
                 entityType = SellerApi.ENTITY_TYPE,
                 entityId = request.sellerId,
@@ -220,10 +244,15 @@ class OrderRequestServiceImpl(
         }
 
         if (!seller.isActive) {
-            log.debug {
-                "refused to update orderRequest in current state of seller," +
-                        " orderRequest=$orderRequest, request=$request, seller=$seller"
-            }
+            log.debug(
+                "refused to update orderRequest in current state of seller, orderRequest={}, request={}, seller={}",
+                orderRequest,
+                request,
+                seller,
+                kv("orderRequest", orderRequest),
+                kv("request", request),
+                kv("seller", seller),
+            )
             throw EntityInIllegalStateException(
                 entityType = OrderRequestDO.ENTITY_TYPE,
                 entityId = orderRequest.orderRequestId,
@@ -255,10 +284,13 @@ class OrderRequestServiceImpl(
     ): OrderRequestStateChangedProto.OrderRequestStateChanged {
 
         if (!isStateTransitionValid(orderRequest, request.state!!)) {
-            log.trace {
-                "update orderRequest validation error: invalid state transition, " +
-                        "orderRequest=$orderRequest, request=$request"
-            }
+            log.trace(
+                "update orderRequest validation error: invalid state transition, orderRequest={}, request={}",
+                orderRequest,
+                request,
+                kv("orderRequest", orderRequest),
+                kv("request", request),
+            )
             throw EntityInIllegalStateException(
                 entityType = OrderRequestDO.ENTITY_TYPE,
                 entityId = orderRequest.orderRequestId,
@@ -266,11 +298,15 @@ class OrderRequestServiceImpl(
             )
         }
 
-        log.debug {
-            "setting order request state, " +
-                    "orderRequestId=${orderRequest.orderRequestId} " +
-                    "oldState=${orderRequest.state} newState=${request.state}"
-        }
+        log.debug(
+            "setting order request state, orderRequest={} oldState={} newState={}",
+            orderRequest,
+            orderRequest.state,
+            request.state,
+            kv("orderRequest", orderRequest),
+            kv("oldState", orderRequest.state),
+            kv("newState", orderRequest.state),
+        )
 
         orderRequest.state = request.state
 
@@ -304,7 +340,14 @@ class OrderRequestServiceImpl(
     ): Pair<OrderRequestDO, OrderRequestStateChangedProto.OrderRequestStateChanged?> {
 
         if (request.sellerId != null && request.state != null) {
-            log.trace { "update orderRequest validation error: can not set both sellerId and state at the same time" }
+            log.trace(
+                "update orderRequest validation error: " +
+                        "can not set both sellerId and state at the same time, orderRequestId={}, request={}",
+                orderRequestId,
+                request,
+                kv("orderRequestId", orderRequestId),
+                kv("request", request),
+            )
             throw EntityBadValueException(
                 entityType = OrderRequestDO.ENTITY_TYPE,
                 entityId = orderRequestId,
@@ -313,6 +356,7 @@ class OrderRequestServiceImpl(
         }
 
         val orderRequest: OrderRequestDO = this.findOrderRequestOrFail(orderRequestId)
+        val originalOrderRequest = orderRequest.detachedCopy()
 
         var anyChange = false
 
@@ -346,7 +390,13 @@ class OrderRequestServiceImpl(
 
         queueStateChange.synced = false
 
-        log.info { "updating orderRequest, orderRequest=$orderRequest" }
+        log.info(
+            "updating orderRequest, orderRequest={}, request={}",
+            originalOrderRequest,
+            request,
+            kv("orderRequest", originalOrderRequest),
+            kv("request", request),
+        )
         this.orderRequestRepo.save(orderRequest)
         this.orderRequestProcessQueueStateChangeRepo.save(queueStateChange)
 
@@ -365,9 +415,11 @@ class OrderRequestServiceImpl(
             }
         queueStateChange.synced = true
 
-        log.trace {
-            "sending new orderRequest state to kafka, orderRequest=$orderRequest"
-        }
+        log.trace(
+            "sending new orderRequest state to kafka, orderRequest={}",
+            orderRequest,
+            kv("orderRequest", orderRequest),
+        )
         this.kafka
             .sendDefault(orderRequestId, stateChange)
             .get(KAFKA_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)
@@ -385,7 +437,7 @@ class OrderRequestServiceImpl(
 
         val errors = this.validator.validate(request)
         if (errors.isNotEmpty()) {
-            log.trace { "update orderRequest validation error: $errors" }
+            log.trace("update orderRequest validation error, errors={}", errors, kv("validationErrors", errors))
             throw EntityBadValueException(
                 entityType = OrderRequestDO.ENTITY_TYPE,
                 entityId = null,
@@ -408,7 +460,7 @@ class OrderRequestServiceImpl(
 
         val errors = this.validator.validate(request)
         if (errors.isNotEmpty()) {
-            log.trace { "add lineItem validation error: $errors" }
+            log.trace("add lineItem validation error, errors={}", errors, kv("validationErrors", errors))
             throw EntityBadValueException(
                 entityType = OrderRequestDO.ENTITY_TYPE,
                 entityId = null,
@@ -425,9 +477,13 @@ class OrderRequestServiceImpl(
         val orderRequest: OrderRequestDO = this.findOrderRequestOrFail(orderRequestId)
 
         if (orderRequest.state != OrderRequestState.ACTIVE) {
-            log.debug {
-                "refused to add lineItem in current state of orderRequest, orderRequest=$orderRequest, request=$request"
-            }
+            log.debug(
+                "refused to add lineItem in current state of orderRequest, orderRequest={}, request={}",
+                orderRequest,
+                request,
+                kv("orderRequest", orderRequest),
+                kv("request", request),
+            )
             throw EntityInIllegalStateException(
                 entityType = OrderRequestDO.ENTITY_TYPE,
                 entityId = orderRequestId,
@@ -443,13 +499,18 @@ class OrderRequestServiceImpl(
         request: LineItemRequest,
     ): Product {
 
-        log.trace { "fetching product, productId=${request.productId}" }
-
+        log.trace("fetching product, productId={}", request.productId, kv("productId", request.productId))
         val product = try {
             this.productClient.getProduct(request.productId)
         }
         catch (ex: FeignException.NotFound) {
-            log.debug { "refused to add lineItem, product not found, orderRequest=$orderRequest, req=$request" }
+            log.debug(
+                "refused to add lineItem, product not found, orderRequest={}, request={}",
+                orderRequest,
+                request,
+                kv("orderRequest", orderRequest),
+                kv("request", request),
+            )
             throw EntityNotFoundException(
                 entityType = ProductApi.ENTITY_TYPE,
                 entityId = request.productId,
@@ -462,10 +523,15 @@ class OrderRequestServiceImpl(
         }
 
         if (!product.active) {
-            log.debug {
-                "refused to add lineItem in current state of product, " +
-                        "orderRequest=$orderRequest, product=$product, request=$request"
-            }
+            log.debug(
+                "refused to add lineItem in current state of product, orderRequest={}, product={}, request={}",
+                orderRequest,
+                product,
+                request,
+                kv("orderRequest", orderRequest),
+                kv("product", product),
+                kv("request", request),
+            )
             throw EntityInIllegalStateException(
                 entityType = ProductApi.ENTITY_TYPE,
                 request.productId,
@@ -487,7 +553,11 @@ class OrderRequestServiceImpl(
             .map { it.productId!! }
 
         if (existing.isNotEmpty()) {
-            log.trace { "orderRequest already has a line item for productIds=${existing.joinToString(", ")}" }
+            log.trace(
+                "orderRequest already has a line item for productIds={}",
+                existing,
+                kv("productIds", existing),
+            )
             throw EntityBadValueException(
                 entityType = OrderRequestLineItemDO.ENTITY_TYPE,
                 entityId = null,
@@ -520,9 +590,15 @@ class OrderRequestServiceImpl(
             "duplicate lineItem=${existingLineItem.get().orderRequestLineItemPk}"
         }
 
-        log.info { "adding order request line item, orderRequestId=${orderRequest.orderRequestId} lineItem=$lineItem" }
+        log.info(
+            "adding order request line item, orderRequest={} lineItem={}",
+            orderRequest,
+            lineItem,
+            kv("orderRequest", orderRequest),
+            kv("lineItem", lineItem),
+            kv("request", request),
+        )
         val saved = this.lineItemRepo.save(lineItem)
-
         return saved
     }
 
@@ -557,10 +633,13 @@ class OrderRequestServiceImpl(
         val orderRequest: OrderRequestDO = this.findOrderRequestOrFail(orderRequestId)
 
         if (orderRequest.state != OrderRequestState.ACTIVE) {
-            log.debug {
-                "refused to delete lineItem in current state of orderRequest, " +
-                        "orderRequest=$orderRequest, lineItemId=$lineItemId"
-            }
+            log.debug(
+                "refused to delete lineItem in current state of orderRequest, orderRequest={}, lineItemId={}",
+                orderRequest,
+                lineItemId,
+                kv("orderRequest", orderRequest),
+                kv("linteItemId", lineItemId),
+            )
             throw EntityInIllegalStateException(
                 entityType = OrderRequestDO.ENTITY_TYPE,
                 entityId = orderRequestId,
@@ -571,14 +650,24 @@ class OrderRequestServiceImpl(
         val lineItem = this.lineItemRepo.findById(OrderRequestLineItemDO.Pk(lineItemId, orderRequest))
 
         if (lineItem.isPresent) {
-            log.info { "removing line item, orderRequestId=${orderRequest.orderRequestId} lineItemId=$lineItemId" }
+            log.info(
+                "removing line item, orderRequest={} lineItem={}",
+                orderRequest,
+                lineItem,
+                kv("orderRequest", orderRequest),
+                kv("lineItem", lineItem.get()),
+            )
             this.lineItemRepo.delete(lineItem.get())
         }
         else {
-            log.debug {
+            log.debug(
                 "not removing line item as it is not present, " +
-                        "orderRequestId=${orderRequest.orderRequestId} lineItemId=$lineItemId"
-            }
+                        "orderRequest={} lineItemId={}",
+                orderRequest,
+                lineItemId,
+                kv("orderRequest", orderRequest),
+                kv("lineItemId", lineItemId),
+            )
         }
     }
 
@@ -598,7 +687,13 @@ class OrderRequestServiceImpl(
 
         val orderRequest = this.findOrderRequestOrFail(orderRequestId)
         val lineItem = this.lineItemRepo.findById(OrderRequestLineItemDO.Pk(lineItemId, orderRequest)).orElseThrow {
-            log.trace { "lineItem not found, orderRequestId=$orderRequestId, lineItemId=$lineItemId" }
+            log.trace(
+                "lineItem not found, orderRequest={}, lineItemId={}",
+                orderRequest,
+                lineItemId,
+                kv("orderRequest", orderRequest),
+                kv("lineItemId", lineItemId),
+            )
             EntityNotFoundException(
                 entityType = OrderRequestLineItemDO.ENTITY_TYPE,
                 entityId = lineItemId,
@@ -618,7 +713,13 @@ class OrderRequestServiceImpl(
 
         val errors = this.validator.validate(request)
         if (errors.isNotEmpty()) {
-            log.trace { "update lineItem validation error: $errors" }
+            log.trace(
+                "update lineItem validation error, lineItemId={} errors={}",
+                lineItemId,
+                errors,
+                kv("lineItemId", lineItemId),
+                kv("validationErrors", errors),
+            )
             throw EntityBadValueException(
                 entityType = OrderRequestDO.ENTITY_TYPE,
                 entityId = null,
@@ -628,10 +729,16 @@ class OrderRequestServiceImpl(
 
         val orderRequest: OrderRequestDO = this.findOrderRequestOrFail(orderRequestId)
         if (orderRequest.state != OrderRequestState.ACTIVE) {
-            log.debug {
+            log.debug(
                 "refused to update lineItem in current state of orderRequest, " +
-                        "orderRequest=$orderRequest, lineItemId=$lineItemId, request=$request"
-            }
+                        "orderRequest={}, lineItemId={}, request={}",
+                orderRequest,
+                lineItemId,
+                request,
+                kv("orderRequest", orderRequest),
+                kv("lineItemId", lineItemId),
+                kv("request", request),
+            )
             throw EntityInIllegalStateException(
                 entityType = OrderRequestDO.ENTITY_TYPE,
                 entityId = orderRequestId,
@@ -641,7 +748,14 @@ class OrderRequestServiceImpl(
 
         val lineItem: OrderRequestLineItemDO =
             this.lineItemRepo.findById(OrderRequestLineItemDO.Pk(lineItemId, orderRequest)).orElseThrow {
-                log.trace { "lineItem not found, orderRequestId=$orderRequestId, lineItemId=$lineItemId" }
+                log.trace(
+                    "lineItem not found, orderRequest={}, lineItemId={}",
+                    orderRequest,
+                    lineItemId,
+                    kv("orderRequest", orderRequest),
+                    kv("lineItemId", lineItemId),
+                    kv("request", request),
+                )
                 EntityNotFoundException(
                     entityType = OrderRequestLineItemDO.ENTITY_TYPE,
                     entityId = lineItemId,
@@ -656,13 +770,15 @@ class OrderRequestServiceImpl(
         }
 
         if (anyChange) {
-            log.info {
-                "updating order request line item, " +
-                        "orderRequestId=${orderRequest.orderRequestId}, " +
-                        "lineItemId=${lineItem.orderRequestLineItemPk.orderRequestLineItemId}, " +
-                        "request=$request"
-            }
-
+            log.info(
+                "updating order request line item, orderRequest={}, lineItemId={}, request={}",
+                orderRequest,
+                lineItem,
+                request,
+                kv("orderRequest", orderRequest),
+                kv("lineItem", lineItemId),
+                kv("request", request),
+            )
             this.lineItemRepo.save(lineItem)
         }
 

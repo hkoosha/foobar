@@ -16,6 +16,7 @@ import io.koosha.foobar.warehouse.api.model.AvailabilityRepository
 import io.koosha.foobar.warehouse.api.model.ProductDO
 import io.koosha.foobar.warehouse.api.model.ProductRepository
 import mu.KotlinLogging
+import net.logstash.logback.argument.StructuredArguments.kv
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Service
@@ -40,7 +41,7 @@ class ProductServiceImpl(
     private val log = KotlinLogging.logger {}
 
     private fun findProductOrFail(productId: UUID): ProductDO = this.productRepo.findById(productId).orElseThrow {
-        log.trace { "product not found, productId=$productId" }
+        log.trace("product not found, productId={}", productId, kv("productId", productId))
         EntityNotFoundException(
             entityType = ProductDO.ENTITY_TYPE,
             entityId = productId,
@@ -64,7 +65,7 @@ class ProductServiceImpl(
 
         val errors = this.validator.validate(request)
         if (errors.isNotEmpty()) {
-            log.trace { "create product validation error: $errors" }
+            log.trace("create product validation error, errors={}", errors, kv("validationErrors", errors))
             throw EntityBadValueException(
                 entityType = ProductDO.ENTITY_TYPE,
                 entityId = null,
@@ -81,7 +82,7 @@ class ProductServiceImpl(
         product.created = this.clock.instant().atZone(ZoneOffset.UTC)
         product.updated = product.created
 
-        log.info { "creating new product, product=$product" }
+        log.info("creating new product, product={}", product, kv("product", product))
         this.productRepo.save(product)
         return product
     }
@@ -91,6 +92,8 @@ class ProductServiceImpl(
         request: ProductUpdateRequest,
         product: ProductDO,
     ): Boolean {
+
+        val originalProduct = product.detachedCopy()
 
         var anyChange = false
 
@@ -112,9 +115,21 @@ class ProductServiceImpl(
         }
 
         if (anyChange)
-            log.info { "updating product, productId=${product.productId} req=$request" }
+            log.info(
+                "updating product, product={} request={}",
+                originalProduct,
+                request,
+                kv("product", originalProduct),
+                kv("request", request),
+            )
         else
-            log.trace { "nothing to update on product, productId=${product.productId}, req=$request" }
+            log.trace(
+                "nothing to update on product, product={}, request={}",
+                product,
+                request,
+                kv("product", product),
+                kv("request", request),
+            )
 
         return anyChange
     }
@@ -129,7 +144,13 @@ class ProductServiceImpl(
 
         val errors = this.validator.validate(request)
         if (errors.isNotEmpty()) {
-            log.trace { "update product validation error: $errors" }
+            log.trace(
+                "update product validation error,  productId={}, errors={}",
+                productId,
+                errors,
+                kv("productId", productId),
+                kv("validationErrors", errors),
+            )
             throw EntityBadValueException(
                 entityType = ProductDO.ENTITY_TYPE,
                 entityId = productId,
@@ -142,8 +163,6 @@ class ProductServiceImpl(
         if (!anyChange)
             return entity
 
-        log.info { "updating product, productId=$productId request=$request" }
-        entity.updated = this.clock.instant().atZone(ZoneOffset.UTC)
         this.productRepo.save(entity)
         return entity
     }
@@ -162,7 +181,11 @@ class ProductServiceImpl(
         val product = maybeProduct.get()
 
         if (product.active!!) {
-            log.debug { "refused to delete product in current state, product=$product" }
+            log.debug(
+                "refused to delete product in current state, product={}",
+                product,
+                kv("product", product),
+            )
             throw EntityInIllegalStateException(
                 entityType = ProductDO.ENTITY_TYPE,
                 entityId = productId,
@@ -170,7 +193,11 @@ class ProductServiceImpl(
             )
         }
 
-        log.info { "deleting product, product=$product" }
+        log.info(
+            "deleting product, product={}",
+            product,
+            kv("product", product),
+        )
         this.productRepo.delete(product)
     }
 
@@ -181,7 +208,11 @@ class ProductServiceImpl(
 
         val errors = this.validator.validate(request)
         if (errors.isNotEmpty()) {
-            log.trace { "add availability validation error: $errors" }
+            log.trace(
+                "add availability validation error:, errors={}",
+                errors,
+                kv("validationErrors", errors)
+            )
             throw EntityBadValueException(
                 entityType = AvailabilityDO.ENTITY_TYPE,
                 entityId = null,
@@ -199,7 +230,13 @@ class ProductServiceImpl(
         val product: ProductDO = this.findProductOrFail(productId)
 
         if (product.active != true) {
-            log.debug { "refused to add availability in current state, product=$product, req=$request" }
+            log.debug(
+                "refused to add availability in current state, product={}, request={}",
+                product,
+                request,
+                kv("product", product),
+                kv("request", request),
+            )
             throw EntityInIllegalStateException(
                 entityType = ProductDO.ENTITY_TYPE,
                 entityId = productId,
@@ -215,13 +252,19 @@ class ProductServiceImpl(
         request: AvailabilityCreateRequest,
     ) {
 
-        log.trace { "fetching seller, sellerId=${request.sellerId}" }
+        log.trace("fetching seller, sellerId={}", request.sellerId, kv("sellerId", request.sellerId))
 
         try {
             this.sellerClient.getSeller(request.sellerId)
         }
         catch (ex: FeignException.NotFound) {
-            log.debug { "refused to add availability, seller not found, product=$product, req=$request" }
+            log.debug(
+                "refused to add availability, seller not found, product={}, request={}",
+                product,
+                request,
+                kv("product", product),
+                kv("request", request),
+            )
             throw EntityNotFoundException(
                 entityType = SellerApi.ENTITY_TYPE,
                 entityId = request.sellerId,
@@ -241,10 +284,16 @@ class ProductServiceImpl(
         request: AvailabilityCreateRequest,
     ) {
 
-        log.trace {
+        log.trace(
             "sending new availability to kafka, " +
-                    "productId=${product.productId} sellerId=${request.sellerId}, availability=$availability"
-        }
+                    "product={} sellerId={}, availability={}",
+            product,
+            request.sellerId,
+            availability,
+            kv("product", product),
+            kv("sellerId", request.sellerId),
+            kv("availability", availability),
+        )
         val send = AvailabilityProto.Availability
             .newBuilder()
             .setHeader(HeaderHelper.create(SOURCE, this.clock.millis()))
@@ -283,7 +332,13 @@ class ProductServiceImpl(
         availability.updated = availability.created
 
         if (availabilityRepo.findById(availability.availabilityPk).isPresent) {
-            log.debug { "refused to add duplicated availability, product=$product, req=$request" }
+            log.debug(
+                "refused to add duplicated availability, product={}, request={}",
+                product,
+                request,
+                kv("product", product),
+                kv("request", request),
+            )
             throw EntityBadValueException(
                 context = setOf(
                     EntityInfo(
@@ -299,10 +354,15 @@ class ProductServiceImpl(
             )
         }
 
-        log.info {
-            "adding product availability, " +
-                    "productId=${product.productId} sellerId=${request.sellerId}, availability=$availability"
-        }
+        log.info(
+            "adding product availability, product={} sellerId={}, availability={}",
+            product,
+            request.sellerId,
+            availability,
+            kv("product", product),
+            kv("sellerId", request.sellerId),
+            kv("availability", availability),
+        )
         this.availabilityRepo.save(availability)
 
         this.addAvailabilitySendKafka(product, availability, request)
@@ -318,10 +378,16 @@ class ProductServiceImpl(
     ) {
 
         if (request.unitsAvailable != null && request.unitsToFreeze != null) {
-            log.debug {
+            log.debug(
                 "update availability validation error: can not freeze and set availability unit at the same time," +
-                        " product=$product, availability=$availability request=$request"
-            }
+                        " product={}, availability={} request={}",
+                product,
+                availability,
+                request,
+                kv("product", product),
+                kv("availability", availability),
+                kv("request", request),
+            )
             throw EntityBadValueException(
                 context = setOf(
                     EntityInfo(
@@ -346,10 +412,16 @@ class ProductServiceImpl(
     ) {
 
         if (request.unitsAvailable!! > availability.unitsAvailable!! && !product.active!!) {
-            log.debug {
+            log.debug(
                 "update availability validation error: product is not active, can not increase availability," +
-                        " product=$product, availability=$availability request=$request"
-            }
+                        " product={}, availability={} request={}",
+                product,
+                availability,
+                request,
+                kv("product", product),
+                kv("availability", availability),
+                kv("request", request),
+            )
             throw EntityInIllegalStateException(
                 context = setOf(
                     EntityInfo(
@@ -366,10 +438,16 @@ class ProductServiceImpl(
         }
 
         if (request.unitsAvailable < availability.frozenUnits!!)
-            log.warn {
+            log.warn(
                 "available units going under frozen units, " +
-                        "product=$product availability=$availability request=$request"
-            }
+                        "product={} availability={} request={}",
+                product,
+                availability,
+                request,
+                kv("product", product),
+                kv("availability", availability),
+                kv("request", request),
+            )
 
         availability.unitsAvailable = request.unitsAvailable
     }
@@ -381,10 +459,16 @@ class ProductServiceImpl(
     ) {
 
         if (request.unitsToFreeze!! > availability.unitsAvailable!!) {
-            log.debug {
+            log.debug(
                 "update availability validation error: not enough units to freeze," +
-                        " product=$product, availability=$availability request=$request"
-            }
+                        "product={} availability={} request={}",
+                product,
+                availability,
+                request,
+                kv("product", product),
+                kv("availability", availability),
+                kv("request", request),
+            )
             throw EntityInIllegalStateException(
                 context = setOf(
                     EntityInfo(
@@ -443,7 +527,13 @@ class ProductServiceImpl(
 
         val errors = this.validator.validate(request)
         if (errors.isNotEmpty()) {
-            log.trace { "update availability validation error: $errors" }
+            log.trace(
+                "update availability validation error, errors={}", errors,
+                kv("validationErrors", errors),
+                kv("productId", productId),
+                kv("sellerId", sellerId),
+                kv("request", request),
+            )
             throw EntityBadValueException(
                 context = setOf(
                     EntityInfo(
@@ -473,10 +563,15 @@ class ProductServiceImpl(
             )
         )
         .orElseThrow {
-            log.trace {
-                "availability for update not found, " +
-                        "productId=${product.productId}, sellerId=$sellerId, request=$request"
-            }
+            log.trace(
+                "availability for update not found, product={}, sellerId={}, request={}",
+                product,
+                sellerId,
+                request,
+                kv("product", product),
+                kv("sellerId", sellerId),
+                kv("request", request),
+            )
             EntityNotFoundException(
                 context = setOf(
                     EntityInfo(
@@ -508,10 +603,15 @@ class ProductServiceImpl(
             .setPricePerUnit(availability.pricePerUnit!!)
             .build()
 
-        log.trace {
-            "sending updated availability to kafka, " +
-                    "productId=${product.productId} sellerId=$sellerId, availability=$availability"
-        }
+        log.trace(
+            "sending updated availability to kafka, product={} sellerId={}, availability={}",
+            product,
+            sellerId,
+            availability,
+            kv("product", product),
+            kv("sellerId", sellerId),
+            kv("availability", availability),
+        )
         this.kafka
             .sendDefault(send)
             .completable()
@@ -541,7 +641,13 @@ class ProductServiceImpl(
         if (!anyChange)
             return availability
 
-        log.info { "updating product availability, productId=${product.productId} sellerId=$sellerId" }
+        log.info(
+            "updating product availability, product={} sellerId={}",
+            product,
+            sellerId,
+            kv("product", product),
+            kv("sellerId", sellerId),
+        )
         this.availabilityRepo.save(availability)
         this.updateAvailabilitySendKafka(product, availability, sellerId)
 
@@ -565,9 +671,13 @@ class ProductServiceImpl(
         )
 
         if (availability.isEmpty) {
-            log.debug {
-                "not deleting availability: entity does not exist, customerId=$productId, sellerId=$sellerId"
-            }
+            log.debug(
+                "not deleting availability: entity does not exist, product={}, sellerId={}",
+                product,
+                sellerId,
+                kv("product", product),
+                kv("sellerId", sellerId),
+            )
             return
         }
 
@@ -579,13 +689,24 @@ class ProductServiceImpl(
             .setProductId(productId.toString())
             .build()
 
-        log.info { "removing product availability, productId=${product.productId} sellerId=$sellerId" }
+        log.info(
+            "removing product availability, product={} sellerId={}",
+            product,
+            sellerId,
+            kv("product", product),
+            kv("sellerId", sellerId),
+        )
         this.availabilityRepo.delete(availability.get())
 
-        log.trace {
-            "sending removed availability to kafka, " +
-                    "productId=${product.productId} sellerId=$sellerId, availability=$availability"
-        }
+        log.trace(
+            "sending removed availability to kafka, product={} sellerId={}, availability={}",
+            product,
+            sellerId,
+            availability,
+            kv("product", product),
+            kv("sellerId", sellerId),
+            kv("availability", availability),
+        )
         this.kafka
             .sendDefault(send)
             .completable()

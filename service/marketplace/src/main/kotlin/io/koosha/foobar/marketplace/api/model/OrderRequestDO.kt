@@ -3,7 +3,6 @@ package io.koosha.foobar.marketplace.api.model
 import io.koosha.foobar.marketplace.API_PREFIX
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
-import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.util.*
 import javax.persistence.Column
@@ -11,8 +10,6 @@ import javax.persistence.Entity
 import javax.persistence.EnumType
 import javax.persistence.Enumerated
 import javax.persistence.Id
-import javax.persistence.PrePersist
-import javax.persistence.PreUpdate
 import javax.persistence.Table
 import javax.persistence.Version
 
@@ -90,17 +87,17 @@ open class OrderRequestDO(
         const val ENTITY_TYPE_DASHED = "order-request"
     }
 
-    @PrePersist
-    fun updateCreatedAt() {
-        this.created = ZonedDateTime.now(ZoneOffset.UTC)
-        this.updated = ZonedDateTime.now(ZoneOffset.UTC)
-    }
-
-    @PreUpdate
-    fun updateUpdatedAt() {
-        this.updated = ZonedDateTime.now(ZoneOffset.UTC)
-    }
-
+    fun detachedCopy(): OrderRequestDO = OrderRequestDO(
+        orderRequestId = this.orderRequestId,
+        version = this.version,
+        created = this.created,
+        updated = this.updated,
+        lineItemIdPool = this.lineItemIdPool,
+        customerId = this.customerId,
+        sellerId = this.sellerId,
+        state = this.state,
+        subTotal = this.subTotal,
+    )
 
     override fun equals(other: Any?): Boolean {
         if (this === other)

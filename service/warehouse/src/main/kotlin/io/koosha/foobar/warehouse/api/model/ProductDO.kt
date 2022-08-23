@@ -70,6 +70,17 @@ open class ProductDO(
         const val ENTITY_TYPE = "product"
     }
 
+    fun detachedCopy(): ProductDO = ProductDO(
+        productId = this.productId,
+        version = this.version,
+        created = this.created,
+        updated = this.updated,
+        name = this.name,
+        unitSingle = this.unitSingle,
+        unitMultiple = this.unitMultiple,
+        active = this.active,
+    )
+
     override fun equals(other: Any?): Boolean {
         if (this === other)
             return true

@@ -39,6 +39,13 @@ open class AddressDO(
 
     ) {
 
+    fun detachedCopy(): AddressDO = AddressDO(
+        zipcode = this.zipcode,
+        addressLine1 = this.addressLine1,
+        country = this.country,
+        city = this.city,
+    )
+
     override fun equals(other: Any?): Boolean {
         if (this === other)
             return true

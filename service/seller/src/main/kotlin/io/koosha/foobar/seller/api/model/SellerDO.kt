@@ -66,6 +66,16 @@ open class SellerDO(
         const val ENTITY_TYPE = "seller"
     }
 
+    fun detachedCopy(): SellerDO = SellerDO(
+        sellerId = this.sellerId,
+        version = this.version,
+        created = this.created,
+        updated = this.updated,
+        name = this.name,
+        address = this.address,
+        state = this.state,
+    )
+
     override fun equals(other: Any?): Boolean {
         if (this === other)
             return true

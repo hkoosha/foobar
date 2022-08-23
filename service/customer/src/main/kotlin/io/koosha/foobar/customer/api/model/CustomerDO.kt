@@ -91,6 +91,16 @@ open class CustomerDO(
             ", name=" + this.name +
             ")"
 
+    fun detachedCopy(): CustomerDO = CustomerDO(
+        customerId = this.customerId,
+        version = this.version,
+        created = this.created,
+        updated = this.updated,
+        state = this.state,
+        name = this.name.detachedCopy(),
+        addressIdPool = this.addressIdPool,
+    )
+
     @Embeddable
     open class NameDO(
 
@@ -137,6 +147,12 @@ open class CustomerDO(
                 ", firstName=" + this.firstName +
                 ", lastName=" + this.lastName +
                 ")"
+
+        fun detachedCopy(): NameDO = NameDO(
+            title = this.title,
+            firstName = this.firstName,
+            lastName = this.lastName,
+        )
 
     }
 
