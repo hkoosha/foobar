@@ -14,8 +14,6 @@ import mu.KotlinLogging
 import net.logstash.logback.argument.StructuredArguments.kv
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.time.Clock
-import java.time.ZoneOffset
 import java.util.*
 import javax.validation.Validator
 
@@ -24,7 +22,6 @@ import javax.validation.Validator
 class CustomerServiceImpl(
     private val customerRepo: CustomerRepository,
     private val addressRepo: AddressRepository,
-    private val clock: Clock,
     private val validator: Validator,
     private val randomUUIDProvider: RandomUUIDProvider,
 ) : CustomerService {
@@ -235,8 +232,6 @@ class CustomerServiceImpl(
         address.city = request.city
         address.addressLine1 = request.addressLine1
         address.name = request.name
-        address.created = this.clock.instant().atZone(ZoneOffset.UTC)
-        address.updated = address.created
 
         log.info(
             "adding customer address, customerId={} address={}",

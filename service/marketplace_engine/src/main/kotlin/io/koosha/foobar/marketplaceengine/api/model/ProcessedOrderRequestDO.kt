@@ -3,20 +3,20 @@ package io.koosha.foobar.marketplaceengine.api.model
 import io.koosha.foobar.marketplaceengine.API_PREFIX
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
-import java.time.ZoneOffset
-import java.time.ZonedDateTime
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
+import java.time.LocalDateTime
 import java.util.*
 import javax.persistence.Column
 import javax.persistence.Entity
+import javax.persistence.EntityListeners
 import javax.persistence.Id
-import javax.persistence.PrePersist
-import javax.persistence.PreUpdate
 import javax.persistence.Table
 import javax.persistence.Version
 
 
 @Entity
 @Table(name = "${API_PREFIX}__processed_uuid")
+@EntityListeners(AuditingEntityListener::class)
 open class ProcessedOrderRequestDO(
 
     @Id
@@ -37,14 +37,14 @@ open class ProcessedOrderRequestDO(
         name = "CREATED",
         nullable = false,
     )
-    open var created: ZonedDateTime? = null,
+    open var created: LocalDateTime? = null,
 
     @LastModifiedDate
     @Column(
         name = "UPDATED",
         nullable = false,
     )
-    open var updated: ZonedDateTime? = null,
+    open var updated: LocalDateTime? = null,
 
     @Column(
         name = "PROCESSED",
@@ -53,18 +53,6 @@ open class ProcessedOrderRequestDO(
     open var processed: Boolean? = null,
 
     ) {
-
-    @PrePersist
-    fun updateCreatedAt() {
-        this.created = ZonedDateTime.now(ZoneOffset.UTC)
-        this.updated = ZonedDateTime.now(ZoneOffset.UTC)
-    }
-
-    @PreUpdate
-    fun updateUpdatedAt() {
-        this.updated = ZonedDateTime.now(ZoneOffset.UTC)
-    }
-
 
     override fun equals(other: Any?): Boolean {
         if (this === other)
@@ -79,6 +67,7 @@ open class ProcessedOrderRequestDO(
 
     override fun toString(): String = this.javaClass.simpleName + "(" +
             "orderRequestId=" + this.orderRequestId +
+            ", version=" + this.version +
             ", created=" + this.created +
             ", updated=" + this.updated +
             ", processed=" + this.processed +

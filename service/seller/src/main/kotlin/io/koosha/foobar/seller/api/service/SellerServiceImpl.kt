@@ -11,7 +11,6 @@ import net.logstash.logback.argument.StructuredArguments.kv
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.Clock
-import java.time.ZoneOffset
 import java.util.*
 import javax.validation.Validator
 
@@ -69,8 +68,6 @@ class SellerServiceImpl(
         seller.address.addressLine1 = request.address.addressLine1
         seller.address.city = request.address.city
         seller.address.country = request.address.country
-        seller.created = this.clock.instant().atZone(ZoneOffset.UTC)
-        seller.updated = seller.created
 
         log.info("creating new seller, seller={}", seller, kv("seller", seller))
         this.sellerRepo.save(seller)

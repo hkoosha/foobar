@@ -3,10 +3,12 @@
 package io.koosha.foobar.warehouse.api.model
 
 import io.koosha.foobar.warehouse.API_PREFIX
-import java.time.ZonedDateTime
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
+import java.time.LocalDateTime
 import java.util.*
 import javax.persistence.Column
 import javax.persistence.Entity
+import javax.persistence.EntityListeners
 import javax.persistence.Id
 import javax.persistence.Table
 import javax.persistence.Version
@@ -14,6 +16,7 @@ import javax.persistence.Version
 
 @Entity
 @Table(name = "${API_PREFIX}__${ProductDO.ENTITY_TYPE}")
+@EntityListeners(AuditingEntityListener::class)
 open class ProductDO(
 
     @Id
@@ -32,13 +35,13 @@ open class ProductDO(
         name = "CREATED",
         nullable = false,
     )
-    open var created: ZonedDateTime? = null,
+    open var created: LocalDateTime? = null,
 
     @Column(
         name = "UPDATED",
         nullable = false,
     )
-    open var updated: ZonedDateTime? = null,
+    open var updated: LocalDateTime? = null,
 
     @Column(
         name = "NAME",
@@ -94,10 +97,10 @@ open class ProductDO(
     override fun hashCode(): Int = this.javaClass.hashCode()
 
     override fun toString(): String = this.javaClass.simpleName + "(" +
-            "productId=" + this.productId +
-            ", version=" + this.version +
+            "version=" + this.version +
             ", created=" + this.created +
             ", updated=" + this.updated +
+            ", productId=" + this.productId +
             ", name=" + this.name +
             ", unitSingle=" + this.unitSingle +
             ", unitMultiple=" + this.unitMultiple +

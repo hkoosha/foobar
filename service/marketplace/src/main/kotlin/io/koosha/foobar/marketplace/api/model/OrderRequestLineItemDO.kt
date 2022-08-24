@@ -3,23 +3,23 @@ package io.koosha.foobar.marketplace.api.model
 import io.koosha.foobar.marketplace.API_PREFIX
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.io.Serializable
-import java.time.ZoneOffset
-import java.time.ZonedDateTime
+import java.time.LocalDateTime
 import java.util.*
 import javax.persistence.Column
 import javax.persistence.Embeddable
 import javax.persistence.EmbeddedId
 import javax.persistence.Entity
+import javax.persistence.EntityListeners
 import javax.persistence.ManyToOne
-import javax.persistence.PrePersist
-import javax.persistence.PreUpdate
 import javax.persistence.Table
 import javax.persistence.Version
 
 
 @Entity
 @Table(name = "${API_PREFIX}__${OrderRequestLineItemDO.ENTITY_TYPE}")
+@EntityListeners(AuditingEntityListener::class)
 open class OrderRequestLineItemDO(
 
     @EmbeddedId
@@ -34,14 +34,14 @@ open class OrderRequestLineItemDO(
         name = "CREATED",
         nullable = false,
     )
-    open var created: ZonedDateTime? = null,
+    open var created: LocalDateTime? = null,
 
     @LastModifiedDate
     @Column(
         name = "UPDATED",
         nullable = false,
     )
-    open var updated: ZonedDateTime? = null,
+    open var updated: LocalDateTime? = null,
 
     @Column(
         name = "PRODUCT_ID",
@@ -64,17 +64,6 @@ open class OrderRequestLineItemDO(
         const val ENTITY_TYPE_DASHED = "order-request-line-item"
     }
 
-    @PrePersist
-    fun updateCreatedAt() {
-        this.created = ZonedDateTime.now(ZoneOffset.UTC)
-        this.updated = ZonedDateTime.now(ZoneOffset.UTC)
-    }
-
-    @PreUpdate
-    fun updateUpdatedAt() {
-        this.updated = ZonedDateTime.now(ZoneOffset.UTC)
-    }
-
     override fun equals(other: Any?): Boolean {
         if (this === other)
             return true
@@ -86,9 +75,14 @@ open class OrderRequestLineItemDO(
 
     override fun hashCode(): Int = this.javaClass.hashCode()
 
-    override fun toString(): String = this.javaClass.simpleName +
-            "(orderRequestId" + this.orderRequestLineItemPk.orderRequest?.orderRequestId +
-            " orderRequestLineItemId=" + this.orderRequestLineItemPk.orderRequestLineItemId +
+    override fun toString(): String = this.javaClass.simpleName + "(" +
+            "version=" + this.version +
+            ", created=" + this.created +
+            ", updated=" + this.updated +
+            ", orderRequestId=" + this.orderRequestLineItemPk.orderRequest?.orderRequestId +
+            ", orderRequestLineItemId=" + this.orderRequestLineItemPk.orderRequestLineItemId +
+            ", productId=" + this.productId +
+            ", units=" + this.units +
             ")"
 
 
@@ -122,12 +116,11 @@ open class OrderRequestLineItemDO(
                     && this.orderRequest?.orderRequestId == rhs.orderRequest?.orderRequestId
         }
 
-        @Suppress("RedundantOverride")
-        override fun hashCode(): Int = super.hashCode()
+        override fun hashCode(): Int = this.javaClass.hashCode()
 
         override fun toString(): String = this.javaClass.simpleName + "(" +
                 "orderRequestId=" + this.orderRequest?.orderRequestId +
-                "orderRequestLineItemId=" + this.orderRequestLineItemId +
+                ", orderRequestLineItemId=" + this.orderRequestLineItemId +
                 ")"
 
     }

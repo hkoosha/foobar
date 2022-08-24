@@ -84,7 +84,7 @@ docker-image-marketplace: docker-image-marketplace-build docker-image-marketplac
 
 .PHONY: docker-image-marketplace-engine-build
 docker-image-marketplace-engine-build:
-	$(GRADLE_RUNNER) :service:marketplace-engine:jibDockerBuild
+	$(GRADLE_RUNNER) :service:marketplace_engine:jibDockerBuild
 
 .PHONY: docker-image-marketplace-engine-push
 docker-image-marketplace-engine-push:

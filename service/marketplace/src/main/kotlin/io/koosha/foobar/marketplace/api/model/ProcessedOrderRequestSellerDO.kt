@@ -3,26 +3,26 @@ package io.koosha.foobar.marketplace.api.model
 import io.koosha.foobar.marketplace.API_PREFIX
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.io.Serializable
-import java.time.ZoneOffset
-import java.time.ZonedDateTime
+import java.time.LocalDateTime
 import java.util.*
 import javax.persistence.CascadeType
 import javax.persistence.Column
 import javax.persistence.Entity
+import javax.persistence.EntityListeners
 import javax.persistence.FetchType
 import javax.persistence.Id
 import javax.persistence.JoinColumn
 import javax.persistence.MapsId
 import javax.persistence.OneToOne
-import javax.persistence.PrePersist
-import javax.persistence.PreUpdate
 import javax.persistence.Table
 import javax.persistence.Version
 
 
 @Entity
 @Table(name = "${API_PREFIX}__processed_order_request_seller")
+@EntityListeners(AuditingEntityListener::class)
 open class ProcessedOrderRequestSellerDO(
 
     @Id
@@ -50,14 +50,14 @@ open class ProcessedOrderRequestSellerDO(
         name = "CREATED",
         nullable = false,
     )
-    open var created: ZonedDateTime? = null,
+    open var created: LocalDateTime? = null,
 
     @LastModifiedDate
     @Column(
         name = "UPDATED",
         nullable = false,
     )
-    open var updated: ZonedDateTime? = null,
+    open var updated: LocalDateTime? = null,
 
     @Column(
         name = "PROCESSED",
@@ -70,18 +70,6 @@ open class ProcessedOrderRequestSellerDO(
     companion object {
         private const val serialVersionUID = 0L
     }
-
-    @PrePersist
-    fun updateCreatedAt() {
-        this.created = ZonedDateTime.now(ZoneOffset.UTC)
-        this.updated = ZonedDateTime.now(ZoneOffset.UTC)
-    }
-
-    @PreUpdate
-    fun updateUpdatedAt() {
-        this.updated = ZonedDateTime.now(ZoneOffset.UTC)
-    }
-
 
     override fun equals(other: Any?): Boolean {
         if (this === other)

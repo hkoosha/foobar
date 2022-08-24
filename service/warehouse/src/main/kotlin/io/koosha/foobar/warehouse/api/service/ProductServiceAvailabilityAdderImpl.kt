@@ -21,7 +21,6 @@ import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.Clock
-import java.time.ZoneOffset
 import java.util.*
 import javax.validation.Validator
 
@@ -170,8 +169,6 @@ class ProductServiceAvailabilityAdderImpl(
         availability.unitsAvailable = request.unitsAvailable
         availability.frozenUnits = 0
         availability.pricePerUnit = request.pricePerUnit
-        availability.created = this.clock.instant().atZone(ZoneOffset.UTC)
-        availability.updated = availability.created
 
         if (this.availabilityRepo.findById(availability.availabilityPk).isPresent) {
             log.debug(

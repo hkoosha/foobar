@@ -7,15 +7,12 @@ import mu.KotlinLogging
 import net.logstash.logback.argument.StructuredArguments.kv
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.time.Clock
-import java.time.ZoneOffset
 import java.util.*
 import javax.validation.Validator
 
 
 @Service
 class ProductServiceCreatorImpl(
-    private val clock: Clock,
     private val validator: Validator,
 
     private val productRepo: ProductRepository,
@@ -45,8 +42,6 @@ class ProductServiceCreatorImpl(
         product.name = request.name
         product.unitSingle = request.unitSingle
         product.unitMultiple = request.unitMultiple
-        product.created = this.clock.instant().atZone(ZoneOffset.UTC)
-        product.updated = product.created
 
         log.info("creating new product, product={}", product, kv("product", product))
         this.productRepo.save(product)

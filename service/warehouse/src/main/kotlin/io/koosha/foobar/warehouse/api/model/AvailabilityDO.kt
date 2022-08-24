@@ -3,13 +3,15 @@
 package io.koosha.foobar.warehouse.api.model
 
 import io.koosha.foobar.warehouse.API_PREFIX
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.io.Serializable
-import java.time.ZonedDateTime
+import java.time.LocalDateTime
 import java.util.*
 import javax.persistence.Column
 import javax.persistence.Embeddable
 import javax.persistence.EmbeddedId
 import javax.persistence.Entity
+import javax.persistence.EntityListeners
 import javax.persistence.ManyToOne
 import javax.persistence.Table
 import javax.persistence.Version
@@ -17,6 +19,7 @@ import javax.persistence.Version
 
 @Entity
 @Table(name = "${API_PREFIX}__${AvailabilityDO.ENTITY_TYPE}")
+@EntityListeners(AuditingEntityListener::class)
 open class AvailabilityDO(
 
     @EmbeddedId
@@ -30,13 +33,13 @@ open class AvailabilityDO(
         name = "CREATED",
         nullable = false,
     )
-    open var created: ZonedDateTime? = null,
+    open var created: LocalDateTime? = null,
 
     @Column(
         name = "UPDATED",
         nullable = false,
     )
-    open var updated: ZonedDateTime? = null,
+    open var updated: LocalDateTime? = null,
 
     @Column(
         name = "UNITS_AVAILABLE",
@@ -74,10 +77,10 @@ open class AvailabilityDO(
     override fun hashCode(): Int = this.javaClass.hashCode()
 
     override fun toString(): String = this.javaClass.simpleName + "(" +
-            "availabilityPk=" + this.availabilityPk +
-            ", version=" + this.version +
+            "version=" + this.version +
             ", created=" + this.created +
             ", updated=" + this.updated +
+            ", availabilityPk=" + this.availabilityPk +
             ", unitsAvailable=" + this.unitsAvailable +
             ", frozenUnits=" + this.frozenUnits +
             ", pricePerUnit=" + this.pricePerUnit +

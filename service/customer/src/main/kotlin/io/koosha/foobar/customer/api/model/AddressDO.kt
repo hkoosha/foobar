@@ -3,12 +3,14 @@
 package io.koosha.foobar.customer.api.model
 
 import io.koosha.foobar.customer.API_PREFIX
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.io.Serializable
-import java.time.ZonedDateTime
+import java.time.LocalDateTime
 import javax.persistence.Column
 import javax.persistence.Embeddable
 import javax.persistence.EmbeddedId
 import javax.persistence.Entity
+import javax.persistence.EntityListeners
 import javax.persistence.ManyToOne
 import javax.persistence.Table
 import javax.persistence.Version
@@ -17,6 +19,7 @@ import javax.validation.constraints.Size
 
 @Entity
 @Table(name = "${API_PREFIX}__${AddressDO.ENTITY_TYPE}")
+@EntityListeners(AuditingEntityListener::class)
 open class AddressDO(
 
     @EmbeddedId
@@ -30,13 +33,13 @@ open class AddressDO(
         name = "CREATED",
         nullable = false,
     )
-    open var created: ZonedDateTime? = null,
+    open var created: LocalDateTime? = null,
 
     @Column(
         name = "UPDATED",
         nullable = false,
     )
-    open var updated: ZonedDateTime? = null,
+    open var updated: LocalDateTime? = null,
 
     @Column(
         name = "NAME",
@@ -93,6 +96,8 @@ open class AddressDO(
     override fun toString(): String = this.javaClass.simpleName + "(" +
             "addressId=" + this.addressPk +
             ", version=" + this.version +
+            ", created=" + this.created +
+            ", updated=" + this.updated +
             ", name=" + this.name +
             ", zipCode=" + this.zipcode +
             ", addressLine1=" + this.addressLine1 +
@@ -131,8 +136,7 @@ open class AddressDO(
                     && this.customer?.customerId == rhs.customer?.customerId
         }
 
-        @Suppress("RedundantOverride")
-        override fun hashCode(): Int = super.hashCode()
+        override fun hashCode(): Int = this.javaClass.hashCode()
 
         override fun toString(): String = this.javaClass.simpleName + "(" +
                 "customerId=" + this.customer?.customerId +

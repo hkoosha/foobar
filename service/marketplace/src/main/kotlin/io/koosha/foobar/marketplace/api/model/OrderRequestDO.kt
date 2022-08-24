@@ -3,10 +3,12 @@ package io.koosha.foobar.marketplace.api.model
 import io.koosha.foobar.marketplace.API_PREFIX
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
-import java.time.ZonedDateTime
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
+import java.time.LocalDateTime
 import java.util.*
 import javax.persistence.Column
 import javax.persistence.Entity
+import javax.persistence.EntityListeners
 import javax.persistence.EnumType
 import javax.persistence.Enumerated
 import javax.persistence.Id
@@ -16,6 +18,7 @@ import javax.persistence.Version
 
 @Entity
 @Table(name = "${API_PREFIX}__order_request")
+@EntityListeners(AuditingEntityListener::class)
 open class OrderRequestDO(
 
     @Id
@@ -35,14 +38,14 @@ open class OrderRequestDO(
         name = "CREATED",
         nullable = false,
     )
-    open var created: ZonedDateTime? = null,
+    open var created: LocalDateTime? = null,
 
     @LastModifiedDate
     @Column(
         name = "UPDATED",
         nullable = false,
     )
-    open var updated: ZonedDateTime? = null,
+    open var updated: LocalDateTime? = null,
 
     @Column(
         name = "LINE_ITEM_ID_POOL",
@@ -112,10 +115,10 @@ open class OrderRequestDO(
     override fun hashCode(): Int = this.javaClass.hashCode()
 
     override fun toString(): String = this.javaClass.simpleName + "(" +
-            "orderRequestId=" + this.orderRequestId +
-            ", version=" + this.version +
+            "version=" + this.version +
             ", created=" + this.created +
             ", updated=" + this.updated +
+            ", orderRequestId=" + this.orderRequestId +
             ", sellerId=" + this.sellerId +
             ", customerId=" + this.customerId +
             ", state=" + this.state +

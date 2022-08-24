@@ -3,11 +3,13 @@
 package io.koosha.foobar.seller.api.model
 
 import io.koosha.foobar.seller.API_PREFIX
-import java.time.ZonedDateTime
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
+import java.time.LocalDateTime
 import java.util.*
 import javax.persistence.Column
 import javax.persistence.Embedded
 import javax.persistence.Entity
+import javax.persistence.EntityListeners
 import javax.persistence.EnumType
 import javax.persistence.Enumerated
 import javax.persistence.Id
@@ -17,6 +19,7 @@ import javax.persistence.Version
 
 @Entity
 @Table(name = "${API_PREFIX}__${SellerDO.ENTITY_TYPE}")
+@EntityListeners(AuditingEntityListener::class)
 open class SellerDO(
 
     @Id
@@ -35,13 +38,13 @@ open class SellerDO(
         name = "CREATED",
         nullable = false,
     )
-    open var created: ZonedDateTime? = null,
+    open var created: LocalDateTime? = null,
 
     @Column(
         name = "UPDATED",
         nullable = false,
     )
-    open var updated: ZonedDateTime? = null,
+    open var updated: LocalDateTime? = null,
 
     @Column(
         name = "NAME",
@@ -89,10 +92,10 @@ open class SellerDO(
     override fun hashCode(): Int = this.javaClass.hashCode()
 
     override fun toString(): String = this.javaClass.simpleName + "(" +
-            "sellerId=" + this.sellerId +
-            ", version=" + this.version +
+            "version=" + this.version +
             ", created=" + this.created +
             ", updated=" + this.updated +
+            ", sellerId=" + this.sellerId +
             ", state=" + this.state +
             ", name=" + this.name +
             ", address=" + this.address +
