@@ -6,7 +6,7 @@ import io.koosha.foobar.warehouse.api.model.AvailabilityDO
 import io.koosha.foobar.warehouse.api.model.AvailabilityRepository
 import io.koosha.foobar.warehouse.api.model.ProductDO
 import mu.KotlinLogging
-import net.logstash.logback.argument.StructuredArguments.kv
+import net.logstash.logback.argument.StructuredArguments.v
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
@@ -44,10 +44,8 @@ class ProductServiceAvailabilityFinderImpl(
 
             this.log.trace(
                 "availability not found, productId={} sellerId={}",
-                productId,
-                sellerId,
-                kv("productId", productId),
-                kv("sellerId", sellerId)
+                v("productId", productId),
+                v("sellerId", sellerId)
             )
 
             EntityNotFoundException(

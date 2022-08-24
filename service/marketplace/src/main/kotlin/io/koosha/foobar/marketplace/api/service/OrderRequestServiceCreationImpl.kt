@@ -11,7 +11,7 @@ import io.koosha.foobar.marketplace.api.model.OrderRequestDO
 import io.koosha.foobar.marketplace.api.model.OrderRequestRepository
 import io.koosha.foobar.marketplace.api.model.OrderRequestState
 import mu.KotlinLogging
-import net.logstash.logback.argument.StructuredArguments.kv
+import net.logstash.logback.argument.StructuredArguments.v
 import org.openapitools.client.model.Customer
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -36,7 +36,11 @@ class OrderRequestServiceCreationImpl(
 
         val errors = this.validator.validate(request)
         if (errors.isNotEmpty()) {
-            log.trace("create orderRequest validation error, errors={}", errors, kv("validationErrors", errors))
+            log.trace(
+                "create orderRequest validation error, request={} errors={}",
+                v("request", request),
+                v("validationErrors", errors),
+            )
             throw EntityBadValueException(
                 entityType = OrderRequestDO.ENTITY_TYPE,
                 entityId = null,
@@ -49,13 +53,13 @@ class OrderRequestServiceCreationImpl(
         request: OrderRequestCreateRequest,
     ): Customer {
 
-        log.trace("fetching customer, customerId={}", request.customerId, kv("customerId", request.customerId))
+        log.trace("fetching customer, customerId={}", v("customerId", request.customerId))
 
         val customer = try {
             this.customerClient.getCustomer(request.customerId!!)
         }
         catch (ex: FeignException.NotFound) {
-            log.debug("refused to add orderRequest, customer not found, req={}", request, kv("request", request))
+            log.debug("refused to add orderRequest, customer not found, request={}", v("request", request))
             throw EntityNotFoundException(
                 context = setOf(
                     EntityInfo(
@@ -73,10 +77,8 @@ class OrderRequestServiceCreationImpl(
         if (!customer.isActive) {
             log.debug(
                 "refused to create order request in current state of customer, customer={}, request={}",
-                customer,
-                request,
-                kv("customer", customer),
-                kv("request", request),
+                v("customer", customer),
+                v("request", request),
             )
             throw EntityInIllegalStateException(
                 entityType = CustomerApi.ENTITY_TYPE,
@@ -106,8 +108,9 @@ class OrderRequestServiceCreationImpl(
         orderRequest.lineItemIdPool = 0
         orderRequest.state = OrderRequestState.ACTIVE
 
-        log.info("creating new orderRequest, orderRequest={}", orderRequest, kv("orderRequest", orderRequest))
+        log.info("creating new orderRequest, orderRequest={}", v("orderRequest", orderRequest))
         this.orderRequestRepo.save(orderRequest)
+        log.info("new orderRequest created, orderRequest={}", v("orderRequest", orderRequest))
         return orderRequest
     }
 

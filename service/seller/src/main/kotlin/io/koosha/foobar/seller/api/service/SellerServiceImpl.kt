@@ -7,7 +7,7 @@ import io.koosha.foobar.seller.api.model.SellerDO
 import io.koosha.foobar.seller.api.model.SellerRepository
 import io.koosha.foobar.seller.api.model.SellerState
 import mu.KotlinLogging
-import net.logstash.logback.argument.StructuredArguments.kv
+import net.logstash.logback.argument.StructuredArguments.v
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
@@ -23,11 +23,7 @@ class SellerServiceImpl(
     private val log = KotlinLogging.logger {}
 
     private fun findSellerOrFail(sellerId: UUID): SellerDO = this.sellerRepo.findById(sellerId).orElseThrow {
-        log.trace(
-            "seller not found, sellerId={}",
-            sellerId,
-            kv("sellerId", sellerId),
-        )
+        log.trace("seller not found, sellerId={}", v("sellerId", sellerId))
         EntityNotFoundException(
             entityType = SellerDO.ENTITY_TYPE,
             entityId = sellerId,
@@ -50,7 +46,11 @@ class SellerServiceImpl(
 
         val errors = this.validator.validate(request)
         if (errors.isNotEmpty()) {
-            log.trace("create seller validation error, errors={}", errors, kv("validationErrors", errors))
+            log.trace(
+                "create seller validation error, request={} errors={}",
+                v("request", request),
+                v("validationErrors", errors),
+            )
             throw EntityBadValueException(
                 entityType = SellerDO.ENTITY_TYPE,
                 entityId = null,
@@ -67,8 +67,9 @@ class SellerServiceImpl(
         seller.address.city = request.address.city
         seller.address.country = request.address.country
 
-        log.info("creating new seller, seller={}", seller, kv("seller", seller))
+        log.info("creating new seller, seller={}", v("seller", seller))
         this.sellerRepo.save(seller)
+        log.info("new seller created, seller={}", v("seller", seller))
         return seller
     }
 
@@ -104,18 +105,14 @@ class SellerServiceImpl(
         if (anyChange)
             log.info(
                 "updating seller, seller={} request={}",
-                originalSeller,
-                request,
-                kv("seller", seller),
-                kv("request", request),
+                v("seller", originalSeller),
+                v("request", request),
             )
         else
             log.trace(
-                "nothing to update on seller, seller={}, request={}", seller, request,
-                seller,
-                request,
-                kv("seller", seller),
-                kv("request", request),
+                "nothing to update on seller, seller={}, request={}",
+                v("seller", seller),
+                v("request", request),
             )
 
         return anyChange
@@ -131,7 +128,12 @@ class SellerServiceImpl(
 
         val errors = this.validator.validate(request)
         if (errors.isNotEmpty()) {
-            log.trace("update seller validation error, errors={}", errors, kv("validationErrors", errors))
+            log.trace(
+                "update seller validation error, sellerId={} request={} errors={}",
+                v("sellerId", sellerId),
+                v("request", request),
+                v("validationErrors", errors),
+            )
             throw EntityBadValueException(
                 entityType = SellerDO.ENTITY_TYPE,
                 entityId = sellerId,
@@ -144,9 +146,8 @@ class SellerServiceImpl(
         if (seller.state != SellerState.ACTIVE) {
             log.debug(
                 "refused to update seller in current state, seller={} request={}",
-                seller,
-                kv("seller", seller),
-                kv("request", request),
+                v("seller", seller),
+                v("request", request),
             )
             throw EntityInIllegalStateException(
                 entityType = SellerDO.ENTITY_TYPE,
@@ -170,14 +171,14 @@ class SellerServiceImpl(
 
         val maybeEntity: Optional<SellerDO> = this.findById(sellerId)
         if (!maybeEntity.isPresent) {
-            log.debug("not deleting seller, entity does not exist, sellerId={}", sellerId, kv("sellerId", sellerId))
+            log.debug("not deleting seller, entity does not exist, sellerId={}", v("sellerId", sellerId))
             return
         }
 
         val seller: SellerDO = maybeEntity.get()
 
         if (seller.state != SellerState.MARKED_FOR_REMOVAL) {
-            log.debug("refused to delete seller in current state, seller={}", seller, kv("seller", seller))
+            log.debug("refused to delete seller in current state, seller={}", v("seller", seller))
             throw EntityInIllegalStateException(
                 entityType = SellerDO.ENTITY_TYPE,
                 entityId = sellerId,
@@ -185,7 +186,7 @@ class SellerServiceImpl(
             )
         }
 
-        log.info("deleting seller, seller={}", seller, kv("seller", seller))
+        log.info("deleting seller, seller={}", v("seller", seller))
         this.sellerRepo.delete(seller)
     }
 

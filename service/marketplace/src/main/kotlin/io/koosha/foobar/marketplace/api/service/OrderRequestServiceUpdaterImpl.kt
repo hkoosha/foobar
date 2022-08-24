@@ -17,7 +17,7 @@ import io.koosha.foobar.marketplace.api.model.OrderRequestRepository
 import io.koosha.foobar.marketplace.api.model.OrderRequestState
 import io.koosha.foobar.order_request.OrderRequestStateChangedProto
 import mu.KotlinLogging
-import net.logstash.logback.argument.StructuredArguments.kv
+import net.logstash.logback.argument.StructuredArguments.v
 import org.openapitools.client.model.Seller
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.kafka.core.KafkaTemplate
@@ -62,10 +62,8 @@ class OrderRequestServiceUpdaterImpl(
         if (request.subTotal == null) {
             log.trace(
                 "update orderRequest validation error: subTotal not set, orderRequest={}, request={}",
-                orderRequest,
-                request,
-                kv("orderRequest", orderRequest),
-                kv("request", request),
+                v("orderRequest", orderRequest),
+                v("request", request),
             )
             throw EntityBadValueException(
                 entityType = OrderRequestDO.ENTITY_TYPE,
@@ -82,7 +80,7 @@ class OrderRequestServiceUpdaterImpl(
         if (orderRequest.state != OrderRequestState.LIVE) {
             log.debug(
                 "refused to update orderRequest in current state, orderRequest={}",
-                kv("orderRequest", orderRequest),
+                v("orderRequest", orderRequest),
             )
             throw EntityInIllegalStateException(
                 entityType = OrderRequestDO.ENTITY_TYPE,
@@ -97,17 +95,15 @@ class OrderRequestServiceUpdaterImpl(
         request: OrderRequestUpdateRequest,
     ): Seller {
 
-        log.trace("fetching seller, sellerId={}", request.sellerId, kv("sellerId", request.sellerId))
+        log.trace("fetching seller, sellerId={}", v("sellerId", request.sellerId))
         val seller = try {
             this.sellerClient.getSeller(request.sellerId!!)
         }
         catch (ex: FeignException.NotFound) {
             log.debug(
                 "refused to update orderRequest, seller not found, orderRequest={}, request={}",
-                orderRequest,
-                request,
-                kv("orderRequest", orderRequest),
-                kv("request", request),
+                v("orderRequest", orderRequest),
+                v("request", request),
             )
             throw EntityNotFoundException(
                 entityType = SellerApi.ENTITY_TYPE,
@@ -123,12 +119,9 @@ class OrderRequestServiceUpdaterImpl(
         if (!seller.isActive) {
             log.debug(
                 "refused to update orderRequest in current state of seller, orderRequest={}, request={}, seller={}",
-                orderRequest,
-                request,
-                seller,
-                kv("orderRequest", orderRequest),
-                kv("request", request),
-                kv("seller", seller),
+                v("orderRequest", orderRequest),
+                v("request", request),
+                v("seller", seller),
             )
             throw EntityInIllegalStateException(
                 entityType = OrderRequestDO.ENTITY_TYPE,
@@ -175,10 +168,8 @@ class OrderRequestServiceUpdaterImpl(
         if (!isStateTransitionValid(orderRequest, request.state!!)) {
             log.trace(
                 "update orderRequest validation error: invalid state transition, orderRequest={}, request={}",
-                orderRequest,
-                request,
-                kv("orderRequest", orderRequest),
-                kv("request", request),
+                v("orderRequest", orderRequest),
+                v("request", request),
             )
             throw EntityInIllegalStateException(
                 entityType = OrderRequestDO.ENTITY_TYPE,
@@ -189,12 +180,9 @@ class OrderRequestServiceUpdaterImpl(
 
         log.debug(
             "setting order request state, orderRequest={} oldState={} newState={}",
-            orderRequest,
-            orderRequest.state,
-            request.state,
-            kv("orderRequest", orderRequest),
-            kv("oldState", orderRequest.state),
-            kv("newState", orderRequest.state),
+            v("orderRequest", orderRequest),
+            v("oldState", orderRequest.state),
+            v("newState", request.state),
         )
 
         orderRequest.state = request.state
@@ -230,12 +218,10 @@ class OrderRequestServiceUpdaterImpl(
 
         if (request.sellerId != null && request.state != null) {
             log.trace(
-                "update orderRequest validation error: " +
-                        "can not set both sellerId and state at the same time, orderRequestId={}, request={}",
-                orderRequestId,
-                request,
-                kv("orderRequestId", orderRequestId),
-                kv("request", request),
+                "update orderRequest validation error: can not set both sellerId and state at the same time," +
+                        " orderRequestId={}, request={}",
+                v("orderRequestId", orderRequestId),
+                v("request", request),
             )
             throw EntityBadValueException(
                 entityType = OrderRequestDO.ENTITY_TYPE,
@@ -281,10 +267,8 @@ class OrderRequestServiceUpdaterImpl(
 
         log.info(
             "updating orderRequest, orderRequest={}, request={}",
-            originalOrderRequest,
-            request,
-            kv("orderRequest", originalOrderRequest),
-            kv("request", request),
+            v("orderRequest", originalOrderRequest),
+            v("request", request),
         )
         this.orderRequestRepo.save(orderRequest)
         this.orderRequestProcessQueueStateChangeRepo.save(queueStateChange)
@@ -304,11 +288,7 @@ class OrderRequestServiceUpdaterImpl(
             }
         queueStateChange.synced = true
 
-        log.trace(
-            "sending new orderRequest state to kafka, orderRequest={}",
-            orderRequest,
-            kv("orderRequest", orderRequest),
-        )
+        log.trace("sending new orderRequest state to kafka, orderRequest={}", v("orderRequest", orderRequest))
         this.kafka
             .sendDefault(orderRequestId, stateChange)
             .get(KAFKA_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)
@@ -327,7 +307,12 @@ class OrderRequestServiceUpdaterImpl(
 
         val errors = this.validator.validate(request)
         if (errors.isNotEmpty()) {
-            log.trace("update orderRequest validation error, errors={}", errors, kv("validationErrors", errors))
+            log.trace(
+                "update orderRequest validation error, orderRequestId={} request={} errors={}",
+                v("orderRequestId", orderRequestId),
+                v("request", request),
+                v("validationErrors", errors),
+            )
             throw EntityBadValueException(
                 entityType = OrderRequestDO.ENTITY_TYPE,
                 entityId = null,

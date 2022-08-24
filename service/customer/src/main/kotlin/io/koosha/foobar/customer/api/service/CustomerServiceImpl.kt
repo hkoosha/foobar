@@ -11,7 +11,7 @@ import io.koosha.foobar.customer.api.model.CustomerDO
 import io.koosha.foobar.customer.api.model.CustomerRepository
 import io.koosha.foobar.customer.api.model.CustomerState
 import mu.KotlinLogging
-import net.logstash.logback.argument.StructuredArguments.kv
+import net.logstash.logback.argument.StructuredArguments.v
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
@@ -31,7 +31,7 @@ class CustomerServiceImpl(
     @Transactional(readOnly = true)
     override fun findByCustomerIdOrFail(customerId: UUID): CustomerDO =
         this.customerRepo.findById(customerId).orElseThrow {
-            log.trace("customer not found, customerId={}", customerId, kv("customerId", customerId))
+            log.trace("customer not found, customerId={}", v("customerId", customerId))
             EntityNotFoundException(
                 entityType = CustomerDO.ENTITY_TYPE,
                 entityId = customerId,
@@ -51,7 +51,11 @@ class CustomerServiceImpl(
 
         val errors = this.validator.validate(request)
         if (errors.isNotEmpty()) {
-            log.trace("create customer validation error, errors={}", errors, kv("validationErrors", errors))
+            log.trace(
+                "create customer validation error, request={}, errors={}",
+                v("request", request),
+                v("validationErrors", errors),
+            )
             throw EntityBadValueException(
                 entityType = CustomerDO.ENTITY_TYPE,
                 entityId = null,
@@ -61,8 +65,9 @@ class CustomerServiceImpl(
 
         val customer = this.create0(request)
 
-        log.info("creating new customer={}", customer, kv("customer", customer))
+        log.info("creating new customer={}", v("customer", customer))
         val saved = this.customerRepo.save(customer)
+        log.info("new customer created={}", v("customer", saved))
         return saved
     }
 
@@ -103,18 +108,14 @@ class CustomerServiceImpl(
         if (anyChange)
             log.info(
                 "updating customer, customer={}, request={}",
-                originalCustomer,
-                request,
-                kv("customer", customer),
-                kv("request", request),
+                v("customer", originalCustomer),
+                v("request", request),
             )
         else
             log.trace(
                 "nothing to update on customer, customer={}, request={}",
-                customer,
-                request,
-                kv("customer", customer),
-                kv("request", request)
+                v("customer", customer),
+                v("request", request)
             )
 
         return anyChange
@@ -130,7 +131,12 @@ class CustomerServiceImpl(
 
         val errors = this.validator.validate(request)
         if (errors.isNotEmpty()) {
-            log.trace("update customer validation error, errors={}", errors, kv("validationErrors", errors))
+            log.trace(
+                "update customer validation error, customerId={} request={}, errors={}",
+                v("customerId", customerId),
+                v("request", request),
+                v("validationErrors", errors),
+            )
             throw EntityBadValueException(
                 entityType = CustomerDO.ENTITY_TYPE,
                 entityId = null,
@@ -140,7 +146,7 @@ class CustomerServiceImpl(
 
         val customer: CustomerDO = this.findByCustomerIdOrFail(customerId)
         if (customer.state != CustomerState.ACTIVE) {
-            log.debug("refused to update customer in current state, customer={}", customer, kv("customer", customer))
+            log.debug("refused to update customer in current state, customer={}", v("customer", customer))
             throw EntityInIllegalStateException(
                 entityType = CustomerDO.ENTITY_TYPE,
                 entityId = customerId,
@@ -163,18 +169,14 @@ class CustomerServiceImpl(
 
         val maybeCustomer: Optional<CustomerDO> = this.customerRepo.findById(customerId)
         if (maybeCustomer.isEmpty) {
-            log.debug(
-                "not deleting customer, entity does not exist, customerId={}",
-                customerId,
-                kv("customerId", customerId)
-            )
+            log.debug("not deleting customer, entity does not exist, customerId={}", v("customerId", customerId))
             return
         }
 
         val customer: CustomerDO = maybeCustomer.get()
 
         if (customer.state != CustomerState.MARKED_FOR_REMOVAL) {
-            log.debug("refused to delete customer in current state, customer={}", customer, kv("customer", customer))
+            log.debug("refused to delete customer in current state, customer={}", v("customer", customer))
             throw EntityInIllegalStateException(
                 entityType = CustomerDO.ENTITY_TYPE,
                 entityId = customerId,
@@ -182,7 +184,7 @@ class CustomerServiceImpl(
             )
         }
 
-        log.info("deleting customer and addresses, customer={}", customer, kv("customer", customer))
+        log.info("deleting customer and addresses, customer={}", v("customer", customer))
         this.addressRepo.deleteByAddressPk_Customer_customerId(customer.customerId!!)
         this.customerRepo.delete(customer)
     }
@@ -197,7 +199,12 @@ class CustomerServiceImpl(
 
         val errors = this.validator.validate(request)
         if (errors.isNotEmpty()) {
-            log.trace("add address validation error: {}", errors, kv("validationErrors", errors))
+            log.trace(
+                "add address validation error, customerId={}, request={}, errors={}",
+                v("customerId", customerId),
+                v("request", request),
+                v("validationErrors", errors),
+            )
             throw EntityBadValueException(
                 entityType = AddressDO.ENTITY_TYPE,
                 entityId = null,
@@ -208,11 +215,9 @@ class CustomerServiceImpl(
         val customer: CustomerDO = this.findByCustomerIdOrFail(customerId)
         if (customer.state != CustomerState.ACTIVE) {
             log.debug(
-                "refused to add address in current state of customer, customer={}, req={}",
-                customer,
-                request,
-                kv("customer", customer),
-                kv("request", request)
+                "refused to add address in current state of customer, customer={}, request={}",
+                v("customer", customer),
+                v("request", request)
             )
             throw EntityInIllegalStateException(
                 entityType = CustomerDO.ENTITY_TYPE,
@@ -234,14 +239,17 @@ class CustomerServiceImpl(
         address.name = request.name
 
         log.info(
-            "adding customer address, customerId={} address={}",
-            customer.customerId,
-            address,
-            kv("customer", customer),
-            kv("address", address)
+            "adding customer address, customer={} address={}",
+            v("customer", customer),
+            v("address", address)
         )
         this.customerRepo.save(customer)
         val saved = this.addressRepo.save(address)
+        log.info(
+            "new customer address saved, customer={} address={}",
+            v("customer", customer),
+            v("address", address)
+        )
 
         return saved
     }
@@ -259,10 +267,8 @@ class CustomerServiceImpl(
         if (customer.state != CustomerState.ACTIVE) {
             log.debug(
                 "refused to delete address in current state of customer, customer={}, addressId={}",
-                customer,
-                addressId,
-                kv("customer", customer),
-                kv("addressId", addressId)
+                v("customer", customer),
+                v("addressId", addressId)
             )
             throw EntityInIllegalStateException(
                 context = setOf(
@@ -288,21 +294,17 @@ class CustomerServiceImpl(
 
         if (address.isEmpty) {
             log.debug(
-                "not deleting address, entity does not exist, customerId={}, addressId={}",
-                customerId,
-                addressId,
-                kv("customer", customer),
-                kv("address", address),
+                "not deleting address, entity does not exist, customer={}, addressId={}",
+                v("customer", customer),
+                v("addressId", addressId),
             )
             return
         }
 
         log.debug(
             "removing customer address, customer={} address={}",
-            customer,
-            address,
-            kv("customer", customer),
-            kv("address", address),
+            v("customer", customer),
+            v("address", address),
         )
         this.addressRepo.delete(address.get())
     }
@@ -326,10 +328,8 @@ class CustomerServiceImpl(
             .orElseThrow {
                 log.trace(
                     "customer address not found, customer={}, addressId={}",
-                    customer,
-                    addressId,
-                    kv("customer", customer),
-                    kv("addressId", addressId),
+                    v("customer", customer),
+                    v("addressId", addressId),
                 )
                 EntityNotFoundException(
                     context = setOf(

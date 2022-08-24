@@ -13,7 +13,7 @@ import io.koosha.foobar.shipping.api.model.ShippingDO
 import io.koosha.foobar.shipping.api.model.ShippingRepository
 import io.koosha.foobar.shipping.api.model.ShippingState
 import mu.KotlinLogging
-import net.logstash.logback.argument.StructuredArguments.kv
+import net.logstash.logback.argument.StructuredArguments.v
 import org.openapitools.client.model.Address
 import org.openapitools.client.model.OrderRequest
 import org.openapitools.client.model.Seller
@@ -34,8 +34,9 @@ class ShippingServiceImpl(
 
     private val log = KotlinLogging.logger {}
 
+
     private fun findShippingOrFail(shippingId: UUID): ShippingDO = this.repository.findById(shippingId).orElseThrow {
-        log.trace("shipping not found, shipping={}", shippingId, kv("shippingId", shippingId))
+        log.trace("shipping not found, shipping={}", v("shippingId", shippingId))
         EntityNotFoundException(
             entityType = ShippingDO.ENTITY_TYPE,
             entityId = shippingId,
@@ -55,8 +56,9 @@ class ShippingServiceImpl(
 
         if (!ok) {
             log.debug(
-                "illegal shipping state transition, shipping={}, targetState={}", shipping, target,
-                kv("shipping", shipping),
+                "illegal shipping state transition, shipping={}, targetState={}",
+                v("shipping", shipping),
+                v("targetState", target),
             )
             throw EntityInIllegalStateException(
                 entityType = ShippingDO.ENTITY_TYPE,
@@ -80,7 +82,11 @@ class ShippingServiceImpl(
 
         val errors = this.validator.validate(request)
         if (errors.isNotEmpty()) {
-            log.trace("create shipping validation error, errors={}", errors, kv("validationErrors", errors))
+            log.trace(
+                "create shipping validation error, request={} errors={}",
+                v("request", request),
+                v("validationErrors", errors),
+            )
             throw EntityBadValueException(
                 entityType = ShippingDO.ENTITY_TYPE,
                 entityId = null,
@@ -93,7 +99,7 @@ class ShippingServiceImpl(
         request: ShippingCreateRequest,
     ): Seller {
 
-        log.trace("fetching seller, sellerId={}", request.sellerId, kv("sellerId", request.sellerId))
+        log.trace("fetching seller, sellerId={}", v("sellerId", request.sellerId))
 
         val seller = try {
             this.sellerClient.getSeller(request.sellerId)
@@ -101,10 +107,8 @@ class ShippingServiceImpl(
         catch (ex: FeignException.NotFound) {
             log.debug(
                 "refused to add shipping, seller not found, sellerId={} request={}",
-                request.sellerId,
-                request,
-                kv("request", request),
-                kv("sellerId", request.sellerId)
+                v("sellerId", request.sellerId),
+                v("request", request),
             )
             throw EntityNotFoundException(
                 entityType = SellerApi.ENTITY_TYPE,
@@ -124,10 +128,7 @@ class ShippingServiceImpl(
         request: ShippingCreateRequest,
     ): OrderRequest {
 
-        log.trace(
-            "fetching orderRequest, orderRequestId={}", request.orderRequestId,
-            kv("orderRequestId", request.orderRequestId),
-        )
+        log.trace("fetching orderRequest, orderRequestId={}", v("orderRequestId", request.orderRequestId))
 
         val orderRequest: OrderRequest = try {
             this.orderRequestClient.getOrderRequest(request.orderRequestId)
@@ -135,10 +136,8 @@ class ShippingServiceImpl(
         catch (ex: FeignException.NotFound) {
             log.debug(
                 "refused to add shipping, orderRequest not found, orderRequestId={} request={}",
-                request.orderRequestId,
-                request,
-                kv("orderRequestId", request.orderRequestId),
-                kv("request", request)
+                v("orderRequestId", request.orderRequestId),
+                v("request", request)
             )
             throw EntityNotFoundException(
                 entityType = CustomerApi.ENTITY_TYPE,
@@ -160,9 +159,9 @@ class ShippingServiceImpl(
     ): Address {
 
         log.trace(
-            "fetching customer addresses, customerId={}", orderRequest.customerId,
-            kv("customerId", orderRequest.customerId),
-            kv("orderRequest", orderRequest),
+            "fetching customer addresses, customerId={}, orderRequest={}",
+            v("customerId", orderRequest.customerId),
+            v("orderRequest", orderRequest),
         )
 
         val customerAddress: List<Address> = try {
@@ -170,12 +169,10 @@ class ShippingServiceImpl(
         }
         catch (ex: FeignException.NotFound) {
             log.debug(
-                "refused to add shipping, customer not found, customerId={} request={}",
-                orderRequest.customerId,
-                request,
-                kv("request", request),
-                kv("customerId", orderRequest.customerId),
-                kv("orderRequest", orderRequest),
+                "refused to add shipping, customer not found, customerId={} request={} orderRequest={}",
+                v("customerId", orderRequest.customerId),
+                v("request", request),
+                v("orderRequest", orderRequest),
             )
             throw EntityNotFoundException(
                 entityType = "TODO", // extract from exception
@@ -189,12 +186,10 @@ class ShippingServiceImpl(
         }
         if (customerAddress.isEmpty()) {
             log.debug(
-                "refused to add shipping, customer has no address, orderRequest={} request={}",
-                orderRequest,
-                request,
-                kv("request", request),
-                kv("customerId", orderRequest.customerId),
-                kv("orderRequest", orderRequest),
+                "refused to add shipping, customer has no address, customerId={} orderRequest={} request={}",
+                v("customerId", orderRequest.customerId),
+                v("orderRequest", orderRequest),
+                v("request", request),
             )
             throw EntityNotFoundException(
                 entityType = AddressApi.ENTITY_TYPE,
@@ -233,12 +228,9 @@ class ShippingServiceImpl(
         shipping.state = ShippingState.ON_WAY_TO_CUSTOMER
         shipping.shippingId = UUID.randomUUID()
 
-        log.info(
-            "creating new shipping, shipping={}",
-            shipping,
-            kv("shipping", shipping),
-        )
+        log.info("creating new shipping, shipping={}", v("shipping", shipping))
         this.repository.save(shipping)
+        log.info("new shipping crated, shipping={}", v("shipping", shipping))
         return shipping
     }
 
@@ -253,10 +245,10 @@ class ShippingServiceImpl(
         val errors = this.validator.validate(request)
         if (errors.isNotEmpty()) {
             log.trace(
-                "update shipping validation error, errors={}",
-                errors,
-                kv("validationErrors", errors),
-                kv("shippingId", shippingId),
+                "update shipping validation error, shippingId={} request={} errors={}",
+                v("shippingId", shippingId),
+                v("request", request),
+                v("validationErrors", errors),
             )
             throw EntityBadValueException(
                 entityType = ShippingDO.ENTITY_TYPE,
@@ -281,10 +273,8 @@ class ShippingServiceImpl(
 
         log.info(
             "updating shipping, shipping={} request={}",
-            originalShipping,
-            request,
-            kv("shipping", originalShipping),
-            kv("request", request)
+            v("shipping", originalShipping),
+            v("request", request)
         )
         this.repository.save(shipping)
         return shipping
@@ -297,21 +287,14 @@ class ShippingServiceImpl(
 
         val maybeShipping: Optional<ShippingDO> = this.findById(shippingId)
         if (!maybeShipping.isPresent) {
-            log.debug(
-                "not deleting shipping, entity does not exist, shippingId={}", shippingId,
-                kv("shippingId", shippingId),
-            )
+            log.debug("not deleting shipping, entity does not exist, shippingId={}", v("shippingId", shippingId))
             return
         }
 
         val shipping: ShippingDO = maybeShipping.get()
 
         if (shipping.state?.deletionAllowed != true) {
-            log.debug(
-                "refused to delete shipping in current state, shipping={}",
-                shipping,
-                kv("shipping", shipping),
-            )
+            log.debug("refused to delete shipping in current state, shipping={}", v("shipping", shipping))
             throw EntityInIllegalStateException(
                 entityType = ShippingDO.ENTITY_TYPE,
                 entityId = shippingId,

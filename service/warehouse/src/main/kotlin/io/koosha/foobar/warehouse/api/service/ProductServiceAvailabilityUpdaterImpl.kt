@@ -13,7 +13,7 @@ import io.koosha.foobar.warehouse.api.model.AvailabilityDO
 import io.koosha.foobar.warehouse.api.model.AvailabilityRepository
 import io.koosha.foobar.warehouse.api.model.ProductDO
 import mu.KotlinLogging
-import net.logstash.logback.argument.StructuredArguments.kv
+import net.logstash.logback.argument.StructuredArguments.v
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Service
@@ -49,12 +49,9 @@ class ProductServiceAvailabilityUpdaterImpl(
             log.debug(
                 "update availability validation error: can not freeze and set availability unit at the same time," +
                         " product={}, availability={} request={}",
-                product,
-                availability,
-                request,
-                kv("product", product),
-                kv("availability", availability),
-                kv("request", request),
+                v("product", product),
+                v("availability", availability),
+                v("request", request),
             )
             throw EntityBadValueException(
                 context = setOf(
@@ -83,12 +80,9 @@ class ProductServiceAvailabilityUpdaterImpl(
             log.debug(
                 "update availability validation error: product is not active, can not increase availability," +
                         " product={}, availability={} request={}",
-                product,
-                availability,
-                request,
-                kv("product", product),
-                kv("availability", availability),
-                kv("request", request),
+                v("product", product),
+                v("availability", availability),
+                v("request", request),
             )
             throw EntityInIllegalStateException(
                 context = setOf(
@@ -107,14 +101,10 @@ class ProductServiceAvailabilityUpdaterImpl(
 
         if (request.unitsAvailable < availability.frozenUnits!!)
             log.warn(
-                "available units going under frozen units, " +
-                        "product={} availability={} request={}",
-                product,
-                availability,
-                request,
-                kv("product", product),
-                kv("availability", availability),
-                kv("request", request),
+                "available units going under frozen units, product={} availability={} request={}",
+                v("product", product),
+                v("availability", availability),
+                v("request", request),
             )
 
         availability.unitsAvailable = request.unitsAvailable
@@ -128,14 +118,10 @@ class ProductServiceAvailabilityUpdaterImpl(
 
         if (request.unitsToFreeze!! > availability.unitsAvailable!!) {
             log.debug(
-                "update availability validation error: not enough units to freeze," +
-                        "product={} availability={} request={}",
-                product,
-                availability,
-                request,
-                kv("product", product),
-                kv("availability", availability),
-                kv("request", request),
+                "update availability validation error: not enough units to freeze,product={} availability={} request={}",
+                v("product", product),
+                v("availability", availability),
+                v("request", request),
             )
             throw EntityInIllegalStateException(
                 context = setOf(
@@ -196,11 +182,10 @@ class ProductServiceAvailabilityUpdaterImpl(
         val errors = this.validator.validate(request)
         if (errors.isNotEmpty()) {
             log.trace(
-                "update availability validation error, errors={}", errors,
-                kv("validationErrors", errors),
-                kv("productId", productId),
-                kv("sellerId", sellerId),
-                kv("request", request),
+                "update availability validation error, productId={} sellerId={} errors={}",
+                v("productId", productId),
+                v("sellerId", sellerId),
+                v("validationErrors", errors),
             )
             throw EntityBadValueException(
                 context = setOf(
@@ -233,12 +218,9 @@ class ProductServiceAvailabilityUpdaterImpl(
         .orElseThrow {
             log.trace(
                 "availability for update not found, product={}, sellerId={}, request={}",
-                product,
-                sellerId,
-                request,
-                kv("product", product),
-                kv("sellerId", sellerId),
-                kv("request", request),
+                v("product", product),
+                v("sellerId", sellerId),
+                v("request", request),
             )
             EntityNotFoundException(
                 context = setOf(
@@ -273,12 +255,9 @@ class ProductServiceAvailabilityUpdaterImpl(
 
         log.trace(
             "sending updated availability to kafka, product={} sellerId={}, availability={}",
-            product,
-            sellerId,
-            availability,
-            kv("product", product),
-            kv("sellerId", sellerId),
-            kv("availability", availability),
+            v("product", product),
+            v("sellerId", sellerId),
+            v("availability", availability),
         )
         this.kafka
             .sendDefault(send)
@@ -311,10 +290,8 @@ class ProductServiceAvailabilityUpdaterImpl(
 
         log.info(
             "updating product availability, product={} sellerId={}",
-            product,
-            sellerId,
-            kv("product", product),
-            kv("sellerId", sellerId),
+            v("product", product),
+            v("sellerId", sellerId),
         )
         this.availabilityRepo.save(availability)
         this.sendKafka(product, availability, sellerId)

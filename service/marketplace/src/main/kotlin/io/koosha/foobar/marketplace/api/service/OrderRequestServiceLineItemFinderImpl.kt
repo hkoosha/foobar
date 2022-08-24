@@ -4,7 +4,7 @@ import io.koosha.foobar.common.error.EntityNotFoundException
 import io.koosha.foobar.marketplace.api.model.OrderRequestLineItemDO
 import io.koosha.foobar.marketplace.api.model.OrderRequestLineItemRepository
 import mu.KotlinLogging
-import net.logstash.logback.argument.StructuredArguments.kv
+import net.logstash.logback.argument.StructuredArguments.v
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
@@ -38,10 +38,8 @@ class OrderRequestServiceLineItemFinderImpl(
         val lineItem = this.lineItemRepo.findById(OrderRequestLineItemDO.Pk(lineItemId, orderRequest)).orElseThrow {
             log.trace(
                 "lineItem not found, orderRequest={}, lineItemId={}",
-                orderRequest,
-                lineItemId,
-                kv("orderRequest", orderRequest),
-                kv("lineItemId", lineItemId),
+                v("orderRequest", orderRequest),
+                v("lineItemId", lineItemId),
             )
             EntityNotFoundException(
                 entityType = OrderRequestLineItemDO.ENTITY_TYPE,

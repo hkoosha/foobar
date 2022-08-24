@@ -12,7 +12,7 @@ import io.koosha.foobar.marketplaceengine.api.model.ProcessedOrderRequestReposit
 import io.koosha.foobar.order_request.OrderRequestSellerFoundProto
 import io.koosha.foobar.order_request.OrderRequestStateChangedProto
 import mu.KotlinLogging
-import net.logstash.logback.argument.StructuredArguments.kv
+import net.logstash.logback.argument.StructuredArguments.v
 import org.apache.kafka.common.TopicPartition
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.kafka.annotation.KafkaListener
@@ -77,8 +77,7 @@ class OrderRequestProcessor(
         return lineItems.ifEmpty {
             log.warn(
                 "order request has no line item, sending to dead letter queue. orderRequestId={}",
-                orderRequestId,
-                kv("orderRequestId", orderRequestId),
+                v("orderRequestId", orderRequestId),
             )
             this.storeUUIDAsProcessed(orderRequestId)
             this.deadLetter.sendDefault(
@@ -121,9 +120,8 @@ class OrderRequestProcessor(
                     log.warn(
                         "order request has duplicated line item, sending to dead letter queue. " +
                                 "orderRequestId={}, lineItemsSize={}",
-                        orderRequestId,
-                        lineItems.size,
-                        kv("orderRequestId", orderRequestId),
+                        v("orderRequestId", orderRequestId),
+                        v("lineItemsSize", lineItems.size),
                     )
                     this.storeUUIDAsProcessed(orderRequestId)
                     this.deadLetter.sendDefault(
@@ -190,21 +188,16 @@ class OrderRequestProcessor(
         if (stateChange.to != "LIVE")
             return
 
-        val already = this.processedRepo.findById(orderRequestId)
+        val already: Optional<ProcessedOrderRequestDO> = this.processedRepo.findById(orderRequestId)
         if (already.isPresent && already.get().processed == true) {
             log.debug(
                 "record already processed, skipping. orderRequestId={}",
-                orderRequestId,
-                kv("orderRequestId", orderRequestId),
+                v("orderRequestId", orderRequestId),
             )
             return
         }
 
-        log.trace(
-            "going live, orderRequestId={}",
-            orderRequestId,
-            kv("orderRequestId", orderRequestId),
-        )
+        log.trace("going live, orderRequestId={}", v("orderRequestId", orderRequestId))
 
         val lineItems: List<OrderRequestStateChangedProto.OrderRequestStateChanged.LineItem> =
             this.getLineItemsOf(orderRequestId, stateChange) ?: return
@@ -218,21 +211,15 @@ class OrderRequestProcessor(
             .setHeader(HeaderHelper.create(SOURCE, this.clock.millis()))
 
         if (luckySeller == null) {
-            log.info(
-                "no seller found, orderRequestId={}",
-                orderRequestId,
-                kv("orderRequestId", orderRequestId),
-            )
+            log.info("no seller found, orderRequestId={}", v("orderRequestId", orderRequestId))
             send.clearSellerId()
             send.clearSubTotal()
         }
         else {
             log.info(
                 "seller found, orderRequestId={}, sellerId={}",
-                orderRequestId,
-                luckySeller,
-                kv("orderRequestId", orderRequestId),
-                kv("sellerId", luckySeller),
+                v("orderRequestId", orderRequestId),
+                v("sellerId", luckySeller),
             )
             send.sellerId = luckySeller.toString()
             send.subTotal = subTotal
@@ -240,10 +227,8 @@ class OrderRequestProcessor(
 
         log.trace(
             "sending back seller. orderRequestId={}, sellerId={}",
-            orderRequestId,
-            luckySeller,
-            kv("orderRequestId", orderRequestId),
-            kv("sellerId", luckySeller),
+            v("orderRequestId", orderRequestId),
+            v("sellerId", luckySeller),
         )
         this.kafka.sendDefault(
             orderRequestId,
