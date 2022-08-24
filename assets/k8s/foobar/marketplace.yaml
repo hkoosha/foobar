@@ -30,7 +30,7 @@ spec:
             - name: foobar-log
               mountPath: /foobar-log
         - name: foobar-marketplace
-          image: 'docker.io/library/marketplace:0.0.1-SNAPSHOT'
+          image: 'docker.io/library/foobar-marketplace:0.0.1-SNAPSHOT'
           imagePullPolicy: Never
           terminationMessagePolicy: File
           volumeMounts:

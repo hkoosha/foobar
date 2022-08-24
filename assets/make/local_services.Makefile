@@ -1,4 +1,9 @@
 
+.PHONY: remake-local-services
+remake-local-services:
+	$(EDITOR) assets/make/local_services.Makefile
+
+
 .PHONY: local-run-zipkin
 local-run-zipkin:
 	docker-compose -f ./assets/local_deployment/zipkin/docker-compose.yml up

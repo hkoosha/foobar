@@ -2,6 +2,12 @@
 FOOBAR_SERVICES_YAML := assets/k8s/foobar
 
 
+.PHONY: remake-k8s-foobar
+remake-k8s-foobar:
+	$(EDITOR) assets/make/k8s_foobar.Makefile
+
+
+
 .PHONY: _k8s-deploy-maker-compile
 _k8s-deploy-maker-compile:
 	cat $(FOOBAR_SERVICES_YAML)/maker.yaml | envsubst > $(FOOBAR_SERVICES_YAML)/maker.compiled.yaml

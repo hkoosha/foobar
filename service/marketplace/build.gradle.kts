@@ -156,6 +156,9 @@ jib {
         ports = listOf("8080")
         jvmFlags = Foobar.Jib.jvmFlags(project)
     }
+    to {
+        image = "foobar-marketplace"
+    }
 }
 
 tasks.withType<Detekt>().configureEach {

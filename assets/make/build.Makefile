@@ -1,4 +1,9 @@
 
+.PHONY: remake-build
+remake-build:
+	$(EDITOR) assets/make/build.Makefile
+
+
 .PHONY: stop-gradle
 stop-gradle:
 	$(GRADLE_RUNNER) --stop
