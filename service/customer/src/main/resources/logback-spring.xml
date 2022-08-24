@@ -10,7 +10,7 @@
 
     <springProfile name="json-logging">
         <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-            <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <encoder class="net.logstash.logback.encoder.LogstashEncoder">
                 <providers>
                     <mdc/>
                     <message/>
