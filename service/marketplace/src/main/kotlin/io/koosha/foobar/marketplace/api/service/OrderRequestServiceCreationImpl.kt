@@ -36,7 +36,11 @@ class OrderRequestServiceCreationImpl(
 
         val errors = this.validator.validate(request)
         if (errors.isNotEmpty()) {
-            log.trace("create orderRequest validation error, errors={}", v("validationErrors", errors))
+            log.trace(
+                "create orderRequest validation error, request={} errors={}",
+                v("request", request),
+                v("validationErrors", errors),
+            )
             throw EntityBadValueException(
                 entityType = OrderRequestDO.ENTITY_TYPE,
                 entityId = null,

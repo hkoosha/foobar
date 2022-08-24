@@ -181,7 +181,12 @@ class ProductServiceAvailabilityUpdaterImpl(
 
         val errors = this.validator.validate(request)
         if (errors.isNotEmpty()) {
-            log.trace("update availability validation error, errors={}", v("validationErrors", errors))
+            log.trace(
+                "update availability validation error, productId={} sellerId={} errors={}",
+                v("productId", productId),
+                v("sellerId", sellerId),
+                v("validationErrors", errors),
+            )
             throw EntityBadValueException(
                 context = setOf(
                     EntityInfo(

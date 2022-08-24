@@ -82,7 +82,11 @@ class ShippingServiceImpl(
 
         val errors = this.validator.validate(request)
         if (errors.isNotEmpty()) {
-            log.trace("create shipping validation error, errors={}", v("validationErrors", errors))
+            log.trace(
+                "create shipping validation error, request={} errors={}",
+                v("request", request),
+                v("validationErrors", errors),
+            )
             throw EntityBadValueException(
                 entityType = ShippingDO.ENTITY_TYPE,
                 entityId = null,
@@ -240,7 +244,12 @@ class ShippingServiceImpl(
 
         val errors = this.validator.validate(request)
         if (errors.isNotEmpty()) {
-            log.trace("update shipping validation error, errors={}", v("validationErrors", errors))
+            log.trace(
+                "update shipping validation error, shippingId={} request={} errors={}",
+                v("shippingId", shippingId),
+                v("request", request),
+                v("validationErrors", errors),
+            )
             throw EntityBadValueException(
                 entityType = ShippingDO.ENTITY_TYPE,
                 entityId = shippingId,

@@ -51,7 +51,11 @@ class CustomerServiceImpl(
 
         val errors = this.validator.validate(request)
         if (errors.isNotEmpty()) {
-            log.trace("create customer validation error, errors={}", v("validationErrors", errors))
+            log.trace(
+                "create customer validation error, request={}, errors={}",
+                v("request", request),
+                v("validationErrors", errors),
+            )
             throw EntityBadValueException(
                 entityType = CustomerDO.ENTITY_TYPE,
                 entityId = null,
@@ -127,7 +131,12 @@ class CustomerServiceImpl(
 
         val errors = this.validator.validate(request)
         if (errors.isNotEmpty()) {
-            log.trace("update customer validation error, errors={}", v("validationErrors", errors))
+            log.trace(
+                "update customer validation error, customerId={} request={}, errors={}",
+                v("customerId", customerId),
+                v("request", request),
+                v("validationErrors", errors),
+            )
             throw EntityBadValueException(
                 entityType = CustomerDO.ENTITY_TYPE,
                 entityId = null,
@@ -190,7 +199,12 @@ class CustomerServiceImpl(
 
         val errors = this.validator.validate(request)
         if (errors.isNotEmpty()) {
-            log.trace("add address validation error: {}", v("validationErrors", errors))
+            log.trace(
+                "add address validation error, customerId={}, request={}, errors={}",
+                v("customerId", customerId),
+                v("request", request),
+                v("validationErrors", errors),
+            )
             throw EntityBadValueException(
                 entityType = AddressDO.ENTITY_TYPE,
                 entityId = null,

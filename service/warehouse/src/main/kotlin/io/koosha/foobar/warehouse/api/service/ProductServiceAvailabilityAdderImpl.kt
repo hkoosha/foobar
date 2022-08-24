@@ -49,7 +49,11 @@ class ProductServiceAvailabilityAdderImpl(
 
         val errors = this.validator.validate(request)
         if (errors.isNotEmpty()) {
-            log.trace("add availability validation error, errors={}", v("validationErrors", errors))
+            log.trace(
+                "add availability validation error, request={}, errors={}",
+                v("request", request),
+                v("validationErrors", errors),
+            )
             throw EntityBadValueException(
                 entityType = AvailabilityDO.ENTITY_TYPE,
                 entityId = null,

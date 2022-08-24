@@ -28,7 +28,11 @@ class ProductServiceCreatorImpl(
 
         val errors = this.validator.validate(request)
         if (errors.isNotEmpty()) {
-            log.trace("create product validation error, errors={}", v("validationErrors", errors))
+            log.trace(
+                "create product validation error, request={} errors={}",
+                v("request", request),
+                v("validationErrors", errors),
+            )
             throw EntityBadValueException(
                 entityType = ProductDO.ENTITY_TYPE,
                 entityId = null,

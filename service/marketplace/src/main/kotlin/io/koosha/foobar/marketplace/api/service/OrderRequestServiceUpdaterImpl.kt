@@ -307,7 +307,12 @@ class OrderRequestServiceUpdaterImpl(
 
         val errors = this.validator.validate(request)
         if (errors.isNotEmpty()) {
-            log.trace("update orderRequest validation error, errors={}", v("validationErrors", errors))
+            log.trace(
+                "update orderRequest validation error, orderRequestId={} request={} errors={}",
+                v("orderRequestId", orderRequestId),
+                v("request", request),
+                v("validationErrors", errors),
+            )
             throw EntityBadValueException(
                 entityType = OrderRequestDO.ENTITY_TYPE,
                 entityId = null,

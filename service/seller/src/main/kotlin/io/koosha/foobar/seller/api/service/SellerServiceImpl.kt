@@ -46,7 +46,11 @@ class SellerServiceImpl(
 
         val errors = this.validator.validate(request)
         if (errors.isNotEmpty()) {
-            log.trace("create seller validation error, errors={}", v("validationErrors", errors))
+            log.trace(
+                "create seller validation error, request={} errors={}",
+                v("request", request),
+                v("validationErrors", errors),
+            )
             throw EntityBadValueException(
                 entityType = SellerDO.ENTITY_TYPE,
                 entityId = null,
@@ -124,7 +128,12 @@ class SellerServiceImpl(
 
         val errors = this.validator.validate(request)
         if (errors.isNotEmpty()) {
-            log.trace("update seller validation error, errors={}", v("validationErrors", errors))
+            log.trace(
+                "update seller validation error, sellerId={} request={} errors={}",
+                v("sellerId", sellerId),
+                v("request", request),
+                v("validationErrors", errors),
+            )
             throw EntityBadValueException(
                 entityType = SellerDO.ENTITY_TYPE,
                 entityId = sellerId,

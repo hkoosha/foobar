@@ -75,7 +75,12 @@ class ProductServiceUpdaterImpl(
 
         val errors = this.validator.validate(request)
         if (errors.isNotEmpty()) {
-            log.trace("update product validation error, errors={}", v("validationErrors", errors))
+            log.trace(
+                "update product validation error, productId={} request={} errors={}",
+                v("productId", productId),
+                v("request", request),
+                v("validationErrors", errors),
+            )
             throw EntityBadValueException(
                 entityType = ProductDO.ENTITY_TYPE,
                 entityId = productId,
