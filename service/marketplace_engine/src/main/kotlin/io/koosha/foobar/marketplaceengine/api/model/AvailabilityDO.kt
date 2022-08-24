@@ -75,12 +75,12 @@ open class AvailabilityDO(
 
     override fun toString(): String = this.javaClass.simpleName + "(" +
             "availabilityPk=" + this.availabilityPk +
-            ", version=" + this.version +
-            ", created=" + this.created +
-            ", updated=" + this.updated +
             ", unitsAvailable=" + this.unitsAvailable +
             ", frozenUnits=" + this.frozenUnits +
             ", pricePerUnit=" + this.pricePerUnit +
+            ", version=" + this.version +
+            ", created=" + this.created +
+            ", updated=" + this.updated +
             ")"
 
 

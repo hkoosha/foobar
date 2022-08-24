@@ -3,6 +3,8 @@
 package io.koosha.foobar.seller.api.model
 
 import io.koosha.foobar.seller.API_PREFIX
+import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.time.LocalDateTime
 import java.util.*
@@ -34,12 +36,14 @@ open class SellerDO(
     @Column(name = "VERSION")
     open var version: Long? = null,
 
+    @CreatedDate
     @Column(
         name = "CREATED",
         nullable = false,
     )
     open var created: LocalDateTime? = null,
 
+    @LastModifiedDate
     @Column(
         name = "UPDATED",
         nullable = false,
@@ -92,13 +96,13 @@ open class SellerDO(
     override fun hashCode(): Int = this.javaClass.hashCode()
 
     override fun toString(): String = this.javaClass.simpleName + "(" +
-            "version=" + this.version +
-            ", created=" + this.created +
-            ", updated=" + this.updated +
-            ", sellerId=" + this.sellerId +
+            "sellerId=" + this.sellerId +
             ", state=" + this.state +
             ", name=" + this.name +
             ", address=" + this.address +
+            ", version=" + this.version +
+            ", created=" + this.created +
+            ", updated=" + this.updated +
             ")"
 
 }

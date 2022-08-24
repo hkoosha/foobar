@@ -101,12 +101,12 @@ open class ShippingDO(
     override fun hashCode(): Int = this.javaClass.hashCode()
 
     override fun toString(): String = this.javaClass.simpleName + "(" +
-            "version=" + this.version +
-            ", created=" + this.created +
-            ", updated=" + this.updated +
-            ", shippingId=" + this.shippingId +
+            "shippingId=" + this.shippingId +
             ", pickupAddress=" + this.pickupAddress +
             ", deliveryAddress=" + this.deliveryAddress +
+            ", version=" + this.version +
+            ", created=" + this.created +
+            ", updated=" + this.updated +
             ")"
 
 }

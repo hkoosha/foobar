@@ -3,6 +3,8 @@
 package io.koosha.foobar.warehouse.api.model
 
 import io.koosha.foobar.warehouse.API_PREFIX
+import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.io.Serializable
 import java.time.LocalDateTime
@@ -29,12 +31,14 @@ open class AvailabilityDO(
     @Column(name = "VERSION")
     open var version: Long? = null,
 
+    @CreatedDate
     @Column(
         name = "CREATED",
         nullable = false,
     )
     open var created: LocalDateTime? = null,
 
+    @LastModifiedDate
     @Column(
         name = "UPDATED",
         nullable = false,
@@ -77,13 +81,13 @@ open class AvailabilityDO(
     override fun hashCode(): Int = this.javaClass.hashCode()
 
     override fun toString(): String = this.javaClass.simpleName + "(" +
-            "version=" + this.version +
-            ", created=" + this.created +
-            ", updated=" + this.updated +
-            ", availabilityPk=" + this.availabilityPk +
+            "availabilityPk=" + this.availabilityPk +
             ", unitsAvailable=" + this.unitsAvailable +
             ", frozenUnits=" + this.frozenUnits +
             ", pricePerUnit=" + this.pricePerUnit +
+            ", version=" + this.version +
+            ", created=" + this.created +
+            ", updated=" + this.updated +
             ")"
 
 

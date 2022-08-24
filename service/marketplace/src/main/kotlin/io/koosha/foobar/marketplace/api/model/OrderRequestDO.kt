@@ -115,14 +115,14 @@ open class OrderRequestDO(
     override fun hashCode(): Int = this.javaClass.hashCode()
 
     override fun toString(): String = this.javaClass.simpleName + "(" +
-            "version=" + this.version +
-            ", created=" + this.created +
-            ", updated=" + this.updated +
-            ", orderRequestId=" + this.orderRequestId +
+            "orderRequestId=" + this.orderRequestId +
             ", sellerId=" + this.sellerId +
             ", customerId=" + this.customerId +
             ", state=" + this.state +
             ", subTotal=" + this.subTotal +
+            ", version=" + this.version +
+            ", created=" + this.created +
+            ", updated=" + this.updated +
             ")"
 
 }

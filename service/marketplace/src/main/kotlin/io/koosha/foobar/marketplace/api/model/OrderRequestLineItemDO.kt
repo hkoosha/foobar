@@ -76,13 +76,13 @@ open class OrderRequestLineItemDO(
     override fun hashCode(): Int = this.javaClass.hashCode()
 
     override fun toString(): String = this.javaClass.simpleName + "(" +
-            "version=" + this.version +
-            ", created=" + this.created +
-            ", updated=" + this.updated +
-            ", orderRequestId=" + this.orderRequestLineItemPk.orderRequest?.orderRequestId +
+            "orderRequestId=" + this.orderRequestLineItemPk.orderRequest?.orderRequestId +
             ", orderRequestLineItemId=" + this.orderRequestLineItemPk.orderRequestLineItemId +
             ", productId=" + this.productId +
             ", units=" + this.units +
+            ", version=" + this.version +
+            ", created=" + this.created +
+            ", updated=" + this.updated +
             ")"
 
 

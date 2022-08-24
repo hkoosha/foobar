@@ -90,10 +90,10 @@ open class OrderRequestProcessQueueDO(
 
     override fun toString(): String = this.javaClass.simpleName + "(" +
             "orderRequestProcessQueueId=" + this.orderRequestProcessQueueId +
+            ", synced=" + this.synced +
             ", version=" + this.version +
             ", created=" + this.created +
             ", updated=" + this.updated +
-            ", synced=" + this.synced +
             ")"
 
 }

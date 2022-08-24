@@ -85,9 +85,10 @@ open class ProcessedOrderRequestSellerDO(
 
     override fun toString(): String = this.javaClass.simpleName + "(" +
             "processedOrderRequestSellerId=" + this.processedOrderRequestSellerId +
+            ", processed=" + this.processed +
+            ", version=" + this.version +
             ", created=" + this.created +
             ", updated=" + this.updated +
-            ", processed=" + this.processed +
             ")"
 
 }

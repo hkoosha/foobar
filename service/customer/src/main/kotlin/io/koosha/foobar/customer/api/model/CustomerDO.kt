@@ -91,11 +91,11 @@ open class CustomerDO(
 
     override fun toString(): String = this.javaClass.simpleName + "(" +
             "customerId=" + this.customerId +
+            ", state=" + this.state +
+            ", name=" + this.name +
             ", version=" + this.version +
             ", created=" + this.created +
             ", updated=" + this.updated +
-            ", state=" + this.state +
-            ", name=" + this.name +
             ")"
 
     fun detachedCopy(): CustomerDO = CustomerDO(

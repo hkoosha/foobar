@@ -3,6 +3,8 @@
 package io.koosha.foobar.customer.api.model
 
 import io.koosha.foobar.customer.API_PREFIX
+import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.io.Serializable
 import java.time.LocalDateTime
@@ -29,12 +31,14 @@ open class AddressDO(
     @Version
     open var version: Long? = null,
 
+    @CreatedDate
     @Column(
         name = "CREATED",
         nullable = false,
     )
     open var created: LocalDateTime? = null,
 
+    @LastModifiedDate
     @Column(
         name = "UPDATED",
         nullable = false,
@@ -95,14 +99,14 @@ open class AddressDO(
 
     override fun toString(): String = this.javaClass.simpleName + "(" +
             "addressId=" + this.addressPk +
-            ", version=" + this.version +
-            ", created=" + this.created +
-            ", updated=" + this.updated +
             ", name=" + this.name +
             ", zipCode=" + this.zipcode +
             ", addressLine1=" + this.addressLine1 +
             ", country=" + this.country +
             ", city=" + this.city +
+            ", version=" + this.version +
+            ", created=" + this.created +
+            ", updated=" + this.updated +
             ")"
 
 
