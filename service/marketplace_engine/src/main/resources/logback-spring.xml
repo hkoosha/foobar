@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
 
     <springProperty name="appName" source="spring.application.name"/>
 
+
+    <!--    APPENDER     -->
+
     <springProfile name="json-logging">
         <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-            <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <encoder class="net.logstash.logback.encoder.LogstashEncoder">
                 <providers>
                     <mdc/>
                     <message/>
@@ -46,7 +50,44 @@
         </appender>
     </springProfile>
 
-    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+    <springProfile name="json-local-logging">
+        <appender name="JSON_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+                <providers>
+                    <mdc/>
+                    <message/>
+                    <timestamp/>
+                    <version/>
+                    <logLevel/>
+                    <loggerName/>
+                    <nestedField>
+                        <fieldName>error</fieldName>
+                        <providers>
+                            <throwableClassName/>
+                            <throwableMessage/>
+                            <stackTrace/>
+                        </providers>
+                    </nestedField>
+                    <pattern>
+                        <pattern>
+                            {
+                                "foobarService": "${appName}",
+                                "logger": {
+                                    "class": "%class",
+                                    "file": "%file",
+                                    "logger": "%logger",
+                                    "thread": "%thread"
+                                }
+                            }
+                        </pattern>
+                    </pattern>
+                </providers>
+            </encoder>
+        </appender>
+    </springProfile>
+
+
+    <!--    APPENDER-REF     -->
 
     <springProfile name="json-logging">
         <root level="info">
@@ -55,7 +96,13 @@
         </root>
     </springProfile>
 
-    <springProfile name="!json-logging">
+    <springProfile name="json-local-logging">
+        <root level="info">
+            <appender-ref ref="JSON_CONSOLE"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="!json-logging&amp;&amp;!json-local-logging">
         <root level="info">
             <appender-ref ref="CONSOLE"/>
         </root>

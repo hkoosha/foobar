@@ -3,22 +3,22 @@ package io.koosha.foobar.marketplaceengine.api.model
 import io.koosha.foobar.marketplaceengine.API_PREFIX
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.io.Serializable
-import java.time.ZoneOffset
-import java.time.ZonedDateTime
+import java.time.LocalDateTime
 import java.util.*
 import javax.persistence.Column
 import javax.persistence.Embeddable
 import javax.persistence.EmbeddedId
 import javax.persistence.Entity
-import javax.persistence.PrePersist
-import javax.persistence.PreUpdate
+import javax.persistence.EntityListeners
 import javax.persistence.Table
 import javax.persistence.Version
 
 
 @Entity
 @Table(name = "${API_PREFIX}__availability")
+@EntityListeners(AuditingEntityListener::class)
 open class AvailabilityDO(
 
     @EmbeddedId
@@ -33,14 +33,14 @@ open class AvailabilityDO(
         name = "CREATED",
         nullable = false,
     )
-    open var created: ZonedDateTime? = null,
+    open var created: LocalDateTime? = null,
 
     @LastModifiedDate
     @Column(
         name = "UPDATED",
         nullable = false,
     )
-    open var updated: ZonedDateTime? = null,
+    open var updated: LocalDateTime? = null,
 
     @Column(
         name = "UNITS_AVAILABLE",
@@ -62,18 +62,6 @@ open class AvailabilityDO(
 
     ) {
 
-    @PrePersist
-    fun updateCreatedAt() {
-        this.created = ZonedDateTime.now(ZoneOffset.UTC)
-        this.updated = ZonedDateTime.now(ZoneOffset.UTC)
-    }
-
-    @PreUpdate
-    fun updateUpdatedAt() {
-        this.updated = ZonedDateTime.now(ZoneOffset.UTC)
-    }
-
-
     override fun equals(other: Any?): Boolean {
         if (this === other)
             return true
@@ -87,12 +75,12 @@ open class AvailabilityDO(
 
     override fun toString(): String = this.javaClass.simpleName + "(" +
             "availabilityPk=" + this.availabilityPk +
-            ", version=" + this.version +
-            ", created=" + this.created +
-            ", updated=" + this.updated +
             ", unitsAvailable=" + this.unitsAvailable +
             ", frozenUnits=" + this.frozenUnits +
             ", pricePerUnit=" + this.pricePerUnit +
+            ", version=" + this.version +
+            ", created=" + this.created +
+            ", updated=" + this.updated +
             ")"
 
 
@@ -133,8 +121,7 @@ open class AvailabilityDO(
                     && this.productId == rhs.productId
         }
 
-        @Suppress("RedundantOverride")
-        override fun hashCode(): Int = super.hashCode()
+        override fun hashCode(): Int = this.javaClass.hashCode()
 
         override fun toString(): String = this.javaClass.simpleName + "(" +
                 "sellerId=" + this.sellerId +

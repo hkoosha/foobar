@@ -3,22 +3,22 @@ package io.koosha.foobar.marketplace.api.model
 import io.koosha.foobar.marketplace.API_PREFIX
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
-import java.time.ZoneOffset
-import java.time.ZonedDateTime
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
+import java.time.LocalDateTime
 import java.util.*
 import javax.persistence.Column
 import javax.persistence.Entity
+import javax.persistence.EntityListeners
 import javax.persistence.EnumType
 import javax.persistence.Enumerated
 import javax.persistence.Id
-import javax.persistence.PrePersist
-import javax.persistence.PreUpdate
 import javax.persistence.Table
 import javax.persistence.Version
 
 
 @Entity
 @Table(name = "${API_PREFIX}__order_request")
+@EntityListeners(AuditingEntityListener::class)
 open class OrderRequestDO(
 
     @Id
@@ -38,14 +38,14 @@ open class OrderRequestDO(
         name = "CREATED",
         nullable = false,
     )
-    open var created: ZonedDateTime? = null,
+    open var created: LocalDateTime? = null,
 
     @LastModifiedDate
     @Column(
         name = "UPDATED",
         nullable = false,
     )
-    open var updated: ZonedDateTime? = null,
+    open var updated: LocalDateTime? = null,
 
     @Column(
         name = "LINE_ITEM_ID_POOL",
@@ -90,17 +90,17 @@ open class OrderRequestDO(
         const val ENTITY_TYPE_DASHED = "order-request"
     }
 
-    @PrePersist
-    fun updateCreatedAt() {
-        this.created = ZonedDateTime.now(ZoneOffset.UTC)
-        this.updated = ZonedDateTime.now(ZoneOffset.UTC)
-    }
-
-    @PreUpdate
-    fun updateUpdatedAt() {
-        this.updated = ZonedDateTime.now(ZoneOffset.UTC)
-    }
-
+    fun detachedCopy(): OrderRequestDO = OrderRequestDO(
+        orderRequestId = this.orderRequestId,
+        version = this.version,
+        created = this.created,
+        updated = this.updated,
+        lineItemIdPool = this.lineItemIdPool,
+        customerId = this.customerId,
+        sellerId = this.sellerId,
+        state = this.state,
+        subTotal = this.subTotal,
+    )
 
     override fun equals(other: Any?): Boolean {
         if (this === other)
@@ -116,13 +116,13 @@ open class OrderRequestDO(
 
     override fun toString(): String = this.javaClass.simpleName + "(" +
             "orderRequestId=" + this.orderRequestId +
-            ", version=" + this.version +
-            ", created=" + this.created +
-            ", updated=" + this.updated +
             ", sellerId=" + this.sellerId +
             ", customerId=" + this.customerId +
             ", state=" + this.state +
             ", subTotal=" + this.subTotal +
+            ", version=" + this.version +
+            ", created=" + this.created +
+            ", updated=" + this.updated +
             ")"
 
 }

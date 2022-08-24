@@ -3,11 +3,15 @@
 package io.koosha.foobar.seller.api.model
 
 import io.koosha.foobar.seller.API_PREFIX
-import java.time.ZonedDateTime
+import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
+import java.time.LocalDateTime
 import java.util.*
 import javax.persistence.Column
 import javax.persistence.Embedded
 import javax.persistence.Entity
+import javax.persistence.EntityListeners
 import javax.persistence.EnumType
 import javax.persistence.Enumerated
 import javax.persistence.Id
@@ -17,6 +21,7 @@ import javax.persistence.Version
 
 @Entity
 @Table(name = "${API_PREFIX}__${SellerDO.ENTITY_TYPE}")
+@EntityListeners(AuditingEntityListener::class)
 open class SellerDO(
 
     @Id
@@ -31,17 +36,19 @@ open class SellerDO(
     @Column(name = "VERSION")
     open var version: Long? = null,
 
+    @CreatedDate
     @Column(
         name = "CREATED",
         nullable = false,
     )
-    open var created: ZonedDateTime? = null,
+    open var created: LocalDateTime? = null,
 
+    @LastModifiedDate
     @Column(
         name = "UPDATED",
         nullable = false,
     )
-    open var updated: ZonedDateTime? = null,
+    open var updated: LocalDateTime? = null,
 
     @Column(
         name = "NAME",
@@ -66,6 +73,16 @@ open class SellerDO(
         const val ENTITY_TYPE = "seller"
     }
 
+    fun detachedCopy(): SellerDO = SellerDO(
+        sellerId = this.sellerId,
+        version = this.version,
+        created = this.created,
+        updated = this.updated,
+        name = this.name,
+        address = this.address,
+        state = this.state,
+    )
+
     override fun equals(other: Any?): Boolean {
         if (this === other)
             return true
@@ -80,12 +97,12 @@ open class SellerDO(
 
     override fun toString(): String = this.javaClass.simpleName + "(" +
             "sellerId=" + this.sellerId +
-            ", version=" + this.version +
-            ", created=" + this.created +
-            ", updated=" + this.updated +
             ", state=" + this.state +
             ", name=" + this.name +
             ", address=" + this.address +
+            ", version=" + this.version +
+            ", created=" + this.created +
+            ", updated=" + this.updated +
             ")"
 
 }

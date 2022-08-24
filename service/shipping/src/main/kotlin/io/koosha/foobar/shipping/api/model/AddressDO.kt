@@ -1,6 +1,5 @@
 package io.koosha.foobar.shipping.api.model
 
-import java.util.*
 import javax.persistence.Column
 import javax.persistence.Embeddable
 import javax.validation.constraints.Size
@@ -39,6 +38,13 @@ open class AddressDO(
 
     ) {
 
+    fun detachedCopy(): AddressDO = AddressDO(
+        zipcode = this.zipcode,
+        addressLine1 = this.addressLine1,
+        country = this.country,
+        city = this.city,
+    )
+
     override fun equals(other: Any?): Boolean {
         if (this === other)
             return true
@@ -51,12 +57,7 @@ open class AddressDO(
                 && this.city == rhs.city
     }
 
-    override fun hashCode(): Int = Objects.hash(
-        this.zipcode,
-        this.addressLine1,
-        this.country,
-        this.city,
-    )
+    override fun hashCode(): Int = this.javaClass.hashCode()
 
     override fun toString(): String = this.javaClass.simpleName + "(" +
             "addressLine1=" + this.addressLine1 +

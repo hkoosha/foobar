@@ -1,4 +1,8 @@
 
+.PHONY: remake-local-foobar
+remake-local-foobar:
+	$(EDITOR) assets/make/local_foobar.Makefile
+
 
 .PHONY: run-customer
 run-customer:

@@ -9,6 +9,7 @@ import io.koosha.foobar.marketplace.api.model.ProcessedOrderRequestSellerDO
 import io.koosha.foobar.marketplace.api.model.ProcessedOrderRequestSellerRepository
 import io.koosha.foobar.order_request.OrderRequestSellerFoundProto
 import mu.KotlinLogging
+import net.logstash.logback.argument.StructuredArguments.kv
 import org.apache.kafka.common.TopicPartition
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.kafka.listener.ConsumerSeekAware
@@ -56,7 +57,11 @@ class OrderRequestSellerProcessor(
 
         val already = this.processedRepo.findById(orderRequestId)
         if (already.isPresent && already.get().processed == true) {
-            log.debug { "record already processed, skipping. orderRequestId=$orderRequestId" }
+            log.debug(
+                "record already processed, skipping. orderRequestId={}",
+                orderRequestId,
+                kv("orderRequestId", orderRequestId),
+            )
             return
         }
 

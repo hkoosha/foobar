@@ -3,12 +3,16 @@
 package io.koosha.foobar.customer.api.model
 
 import io.koosha.foobar.customer.API_PREFIX
-import java.time.ZonedDateTime
+import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
+import java.time.LocalDateTime
 import java.util.*
 import javax.persistence.Column
 import javax.persistence.Embeddable
 import javax.persistence.Embedded
 import javax.persistence.Entity
+import javax.persistence.EntityListeners
 import javax.persistence.EnumType
 import javax.persistence.Enumerated
 import javax.persistence.Id
@@ -19,6 +23,7 @@ import javax.validation.constraints.Size
 
 @Entity
 @Table(name = "${API_PREFIX}__${CustomerDO.ENTITY_TYPE}")
+@EntityListeners(AuditingEntityListener::class)
 open class CustomerDO(
 
     @Id
@@ -34,17 +39,19 @@ open class CustomerDO(
     @Column(name = "VERSION")
     open var version: Long? = null,
 
+    @CreatedDate
     @Column(
         name = "CREATED",
         nullable = false,
     )
-    open var created: ZonedDateTime? = null,
+    open var created: LocalDateTime? = null,
 
+    @LastModifiedDate
     @Column(
         name = "UPDATED",
         nullable = false,
     )
-    open var updated: ZonedDateTime? = null,
+    open var updated: LocalDateTime? = null,
 
     @Enumerated(EnumType.STRING)
     @Column(
@@ -84,12 +91,22 @@ open class CustomerDO(
 
     override fun toString(): String = this.javaClass.simpleName + "(" +
             "customerId=" + this.customerId +
+            ", state=" + this.state +
+            ", name=" + this.name +
             ", version=" + this.version +
             ", created=" + this.created +
             ", updated=" + this.updated +
-            ", state=" + this.state +
-            ", name=" + this.name +
             ")"
+
+    fun detachedCopy(): CustomerDO = CustomerDO(
+        customerId = this.customerId,
+        version = this.version,
+        created = this.created,
+        updated = this.updated,
+        state = this.state,
+        name = this.name.detachedCopy(),
+        addressIdPool = this.addressIdPool,
+    )
 
     @Embeddable
     open class NameDO(
@@ -137,6 +154,12 @@ open class CustomerDO(
                 ", firstName=" + this.firstName +
                 ", lastName=" + this.lastName +
                 ")"
+
+        fun detachedCopy(): NameDO = NameDO(
+            title = this.title,
+            firstName = this.firstName,
+            lastName = this.lastName,
+        )
 
     }
 

@@ -1,4 +1,8 @@
 
+.PHONY: remake-demo
+remake-demo:
+	$(EDITOR) assets/make/demo.Makefile
+
 
 .PHONY: demo
 demo:

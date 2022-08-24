@@ -1,5 +1,5 @@
 SHELL := /bin/bash
-.DEFAULT_GOAL := sos
+.DEFAULT_GOAL := help
 
 
 MYSQL_PASSWORD := .
@@ -49,13 +49,9 @@ ifneq (,$(wildcard ./assets/env/${ENV}.env))
 endif
 
 
-.PHONY: sos
-sos:
-	@sed -n 's/^\([0-9a-z \-]*\):.*/\1/p' ${MAKEFILE_LIST} | column -t -c 2 -s ':#' | sort | grep -v remake
-
-.PHONY: sos-full
-sos-full:
-	@sed -n 's/^\([0-9a-z \-]*\):.*/\1/p' ${MAKEFILE_LIST} | column -t -c 2 -s ':#' | sort
+.PHONY: help
+help:
+	@sed -n 's/^\([0-9a-z \-]*\):.*/\1/p' ${MAKEFILE_LIST} | column -t -c 2 -s ':#' | sort 
 
 
 
@@ -63,35 +59,4 @@ sos-full:
 libs/opentelemetry-javaagent-1.17.0.jar:
 	wget https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v1.17.0/opentelemetry-javaagent.jar -O libs/opentelemetry-javaagent-1.17.0.jar
 
-
-
-
-
-.PHONY: remake-build
-remake-build:
-	vim assets/make/build.Makefile
-
-.PHONY: remake-demo
-remake-demo:
-	vim assets/make/demo.Makefile
-
-.PHONY: remake-foobar-docker
-remake-foobar-docker:
-	vim assets/make/foobar_docker.Makefile
-
-.PHONY: remake-k8s-foobar
-remake-k8s-foobar:
-	vim assets/make/k8s_foobar.Makefile
-
-.PHONY: remake-k8s-services
-remake-k8s-services:
-	vim assets/make/k8s_services.Makefile
-
-.PHONY: remake-local-services
-remake-local-services:
-	vim assets/make/local_services.Makefile
-
-.PHONY: remake-local-foobar
-remake-local-foobar:
-	vim assets/make/local_foobar.Makefile
 

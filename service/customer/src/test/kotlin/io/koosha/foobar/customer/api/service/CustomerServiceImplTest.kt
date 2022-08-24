@@ -7,7 +7,6 @@ import io.koosha.foobar.common.error.EntityInIllegalStateException
 import io.koosha.foobar.common.error.EntityNotFoundException
 import io.koosha.foobar.common.model.EntityInfo
 import io.koosha.foobar.customer.api.IDS
-import io.koosha.foobar.customer.api.THEN
 import io.koosha.foobar.customer.api.addressDO0
 import io.koosha.foobar.customer.api.addressDO1
 import io.koosha.foobar.customer.api.addressReq0
@@ -39,8 +38,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.ActiveProfiles
-import java.time.Clock
-import java.time.ZoneOffset
 import java.util.*
 import javax.validation.Validator
 
@@ -51,8 +48,6 @@ import javax.validation.Validator
 class CustomerServiceImplTest {
 
     lateinit var subject: CustomerServiceImpl
-
-    private val clock = Clock.fixed(THEN, ZoneOffset.UTC)
 
     @Autowired
     lateinit var validator: Validator
@@ -75,7 +70,6 @@ class CustomerServiceImplTest {
         this.subject = CustomerServiceImpl(
             this.customerRepo,
             this.addressRepo,
-            this.clock,
             this.validator,
             DefaultRandomUUIDProvider()
         )
@@ -164,8 +158,6 @@ class CustomerServiceImplTest {
             assertThat(created.name.firstName).isEqualTo(req.name?.firstName)
             assertThat(created.name.lastName).isEqualTo(req.name?.lastName)
             assertThat(created.addressIdPool).isEqualTo(0L)
-            assertThat(created.created).isEqualTo(clock.instant().atZone(ZoneOffset.UTC))
-            assertThat(created.created).isEqualTo(created.updated)
         }
 
         @Test

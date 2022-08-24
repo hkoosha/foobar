@@ -48,6 +48,8 @@ class InitCmd(
             this.lineItemCmd.handle(args, emptyList())
         }
 
+        @Suppress("MagicNumber")
+        Thread.sleep(500)
         if (args.containsOption("live"))
             this.orderRequestCmd.patchOrderRequest2()
 
