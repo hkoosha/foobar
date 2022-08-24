@@ -1,8 +1,24 @@
 
+FOOBAR_MAKER_IMAGE := foobar-maker:0.0.1-SNAPSHOT
+FOOBAR_CUSTOMER_IMAGE := foobar-customer:0.0.1-SNAPSHOT
+FOOBAR_SELLER_IMAGE := foobar-seller:0.0.1-SNAPSHOT
+FOOBAR_WAREHOUSE_IMAGE := foobar-warehouse:0.0.1-SNAPSHOT
+FOOBAR_SHIPPING_IMAGE := foobar-shipping:0.0.1-SNAPSHOT
+FOOBAR_MARKETPLACE_IMAGE := foobar-marketplace:0.0.1-SNAPSHOT
+FOOBAR_MARKETPLACE_ENGINE_IMAGE := foobar-marketplace-engine:0.0.1-SNAPSHOT
+
 .PHONY: remake-foobar-docker
 remake-foobar-docker:
 	$(EDITOR) assets/make/foobar_docker.Makefile
 
+
+define _foobar_push_image
+	if minikube image ls | grep $(1); then \
+		echo image is not unpushed yet: $(1) && exit 1; \
+	else \
+		minikube image load $(1); \
+	fi
+endef
 
 .PHONY: docker-image-maker-build
 docker-image-maker-build:
@@ -10,7 +26,7 @@ docker-image-maker-build:
 
 .PHONY: docker-image-maker-push
 docker-image-maker-push:
-	minikube image load foobar-maker:0.0.1-SNAPSHOT
+	$(call _foobar_push_image,$(FOOBAR_MAKER_IMAGE))
 
 .PHONY: docker-image-maker-unpush
 docker-image-maker-unpush:
@@ -30,7 +46,7 @@ docker-image-customer-build:
 
 .PHONY: docker-image-customer-push
 docker-image-customer-push:
-	minikube image load foobar-customer:0.0.1-SNAPSHOT
+	$(call _foobar_push_image,$(FOOBAR_CUSTOMER_IMAGE))
 
 .PHONY: docker-image-customer-unpush
 docker-image-customer-unpush:
@@ -50,7 +66,7 @@ docker-image-seller-build:
 
 .PHONY: docker-image-seller-push
 docker-image-seller-push:
-	minikube image load foobar-seller:0.0.1-SNAPSHOT
+	$(call _foobar_push_image,$(FOOBAR_SELLER_IMAGE))
 
 .PHONY: docker-image-seller-unpush
 docker-image-seller-unpush:
@@ -70,7 +86,7 @@ docker-image-shipping-build:
 
 .PHONY: docker-image-shipping-push
 docker-image-shipping-push:
-	minikube image load foobar-shipping:0.0.1-SNAPSHOT
+	$(call _foobar_push_image,$(FOOBAR_SHIPPING_IMAGE))
 
 .PHONY: docker-image-shipping-unpush
 docker-image-shipping-unpush:
@@ -90,7 +106,7 @@ docker-image-warehouse-build:
 
 .PHONY: docker-image-warehouse-push
 docker-image-warehouse-push:
-	minikube image load foobar-warehouse:0.0.1-SNAPSHOT
+	$(call _foobar_push_image,$(FOOBAR_WAREHOUSE_IMAGE))
 
 .PHONY: docker-image-warehouse-unpush
 docker-image-warehouse-unpush:
@@ -110,7 +126,7 @@ docker-image-marketplace-build:
 
 .PHONY: docker-image-marketplace-push
 docker-image-marketplace-push:
-	minikube image load foobar-marketplace:0.0.1-SNAPSHOT
+	$(call _foobar_push_image,$(FOOBAR_MARKETPLACE_IMAGE))
 
 .PHONY: docker-image-marketplace-unpush
 docker-image-marketplace-unpush:
@@ -130,7 +146,7 @@ docker-image-marketplace-engine-build:
 
 .PHONY: docker-image-marketplace-engine-push
 docker-image-marketplace-engine-push:
-	minikube image load foobar-marketplace-engine:0.0.1-SNAPSHOT
+	$(call _foobar_push_image,$(FOOBAR_MARKETPLACE_ENGINE_IMAGE))
 
 .PHONY: docker-image-marketplace-engine-unpush
 docker-image-marketplace-engine-unpush:
