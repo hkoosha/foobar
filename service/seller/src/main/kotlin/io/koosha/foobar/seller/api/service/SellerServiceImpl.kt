@@ -10,7 +10,6 @@ import mu.KotlinLogging
 import net.logstash.logback.argument.StructuredArguments.kv
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.time.Clock
 import java.util.*
 import javax.validation.Validator
 
@@ -18,7 +17,6 @@ import javax.validation.Validator
 @Service
 class SellerServiceImpl(
     private val sellerRepo: SellerRepository,
-    private val clock: Clock,
     private val validator: Validator,
 ) : SellerService {
 

@@ -6,15 +6,11 @@ import io.koosha.foobar.customer.api.model.CustomerState
 import io.koosha.foobar.customer.api.model.Title
 import io.koosha.foobar.customer.api.service.CustomerAddressCreateRequest
 import org.assertj.core.api.Assertions.assertThat
-import java.time.Instant
-import java.time.ZoneOffset
-import java.time.ZonedDateTime
+import java.time.LocalDateTime
 import java.util.*
 
 
-val NOW: ZonedDateTime = ZonedDateTime.now(ZoneOffset.UTC)
-
-val THEN: Instant = NOW.plusDays(42).toInstant()
+val NOW: LocalDateTime = LocalDateTime.now()
 
 
 private val customer0Id = UUID.fromString("00000000-0000-0000-0000-000000000000")
