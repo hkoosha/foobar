@@ -118,7 +118,8 @@ class ProductServiceAvailabilityUpdaterImpl(
 
         if (request.unitsToFreeze!! > availability.unitsAvailable!!) {
             log.debug(
-                "update availability validation error: not enough units to freeze,product={} availability={} request={}",
+                "update availability validation error: not enough units to freeze, " +
+                        "product={} availability={} request={}",
                 v("product", product),
                 v("availability", availability),
                 v("request", request),
