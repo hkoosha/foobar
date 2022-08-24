@@ -4,7 +4,7 @@ import io.koosha.foobar.common.error.EntityBadValueException
 import io.koosha.foobar.warehouse.api.model.ProductDO
 import io.koosha.foobar.warehouse.api.model.ProductRepository
 import mu.KotlinLogging
-import net.logstash.logback.argument.StructuredArguments.kv
+import net.logstash.logback.argument.StructuredArguments.v
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
@@ -52,18 +52,14 @@ class ProductServiceUpdaterImpl(
         if (anyChange)
             log.info(
                 "updating product, product={} request={}",
-                originalProduct,
-                request,
-                kv("product", originalProduct),
-                kv("request", request),
+                v("product", originalProduct),
+                v("request", request),
             )
         else
             log.trace(
                 "nothing to update on product, product={}, request={}",
-                product,
-                request,
-                kv("product", product),
-                kv("request", request),
+                v("product", product),
+                v("request", request),
             )
 
         return anyChange
@@ -79,13 +75,7 @@ class ProductServiceUpdaterImpl(
 
         val errors = this.validator.validate(request)
         if (errors.isNotEmpty()) {
-            log.trace(
-                "update product validation error,  productId={}, errors={}",
-                productId,
-                errors,
-                kv("productId", productId),
-                kv("validationErrors", errors),
-            )
+            log.trace("update product validation error, errors={}", v("validationErrors", errors))
             throw EntityBadValueException(
                 entityType = ProductDO.ENTITY_TYPE,
                 entityId = productId,

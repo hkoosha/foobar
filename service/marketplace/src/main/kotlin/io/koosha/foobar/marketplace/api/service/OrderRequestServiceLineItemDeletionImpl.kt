@@ -6,7 +6,7 @@ import io.koosha.foobar.marketplace.api.model.OrderRequestLineItemDO
 import io.koosha.foobar.marketplace.api.model.OrderRequestLineItemRepository
 import io.koosha.foobar.marketplace.api.model.OrderRequestState
 import mu.KotlinLogging
-import net.logstash.logback.argument.StructuredArguments.kv
+import net.logstash.logback.argument.StructuredArguments.v
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
@@ -35,10 +35,8 @@ class OrderRequestServiceLineItemDeletionImpl(
         if (orderRequest.state != OrderRequestState.ACTIVE) {
             log.debug(
                 "refused to delete lineItem in current state of orderRequest, orderRequest={}, lineItemId={}",
-                orderRequest,
-                lineItemId,
-                kv("orderRequest", orderRequest),
-                kv("lineItemId", lineItemId),
+                v("orderRequest", orderRequest),
+                v("lineItemId", lineItemId),
             )
             throw EntityInIllegalStateException(
                 entityType = OrderRequestDO.ENTITY_TYPE,
@@ -52,21 +50,16 @@ class OrderRequestServiceLineItemDeletionImpl(
         if (lineItem.isPresent) {
             log.info(
                 "removing line item, orderRequest={} lineItem={}",
-                orderRequest,
-                lineItem,
-                kv("orderRequest", orderRequest),
-                kv("lineItem", lineItem.get()),
+                v("orderRequest", orderRequest),
+                v("lineItem", lineItem.get()),
             )
             this.lineItemRepo.delete(lineItem.get())
         }
         else {
             log.debug(
-                "not removing line item as it is not present, " +
-                        "orderRequest={} lineItemId={}",
-                orderRequest,
-                lineItemId,
-                kv("orderRequest", orderRequest),
-                kv("lineItemId", lineItemId),
+                "not removing line item as it is not present, orderRequest={} lineItemId={}",
+                v("orderRequest", orderRequest),
+                v("lineItemId", lineItemId),
             )
         }
     }

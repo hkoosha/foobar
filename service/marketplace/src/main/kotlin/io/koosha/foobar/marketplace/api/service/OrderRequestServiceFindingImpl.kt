@@ -4,7 +4,7 @@ import io.koosha.foobar.common.error.EntityNotFoundException
 import io.koosha.foobar.marketplace.api.model.OrderRequestDO
 import io.koosha.foobar.marketplace.api.model.OrderRequestRepository
 import mu.KotlinLogging
-import net.logstash.logback.argument.StructuredArguments.kv
+import net.logstash.logback.argument.StructuredArguments.v
 import org.springframework.stereotype.Service
 import java.util.*
 
@@ -23,11 +23,7 @@ final class OrderRequestServiceFindingImpl(
     fun findByIdOrFail(orderRequestId: UUID): OrderRequestDO = this.orderRequestRepo
         .findById(orderRequestId)
         .orElseThrow {
-            this.log.trace(
-                "orderRequest not found, orderRequestId={}",
-                orderRequestId,
-                kv("orderRequestId", orderRequestId)
-            )
+            this.log.trace("orderRequest not found, orderRequestId={}", v("orderRequestId", orderRequestId))
             EntityNotFoundException(
                 entityType = OrderRequestDO.ENTITY_TYPE,
                 entityId = orderRequestId,

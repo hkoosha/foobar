@@ -15,7 +15,7 @@ import io.koosha.foobar.warehouse.api.model.AvailabilityDO
 import io.koosha.foobar.warehouse.api.model.AvailabilityRepository
 import io.koosha.foobar.warehouse.api.model.ProductDO
 import mu.KotlinLogging
-import net.logstash.logback.argument.StructuredArguments.kv
+import net.logstash.logback.argument.StructuredArguments.v
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Service
@@ -49,11 +49,7 @@ class ProductServiceAvailabilityAdderImpl(
 
         val errors = this.validator.validate(request)
         if (errors.isNotEmpty()) {
-            log.trace(
-                "add availability validation error:, errors={}",
-                errors,
-                kv("validationErrors", errors)
-            )
+            log.trace("add availability validation error, errors={}", v("validationErrors", errors))
             throw EntityBadValueException(
                 entityType = AvailabilityDO.ENTITY_TYPE,
                 entityId = null,
@@ -73,10 +69,8 @@ class ProductServiceAvailabilityAdderImpl(
         if (product.active != true) {
             log.debug(
                 "refused to add availability in current state, product={}, request={}",
-                product,
-                request,
-                kv("product", product),
-                kv("request", request),
+                v("product", product),
+                v("request", request),
             )
             throw EntityInIllegalStateException(
                 entityType = ProductDO.ENTITY_TYPE,
@@ -93,7 +87,7 @@ class ProductServiceAvailabilityAdderImpl(
         request: AvailabilityCreateRequest,
     ) {
 
-        log.trace("fetching seller, sellerId={}", request.sellerId, kv("sellerId", request.sellerId))
+        log.trace("fetching seller, sellerId={}", v("sellerId", request.sellerId))
 
         try {
             this.sellerClient.getSeller(request.sellerId)
@@ -101,10 +95,8 @@ class ProductServiceAvailabilityAdderImpl(
         catch (ex: FeignException.NotFound) {
             log.debug(
                 "refused to add availability, seller not found, product={}, request={}",
-                product,
-                request,
-                kv("product", product),
-                kv("request", request),
+                v("product", product),
+                v("request", request),
             )
             throw EntityNotFoundException(
                 entityType = SellerApi.ENTITY_TYPE,
@@ -126,14 +118,10 @@ class ProductServiceAvailabilityAdderImpl(
     ) {
 
         log.trace(
-            "sending new availability to kafka, " +
-                    "product={} sellerId={}, availability={}",
-            product,
-            request.sellerId,
-            availability,
-            kv("product", product),
-            kv("sellerId", request.sellerId),
-            kv("availability", availability),
+            "sending new availability to kafka, product={} sellerId={}, availability={}",
+            v("product", product),
+            v("sellerId", request.sellerId),
+            v("availability", availability),
         )
         val send = AvailabilityProto.Availability
             .newBuilder()
@@ -173,10 +161,8 @@ class ProductServiceAvailabilityAdderImpl(
         if (this.availabilityRepo.findById(availability.availabilityPk).isPresent) {
             log.debug(
                 "refused to add duplicated availability, product={}, request={}",
-                product,
-                request,
-                kv("product", product),
-                kv("request", request),
+                v("product", product),
+                v("request", request),
             )
             throw EntityBadValueException(
                 context = setOf(
@@ -195,14 +181,17 @@ class ProductServiceAvailabilityAdderImpl(
 
         log.info(
             "adding product availability, product={} sellerId={}, availability={}",
-            product,
-            request.sellerId,
-            availability,
-            kv("product", product),
-            kv("sellerId", request.sellerId),
-            kv("availability", availability),
+            v("product", product),
+            v("sellerId", request.sellerId),
+            v("availability", availability),
         )
         this.availabilityRepo.save(availability)
+        log.info(
+            "product availability added, product={} sellerId={}, availability={}",
+            v("product", product),
+            v("sellerId", request.sellerId),
+            v("availability", availability),
+        )
 
         this.addAvailabilitySendKafka(product, availability, request)
 

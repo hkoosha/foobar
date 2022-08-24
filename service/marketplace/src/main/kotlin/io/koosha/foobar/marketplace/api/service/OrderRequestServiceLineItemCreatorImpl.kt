@@ -11,7 +11,7 @@ import io.koosha.foobar.marketplace.api.model.OrderRequestLineItemDO
 import io.koosha.foobar.marketplace.api.model.OrderRequestLineItemRepository
 import io.koosha.foobar.marketplace.api.model.OrderRequestState
 import mu.KotlinLogging
-import net.logstash.logback.argument.StructuredArguments.kv
+import net.logstash.logback.argument.StructuredArguments.v
 import org.openapitools.client.model.Product
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -38,7 +38,7 @@ class OrderRequestServiceLineItemCreatorImpl(
 
         val errors = this.validator.validate(request)
         if (errors.isNotEmpty()) {
-            log.trace("add lineItem validation error, errors={}", errors, kv("validationErrors", errors))
+            log.trace("add lineItem validation error, errors={}", v("validationErrors", errors))
             throw EntityBadValueException(
                 entityType = OrderRequestDO.ENTITY_TYPE,
                 entityId = null,
@@ -57,10 +57,8 @@ class OrderRequestServiceLineItemCreatorImpl(
         if (orderRequest.state != OrderRequestState.ACTIVE) {
             log.debug(
                 "refused to add lineItem in current state of orderRequest, orderRequest={}, request={}",
-                orderRequest,
-                request,
-                kv("orderRequest", orderRequest),
-                kv("request", request),
+                v("orderRequest", orderRequest),
+                v("request", request),
             )
             throw EntityInIllegalStateException(
                 entityType = OrderRequestDO.ENTITY_TYPE,
@@ -77,17 +75,15 @@ class OrderRequestServiceLineItemCreatorImpl(
         request: LineItemRequest,
     ): Product {
 
-        log.trace("fetching product, productId={}", request.productId, kv("productId", request.productId))
+        log.trace("fetching product, productId={}", v("productId", request.productId))
         val product = try {
             this.productClient.getProduct(request.productId)
         }
         catch (ex: FeignException.NotFound) {
             log.debug(
                 "refused to add lineItem, product not found, orderRequest={}, request={}",
-                orderRequest,
-                request,
-                kv("orderRequest", orderRequest),
-                kv("request", request),
+                v("orderRequest", orderRequest),
+                v("request", request),
             )
             throw EntityNotFoundException(
                 entityType = ProductApi.ENTITY_TYPE,
@@ -103,12 +99,9 @@ class OrderRequestServiceLineItemCreatorImpl(
         if (!product.active) {
             log.debug(
                 "refused to add lineItem in current state of product, orderRequest={}, product={}, request={}",
-                orderRequest,
-                product,
-                request,
-                kv("orderRequest", orderRequest),
-                kv("product", product),
-                kv("request", request),
+                v("orderRequest", orderRequest),
+                v("product", product),
+                v("request", request),
             )
             throw EntityInIllegalStateException(
                 entityType = ProductApi.ENTITY_TYPE,
@@ -132,11 +125,7 @@ class OrderRequestServiceLineItemCreatorImpl(
             .map { it.productId!! }
 
         if (existing.isNotEmpty()) {
-            log.trace(
-                "orderRequest already has a line item for productIds={}",
-                existing,
-                kv("productIds", existing),
-            )
+            log.trace("orderRequest already has a line item for productIds={}", v("productIds", existing))
             throw EntityBadValueException(
                 entityType = OrderRequestLineItemDO.ENTITY_TYPE,
                 entityId = null,
@@ -170,14 +159,18 @@ class OrderRequestServiceLineItemCreatorImpl(
         }
 
         log.info(
-            "adding order request line item, orderRequest={} lineItem={}",
-            orderRequest,
-            lineItem,
-            kv("orderRequest", orderRequest),
-            kv("lineItem", lineItem),
-            kv("request", request),
+            "adding order request line item, orderRequest={} lineItem={}, request={}",
+            v("orderRequest", orderRequest),
+            v("lineItem", lineItem),
+            v("request", request),
         )
         val saved = this.lineItemRepo.save(lineItem)
+        log.info(
+            "order request line item added, orderRequest={} lineItem={}, request={}",
+            v("orderRequest", orderRequest),
+            v("lineItem", lineItem),
+            v("request", request),
+        )
         return saved
     }
 

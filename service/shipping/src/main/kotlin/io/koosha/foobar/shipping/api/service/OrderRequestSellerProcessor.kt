@@ -5,7 +5,7 @@ import io.koosha.foobar.common.toUUID
 import io.koosha.foobar.order_request.OrderRequestSellerFoundProto
 import io.koosha.foobar.shipping.SOURCE
 import mu.KotlinLogging
-import net.logstash.logback.argument.StructuredArguments.kv
+import net.logstash.logback.argument.StructuredArguments.v
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.kafka.support.Acknowledgment
 import org.springframework.kafka.support.KafkaHeaders
@@ -48,10 +48,7 @@ class OrderRequestSellerProcessor(
     ) {
 
         if (!payload.hasSellerId()) {
-            log.trace(
-                "order request has no seller: {}", orderRequestId,
-                kv("orderRequestId", orderRequestId),
-            )
+            log.trace("order request has no seller: {}", v("orderRequestId", orderRequestId))
             return
         }
 
@@ -66,9 +63,8 @@ class OrderRequestSellerProcessor(
         catch (ex: Exception) {
             log.error(
                 "failed to process shipping for order request, payload={}, orderRequestId={}",
-                payload,
-                orderRequestId,
-                kv("orderRequestId", orderRequestId),
+                v("payload", payload),
+                v("orderRequestId", orderRequestId),
                 ex,
             )
         }

@@ -4,7 +4,7 @@ import io.koosha.foobar.common.error.EntityBadValueException
 import io.koosha.foobar.warehouse.api.model.ProductDO
 import io.koosha.foobar.warehouse.api.model.ProductRepository
 import mu.KotlinLogging
-import net.logstash.logback.argument.StructuredArguments.kv
+import net.logstash.logback.argument.StructuredArguments.v
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
@@ -28,7 +28,7 @@ class ProductServiceCreatorImpl(
 
         val errors = this.validator.validate(request)
         if (errors.isNotEmpty()) {
-            log.trace("create product validation error, errors={}", errors, kv("validationErrors", errors))
+            log.trace("create product validation error, errors={}", v("validationErrors", errors))
             throw EntityBadValueException(
                 entityType = ProductDO.ENTITY_TYPE,
                 entityId = null,
@@ -43,8 +43,9 @@ class ProductServiceCreatorImpl(
         product.unitSingle = request.unitSingle
         product.unitMultiple = request.unitMultiple
 
-        log.info("creating new product, product={}", product, kv("product", product))
+        log.info("creating new product, product={}", v("product", product))
         this.productRepo.save(product)
+        log.info("new product created, product={}", v("product", product))
         return product
     }
 

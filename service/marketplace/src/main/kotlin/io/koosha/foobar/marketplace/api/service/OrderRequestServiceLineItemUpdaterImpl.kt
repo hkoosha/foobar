@@ -8,7 +8,7 @@ import io.koosha.foobar.marketplace.api.model.OrderRequestLineItemDO
 import io.koosha.foobar.marketplace.api.model.OrderRequestLineItemRepository
 import io.koosha.foobar.marketplace.api.model.OrderRequestState
 import mu.KotlinLogging
-import net.logstash.logback.argument.StructuredArguments.kv
+import net.logstash.logback.argument.StructuredArguments.v
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
@@ -37,12 +37,9 @@ class OrderRequestServiceLineItemUpdaterImpl(
         if (errors.isNotEmpty()) {
             log.trace(
                 "update lineItem validation error, orderRequestId={} lineItemId={} errors={}",
-                orderRequestId,
-                lineItemId,
-                errors,
-                kv("orderRequestId", orderRequestId),
-                kv("lineItemId", lineItemId),
-                kv("validationErrors", errors),
+                v("orderRequestId", orderRequestId),
+                v("lineItemId", lineItemId),
+                v("validationErrors", errors),
             )
             throw EntityBadValueException(
                 entityType = OrderRequestDO.ENTITY_TYPE,
@@ -63,12 +60,9 @@ class OrderRequestServiceLineItemUpdaterImpl(
             log.debug(
                 "refused to update lineItem in current state of orderRequest, " +
                         "orderRequest={}, lineItemId={}, request={}",
-                orderRequest,
-                lineItemId,
-                request,
-                kv("orderRequest", orderRequest),
-                kv("lineItemId", lineItemId),
-                kv("request", request),
+                v("orderRequest", orderRequest),
+                v("lineItemId", lineItemId),
+                v("request", request),
             )
             throw EntityInIllegalStateException(
                 entityType = OrderRequestDO.ENTITY_TYPE,
@@ -89,12 +83,10 @@ class OrderRequestServiceLineItemUpdaterImpl(
         val lineItem: OrderRequestLineItemDO =
             this.lineItemRepo.findById(OrderRequestLineItemDO.Pk(lineItemId, orderRequest)).orElseThrow {
                 log.trace(
-                    "lineItem not found, orderRequest={}, lineItemId={}",
-                    orderRequest,
-                    lineItemId,
-                    kv("orderRequest", orderRequest),
-                    kv("lineItemId", lineItemId),
-                    kv("request", request),
+                    "lineItem not found, orderRequest={}, lineItemId={}, request={}",
+                    v("orderRequest", orderRequest),
+                    v("lineItemId", lineItemId),
+                    v("request", request),
                 )
                 EntityNotFoundException(
                     entityType = OrderRequestLineItemDO.ENTITY_TYPE,
@@ -121,12 +113,9 @@ class OrderRequestServiceLineItemUpdaterImpl(
         return if (anyChange) {
             log.info(
                 "updating order request line item, orderRequest={}, lineItemId={}, request={}",
-                orderRequest,
-                lineItem,
-                request,
-                kv("orderRequest", orderRequest),
-                kv("lineItem", lineItem.orderRequestLineItemPk.orderRequestLineItemId),
-                kv("request", request),
+                v("orderRequest", orderRequest),
+                v("lineItemId", lineItem.orderRequestLineItemPk.orderRequestLineItemId),
+                v("request", request),
             )
             val saved: OrderRequestLineItemDO = this.lineItemRepo.save(lineItem)
             saved

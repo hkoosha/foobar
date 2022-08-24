@@ -7,7 +7,7 @@ import io.koosha.foobar.warehouse.SOURCE
 import io.koosha.foobar.warehouse.api.model.AvailabilityDO
 import io.koosha.foobar.warehouse.api.model.AvailabilityRepository
 import mu.KotlinLogging
-import net.logstash.logback.argument.StructuredArguments.kv
+import net.logstash.logback.argument.StructuredArguments.v
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Service
@@ -50,10 +50,8 @@ class ProductServiceAvailabilityDeleterImpl(
         if (availability.isEmpty) {
             log.debug(
                 "not deleting availability: entity does not exist, product={}, sellerId={}",
-                product,
-                sellerId,
-                kv("product", product),
-                kv("sellerId", sellerId),
+                v("product", product),
+                v("sellerId", sellerId),
             )
             return
         }
@@ -68,21 +66,16 @@ class ProductServiceAvailabilityDeleterImpl(
 
         log.info(
             "removing product availability, product={} sellerId={}",
-            product,
-            sellerId,
-            kv("product", product),
-            kv("sellerId", sellerId),
+            v("product", product),
+            v("sellerId", sellerId),
         )
         this.availabilityRepo.delete(availability.get())
 
         log.trace(
             "sending removed availability to kafka, product={} sellerId={}, availability={}",
-            product,
-            sellerId,
-            availability,
-            kv("product", product),
-            kv("sellerId", sellerId),
-            kv("availability", availability),
+            v("product", product),
+            v("sellerId", sellerId),
+            v("availability", availability),
         )
         this.kafka
             .sendDefault(send)

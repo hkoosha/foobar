@@ -4,7 +4,7 @@ import io.koosha.foobar.common.error.EntityInIllegalStateException
 import io.koosha.foobar.warehouse.api.model.ProductDO
 import io.koosha.foobar.warehouse.api.model.ProductRepository
 import mu.KotlinLogging
-import net.logstash.logback.argument.StructuredArguments.kv
+import net.logstash.logback.argument.StructuredArguments.v
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
@@ -33,11 +33,7 @@ class ProductServiceDeleterImpl(
         val product = maybeProduct.get()
 
         if (product.active!!) {
-            log.debug(
-                "refused to delete product in current state, product={}",
-                product,
-                kv("product", product),
-            )
+            log.debug("refused to delete product in current state, product={}", v("product", product))
             throw EntityInIllegalStateException(
                 entityType = ProductDO.ENTITY_TYPE,
                 entityId = productId,
@@ -45,11 +41,7 @@ class ProductServiceDeleterImpl(
             )
         }
 
-        log.info(
-            "deleting product, product={}",
-            product,
-            kv("product", product),
-        )
+        log.info("deleting product, product={}", v("product", product))
         this.productRepo.delete(product)
     }
 

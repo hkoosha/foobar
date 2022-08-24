@@ -5,7 +5,7 @@ import io.koosha.foobar.marketplace.api.model.OrderRequestDO
 import io.koosha.foobar.marketplace.api.model.OrderRequestLineItemRepository
 import io.koosha.foobar.marketplace.api.model.OrderRequestRepository
 import mu.KotlinLogging
-import net.logstash.logback.argument.StructuredArguments.kv
+import net.logstash.logback.argument.StructuredArguments.v
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
@@ -31,8 +31,7 @@ class OrderRequestServiceDeletionImpl(
         if (!maybeEntity.isPresent) {
             log.debug(
                 "not deleting order request, entity does not exist, orderRequestId={}",
-                orderRequestId,
-                kv("orderRequestId", orderRequestId),
+                v("orderRequestId", orderRequestId),
             )
             return
         }
@@ -42,8 +41,7 @@ class OrderRequestServiceDeletionImpl(
         if (orderRequest.state?.deletionAllowed != true) {
             log.debug(
                 "refused to delete orderRequest in current state, orderRequest={}",
-                orderRequest,
-                kv("orderRequest", orderRequest),
+                v("orderRequest", orderRequest),
             )
             throw EntityInIllegalStateException(
                 entityType = OrderRequestDO.ENTITY_TYPE,
@@ -52,7 +50,7 @@ class OrderRequestServiceDeletionImpl(
             )
         }
 
-        log.info("deleting orderRequest and lineItems, orderRequest={}", orderRequest, kv("orderRequest", orderRequest))
+        log.info("deleting orderRequest and lineItems, orderRequest={}", v("orderRequest", orderRequest))
         this.lineItemRepo.deleteAllByOrderRequestLineItemPk_OrderRequest_orderRequestId(orderRequestId)
         this.orderRequestRepo.delete(orderRequest)
     }
