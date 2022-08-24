@@ -84,11 +84,11 @@ docker-image-marketplace: docker-image-marketplace-build docker-image-marketplac
 
 .PHONY: docker-image-marketplace-engine-build
 docker-image-marketplace-engine-build:
-	$(GRADLE_RUNNER) :service:marketplace_engine:jibDockerBuild
+	$(GRADLE_RUNNER) :service:marketplace-engine:jibDockerBuild
 
 .PHONY: docker-image-marketplace-engine-push
 docker-image-marketplace-engine-push:
-	minikube image load foobar-marketplace_engine:0.0.1-SNAPSHOT
+	minikube image load foobar-marketplace-engine:0.0.1-SNAPSHOT
 
 .PHONY: docker-image-marketplace-engine
 docker-image-marketplace-engine: docker-image-marketplace-engine-build docker-image-marketplace-engine-push

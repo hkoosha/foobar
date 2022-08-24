@@ -19,5 +19,5 @@ out/
 # extra jar files not fetched by gradle (usually fetched by Make).
 /libs/*.jar
 
-assets/k8s/foobar/*compiled.yaml
+/assets/k8s/foobar/compiled/
 

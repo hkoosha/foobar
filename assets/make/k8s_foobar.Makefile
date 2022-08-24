@@ -10,15 +10,15 @@ remake-k8s-foobar:
 
 .PHONY: _k8s-deploy-maker-compile
 _k8s-deploy-maker-compile:
-	cat $(FOOBAR_SERVICES_YAML)/maker.yaml | envsubst > $(FOOBAR_SERVICES_YAML)/maker.compiled.yaml
+	cat $(FOOBAR_SERVICES_YAML)/maker.yaml | envsubst > $(FOOBAR_SERVICES_YAML)/compiled/maker.yaml
 
 .PHONY: k8s-deploy-maker
 k8s-deploy-maker: _k8s-deploy-maker-compile
-	kubectl -n $(FOOBAR_NAMESPACE) apply -f $(FOOBAR_SERVICES_YAML)/maker.compiled.yaml
+	kubectl -n $(FOOBAR_NAMESPACE) apply -f $(FOOBAR_SERVICES_YAML)/compiled/maker.yaml
 
 .PHONY: k8s-undeploy-maker
 k8s-undeploy-maker: _k8s-deploy-maker-compile
-	kubectl -n $(FOOBAR_NAMESPACE) delete -f $(FOOBAR_SERVICES_YAML)/maker.compiled.yaml
+	kubectl -n $(FOOBAR_NAMESPACE) delete -f $(FOOBAR_SERVICES_YAML)/compiled/maker.yaml
 
 .PHONY: k8s-redeploy-maker
 k8s-redeploy-maker: k8s-undeploy-maker k8s-deploy-maker
@@ -31,15 +31,15 @@ remake-yaml-maker:
 
 .PHONY: _k8s-deploy-customer-compile
 _k8s-deploy-customer-compile:
-	cat $(FOOBAR_SERVICES_YAML)/customer.yaml | envsubst > $(FOOBAR_SERVICES_YAML)/customer.compiled.yaml
+	cat $(FOOBAR_SERVICES_YAML)/customer.yaml | envsubst > $(FOOBAR_SERVICES_YAML)/compiled/customer.yaml
 
 .PHONY: k8s-deploy-customer
 k8s-deploy-customer: _k8s-deploy-customer-compile
-	kubectl -n $(FOOBAR_NAMESPACE) apply -f $(FOOBAR_SERVICES_YAML)/customer.compiled.yaml
+	kubectl -n $(FOOBAR_NAMESPACE) apply -f $(FOOBAR_SERVICES_YAML)/compiled/customer.yaml
 
 .PHONY: k8s-undeploy-customer
 k8s-undeploy-customer: _k8s-deploy-customer-compile
-	kubectl -n $(FOOBAR_NAMESPACE) delete -f $(FOOBAR_SERVICES_YAML)/customer.compiled.yaml
+	kubectl -n $(FOOBAR_NAMESPACE) delete -f $(FOOBAR_SERVICES_YAML)/compiled/customer.yaml
 
 .PHONY: k8s-redeploy-customer
 k8s-redeploy-customer: k8s-undeploy-customer k8s-deploy-customer
@@ -52,15 +52,15 @@ remake-yaml-customer:
 
 .PHONY: _k8s-deploy-seller-compile
 _k8s-deploy-seller-compile:
-	cat $(FOOBAR_SERVICES_YAML)/seller.yaml | envsubst > $(FOOBAR_SERVICES_YAML)/seller.compiled.yaml
+	cat $(FOOBAR_SERVICES_YAML)/seller.yaml | envsubst > $(FOOBAR_SERVICES_YAML)/compiled/seller.yaml
 
 .PHONY: k8s-deploy-seller
 k8s-deploy-seller: _k8s-deploy-seller-compile
-	kubectl -n $(FOOBAR_NAMESPACE) apply -f $(FOOBAR_SERVICES_YAML)/seller.compiled.yaml
+	kubectl -n $(FOOBAR_NAMESPACE) apply -f $(FOOBAR_SERVICES_YAML)/compiled/seller.yaml
 
 .PHONY: k8s-undeploy-seller
 k8s-undeploy-seller: _k8s-deploy-seller-compile
-	kubectl -n $(FOOBAR_NAMESPACE) delete -f $(FOOBAR_SERVICES_YAML)/seller.compiled.yaml
+	kubectl -n $(FOOBAR_NAMESPACE) delete -f $(FOOBAR_SERVICES_YAML)/compiled/seller.yaml
 
 .PHONY: k8s-redeploy-seller
 k8s-redeploy-seller: k8s-undeploy-seller k8s-deploy-seller
@@ -73,15 +73,15 @@ remake-yaml-seller:
 
 .PHONY: _k8s-deploy-warehouse-compile
 _k8s-deploy-warehouse-compile:
-	cat $(FOOBAR_SERVICES_YAML)/warehouse.yaml | envsubst > $(FOOBAR_SERVICES_YAML)/warehouse.compiled.yaml
+	cat $(FOOBAR_SERVICES_YAML)/warehouse.yaml | envsubst > $(FOOBAR_SERVICES_YAML)/compiled/warehouse.yaml
 
 .PHONY: k8s-deploy-warehouse
 k8s-deploy-warehouse: _k8s-deploy-warehouse-compile
-	kubectl -n $(FOOBAR_NAMESPACE) apply -f $(FOOBAR_SERVICES_YAML)/warehouse.compiled.yaml
+	kubectl -n $(FOOBAR_NAMESPACE) apply -f $(FOOBAR_SERVICES_YAML)/compiled/warehouse.yaml
 
 .PHONY: k8s-undeploy-warehouse
 k8s-undeploy-warehouse: _k8s-deploy-warehouse-compile
-	kubectl -n $(FOOBAR_NAMESPACE) delete -f $(FOOBAR_SERVICES_YAML)/warehouse.compiled.yaml
+	kubectl -n $(FOOBAR_NAMESPACE) delete -f $(FOOBAR_SERVICES_YAML)/compiled/warehouse.yaml
 
 .PHONY: k8s-redeploy-warehouse
 k8s-redeploy-warehouse: k8s-undeploy-warehouse k8s-deploy-warehouse
@@ -94,15 +94,15 @@ remake-yaml-warehouse:
 
 .PHONY: _k8s-deploy-shipping-compile
 _k8s-deploy-shipping-compile:
-	cat $(FOOBAR_SERVICES_YAML)/shipping.yaml | envsubst > $(FOOBAR_SERVICES_YAML)/shipping.compiled.yaml
+	cat $(FOOBAR_SERVICES_YAML)/shipping.yaml | envsubst > $(FOOBAR_SERVICES_YAML)/compiled/shipping.yaml
 
 .PHONY: k8s-deploy-shipping
 k8s-deploy-shipping: _k8s-deploy-shipping-compile
-	kubectl -n $(FOOBAR_NAMESPACE) apply -f $(FOOBAR_SERVICES_YAML)/shipping.compiled.yaml
+	kubectl -n $(FOOBAR_NAMESPACE) apply -f $(FOOBAR_SERVICES_YAML)/compiled/shipping.yaml
 
 .PHONY: k8s-undeploy-shipping
 k8s-undeploy-shipping: _k8s-deploy-shipping-compile
-	kubectl -n $(FOOBAR_NAMESPACE) delete -f $(FOOBAR_SERVICES_YAML)/shipping.compiled.yaml
+	kubectl -n $(FOOBAR_NAMESPACE) delete -f $(FOOBAR_SERVICES_YAML)/compiled/shipping.yaml
 
 .PHONY: k8s-redeploy-shipping
 k8s-redeploy-shipping: k8s-undeploy-shipping k8s-deploy-shipping
@@ -115,15 +115,15 @@ remake-yaml-shipping:
 
 .PHONY: _k8s-deploy-marketplace-compile
 _k8s-deploy-marketplace-compile:
-	cat $(FOOBAR_SERVICES_YAML)/marketplace.yaml | envsubst > $(FOOBAR_SERVICES_YAML)/marketplace.compiled.yaml
+	cat $(FOOBAR_SERVICES_YAML)/marketplace.yaml | envsubst > $(FOOBAR_SERVICES_YAML)/compiled/marketplace.yaml
 
 .PHONY: k8s-deploy-marketplace
 k8s-deploy-marketplace: _k8s-deploy-marketplace-compile
-	kubectl -n $(FOOBAR_NAMESPACE) apply -f $(FOOBAR_SERVICES_YAML)/marketplace.compiled.yaml
+	kubectl -n $(FOOBAR_NAMESPACE) apply -f $(FOOBAR_SERVICES_YAML)/compiled/marketplace.yaml
 
 .PHONY: k8s-undeploy-marketplace
 k8s-undeploy-marketplace:_k8s-deploy-marketplace-compile
-	kubectl -n $(FOOBAR_NAMESPACE) delete -f $(FOOBAR_SERVICES_YAML)/marketplace.compiled.yaml
+	kubectl -n $(FOOBAR_NAMESPACE) delete -f $(FOOBAR_SERVICES_YAML)/compiled/marketplace.yaml
 
 .PHONY: k8s-redeploy-marketplace
 k8s-redeploy-marketplace: k8s-undeploy-marketplace k8s-deploy-marketplace
@@ -136,15 +136,15 @@ remake-yaml-marketplace:
 
 .PHONY: _k8s-deploy-marketplace-engine-compile
 _k8s-deploy-marketplace-engine-compile:
-	cat $(FOOBAR_SERVICES_YAML)/marketplace_engine.yaml | envsubst > $(FOOBAR_SERVICES_YAML)/marketplace_engine.compiled.yaml
+	cat $(FOOBAR_SERVICES_YAML)/marketplace_engine.yaml | envsubst > $(FOOBAR_SERVICES_YAML)/compiled/marketplace_engine.yaml
 
 .PHONY: k8s-deploy-marketplace-engine
 k8s-deploy-marketplace-engine: _k8s-deploy-marketplace-engine-compile
-	kubectl -n $(FOOBAR_NAMESPACE) apply -f $(FOOBAR_SERVICES_YAML)/marketplace_engine.compiled.yaml
+	kubectl -n $(FOOBAR_NAMESPACE) apply -f $(FOOBAR_SERVICES_YAML)/compiled/marketplace_engine.yaml
 
 .PHONY: k8s-undeploy-marketplace-engine
 k8s-undeploy-marketplace-engine: _k8s-deploy-marketplace-engine-compile
-	kubectl -n $(FOOBAR_NAMESPACE) delete -f $(FOOBAR_SERVICES_YAML)/marketplace_engine.compiled.yaml
+	kubectl -n $(FOOBAR_NAMESPACE) delete -f $(FOOBAR_SERVICES_YAML)/compiled/marketplace_engine.yaml
 
 .PHONY: k8s-redeploy-marketplace-engine
 k8s-redeploy-marketplace-engine: k8s-undeploy-marketplace-engine k8s-deploy-marketplace-engine

@@ -274,6 +274,9 @@ k8s-init-drop-db:
 		--namespace $(FOOBAR_NAMESPACE) --command -- bash -c \
 		'mysql -h mariadb.foobar.svc.cluster.local -uroot -p"$(shell kubectl get secret --namespace foobar mariadb -o jsonpath="{.data.mariadb-root-password}" | base64 -d)" -e "DROP DATABASE foobar_customer; DROP DATABASE foobar_seller; DROP DATABASE foobar_marketplace; DROP DATABASE foobar_marketplace_engine; DROP DATABASE foobar_shipping; DROP DATABASE foobar_warehouse; DROP DATABASE foobar_maker; SHOW DATABASES"'
 
+.PHONY: k8s-init-recreate-db
+k8s-init-recreate-db: k8s-init-drop-db k8s-init-create-db
+
 .PHONY: k8s-init-create-topics
 k8s-init-create-topics:
 	kubectl run kafka-client --rm --tty -i --restart='Never' --image docker.io/bitnami/kafka:3.2.1-debian-11-r4 --namespace $(FOOBAR_NAMESPACE) --command -- bash -c \
