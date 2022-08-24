@@ -130,7 +130,7 @@ jib {
         jvmFlags = Foobar.Jib.jvmFlags(project)
     }
     to {
-        image = "foobar-marketplace-engine"
+        image = "foobar-marketplace-engine:${Foobar.appVersion}"
     }
 }
 

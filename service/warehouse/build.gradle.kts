@@ -158,7 +158,7 @@ jib {
         jvmFlags = Foobar.Jib.jvmFlags(project)
     }
     to {
-        image = "foobar-warehouse"
+        image = "foobar-warehouse:${Foobar.appVersion}"
     }
 }
 
