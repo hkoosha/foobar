@@ -57,6 +57,7 @@ build-api-generator:
 
 .PHONY: api-customer
 api-customer: build-api-generator
+	@echo "You may also want to enable the spring profile 'no-db'"
 	$(GRADLE_RUNNER) \
 		:service:customer:generateOpenApiDocs \
 		:connect:customer-api:foobar-clean-api-build \
@@ -64,6 +65,7 @@ api-customer: build-api-generator
 
 .PHONY: api-seller
 api-seller: build-api-generator
+	@echo "You may also want to enable the spring profile 'no-db'"
 	$(GRADLE_RUNNER) \
 		:service:seller:generateOpenApiDocs \
 		:connect:seller-api:foobar-clean-api-build \
@@ -71,6 +73,7 @@ api-seller: build-api-generator
 
 .PHONY: api-warehouse
 api-warehouse: build-api-generator
+	@echo "You may also want to enable the spring profile 'no-db'"
 	$(GRADLE_RUNNER) \
 		:service:warehouse:generateOpenApiDocs \
 		:connect:warehouse-api:foobar-clean-api-build \
@@ -78,6 +81,7 @@ api-warehouse: build-api-generator
 
 .PHONY: api-marketplace
 api-marketplace: build-api-generator
+	@echo "You may also want to enable the spring profile 'no-db'"
 	$(GRADLE_RUNNER) \
 		:service:marketplace:generateOpenApiDocs \
 		:connect:marketplace-api:foobar-clean-api-build \
