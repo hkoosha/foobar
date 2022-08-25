@@ -193,7 +193,7 @@ k8s-redeploy: \
 
 .PHONY: k8s-exec-maker-cli
 k8s-exec-maker-cli:
-	kubectl exec $(shell kubectl get pods -l foobar-tool=maker -o jsonpath='{.items[0].metadata.name}') \
+	kubectl exec $(shell kubectl get pods --namespace $(FOOBAR_NAMESPACE) -l foobar-tool=maker -o jsonpath='{.items[0].metadata.name}') \
 		--tty \
 		-i \
 		--namespace $(FOOBAR_NAMESPACE) \

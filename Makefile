@@ -21,6 +21,10 @@ FOOBAR_SELLER_REPLICAS=${FOOBAR_REPLICAS}
 FOOBAR_SHIPPING_REPLICAS=${FOOBAR_REPLICAS}
 FOOBAR_WAREHOUSE_REPLICAS=${FOOBAR_REPLICAS}
 
+# Bad idea for production! but good for us on a demo app.
+# TODO add this too Foobar.kt in buildSrc/...
+FOOBAR_OTEL_TRACES_SAMPLER=always_on
+
 export
 
 
@@ -50,13 +54,22 @@ endif
 
 
 .PHONY: help
-help:
-	@sed -n 's/^\([0-9a-z \-]*\):.*/\1/p' ${MAKEFILE_LIST} | column -t -c 2 -s ':#' | sort 
+help: # print available help commands
+	@echo "Try '$(MAKE) help0' which required gawk, if that does not work, try '$(MAKE) help1'"
+
+.PHONY: help0
+help0: # try to print make targets using gawk
+	@awk '{match($$0, /^([a-z0-9][a-zA-Z0-9\.\-\/]*):( *)(# .*)*$$/, m) } { print m[0];}' ${MAKEFILE_LIST} | grep -Ev '^$$' | sort | column -t -s'#'
+
+.PHONY: help1
+help1: # try to print make targets using sed
+	@sed -n 's/^\([0-9a-z \-]*\):.*/\1/p' ${MAKEFILE_LIST} | column -t -c 2 -s ':#' | sort
 
 
 
-
-libs/opentelemetry-javaagent-1.17.0.jar:
-	wget https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v1.17.0/opentelemetry-javaagent.jar -O libs/opentelemetry-javaagent-1.17.0.jar
+libs/opentelemetry-javaagent-1.17.0.jar: # get the OpenTelemetry library injected in docker containers as java agent
+	wget \
+		https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v1.17.0/opentelemetry-javaagent.jar \
+		-O libs/opentelemetry-javaagent-1.17.0.jar
 
 

@@ -150,6 +150,8 @@ make run-marketplace-engine
 make run-shipping
 
 # Generate some load
+./maker.sh init && ./maker.sh ord patch --state=LIVE
+# OR
 ./maker.sh init --live
 ```
 
@@ -205,7 +207,9 @@ k8s-port-forward-zipkin
 # Generate some load.
 make k8s-exec-maker-cli
 # and in the shell you get, type:
-# "maker init && maker.sh ord patch --state=LIVE"
+# "maker init && maker ord patch --state=LIVE"
+# OR
+# "maker init --live"
 ```
 
 ## Foobar Workflow:
