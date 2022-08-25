@@ -34,10 +34,10 @@ class ClientConfig {
             .decoder(Seller_ApiResponseDecoder(om))
 
         val api = apiClient.buildClient(SellerApi::class.java)
-
         val retry = SellerApi.Retry(api)
+        val limit = SellerApi.Limit(retry)
 
-        return retry
+        return limit
     }
 
 }

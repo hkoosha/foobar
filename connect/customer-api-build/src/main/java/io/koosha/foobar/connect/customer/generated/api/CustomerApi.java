@@ -27,11 +27,12 @@ import org.springframework.cloud.client.circuitbreaker.NoFallbackAvailableExcept
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.CircuitBreaker;
 import org.springframework.retry.annotation.Retryable;
+import io.github.resilience4j.bulkhead.annotation.Bulkhead;
 
 
 public interface CustomerApi extends ApiClient.Api {
 
-  public static final String ENTITY_TYPE = "customer";
+  String ENTITY_TYPE = "customer";
 
 
   /**
@@ -171,444 +172,650 @@ public interface CustomerApi extends ApiClient.Api {
 
 
 
-    public static class Retry implements CustomerApi {
+  // TODO do annotations work at class level? if yes, move them.
+  class Retry implements CustomerApi {
 
-          private CustomerApi api;
+    private final CustomerApi api;
 
-          public Retry(CustomerApi api) {
-            java.util.Objects.requireNonNull(api);
-            this.api = api;
-          }
-
-        
-          @Override
-          @CircuitBreaker(
-              include = {
-                  TimeoutException.class,
-                  IOException.class,
-                  FeignException.FeignServerException.class,
-              },
-              maxAttemptsExpression = "${foobar.circuit-breaker.max-attempts:3}",
-              resetTimeoutExpression = "${foobar.circuit-breaker.reset-timeout-millis:20000}",
-              openTimeoutExpression = "${foobar.circuit-breaker.open-timeout-millis:5000}"
-          )
-          @Retryable(
-              include = {
-                  TimeoutException.class,
-                  IOException.class,
-                  FeignException.FeignServerException.class,
-              },
-              maxAttemptsExpression = "${foobar.retry.max-attempts:3}",
-              backoff = @Backoff(
-                  delayExpression = "${foobar.retry.delay-millis:1000}",
-                  maxDelayExpression = "${foobar.retry.max-delay-millis:0}",
-                  multiplierExpression = "${foobar.retry.multiplier:0}",
-                  randomExpression = "${foobar.retry.random:false}"
-              )
-          )
-          public void deleteCustomer(UUID customerId) {
-            try {
-                this.api.deleteCustomer(customerId);
-            }
-            catch(final NoFallbackAvailableException ex) {
-                if(ex.getCause() instanceof RuntimeException) {
-                    throw (RuntimeException) ex.getCause();
-                }
-                else if(ex.getCause() != null) {
-                    throw new RuntimeException(ex.getCause());
-                }
-                else {
-                    throw ex;
-                }
-            }
-          }
-
-          @Override
-          @CircuitBreaker(
-              include = {
-                  TimeoutException.class,
-                  IOException.class,
-                  FeignException.FeignServerException.class,
-              },
-              maxAttemptsExpression = "${foobar.circuit-breaker.max-attempts:3}",
-              resetTimeoutExpression = "${foobar.circuit-breaker.reset-timeout-millis:20000}",
-              openTimeoutExpression = "${foobar.circuit-breaker.open-timeout-millis:5000}"
-          )
-          @Retryable(
-              include = {
-                  TimeoutException.class,
-                  IOException.class,
-                  FeignException.FeignServerException.class,
-              },
-              maxAttemptsExpression = "${foobar.retry.max-attempts:3}",
-              backoff = @Backoff(
-                  delayExpression = "${foobar.retry.delay-millis:1000}",
-                  maxDelayExpression = "${foobar.retry.max-delay-millis:0}",
-                  multiplierExpression = "${foobar.retry.multiplier:0}",
-                  randomExpression = "${foobar.retry.random:false}"
-              )
-          )
-          public ApiResponse<Void> deleteCustomerWithHttpInfo(UUID customerId) {
-            try {
-                return this.api.deleteCustomerWithHttpInfo(customerId);
-            }
-            catch(final NoFallbackAvailableException ex) {
-                if(ex.getCause() instanceof RuntimeException) {
-                    throw (RuntimeException) ex.getCause();
-                }
-                else if(ex.getCause() != null) {
-                    throw new RuntimeException(ex.getCause());
-                }
-                else {
-                    throw ex;
-                }
-            }
-        }
-
-
-
-          @Override
-          @CircuitBreaker(
-              include = {
-                  TimeoutException.class,
-                  IOException.class,
-                  FeignException.FeignServerException.class,
-              },
-              maxAttemptsExpression = "${foobar.circuit-breaker.max-attempts:3}",
-              resetTimeoutExpression = "${foobar.circuit-breaker.reset-timeout-millis:20000}",
-              openTimeoutExpression = "${foobar.circuit-breaker.open-timeout-millis:5000}"
-          )
-          @Retryable(
-              include = {
-                  TimeoutException.class,
-                  IOException.class,
-                  FeignException.FeignServerException.class,
-              },
-              maxAttemptsExpression = "${foobar.retry.max-attempts:3}",
-              backoff = @Backoff(
-                  delayExpression = "${foobar.retry.delay-millis:1000}",
-                  maxDelayExpression = "${foobar.retry.max-delay-millis:0}",
-                  multiplierExpression = "${foobar.retry.multiplier:0}",
-                  randomExpression = "${foobar.retry.random:false}"
-              )
-          )
-          public Customer getCustomer(UUID customerId) {
-            try {
-                return this.api.getCustomer(customerId);
-            }
-            catch(final NoFallbackAvailableException ex) {
-                if(ex.getCause() instanceof RuntimeException) {
-                    throw (RuntimeException) ex.getCause();
-                }
-                else if(ex.getCause() != null) {
-                    throw new RuntimeException(ex.getCause());
-                }
-                else {
-                    throw ex;
-                }
-            }
-          }
-
-          @Override
-          @CircuitBreaker(
-              include = {
-                  TimeoutException.class,
-                  IOException.class,
-                  FeignException.FeignServerException.class,
-              },
-              maxAttemptsExpression = "${foobar.circuit-breaker.max-attempts:3}",
-              resetTimeoutExpression = "${foobar.circuit-breaker.reset-timeout-millis:20000}",
-              openTimeoutExpression = "${foobar.circuit-breaker.open-timeout-millis:5000}"
-          )
-          @Retryable(
-              include = {
-                  TimeoutException.class,
-                  IOException.class,
-                  FeignException.FeignServerException.class,
-              },
-              maxAttemptsExpression = "${foobar.retry.max-attempts:3}",
-              backoff = @Backoff(
-                  delayExpression = "${foobar.retry.delay-millis:1000}",
-                  maxDelayExpression = "${foobar.retry.max-delay-millis:0}",
-                  multiplierExpression = "${foobar.retry.multiplier:0}",
-                  randomExpression = "${foobar.retry.random:false}"
-              )
-          )
-          public ApiResponse<Customer> getCustomerWithHttpInfo(UUID customerId) {
-            try {
-                return this.api.getCustomerWithHttpInfo(customerId);
-            }
-            catch(final NoFallbackAvailableException ex) {
-                if(ex.getCause() instanceof RuntimeException) {
-                    throw (RuntimeException) ex.getCause();
-                }
-                else if(ex.getCause() != null) {
-                    throw new RuntimeException(ex.getCause());
-                }
-                else {
-                    throw ex;
-                }
-            }
-        }
-
-
-
-          @Override
-          @CircuitBreaker(
-              include = {
-                  TimeoutException.class,
-                  IOException.class,
-                  FeignException.FeignServerException.class,
-              },
-              maxAttemptsExpression = "${foobar.circuit-breaker.max-attempts:3}",
-              resetTimeoutExpression = "${foobar.circuit-breaker.reset-timeout-millis:20000}",
-              openTimeoutExpression = "${foobar.circuit-breaker.open-timeout-millis:5000}"
-          )
-          @Retryable(
-              include = {
-                  TimeoutException.class,
-                  IOException.class,
-                  FeignException.FeignServerException.class,
-              },
-              maxAttemptsExpression = "${foobar.retry.max-attempts:3}",
-              backoff = @Backoff(
-                  delayExpression = "${foobar.retry.delay-millis:1000}",
-                  maxDelayExpression = "${foobar.retry.max-delay-millis:0}",
-                  multiplierExpression = "${foobar.retry.multiplier:0}",
-                  randomExpression = "${foobar.retry.random:false}"
-              )
-          )
-          public List<Customer> getCustomers() {
-            try {
-                return this.api.getCustomers();
-            }
-            catch(final NoFallbackAvailableException ex) {
-                if(ex.getCause() instanceof RuntimeException) {
-                    throw (RuntimeException) ex.getCause();
-                }
-                else if(ex.getCause() != null) {
-                    throw new RuntimeException(ex.getCause());
-                }
-                else {
-                    throw ex;
-                }
-            }
-          }
-
-          @Override
-          @CircuitBreaker(
-              include = {
-                  TimeoutException.class,
-                  IOException.class,
-                  FeignException.FeignServerException.class,
-              },
-              maxAttemptsExpression = "${foobar.circuit-breaker.max-attempts:3}",
-              resetTimeoutExpression = "${foobar.circuit-breaker.reset-timeout-millis:20000}",
-              openTimeoutExpression = "${foobar.circuit-breaker.open-timeout-millis:5000}"
-          )
-          @Retryable(
-              include = {
-                  TimeoutException.class,
-                  IOException.class,
-                  FeignException.FeignServerException.class,
-              },
-              maxAttemptsExpression = "${foobar.retry.max-attempts:3}",
-              backoff = @Backoff(
-                  delayExpression = "${foobar.retry.delay-millis:1000}",
-                  maxDelayExpression = "${foobar.retry.max-delay-millis:0}",
-                  multiplierExpression = "${foobar.retry.multiplier:0}",
-                  randomExpression = "${foobar.retry.random:false}"
-              )
-          )
-          public ApiResponse<List<Customer>> getCustomersWithHttpInfo() {
-            try {
-                return this.api.getCustomersWithHttpInfo();
-            }
-            catch(final NoFallbackAvailableException ex) {
-                if(ex.getCause() instanceof RuntimeException) {
-                    throw (RuntimeException) ex.getCause();
-                }
-                else if(ex.getCause() != null) {
-                    throw new RuntimeException(ex.getCause());
-                }
-                else {
-                    throw ex;
-                }
-            }
-        }
-
-
-
-          @Override
-          @CircuitBreaker(
-              include = {
-                  TimeoutException.class,
-                  IOException.class,
-                  FeignException.FeignServerException.class,
-              },
-              maxAttemptsExpression = "${foobar.circuit-breaker.max-attempts:3}",
-              resetTimeoutExpression = "${foobar.circuit-breaker.reset-timeout-millis:20000}",
-              openTimeoutExpression = "${foobar.circuit-breaker.open-timeout-millis:5000}"
-          )
-          @Retryable(
-              include = {
-                  TimeoutException.class,
-                  IOException.class,
-                  FeignException.FeignServerException.class,
-              },
-              maxAttemptsExpression = "${foobar.retry.max-attempts:3}",
-              backoff = @Backoff(
-                  delayExpression = "${foobar.retry.delay-millis:1000}",
-                  maxDelayExpression = "${foobar.retry.max-delay-millis:0}",
-                  multiplierExpression = "${foobar.retry.multiplier:0}",
-                  randomExpression = "${foobar.retry.random:false}"
-              )
-          )
-          public Customer patchCustomer(UUID customerId, CustomerUpdateRequest customerUpdateRequest) {
-            try {
-                return this.api.patchCustomer(customerId, customerUpdateRequest);
-            }
-            catch(final NoFallbackAvailableException ex) {
-                if(ex.getCause() instanceof RuntimeException) {
-                    throw (RuntimeException) ex.getCause();
-                }
-                else if(ex.getCause() != null) {
-                    throw new RuntimeException(ex.getCause());
-                }
-                else {
-                    throw ex;
-                }
-            }
-          }
-
-          @Override
-          @CircuitBreaker(
-              include = {
-                  TimeoutException.class,
-                  IOException.class,
-                  FeignException.FeignServerException.class,
-              },
-              maxAttemptsExpression = "${foobar.circuit-breaker.max-attempts:3}",
-              resetTimeoutExpression = "${foobar.circuit-breaker.reset-timeout-millis:20000}",
-              openTimeoutExpression = "${foobar.circuit-breaker.open-timeout-millis:5000}"
-          )
-          @Retryable(
-              include = {
-                  TimeoutException.class,
-                  IOException.class,
-                  FeignException.FeignServerException.class,
-              },
-              maxAttemptsExpression = "${foobar.retry.max-attempts:3}",
-              backoff = @Backoff(
-                  delayExpression = "${foobar.retry.delay-millis:1000}",
-                  maxDelayExpression = "${foobar.retry.max-delay-millis:0}",
-                  multiplierExpression = "${foobar.retry.multiplier:0}",
-                  randomExpression = "${foobar.retry.random:false}"
-              )
-          )
-          public ApiResponse<Customer> patchCustomerWithHttpInfo(UUID customerId, CustomerUpdateRequest customerUpdateRequest) {
-            try {
-                return this.api.patchCustomerWithHttpInfo(customerId, customerUpdateRequest);
-            }
-            catch(final NoFallbackAvailableException ex) {
-                if(ex.getCause() instanceof RuntimeException) {
-                    throw (RuntimeException) ex.getCause();
-                }
-                else if(ex.getCause() != null) {
-                    throw new RuntimeException(ex.getCause());
-                }
-                else {
-                    throw ex;
-                }
-            }
-        }
-
-
-
-          @Override
-          @CircuitBreaker(
-              include = {
-                  TimeoutException.class,
-                  IOException.class,
-                  FeignException.FeignServerException.class,
-              },
-              maxAttemptsExpression = "${foobar.circuit-breaker.max-attempts:3}",
-              resetTimeoutExpression = "${foobar.circuit-breaker.reset-timeout-millis:20000}",
-              openTimeoutExpression = "${foobar.circuit-breaker.open-timeout-millis:5000}"
-          )
-          @Retryable(
-              include = {
-                  TimeoutException.class,
-                  IOException.class,
-                  FeignException.FeignServerException.class,
-              },
-              maxAttemptsExpression = "${foobar.retry.max-attempts:3}",
-              backoff = @Backoff(
-                  delayExpression = "${foobar.retry.delay-millis:1000}",
-                  maxDelayExpression = "${foobar.retry.max-delay-millis:0}",
-                  multiplierExpression = "${foobar.retry.multiplier:0}",
-                  randomExpression = "${foobar.retry.random:false}"
-              )
-          )
-          public Customer postCustomer(CustomerCreateRequest customerCreateRequest) {
-            try {
-                return this.api.postCustomer(customerCreateRequest);
-            }
-            catch(final NoFallbackAvailableException ex) {
-                if(ex.getCause() instanceof RuntimeException) {
-                    throw (RuntimeException) ex.getCause();
-                }
-                else if(ex.getCause() != null) {
-                    throw new RuntimeException(ex.getCause());
-                }
-                else {
-                    throw ex;
-                }
-            }
-          }
-
-          @Override
-          @CircuitBreaker(
-              include = {
-                  TimeoutException.class,
-                  IOException.class,
-                  FeignException.FeignServerException.class,
-              },
-              maxAttemptsExpression = "${foobar.circuit-breaker.max-attempts:3}",
-              resetTimeoutExpression = "${foobar.circuit-breaker.reset-timeout-millis:20000}",
-              openTimeoutExpression = "${foobar.circuit-breaker.open-timeout-millis:5000}"
-          )
-          @Retryable(
-              include = {
-                  TimeoutException.class,
-                  IOException.class,
-                  FeignException.FeignServerException.class,
-              },
-              maxAttemptsExpression = "${foobar.retry.max-attempts:3}",
-              backoff = @Backoff(
-                  delayExpression = "${foobar.retry.delay-millis:1000}",
-                  maxDelayExpression = "${foobar.retry.max-delay-millis:0}",
-                  multiplierExpression = "${foobar.retry.multiplier:0}",
-                  randomExpression = "${foobar.retry.random:false}"
-              )
-          )
-          public ApiResponse<Customer> postCustomerWithHttpInfo(CustomerCreateRequest customerCreateRequest) {
-            try {
-                return this.api.postCustomerWithHttpInfo(customerCreateRequest);
-            }
-            catch(final NoFallbackAvailableException ex) {
-                if(ex.getCause() instanceof RuntimeException) {
-                    throw (RuntimeException) ex.getCause();
-                }
-                else if(ex.getCause() != null) {
-                    throw new RuntimeException(ex.getCause());
-                }
-                else {
-                    throw ex;
-                }
-            }
-        }
-
-
+    public Retry(final CustomerApi api) {
+      java.util.Objects.requireNonNull(api);
+      this.api = api;
     }
+
+    
+    @Override
+    @CircuitBreaker(
+      include = {
+        TimeoutException.class,
+        IOException.class,
+        FeignException.FeignServerException.class,
+      },
+      maxAttemptsExpression = "${foobar.circuit-breaker.max-attempts:3}",
+      resetTimeoutExpression = "${foobar.circuit-breaker.reset-timeout-millis:20000}",
+      openTimeoutExpression = "${foobar.circuit-breaker.open-timeout-millis:5000}"
+    )
+    @Retryable(
+      include = {
+        TimeoutException.class,
+        IOException.class,
+        FeignException.FeignServerException.class,
+      },
+      maxAttemptsExpression = "${foobar.retry.max-attempts:3}",
+      backoff = @Backoff(
+        delayExpression = "${foobar.retry.delay-millis:1000}",
+        maxDelayExpression = "${foobar.retry.max-delay-millis:0}",
+        multiplierExpression = "${foobar.retry.multiplier:0}",
+        randomExpression = "${foobar.retry.random:false}"
+      )
+    )
+    public void deleteCustomer(UUID customerId) {
+      try {
+        this.api.deleteCustomer(customerId);
+      }
+      catch(final NoFallbackAvailableException ex) {
+        if(ex.getCause() instanceof RuntimeException) {
+          throw (RuntimeException) ex.getCause();
+        }
+        else if(ex.getCause() != null) {
+          throw new RuntimeException(ex.getCause());
+        }
+        else {
+          throw ex;
+        }
+      }
+    }
+
+      @Override
+      @CircuitBreaker(
+        include = {
+          TimeoutException.class,
+          IOException.class,
+          FeignException.FeignServerException.class,
+        },
+        maxAttemptsExpression = "${foobar.circuit-breaker.max-attempts:3}",
+        resetTimeoutExpression = "${foobar.circuit-breaker.reset-timeout-millis:20000}",
+        openTimeoutExpression = "${foobar.circuit-breaker.open-timeout-millis:5000}"
+      )
+      @Retryable(
+        include = {
+          TimeoutException.class,
+          IOException.class,
+          FeignException.FeignServerException.class,
+        },
+        maxAttemptsExpression = "${foobar.retry.max-attempts:3}",
+        backoff = @Backoff(
+          delayExpression = "${foobar.retry.delay-millis:1000}",
+          maxDelayExpression = "${foobar.retry.max-delay-millis:0}",
+          multiplierExpression = "${foobar.retry.multiplier:0}",
+          randomExpression = "${foobar.retry.random:false}"
+        )
+      )
+      public ApiResponse<Void> deleteCustomerWithHttpInfo(UUID customerId) {
+        try {
+          return this.api.deleteCustomerWithHttpInfo(customerId);
+        }
+        catch(final NoFallbackAvailableException ex) {
+          if(ex.getCause() instanceof RuntimeException) {
+            throw (RuntimeException) ex.getCause();
+          }
+          else if(ex.getCause() != null) {
+            throw new RuntimeException(ex.getCause());
+          }
+          else {
+            throw ex;
+          }
+        }
+    }
+
+
+
+    @Override
+    @CircuitBreaker(
+      include = {
+        TimeoutException.class,
+        IOException.class,
+        FeignException.FeignServerException.class,
+      },
+      maxAttemptsExpression = "${foobar.circuit-breaker.max-attempts:3}",
+      resetTimeoutExpression = "${foobar.circuit-breaker.reset-timeout-millis:20000}",
+      openTimeoutExpression = "${foobar.circuit-breaker.open-timeout-millis:5000}"
+    )
+    @Retryable(
+      include = {
+        TimeoutException.class,
+        IOException.class,
+        FeignException.FeignServerException.class,
+      },
+      maxAttemptsExpression = "${foobar.retry.max-attempts:3}",
+      backoff = @Backoff(
+        delayExpression = "${foobar.retry.delay-millis:1000}",
+        maxDelayExpression = "${foobar.retry.max-delay-millis:0}",
+        multiplierExpression = "${foobar.retry.multiplier:0}",
+        randomExpression = "${foobar.retry.random:false}"
+      )
+    )
+    public Customer getCustomer(UUID customerId) {
+      try {
+        return this.api.getCustomer(customerId);
+      }
+      catch(final NoFallbackAvailableException ex) {
+        if(ex.getCause() instanceof RuntimeException) {
+          throw (RuntimeException) ex.getCause();
+        }
+        else if(ex.getCause() != null) {
+          throw new RuntimeException(ex.getCause());
+        }
+        else {
+          throw ex;
+        }
+      }
+    }
+
+      @Override
+      @CircuitBreaker(
+        include = {
+          TimeoutException.class,
+          IOException.class,
+          FeignException.FeignServerException.class,
+        },
+        maxAttemptsExpression = "${foobar.circuit-breaker.max-attempts:3}",
+        resetTimeoutExpression = "${foobar.circuit-breaker.reset-timeout-millis:20000}",
+        openTimeoutExpression = "${foobar.circuit-breaker.open-timeout-millis:5000}"
+      )
+      @Retryable(
+        include = {
+          TimeoutException.class,
+          IOException.class,
+          FeignException.FeignServerException.class,
+        },
+        maxAttemptsExpression = "${foobar.retry.max-attempts:3}",
+        backoff = @Backoff(
+          delayExpression = "${foobar.retry.delay-millis:1000}",
+          maxDelayExpression = "${foobar.retry.max-delay-millis:0}",
+          multiplierExpression = "${foobar.retry.multiplier:0}",
+          randomExpression = "${foobar.retry.random:false}"
+        )
+      )
+      public ApiResponse<Customer> getCustomerWithHttpInfo(UUID customerId) {
+        try {
+          return this.api.getCustomerWithHttpInfo(customerId);
+        }
+        catch(final NoFallbackAvailableException ex) {
+          if(ex.getCause() instanceof RuntimeException) {
+            throw (RuntimeException) ex.getCause();
+          }
+          else if(ex.getCause() != null) {
+            throw new RuntimeException(ex.getCause());
+          }
+          else {
+            throw ex;
+          }
+        }
+    }
+
+
+
+    @Override
+    @CircuitBreaker(
+      include = {
+        TimeoutException.class,
+        IOException.class,
+        FeignException.FeignServerException.class,
+      },
+      maxAttemptsExpression = "${foobar.circuit-breaker.max-attempts:3}",
+      resetTimeoutExpression = "${foobar.circuit-breaker.reset-timeout-millis:20000}",
+      openTimeoutExpression = "${foobar.circuit-breaker.open-timeout-millis:5000}"
+    )
+    @Retryable(
+      include = {
+        TimeoutException.class,
+        IOException.class,
+        FeignException.FeignServerException.class,
+      },
+      maxAttemptsExpression = "${foobar.retry.max-attempts:3}",
+      backoff = @Backoff(
+        delayExpression = "${foobar.retry.delay-millis:1000}",
+        maxDelayExpression = "${foobar.retry.max-delay-millis:0}",
+        multiplierExpression = "${foobar.retry.multiplier:0}",
+        randomExpression = "${foobar.retry.random:false}"
+      )
+    )
+    public List<Customer> getCustomers() {
+      try {
+        return this.api.getCustomers();
+      }
+      catch(final NoFallbackAvailableException ex) {
+        if(ex.getCause() instanceof RuntimeException) {
+          throw (RuntimeException) ex.getCause();
+        }
+        else if(ex.getCause() != null) {
+          throw new RuntimeException(ex.getCause());
+        }
+        else {
+          throw ex;
+        }
+      }
+    }
+
+      @Override
+      @CircuitBreaker(
+        include = {
+          TimeoutException.class,
+          IOException.class,
+          FeignException.FeignServerException.class,
+        },
+        maxAttemptsExpression = "${foobar.circuit-breaker.max-attempts:3}",
+        resetTimeoutExpression = "${foobar.circuit-breaker.reset-timeout-millis:20000}",
+        openTimeoutExpression = "${foobar.circuit-breaker.open-timeout-millis:5000}"
+      )
+      @Retryable(
+        include = {
+          TimeoutException.class,
+          IOException.class,
+          FeignException.FeignServerException.class,
+        },
+        maxAttemptsExpression = "${foobar.retry.max-attempts:3}",
+        backoff = @Backoff(
+          delayExpression = "${foobar.retry.delay-millis:1000}",
+          maxDelayExpression = "${foobar.retry.max-delay-millis:0}",
+          multiplierExpression = "${foobar.retry.multiplier:0}",
+          randomExpression = "${foobar.retry.random:false}"
+        )
+      )
+      public ApiResponse<List<Customer>> getCustomersWithHttpInfo() {
+        try {
+          return this.api.getCustomersWithHttpInfo();
+        }
+        catch(final NoFallbackAvailableException ex) {
+          if(ex.getCause() instanceof RuntimeException) {
+            throw (RuntimeException) ex.getCause();
+          }
+          else if(ex.getCause() != null) {
+            throw new RuntimeException(ex.getCause());
+          }
+          else {
+            throw ex;
+          }
+        }
+    }
+
+
+
+    @Override
+    @CircuitBreaker(
+      include = {
+        TimeoutException.class,
+        IOException.class,
+        FeignException.FeignServerException.class,
+      },
+      maxAttemptsExpression = "${foobar.circuit-breaker.max-attempts:3}",
+      resetTimeoutExpression = "${foobar.circuit-breaker.reset-timeout-millis:20000}",
+      openTimeoutExpression = "${foobar.circuit-breaker.open-timeout-millis:5000}"
+    )
+    @Retryable(
+      include = {
+        TimeoutException.class,
+        IOException.class,
+        FeignException.FeignServerException.class,
+      },
+      maxAttemptsExpression = "${foobar.retry.max-attempts:3}",
+      backoff = @Backoff(
+        delayExpression = "${foobar.retry.delay-millis:1000}",
+        maxDelayExpression = "${foobar.retry.max-delay-millis:0}",
+        multiplierExpression = "${foobar.retry.multiplier:0}",
+        randomExpression = "${foobar.retry.random:false}"
+      )
+    )
+    public Customer patchCustomer(UUID customerId, CustomerUpdateRequest customerUpdateRequest) {
+      try {
+        return this.api.patchCustomer(customerId, customerUpdateRequest);
+      }
+      catch(final NoFallbackAvailableException ex) {
+        if(ex.getCause() instanceof RuntimeException) {
+          throw (RuntimeException) ex.getCause();
+        }
+        else if(ex.getCause() != null) {
+          throw new RuntimeException(ex.getCause());
+        }
+        else {
+          throw ex;
+        }
+      }
+    }
+
+      @Override
+      @CircuitBreaker(
+        include = {
+          TimeoutException.class,
+          IOException.class,
+          FeignException.FeignServerException.class,
+        },
+        maxAttemptsExpression = "${foobar.circuit-breaker.max-attempts:3}",
+        resetTimeoutExpression = "${foobar.circuit-breaker.reset-timeout-millis:20000}",
+        openTimeoutExpression = "${foobar.circuit-breaker.open-timeout-millis:5000}"
+      )
+      @Retryable(
+        include = {
+          TimeoutException.class,
+          IOException.class,
+          FeignException.FeignServerException.class,
+        },
+        maxAttemptsExpression = "${foobar.retry.max-attempts:3}",
+        backoff = @Backoff(
+          delayExpression = "${foobar.retry.delay-millis:1000}",
+          maxDelayExpression = "${foobar.retry.max-delay-millis:0}",
+          multiplierExpression = "${foobar.retry.multiplier:0}",
+          randomExpression = "${foobar.retry.random:false}"
+        )
+      )
+      public ApiResponse<Customer> patchCustomerWithHttpInfo(UUID customerId, CustomerUpdateRequest customerUpdateRequest) {
+        try {
+          return this.api.patchCustomerWithHttpInfo(customerId, customerUpdateRequest);
+        }
+        catch(final NoFallbackAvailableException ex) {
+          if(ex.getCause() instanceof RuntimeException) {
+            throw (RuntimeException) ex.getCause();
+          }
+          else if(ex.getCause() != null) {
+            throw new RuntimeException(ex.getCause());
+          }
+          else {
+            throw ex;
+          }
+        }
+    }
+
+
+
+    @Override
+    @CircuitBreaker(
+      include = {
+        TimeoutException.class,
+        IOException.class,
+        FeignException.FeignServerException.class,
+      },
+      maxAttemptsExpression = "${foobar.circuit-breaker.max-attempts:3}",
+      resetTimeoutExpression = "${foobar.circuit-breaker.reset-timeout-millis:20000}",
+      openTimeoutExpression = "${foobar.circuit-breaker.open-timeout-millis:5000}"
+    )
+    @Retryable(
+      include = {
+        TimeoutException.class,
+        IOException.class,
+        FeignException.FeignServerException.class,
+      },
+      maxAttemptsExpression = "${foobar.retry.max-attempts:3}",
+      backoff = @Backoff(
+        delayExpression = "${foobar.retry.delay-millis:1000}",
+        maxDelayExpression = "${foobar.retry.max-delay-millis:0}",
+        multiplierExpression = "${foobar.retry.multiplier:0}",
+        randomExpression = "${foobar.retry.random:false}"
+      )
+    )
+    public Customer postCustomer(CustomerCreateRequest customerCreateRequest) {
+      try {
+        return this.api.postCustomer(customerCreateRequest);
+      }
+      catch(final NoFallbackAvailableException ex) {
+        if(ex.getCause() instanceof RuntimeException) {
+          throw (RuntimeException) ex.getCause();
+        }
+        else if(ex.getCause() != null) {
+          throw new RuntimeException(ex.getCause());
+        }
+        else {
+          throw ex;
+        }
+      }
+    }
+
+      @Override
+      @CircuitBreaker(
+        include = {
+          TimeoutException.class,
+          IOException.class,
+          FeignException.FeignServerException.class,
+        },
+        maxAttemptsExpression = "${foobar.circuit-breaker.max-attempts:3}",
+        resetTimeoutExpression = "${foobar.circuit-breaker.reset-timeout-millis:20000}",
+        openTimeoutExpression = "${foobar.circuit-breaker.open-timeout-millis:5000}"
+      )
+      @Retryable(
+        include = {
+          TimeoutException.class,
+          IOException.class,
+          FeignException.FeignServerException.class,
+        },
+        maxAttemptsExpression = "${foobar.retry.max-attempts:3}",
+        backoff = @Backoff(
+          delayExpression = "${foobar.retry.delay-millis:1000}",
+          maxDelayExpression = "${foobar.retry.max-delay-millis:0}",
+          multiplierExpression = "${foobar.retry.multiplier:0}",
+          randomExpression = "${foobar.retry.random:false}"
+        )
+      )
+      public ApiResponse<Customer> postCustomerWithHttpInfo(CustomerCreateRequest customerCreateRequest) {
+        try {
+          return this.api.postCustomerWithHttpInfo(customerCreateRequest);
+        }
+        catch(final NoFallbackAvailableException ex) {
+          if(ex.getCause() instanceof RuntimeException) {
+            throw (RuntimeException) ex.getCause();
+          }
+          else if(ex.getCause() != null) {
+            throw new RuntimeException(ex.getCause());
+          }
+          else {
+            throw ex;
+          }
+        }
+    }
+
+
+  }
+
+  @Bulkhead(
+    name = CustomerApi.ENTITY_TYPE + "_BULKHEAD",
+    type = Bulkhead.Type.SEMAPHORE
+  )
+  class Limit implements CustomerApi {
+
+    private final CustomerApi api;
+
+    public Limit(final CustomerApi api) {
+      java.util.Objects.requireNonNull(api);
+      this.api = api;
+    }
+
+    
+    @Override
+    public void deleteCustomer(UUID customerId) {
+      try {
+        this.api.deleteCustomer(customerId);
+      }
+      catch(final NoFallbackAvailableException ex) {
+        if(ex.getCause() instanceof RuntimeException) {
+          throw (RuntimeException) ex.getCause();
+        }
+        else if(ex.getCause() != null) {
+          throw new RuntimeException(ex.getCause());
+        }
+        else {
+          throw ex;
+        }
+      }
+    }
+
+    @Override
+    public ApiResponse<Void> deleteCustomerWithHttpInfo(UUID customerId) {
+      try {
+        return this.api.deleteCustomerWithHttpInfo(customerId);
+      }
+      catch(final NoFallbackAvailableException ex) {
+        if(ex.getCause() instanceof RuntimeException) {
+          throw (RuntimeException) ex.getCause();
+        }
+        else if(ex.getCause() != null) {
+          throw new RuntimeException(ex.getCause());
+        }
+        else {
+          throw ex;
+        }
+      }
+    }
+
+
+
+    @Override
+    public Customer getCustomer(UUID customerId) {
+      try {
+        return this.api.getCustomer(customerId);
+      }
+      catch(final NoFallbackAvailableException ex) {
+        if(ex.getCause() instanceof RuntimeException) {
+          throw (RuntimeException) ex.getCause();
+        }
+        else if(ex.getCause() != null) {
+          throw new RuntimeException(ex.getCause());
+        }
+        else {
+          throw ex;
+        }
+      }
+    }
+
+    @Override
+    public ApiResponse<Customer> getCustomerWithHttpInfo(UUID customerId) {
+      try {
+        return this.api.getCustomerWithHttpInfo(customerId);
+      }
+      catch(final NoFallbackAvailableException ex) {
+        if(ex.getCause() instanceof RuntimeException) {
+          throw (RuntimeException) ex.getCause();
+        }
+        else if(ex.getCause() != null) {
+          throw new RuntimeException(ex.getCause());
+        }
+        else {
+          throw ex;
+        }
+      }
+    }
+
+
+
+    @Override
+    public List<Customer> getCustomers() {
+      try {
+        return this.api.getCustomers();
+      }
+      catch(final NoFallbackAvailableException ex) {
+        if(ex.getCause() instanceof RuntimeException) {
+          throw (RuntimeException) ex.getCause();
+        }
+        else if(ex.getCause() != null) {
+          throw new RuntimeException(ex.getCause());
+        }
+        else {
+          throw ex;
+        }
+      }
+    }
+
+    @Override
+    public ApiResponse<List<Customer>> getCustomersWithHttpInfo() {
+      try {
+        return this.api.getCustomersWithHttpInfo();
+      }
+      catch(final NoFallbackAvailableException ex) {
+        if(ex.getCause() instanceof RuntimeException) {
+          throw (RuntimeException) ex.getCause();
+        }
+        else if(ex.getCause() != null) {
+          throw new RuntimeException(ex.getCause());
+        }
+        else {
+          throw ex;
+        }
+      }
+    }
+
+
+
+    @Override
+    public Customer patchCustomer(UUID customerId, CustomerUpdateRequest customerUpdateRequest) {
+      try {
+        return this.api.patchCustomer(customerId, customerUpdateRequest);
+      }
+      catch(final NoFallbackAvailableException ex) {
+        if(ex.getCause() instanceof RuntimeException) {
+          throw (RuntimeException) ex.getCause();
+        }
+        else if(ex.getCause() != null) {
+          throw new RuntimeException(ex.getCause());
+        }
+        else {
+          throw ex;
+        }
+      }
+    }
+
+    @Override
+    public ApiResponse<Customer> patchCustomerWithHttpInfo(UUID customerId, CustomerUpdateRequest customerUpdateRequest) {
+      try {
+        return this.api.patchCustomerWithHttpInfo(customerId, customerUpdateRequest);
+      }
+      catch(final NoFallbackAvailableException ex) {
+        if(ex.getCause() instanceof RuntimeException) {
+          throw (RuntimeException) ex.getCause();
+        }
+        else if(ex.getCause() != null) {
+          throw new RuntimeException(ex.getCause());
+        }
+        else {
+          throw ex;
+        }
+      }
+    }
+
+
+
+    @Override
+    public Customer postCustomer(CustomerCreateRequest customerCreateRequest) {
+      try {
+        return this.api.postCustomer(customerCreateRequest);
+      }
+      catch(final NoFallbackAvailableException ex) {
+        if(ex.getCause() instanceof RuntimeException) {
+          throw (RuntimeException) ex.getCause();
+        }
+        else if(ex.getCause() != null) {
+          throw new RuntimeException(ex.getCause());
+        }
+        else {
+          throw ex;
+        }
+      }
+    }
+
+    @Override
+    public ApiResponse<Customer> postCustomerWithHttpInfo(CustomerCreateRequest customerCreateRequest) {
+      try {
+        return this.api.postCustomerWithHttpInfo(customerCreateRequest);
+      }
+      catch(final NoFallbackAvailableException ex) {
+        if(ex.getCause() instanceof RuntimeException) {
+          throw (RuntimeException) ex.getCause();
+        }
+        else if(ex.getCause() != null) {
+          throw new RuntimeException(ex.getCause());
+        }
+        else {
+          throw ex;
+        }
+      }
+    }
+
+
+  }
 }

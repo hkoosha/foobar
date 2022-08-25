@@ -26,11 +26,12 @@ import org.springframework.cloud.client.circuitbreaker.NoFallbackAvailableExcept
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.CircuitBreaker;
 import org.springframework.retry.annotation.Retryable;
+import io.github.resilience4j.bulkhead.annotation.Bulkhead;
 
 
 public interface AddressApi extends ApiClient.Api {
 
-  public static final String ENTITY_TYPE = "address";
+  String ENTITY_TYPE = "address";
 
 
   /**
@@ -147,358 +148,526 @@ public interface AddressApi extends ApiClient.Api {
 
 
 
-    public static class Retry implements AddressApi {
+  // TODO do annotations work at class level? if yes, move them.
+  class Retry implements AddressApi {
 
-          private AddressApi api;
+    private final AddressApi api;
 
-          public Retry(AddressApi api) {
-            java.util.Objects.requireNonNull(api);
-            this.api = api;
-          }
-
-        
-          @Override
-          @CircuitBreaker(
-              include = {
-                  TimeoutException.class,
-                  IOException.class,
-                  FeignException.FeignServerException.class,
-              },
-              maxAttemptsExpression = "${foobar.circuit-breaker.max-attempts:3}",
-              resetTimeoutExpression = "${foobar.circuit-breaker.reset-timeout-millis:20000}",
-              openTimeoutExpression = "${foobar.circuit-breaker.open-timeout-millis:5000}"
-          )
-          @Retryable(
-              include = {
-                  TimeoutException.class,
-                  IOException.class,
-                  FeignException.FeignServerException.class,
-              },
-              maxAttemptsExpression = "${foobar.retry.max-attempts:3}",
-              backoff = @Backoff(
-                  delayExpression = "${foobar.retry.delay-millis:1000}",
-                  maxDelayExpression = "${foobar.retry.max-delay-millis:0}",
-                  multiplierExpression = "${foobar.retry.multiplier:0}",
-                  randomExpression = "${foobar.retry.random:false}"
-              )
-          )
-          public void deleteAddress(UUID customerId, Long addressId) {
-            try {
-                this.api.deleteAddress(customerId, addressId);
-            }
-            catch(final NoFallbackAvailableException ex) {
-                if(ex.getCause() instanceof RuntimeException) {
-                    throw (RuntimeException) ex.getCause();
-                }
-                else if(ex.getCause() != null) {
-                    throw new RuntimeException(ex.getCause());
-                }
-                else {
-                    throw ex;
-                }
-            }
-          }
-
-          @Override
-          @CircuitBreaker(
-              include = {
-                  TimeoutException.class,
-                  IOException.class,
-                  FeignException.FeignServerException.class,
-              },
-              maxAttemptsExpression = "${foobar.circuit-breaker.max-attempts:3}",
-              resetTimeoutExpression = "${foobar.circuit-breaker.reset-timeout-millis:20000}",
-              openTimeoutExpression = "${foobar.circuit-breaker.open-timeout-millis:5000}"
-          )
-          @Retryable(
-              include = {
-                  TimeoutException.class,
-                  IOException.class,
-                  FeignException.FeignServerException.class,
-              },
-              maxAttemptsExpression = "${foobar.retry.max-attempts:3}",
-              backoff = @Backoff(
-                  delayExpression = "${foobar.retry.delay-millis:1000}",
-                  maxDelayExpression = "${foobar.retry.max-delay-millis:0}",
-                  multiplierExpression = "${foobar.retry.multiplier:0}",
-                  randomExpression = "${foobar.retry.random:false}"
-              )
-          )
-          public ApiResponse<Void> deleteAddressWithHttpInfo(UUID customerId, Long addressId) {
-            try {
-                return this.api.deleteAddressWithHttpInfo(customerId, addressId);
-            }
-            catch(final NoFallbackAvailableException ex) {
-                if(ex.getCause() instanceof RuntimeException) {
-                    throw (RuntimeException) ex.getCause();
-                }
-                else if(ex.getCause() != null) {
-                    throw new RuntimeException(ex.getCause());
-                }
-                else {
-                    throw ex;
-                }
-            }
-        }
-
-
-
-          @Override
-          @CircuitBreaker(
-              include = {
-                  TimeoutException.class,
-                  IOException.class,
-                  FeignException.FeignServerException.class,
-              },
-              maxAttemptsExpression = "${foobar.circuit-breaker.max-attempts:3}",
-              resetTimeoutExpression = "${foobar.circuit-breaker.reset-timeout-millis:20000}",
-              openTimeoutExpression = "${foobar.circuit-breaker.open-timeout-millis:5000}"
-          )
-          @Retryable(
-              include = {
-                  TimeoutException.class,
-                  IOException.class,
-                  FeignException.FeignServerException.class,
-              },
-              maxAttemptsExpression = "${foobar.retry.max-attempts:3}",
-              backoff = @Backoff(
-                  delayExpression = "${foobar.retry.delay-millis:1000}",
-                  maxDelayExpression = "${foobar.retry.max-delay-millis:0}",
-                  multiplierExpression = "${foobar.retry.multiplier:0}",
-                  randomExpression = "${foobar.retry.random:false}"
-              )
-          )
-          public Address getAddress(UUID customerId, Long addressId) {
-            try {
-                return this.api.getAddress(customerId, addressId);
-            }
-            catch(final NoFallbackAvailableException ex) {
-                if(ex.getCause() instanceof RuntimeException) {
-                    throw (RuntimeException) ex.getCause();
-                }
-                else if(ex.getCause() != null) {
-                    throw new RuntimeException(ex.getCause());
-                }
-                else {
-                    throw ex;
-                }
-            }
-          }
-
-          @Override
-          @CircuitBreaker(
-              include = {
-                  TimeoutException.class,
-                  IOException.class,
-                  FeignException.FeignServerException.class,
-              },
-              maxAttemptsExpression = "${foobar.circuit-breaker.max-attempts:3}",
-              resetTimeoutExpression = "${foobar.circuit-breaker.reset-timeout-millis:20000}",
-              openTimeoutExpression = "${foobar.circuit-breaker.open-timeout-millis:5000}"
-          )
-          @Retryable(
-              include = {
-                  TimeoutException.class,
-                  IOException.class,
-                  FeignException.FeignServerException.class,
-              },
-              maxAttemptsExpression = "${foobar.retry.max-attempts:3}",
-              backoff = @Backoff(
-                  delayExpression = "${foobar.retry.delay-millis:1000}",
-                  maxDelayExpression = "${foobar.retry.max-delay-millis:0}",
-                  multiplierExpression = "${foobar.retry.multiplier:0}",
-                  randomExpression = "${foobar.retry.random:false}"
-              )
-          )
-          public ApiResponse<Address> getAddressWithHttpInfo(UUID customerId, Long addressId) {
-            try {
-                return this.api.getAddressWithHttpInfo(customerId, addressId);
-            }
-            catch(final NoFallbackAvailableException ex) {
-                if(ex.getCause() instanceof RuntimeException) {
-                    throw (RuntimeException) ex.getCause();
-                }
-                else if(ex.getCause() != null) {
-                    throw new RuntimeException(ex.getCause());
-                }
-                else {
-                    throw ex;
-                }
-            }
-        }
-
-
-
-          @Override
-          @CircuitBreaker(
-              include = {
-                  TimeoutException.class,
-                  IOException.class,
-                  FeignException.FeignServerException.class,
-              },
-              maxAttemptsExpression = "${foobar.circuit-breaker.max-attempts:3}",
-              resetTimeoutExpression = "${foobar.circuit-breaker.reset-timeout-millis:20000}",
-              openTimeoutExpression = "${foobar.circuit-breaker.open-timeout-millis:5000}"
-          )
-          @Retryable(
-              include = {
-                  TimeoutException.class,
-                  IOException.class,
-                  FeignException.FeignServerException.class,
-              },
-              maxAttemptsExpression = "${foobar.retry.max-attempts:3}",
-              backoff = @Backoff(
-                  delayExpression = "${foobar.retry.delay-millis:1000}",
-                  maxDelayExpression = "${foobar.retry.max-delay-millis:0}",
-                  multiplierExpression = "${foobar.retry.multiplier:0}",
-                  randomExpression = "${foobar.retry.random:false}"
-              )
-          )
-          public List<Address> getAddresses(UUID customerId) {
-            try {
-                return this.api.getAddresses(customerId);
-            }
-            catch(final NoFallbackAvailableException ex) {
-                if(ex.getCause() instanceof RuntimeException) {
-                    throw (RuntimeException) ex.getCause();
-                }
-                else if(ex.getCause() != null) {
-                    throw new RuntimeException(ex.getCause());
-                }
-                else {
-                    throw ex;
-                }
-            }
-          }
-
-          @Override
-          @CircuitBreaker(
-              include = {
-                  TimeoutException.class,
-                  IOException.class,
-                  FeignException.FeignServerException.class,
-              },
-              maxAttemptsExpression = "${foobar.circuit-breaker.max-attempts:3}",
-              resetTimeoutExpression = "${foobar.circuit-breaker.reset-timeout-millis:20000}",
-              openTimeoutExpression = "${foobar.circuit-breaker.open-timeout-millis:5000}"
-          )
-          @Retryable(
-              include = {
-                  TimeoutException.class,
-                  IOException.class,
-                  FeignException.FeignServerException.class,
-              },
-              maxAttemptsExpression = "${foobar.retry.max-attempts:3}",
-              backoff = @Backoff(
-                  delayExpression = "${foobar.retry.delay-millis:1000}",
-                  maxDelayExpression = "${foobar.retry.max-delay-millis:0}",
-                  multiplierExpression = "${foobar.retry.multiplier:0}",
-                  randomExpression = "${foobar.retry.random:false}"
-              )
-          )
-          public ApiResponse<List<Address>> getAddressesWithHttpInfo(UUID customerId) {
-            try {
-                return this.api.getAddressesWithHttpInfo(customerId);
-            }
-            catch(final NoFallbackAvailableException ex) {
-                if(ex.getCause() instanceof RuntimeException) {
-                    throw (RuntimeException) ex.getCause();
-                }
-                else if(ex.getCause() != null) {
-                    throw new RuntimeException(ex.getCause());
-                }
-                else {
-                    throw ex;
-                }
-            }
-        }
-
-
-
-          @Override
-          @CircuitBreaker(
-              include = {
-                  TimeoutException.class,
-                  IOException.class,
-                  FeignException.FeignServerException.class,
-              },
-              maxAttemptsExpression = "${foobar.circuit-breaker.max-attempts:3}",
-              resetTimeoutExpression = "${foobar.circuit-breaker.reset-timeout-millis:20000}",
-              openTimeoutExpression = "${foobar.circuit-breaker.open-timeout-millis:5000}"
-          )
-          @Retryable(
-              include = {
-                  TimeoutException.class,
-                  IOException.class,
-                  FeignException.FeignServerException.class,
-              },
-              maxAttemptsExpression = "${foobar.retry.max-attempts:3}",
-              backoff = @Backoff(
-                  delayExpression = "${foobar.retry.delay-millis:1000}",
-                  maxDelayExpression = "${foobar.retry.max-delay-millis:0}",
-                  multiplierExpression = "${foobar.retry.multiplier:0}",
-                  randomExpression = "${foobar.retry.random:false}"
-              )
-          )
-          public Address postAddress(UUID customerId, CustomerAddressCreateRequest customerAddressCreateRequest) {
-            try {
-                return this.api.postAddress(customerId, customerAddressCreateRequest);
-            }
-            catch(final NoFallbackAvailableException ex) {
-                if(ex.getCause() instanceof RuntimeException) {
-                    throw (RuntimeException) ex.getCause();
-                }
-                else if(ex.getCause() != null) {
-                    throw new RuntimeException(ex.getCause());
-                }
-                else {
-                    throw ex;
-                }
-            }
-          }
-
-          @Override
-          @CircuitBreaker(
-              include = {
-                  TimeoutException.class,
-                  IOException.class,
-                  FeignException.FeignServerException.class,
-              },
-              maxAttemptsExpression = "${foobar.circuit-breaker.max-attempts:3}",
-              resetTimeoutExpression = "${foobar.circuit-breaker.reset-timeout-millis:20000}",
-              openTimeoutExpression = "${foobar.circuit-breaker.open-timeout-millis:5000}"
-          )
-          @Retryable(
-              include = {
-                  TimeoutException.class,
-                  IOException.class,
-                  FeignException.FeignServerException.class,
-              },
-              maxAttemptsExpression = "${foobar.retry.max-attempts:3}",
-              backoff = @Backoff(
-                  delayExpression = "${foobar.retry.delay-millis:1000}",
-                  maxDelayExpression = "${foobar.retry.max-delay-millis:0}",
-                  multiplierExpression = "${foobar.retry.multiplier:0}",
-                  randomExpression = "${foobar.retry.random:false}"
-              )
-          )
-          public ApiResponse<Address> postAddressWithHttpInfo(UUID customerId, CustomerAddressCreateRequest customerAddressCreateRequest) {
-            try {
-                return this.api.postAddressWithHttpInfo(customerId, customerAddressCreateRequest);
-            }
-            catch(final NoFallbackAvailableException ex) {
-                if(ex.getCause() instanceof RuntimeException) {
-                    throw (RuntimeException) ex.getCause();
-                }
-                else if(ex.getCause() != null) {
-                    throw new RuntimeException(ex.getCause());
-                }
-                else {
-                    throw ex;
-                }
-            }
-        }
-
-
+    public Retry(final AddressApi api) {
+      java.util.Objects.requireNonNull(api);
+      this.api = api;
     }
+
+    
+    @Override
+    @CircuitBreaker(
+      include = {
+        TimeoutException.class,
+        IOException.class,
+        FeignException.FeignServerException.class,
+      },
+      maxAttemptsExpression = "${foobar.circuit-breaker.max-attempts:3}",
+      resetTimeoutExpression = "${foobar.circuit-breaker.reset-timeout-millis:20000}",
+      openTimeoutExpression = "${foobar.circuit-breaker.open-timeout-millis:5000}"
+    )
+    @Retryable(
+      include = {
+        TimeoutException.class,
+        IOException.class,
+        FeignException.FeignServerException.class,
+      },
+      maxAttemptsExpression = "${foobar.retry.max-attempts:3}",
+      backoff = @Backoff(
+        delayExpression = "${foobar.retry.delay-millis:1000}",
+        maxDelayExpression = "${foobar.retry.max-delay-millis:0}",
+        multiplierExpression = "${foobar.retry.multiplier:0}",
+        randomExpression = "${foobar.retry.random:false}"
+      )
+    )
+    public void deleteAddress(UUID customerId, Long addressId) {
+      try {
+        this.api.deleteAddress(customerId, addressId);
+      }
+      catch(final NoFallbackAvailableException ex) {
+        if(ex.getCause() instanceof RuntimeException) {
+          throw (RuntimeException) ex.getCause();
+        }
+        else if(ex.getCause() != null) {
+          throw new RuntimeException(ex.getCause());
+        }
+        else {
+          throw ex;
+        }
+      }
+    }
+
+      @Override
+      @CircuitBreaker(
+        include = {
+          TimeoutException.class,
+          IOException.class,
+          FeignException.FeignServerException.class,
+        },
+        maxAttemptsExpression = "${foobar.circuit-breaker.max-attempts:3}",
+        resetTimeoutExpression = "${foobar.circuit-breaker.reset-timeout-millis:20000}",
+        openTimeoutExpression = "${foobar.circuit-breaker.open-timeout-millis:5000}"
+      )
+      @Retryable(
+        include = {
+          TimeoutException.class,
+          IOException.class,
+          FeignException.FeignServerException.class,
+        },
+        maxAttemptsExpression = "${foobar.retry.max-attempts:3}",
+        backoff = @Backoff(
+          delayExpression = "${foobar.retry.delay-millis:1000}",
+          maxDelayExpression = "${foobar.retry.max-delay-millis:0}",
+          multiplierExpression = "${foobar.retry.multiplier:0}",
+          randomExpression = "${foobar.retry.random:false}"
+        )
+      )
+      public ApiResponse<Void> deleteAddressWithHttpInfo(UUID customerId, Long addressId) {
+        try {
+          return this.api.deleteAddressWithHttpInfo(customerId, addressId);
+        }
+        catch(final NoFallbackAvailableException ex) {
+          if(ex.getCause() instanceof RuntimeException) {
+            throw (RuntimeException) ex.getCause();
+          }
+          else if(ex.getCause() != null) {
+            throw new RuntimeException(ex.getCause());
+          }
+          else {
+            throw ex;
+          }
+        }
+    }
+
+
+
+    @Override
+    @CircuitBreaker(
+      include = {
+        TimeoutException.class,
+        IOException.class,
+        FeignException.FeignServerException.class,
+      },
+      maxAttemptsExpression = "${foobar.circuit-breaker.max-attempts:3}",
+      resetTimeoutExpression = "${foobar.circuit-breaker.reset-timeout-millis:20000}",
+      openTimeoutExpression = "${foobar.circuit-breaker.open-timeout-millis:5000}"
+    )
+    @Retryable(
+      include = {
+        TimeoutException.class,
+        IOException.class,
+        FeignException.FeignServerException.class,
+      },
+      maxAttemptsExpression = "${foobar.retry.max-attempts:3}",
+      backoff = @Backoff(
+        delayExpression = "${foobar.retry.delay-millis:1000}",
+        maxDelayExpression = "${foobar.retry.max-delay-millis:0}",
+        multiplierExpression = "${foobar.retry.multiplier:0}",
+        randomExpression = "${foobar.retry.random:false}"
+      )
+    )
+    public Address getAddress(UUID customerId, Long addressId) {
+      try {
+        return this.api.getAddress(customerId, addressId);
+      }
+      catch(final NoFallbackAvailableException ex) {
+        if(ex.getCause() instanceof RuntimeException) {
+          throw (RuntimeException) ex.getCause();
+        }
+        else if(ex.getCause() != null) {
+          throw new RuntimeException(ex.getCause());
+        }
+        else {
+          throw ex;
+        }
+      }
+    }
+
+      @Override
+      @CircuitBreaker(
+        include = {
+          TimeoutException.class,
+          IOException.class,
+          FeignException.FeignServerException.class,
+        },
+        maxAttemptsExpression = "${foobar.circuit-breaker.max-attempts:3}",
+        resetTimeoutExpression = "${foobar.circuit-breaker.reset-timeout-millis:20000}",
+        openTimeoutExpression = "${foobar.circuit-breaker.open-timeout-millis:5000}"
+      )
+      @Retryable(
+        include = {
+          TimeoutException.class,
+          IOException.class,
+          FeignException.FeignServerException.class,
+        },
+        maxAttemptsExpression = "${foobar.retry.max-attempts:3}",
+        backoff = @Backoff(
+          delayExpression = "${foobar.retry.delay-millis:1000}",
+          maxDelayExpression = "${foobar.retry.max-delay-millis:0}",
+          multiplierExpression = "${foobar.retry.multiplier:0}",
+          randomExpression = "${foobar.retry.random:false}"
+        )
+      )
+      public ApiResponse<Address> getAddressWithHttpInfo(UUID customerId, Long addressId) {
+        try {
+          return this.api.getAddressWithHttpInfo(customerId, addressId);
+        }
+        catch(final NoFallbackAvailableException ex) {
+          if(ex.getCause() instanceof RuntimeException) {
+            throw (RuntimeException) ex.getCause();
+          }
+          else if(ex.getCause() != null) {
+            throw new RuntimeException(ex.getCause());
+          }
+          else {
+            throw ex;
+          }
+        }
+    }
+
+
+
+    @Override
+    @CircuitBreaker(
+      include = {
+        TimeoutException.class,
+        IOException.class,
+        FeignException.FeignServerException.class,
+      },
+      maxAttemptsExpression = "${foobar.circuit-breaker.max-attempts:3}",
+      resetTimeoutExpression = "${foobar.circuit-breaker.reset-timeout-millis:20000}",
+      openTimeoutExpression = "${foobar.circuit-breaker.open-timeout-millis:5000}"
+    )
+    @Retryable(
+      include = {
+        TimeoutException.class,
+        IOException.class,
+        FeignException.FeignServerException.class,
+      },
+      maxAttemptsExpression = "${foobar.retry.max-attempts:3}",
+      backoff = @Backoff(
+        delayExpression = "${foobar.retry.delay-millis:1000}",
+        maxDelayExpression = "${foobar.retry.max-delay-millis:0}",
+        multiplierExpression = "${foobar.retry.multiplier:0}",
+        randomExpression = "${foobar.retry.random:false}"
+      )
+    )
+    public List<Address> getAddresses(UUID customerId) {
+      try {
+        return this.api.getAddresses(customerId);
+      }
+      catch(final NoFallbackAvailableException ex) {
+        if(ex.getCause() instanceof RuntimeException) {
+          throw (RuntimeException) ex.getCause();
+        }
+        else if(ex.getCause() != null) {
+          throw new RuntimeException(ex.getCause());
+        }
+        else {
+          throw ex;
+        }
+      }
+    }
+
+      @Override
+      @CircuitBreaker(
+        include = {
+          TimeoutException.class,
+          IOException.class,
+          FeignException.FeignServerException.class,
+        },
+        maxAttemptsExpression = "${foobar.circuit-breaker.max-attempts:3}",
+        resetTimeoutExpression = "${foobar.circuit-breaker.reset-timeout-millis:20000}",
+        openTimeoutExpression = "${foobar.circuit-breaker.open-timeout-millis:5000}"
+      )
+      @Retryable(
+        include = {
+          TimeoutException.class,
+          IOException.class,
+          FeignException.FeignServerException.class,
+        },
+        maxAttemptsExpression = "${foobar.retry.max-attempts:3}",
+        backoff = @Backoff(
+          delayExpression = "${foobar.retry.delay-millis:1000}",
+          maxDelayExpression = "${foobar.retry.max-delay-millis:0}",
+          multiplierExpression = "${foobar.retry.multiplier:0}",
+          randomExpression = "${foobar.retry.random:false}"
+        )
+      )
+      public ApiResponse<List<Address>> getAddressesWithHttpInfo(UUID customerId) {
+        try {
+          return this.api.getAddressesWithHttpInfo(customerId);
+        }
+        catch(final NoFallbackAvailableException ex) {
+          if(ex.getCause() instanceof RuntimeException) {
+            throw (RuntimeException) ex.getCause();
+          }
+          else if(ex.getCause() != null) {
+            throw new RuntimeException(ex.getCause());
+          }
+          else {
+            throw ex;
+          }
+        }
+    }
+
+
+
+    @Override
+    @CircuitBreaker(
+      include = {
+        TimeoutException.class,
+        IOException.class,
+        FeignException.FeignServerException.class,
+      },
+      maxAttemptsExpression = "${foobar.circuit-breaker.max-attempts:3}",
+      resetTimeoutExpression = "${foobar.circuit-breaker.reset-timeout-millis:20000}",
+      openTimeoutExpression = "${foobar.circuit-breaker.open-timeout-millis:5000}"
+    )
+    @Retryable(
+      include = {
+        TimeoutException.class,
+        IOException.class,
+        FeignException.FeignServerException.class,
+      },
+      maxAttemptsExpression = "${foobar.retry.max-attempts:3}",
+      backoff = @Backoff(
+        delayExpression = "${foobar.retry.delay-millis:1000}",
+        maxDelayExpression = "${foobar.retry.max-delay-millis:0}",
+        multiplierExpression = "${foobar.retry.multiplier:0}",
+        randomExpression = "${foobar.retry.random:false}"
+      )
+    )
+    public Address postAddress(UUID customerId, CustomerAddressCreateRequest customerAddressCreateRequest) {
+      try {
+        return this.api.postAddress(customerId, customerAddressCreateRequest);
+      }
+      catch(final NoFallbackAvailableException ex) {
+        if(ex.getCause() instanceof RuntimeException) {
+          throw (RuntimeException) ex.getCause();
+        }
+        else if(ex.getCause() != null) {
+          throw new RuntimeException(ex.getCause());
+        }
+        else {
+          throw ex;
+        }
+      }
+    }
+
+      @Override
+      @CircuitBreaker(
+        include = {
+          TimeoutException.class,
+          IOException.class,
+          FeignException.FeignServerException.class,
+        },
+        maxAttemptsExpression = "${foobar.circuit-breaker.max-attempts:3}",
+        resetTimeoutExpression = "${foobar.circuit-breaker.reset-timeout-millis:20000}",
+        openTimeoutExpression = "${foobar.circuit-breaker.open-timeout-millis:5000}"
+      )
+      @Retryable(
+        include = {
+          TimeoutException.class,
+          IOException.class,
+          FeignException.FeignServerException.class,
+        },
+        maxAttemptsExpression = "${foobar.retry.max-attempts:3}",
+        backoff = @Backoff(
+          delayExpression = "${foobar.retry.delay-millis:1000}",
+          maxDelayExpression = "${foobar.retry.max-delay-millis:0}",
+          multiplierExpression = "${foobar.retry.multiplier:0}",
+          randomExpression = "${foobar.retry.random:false}"
+        )
+      )
+      public ApiResponse<Address> postAddressWithHttpInfo(UUID customerId, CustomerAddressCreateRequest customerAddressCreateRequest) {
+        try {
+          return this.api.postAddressWithHttpInfo(customerId, customerAddressCreateRequest);
+        }
+        catch(final NoFallbackAvailableException ex) {
+          if(ex.getCause() instanceof RuntimeException) {
+            throw (RuntimeException) ex.getCause();
+          }
+          else if(ex.getCause() != null) {
+            throw new RuntimeException(ex.getCause());
+          }
+          else {
+            throw ex;
+          }
+        }
+    }
+
+
+  }
+
+  @Bulkhead(
+    name = AddressApi.ENTITY_TYPE + "_BULKHEAD",
+    type = Bulkhead.Type.SEMAPHORE
+  )
+  class Limit implements AddressApi {
+
+    private final AddressApi api;
+
+    public Limit(final AddressApi api) {
+      java.util.Objects.requireNonNull(api);
+      this.api = api;
+    }
+
+    
+    @Override
+    public void deleteAddress(UUID customerId, Long addressId) {
+      try {
+        this.api.deleteAddress(customerId, addressId);
+      }
+      catch(final NoFallbackAvailableException ex) {
+        if(ex.getCause() instanceof RuntimeException) {
+          throw (RuntimeException) ex.getCause();
+        }
+        else if(ex.getCause() != null) {
+          throw new RuntimeException(ex.getCause());
+        }
+        else {
+          throw ex;
+        }
+      }
+    }
+
+    @Override
+    public ApiResponse<Void> deleteAddressWithHttpInfo(UUID customerId, Long addressId) {
+      try {
+        return this.api.deleteAddressWithHttpInfo(customerId, addressId);
+      }
+      catch(final NoFallbackAvailableException ex) {
+        if(ex.getCause() instanceof RuntimeException) {
+          throw (RuntimeException) ex.getCause();
+        }
+        else if(ex.getCause() != null) {
+          throw new RuntimeException(ex.getCause());
+        }
+        else {
+          throw ex;
+        }
+      }
+    }
+
+
+
+    @Override
+    public Address getAddress(UUID customerId, Long addressId) {
+      try {
+        return this.api.getAddress(customerId, addressId);
+      }
+      catch(final NoFallbackAvailableException ex) {
+        if(ex.getCause() instanceof RuntimeException) {
+          throw (RuntimeException) ex.getCause();
+        }
+        else if(ex.getCause() != null) {
+          throw new RuntimeException(ex.getCause());
+        }
+        else {
+          throw ex;
+        }
+      }
+    }
+
+    @Override
+    public ApiResponse<Address> getAddressWithHttpInfo(UUID customerId, Long addressId) {
+      try {
+        return this.api.getAddressWithHttpInfo(customerId, addressId);
+      }
+      catch(final NoFallbackAvailableException ex) {
+        if(ex.getCause() instanceof RuntimeException) {
+          throw (RuntimeException) ex.getCause();
+        }
+        else if(ex.getCause() != null) {
+          throw new RuntimeException(ex.getCause());
+        }
+        else {
+          throw ex;
+        }
+      }
+    }
+
+
+
+    @Override
+    public List<Address> getAddresses(UUID customerId) {
+      try {
+        return this.api.getAddresses(customerId);
+      }
+      catch(final NoFallbackAvailableException ex) {
+        if(ex.getCause() instanceof RuntimeException) {
+          throw (RuntimeException) ex.getCause();
+        }
+        else if(ex.getCause() != null) {
+          throw new RuntimeException(ex.getCause());
+        }
+        else {
+          throw ex;
+        }
+      }
+    }
+
+    @Override
+    public ApiResponse<List<Address>> getAddressesWithHttpInfo(UUID customerId) {
+      try {
+        return this.api.getAddressesWithHttpInfo(customerId);
+      }
+      catch(final NoFallbackAvailableException ex) {
+        if(ex.getCause() instanceof RuntimeException) {
+          throw (RuntimeException) ex.getCause();
+        }
+        else if(ex.getCause() != null) {
+          throw new RuntimeException(ex.getCause());
+        }
+        else {
+          throw ex;
+        }
+      }
+    }
+
+
+
+    @Override
+    public Address postAddress(UUID customerId, CustomerAddressCreateRequest customerAddressCreateRequest) {
+      try {
+        return this.api.postAddress(customerId, customerAddressCreateRequest);
+      }
+      catch(final NoFallbackAvailableException ex) {
+        if(ex.getCause() instanceof RuntimeException) {
+          throw (RuntimeException) ex.getCause();
+        }
+        else if(ex.getCause() != null) {
+          throw new RuntimeException(ex.getCause());
+        }
+        else {
+          throw ex;
+        }
+      }
+    }
+
+    @Override
+    public ApiResponse<Address> postAddressWithHttpInfo(UUID customerId, CustomerAddressCreateRequest customerAddressCreateRequest) {
+      try {
+        return this.api.postAddressWithHttpInfo(customerId, customerAddressCreateRequest);
+      }
+      catch(final NoFallbackAvailableException ex) {
+        if(ex.getCause() instanceof RuntimeException) {
+          throw (RuntimeException) ex.getCause();
+        }
+        else if(ex.getCause() != null) {
+          throw new RuntimeException(ex.getCause());
+        }
+        else {
+          throw ex;
+        }
+      }
+    }
+
+
+  }
 }
