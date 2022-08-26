@@ -18,7 +18,7 @@ k8s-deploy-maker: _k8s-deploy-maker-compile
 
 .PHONY: k8s-undeploy-maker
 k8s-undeploy-maker: _k8s-deploy-maker-compile
-	kubectl -n $(FOOBAR_NAMESPACE) delete -f $(FOOBAR_SERVICES_YAML)/compiled/maker.yaml
+	kubectl -n $(FOOBAR_NAMESPACE) delete -f $(FOOBAR_SERVICES_YAML)/compiled/maker.yaml || true
 
 .PHONY: k8s-redeploy-maker
 k8s-redeploy-maker: k8s-undeploy-maker k8s-deploy-maker
@@ -39,7 +39,7 @@ k8s-deploy-customer: _k8s-deploy-customer-compile
 
 .PHONY: k8s-undeploy-customer
 k8s-undeploy-customer: _k8s-deploy-customer-compile
-	kubectl -n $(FOOBAR_NAMESPACE) delete -f $(FOOBAR_SERVICES_YAML)/compiled/customer.yaml
+	kubectl -n $(FOOBAR_NAMESPACE) delete -f $(FOOBAR_SERVICES_YAML)/compiled/customer.yaml || true
 
 .PHONY: k8s-redeploy-customer
 k8s-redeploy-customer: k8s-undeploy-customer k8s-deploy-customer
@@ -60,7 +60,7 @@ k8s-deploy-seller: _k8s-deploy-seller-compile
 
 .PHONY: k8s-undeploy-seller
 k8s-undeploy-seller: _k8s-deploy-seller-compile
-	kubectl -n $(FOOBAR_NAMESPACE) delete -f $(FOOBAR_SERVICES_YAML)/compiled/seller.yaml
+	kubectl -n $(FOOBAR_NAMESPACE) delete -f $(FOOBAR_SERVICES_YAML)/compiled/seller.yaml || true
 
 .PHONY: k8s-redeploy-seller
 k8s-redeploy-seller: k8s-undeploy-seller k8s-deploy-seller
@@ -81,7 +81,7 @@ k8s-deploy-warehouse: _k8s-deploy-warehouse-compile
 
 .PHONY: k8s-undeploy-warehouse
 k8s-undeploy-warehouse: _k8s-deploy-warehouse-compile
-	kubectl -n $(FOOBAR_NAMESPACE) delete -f $(FOOBAR_SERVICES_YAML)/compiled/warehouse.yaml
+	kubectl -n $(FOOBAR_NAMESPACE) delete -f $(FOOBAR_SERVICES_YAML)/compiled/warehouse.yaml || true
 
 .PHONY: k8s-redeploy-warehouse
 k8s-redeploy-warehouse: k8s-undeploy-warehouse k8s-deploy-warehouse
@@ -102,7 +102,7 @@ k8s-deploy-shipping: _k8s-deploy-shipping-compile
 
 .PHONY: k8s-undeploy-shipping
 k8s-undeploy-shipping: _k8s-deploy-shipping-compile
-	kubectl -n $(FOOBAR_NAMESPACE) delete -f $(FOOBAR_SERVICES_YAML)/compiled/shipping.yaml
+	kubectl -n $(FOOBAR_NAMESPACE) delete -f $(FOOBAR_SERVICES_YAML)/compiled/shipping.yaml || true
 
 .PHONY: k8s-redeploy-shipping
 k8s-redeploy-shipping: k8s-undeploy-shipping k8s-deploy-shipping
@@ -123,7 +123,7 @@ k8s-deploy-marketplace: _k8s-deploy-marketplace-compile
 
 .PHONY: k8s-undeploy-marketplace
 k8s-undeploy-marketplace:_k8s-deploy-marketplace-compile
-	kubectl -n $(FOOBAR_NAMESPACE) delete -f $(FOOBAR_SERVICES_YAML)/compiled/marketplace.yaml
+	kubectl -n $(FOOBAR_NAMESPACE) delete -f $(FOOBAR_SERVICES_YAML)/compiled/marketplace.yaml || true
 
 .PHONY: k8s-redeploy-marketplace
 k8s-redeploy-marketplace: k8s-undeploy-marketplace k8s-deploy-marketplace
@@ -144,7 +144,7 @@ k8s-deploy-marketplace-engine: _k8s-deploy-marketplace-engine-compile
 
 .PHONY: k8s-undeploy-marketplace-engine
 k8s-undeploy-marketplace-engine: _k8s-deploy-marketplace-engine-compile
-	kubectl -n $(FOOBAR_NAMESPACE) delete -f $(FOOBAR_SERVICES_YAML)/compiled/marketplace_engine.yaml
+	kubectl -n $(FOOBAR_NAMESPACE) delete -f $(FOOBAR_SERVICES_YAML)/compiled/marketplace_engine.yaml || true
 
 .PHONY: k8s-redeploy-marketplace-engine
 k8s-redeploy-marketplace-engine: k8s-undeploy-marketplace-engine k8s-deploy-marketplace-engine
@@ -193,7 +193,7 @@ k8s-redeploy: \
 
 .PHONY: k8s-exec-maker-cli
 k8s-exec-maker-cli:
-	kubectl exec $(shell kubectl get pods -l foobar-tool=maker -o jsonpath='{.items[0].metadata.name}') \
+	kubectl exec $(shell kubectl get pods --namespace $(FOOBAR_NAMESPACE) -l foobar-tool=maker -o jsonpath='{.items[0].metadata.name}') \
 		--tty \
 		-i \
 		--namespace $(FOOBAR_NAMESPACE) \

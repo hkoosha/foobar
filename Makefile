@@ -21,6 +21,10 @@ FOOBAR_SELLER_REPLICAS=${FOOBAR_REPLICAS}
 FOOBAR_SHIPPING_REPLICAS=${FOOBAR_REPLICAS}
 FOOBAR_WAREHOUSE_REPLICAS=${FOOBAR_REPLICAS}
 
+# Bad idea for production! but good for us on a demo app.
+# TODO add this too Foobar.kt in buildSrc/...
+FOOBAR_OTEL_TRACES_SAMPLER=always_on
+
 export
 
 
@@ -49,14 +53,41 @@ ifneq (,$(wildcard ./assets/env/${ENV}.env))
 endif
 
 
+
+# Crazy regex here to match -> 'make-target: make-dependency-tatgets* # comment'
+# where '#', 'comment', 'make-dependency-targets(zero or more)' and spaces are optional.
 .PHONY: help
-help:
-	@sed -n 's/^\([0-9a-z \-]*\):.*/\1/p' ${MAKEFILE_LIST} | column -t -c 2 -s ':#' | sort 
+help: # try to print make targets using gawk
+	@echo "Trying to print help... if this does not work, try '$(MAKE) help-alt'"
+	@echo ''
+	@awk '{match($$0, /^([a-z0-9][a-zA-Z0-9\.\-\/]*):( *)([a-z0-9\-]* *)*(# .*)*$$/, m) } \
+		{ print m[0];}' ${MAKEFILE_LIST} \
+		| grep -Ev '^$$' \
+		| sort \
+		| sed 's/: \([a-z0-9-]* *\)*//g' \
+		| sed 's/://g' \
+		| column -t -s'#'
+
+.PHONY: help-alt
+help-alt: # try to print make targets using sed only
+	@sed -n 's/^\([0-9a-z \-]*\):.*/\1/p' ${MAKEFILE_LIST} \
+		| column -t -c 2 -s ':#' \
+		| sort
+
+
+.PHONY: about
+about:
+	@cat ./README.md
+
+.PHONY: sos
+sos:
+	@cat ./README_STEPS_K8S.md
 
 
 
-
-libs/opentelemetry-javaagent-1.17.0.jar:
-	wget https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v1.17.0/opentelemetry-javaagent.jar -O libs/opentelemetry-javaagent-1.17.0.jar
+libs/opentelemetry-javaagent-1.17.0.jar: # get the OpenTelemetry library injected in docker containers as java agent
+	wget \
+		https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v1.17.0/opentelemetry-javaagent.jar \
+		-O libs/opentelemetry-javaagent-1.17.0.jar
 
 

@@ -11,7 +11,7 @@ import kotlin.reflect.KClass
 @Constraint(validatedBy = [PortlessUrlConstraintValidator::class])
 annotation class PortlessUrl(
 
-    val message: String = "invalid URL",
+    val message: String = "Invalid portless URL, either url is malformed or an explicit port is specified",
 
     val groups: Array<KClass<Any>> = [],
 

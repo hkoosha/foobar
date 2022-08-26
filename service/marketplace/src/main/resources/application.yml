@@ -60,12 +60,23 @@ logging:
 
 
 foobar:
-  services:
-    customerUrl: ${FOOBAR_SERVICE_URL_CUSTOMER:http://localhost}
-    customerPort: ${FOOBAR_SERVICE_PORT_CUSTOMER:4043}
-    sellerUrl: ${FOOBAR_SERVICE_URL_SELLER:http://localhost}
-    sellerPort: ${FOOBAR_SERVICE_PORT_SELLER:4045}
-    warehouseUrl: ${FOOBAR_SERVICE_URL_WAREHOUSE:http://localhost}
-    warehousePort: ${FOOBAR_SERVICE_PORT_WAREHOUSE:4040}
+  service:
+    services:
+      customer:
+        url: ${FOOBAR_SERVICE_URL_CUSTOMER:http://localhost}
+        port: ${FOOBAR_SERVICE_PORT_CUSTOMER:4043}
+        retry: true
+        limit: false
+      seller:
+        url: ${FOOBAR_SERVICE_URL_SELLER:http://localhost}
+        port: ${FOOBAR_SERVICE_PORT_SELLER:4045}
+        retry: true
+        limit: false
+      warehouse:
+        url: ${FOOBAR_SERVICE_URL_WAREHOUSE:http://localhost}
+        port: ${FOOBAR_SERVICE_PORT_WAREHOUSE:4040}
+        retry: true
+        limit: false
+
   rest:
     on-concurrency-error-retry-after: 1s

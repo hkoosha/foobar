@@ -27,11 +27,12 @@ import org.springframework.cloud.client.circuitbreaker.NoFallbackAvailableExcept
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.CircuitBreaker;
 import org.springframework.retry.annotation.Retryable;
+import io.github.resilience4j.bulkhead.annotation.Bulkhead;
 
 
 public interface {{classname}} extends ApiClient.Api {
 
-  public static final String ENTITY_TYPE = "{{#lowercase}}{{baseName}}{{/lowercase}}{{foobar_entity_type}}";
+  String ENTITY_TYPE = "{{foobar_entity_type}}";
 
 {{#operations}}{{#operation}}
   /**
@@ -200,123 +201,254 @@ public interface {{classname}} extends ApiClient.Api {
   {{/operation}}
 {{/operations}}
 
-    public static class Retry implements {{classname}} {
+  // TODO do annotations work at class level? if yes, move them.
+  class Retry implements {{classname}} {
 
-          private {{classname}} api;
+    private final {{classname}} api;
 
-          public Retry({{classname}} api) {
-            java.util.Objects.requireNonNull(api);
-            this.api = api;
-          }
-
-        {{#operations}}{{#operation}}
-        {{#isDeprecated}}
-          @Deprecated
-        {{/isDeprecated}}
-          @Override
-          @CircuitBreaker(
-              include = {
-                  TimeoutException.class,
-                  IOException.class,
-                  FeignException.FeignServerException.class,
-              },
-              maxAttemptsExpression = "${foobar.circuit-breaker.max-attempts:3}",
-              resetTimeoutExpression = "${foobar.circuit-breaker.reset-timeout-millis:20000}",
-              openTimeoutExpression = "${foobar.circuit-breaker.open-timeout-millis:5000}"
-          )
-          @Retryable(
-              include = {
-                  TimeoutException.class,
-                  IOException.class,
-                  FeignException.FeignServerException.class,
-              },
-              maxAttemptsExpression = "${foobar.retry.max-attempts:3}",
-              backoff = @Backoff(
-                  delayExpression = "${foobar.retry.delay-millis:1000}",
-                  maxDelayExpression = "${foobar.retry.max-delay-millis:0}",
-                  multiplierExpression = "${foobar.retry.multiplier:0}",
-                  randomExpression = "${foobar.retry.random:false}"
-              )
-          )
-          public {{#returnType}}{{{.}}} {{/returnType}}{{^returnType}}void {{/returnType}}{{nickname}}({{#allParams}}{{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/allParams}}) {
-            try {
-                {{#returnType}}return {{/returnType}}{{^returnType}}{{/returnType}}this.api.{{nickname}}({{#allParams}}{{paramName}}{{^-last}}, {{/-last}}{{/allParams}});
-            }
-            catch(final NoFallbackAvailableException ex) {
-                if(ex.getCause() instanceof RuntimeException) {
-                    throw (RuntimeException) ex.getCause();
-                }
-                else if(ex.getCause() != null) {
-                    throw new RuntimeException(ex.getCause());
-                }
-                else {
-                    throw ex;
-                }
-            }
-          }
-
-        {{#isDeprecated}}
-          @Deprecated
-        {{/isDeprecated}}
-          @Override
-          @CircuitBreaker(
-              include = {
-                  TimeoutException.class,
-                  IOException.class,
-                  FeignException.FeignServerException.class,
-              },
-              maxAttemptsExpression = "${foobar.circuit-breaker.max-attempts:3}",
-              resetTimeoutExpression = "${foobar.circuit-breaker.reset-timeout-millis:20000}",
-              openTimeoutExpression = "${foobar.circuit-breaker.open-timeout-millis:5000}"
-          )
-          @Retryable(
-              include = {
-                  TimeoutException.class,
-                  IOException.class,
-                  FeignException.FeignServerException.class,
-              },
-              maxAttemptsExpression = "${foobar.retry.max-attempts:3}",
-              backoff = @Backoff(
-                  delayExpression = "${foobar.retry.delay-millis:1000}",
-                  maxDelayExpression = "${foobar.retry.max-delay-millis:0}",
-                  multiplierExpression = "${foobar.retry.multiplier:0}",
-                  randomExpression = "${foobar.retry.random:false}"
-              )
-          )
-          public ApiResponse<{{#returnType}}{{{.}}}{{/returnType}}{{^returnType}}Void{{/returnType}}> {{nickname}}WithHttpInfo({{#allParams}}{{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/allParams}}) {
-            try {
-                return this.api.{{nickname}}WithHttpInfo({{#allParams}}{{paramName}}{{^-last}}, {{/-last}}{{/allParams}});
-            }
-            catch(final NoFallbackAvailableException ex) {
-                if(ex.getCause() instanceof RuntimeException) {
-                    throw (RuntimeException) ex.getCause();
-                }
-                else if(ex.getCause() != null) {
-                    throw new RuntimeException(ex.getCause());
-                }
-                else {
-                    throw ex;
-                }
-            }
-        }
-
-        {{#hasQueryParams}}
-        {{#isDeprecated}}
-             @Deprecated
-        {{/isDeprecated}}
-            @Override
-        public {{#returnType}}{{{.}}} {{/returnType}}{{^returnType}}void {{/returnType}}{{nickname}}({{#allParams}}{{^isQueryParam}}{{{dataType}}} {{paramName}}, {{/isQueryParam}}{{/allParams}} Map<String, Object> queryParams) {
-            {{#returnType}}return {{/returnType}}{{^returnType}}{{/returnType}} this.api.{{nickname}}({{#allParams}}{{^isQueryParam}} {{paramName}}, {{/isQueryParam}}{{/allParams}} queryParams);
-        }
-
-        @Override
-        public ApiResponse<{{#returnType}}{{{.}}}{{/returnType}}{{^returnType}}Void{{/returnType}}> {{nickname}}WithHttpInfo({{#allParams}}{{^isQueryParam}}{{{dataType}}} {{paramName}}, {{/isQueryParam}}{{/allParams}} Map<String, Object> queryParams) {
-            return this.api.{{nickname}}WithHttpInfo({{#allParams}}{{^isQueryParam}} {{paramName}}, {{/isQueryParam}}{{/allParams}} queryParams);
-        }
-
-        {{/hasQueryParams}}
-
-          {{/operation}}
-        {{/operations}}
+    public Retry(final {{classname}} api) {
+      java.util.Objects.requireNonNull(api);
+      this.api = api;
     }
+
+    {{#operations}}{{#operation}}
+  {{#isDeprecated}}
+    @Deprecated
+  {{/isDeprecated}}
+    @Override
+    @CircuitBreaker(
+      include = {
+        TimeoutException.class,
+        IOException.class,
+        FeignException.FeignServerException.class,
+      },
+      maxAttemptsExpression = "${foobar.circuit-breaker.max-attempts:3}",
+      resetTimeoutExpression = "${foobar.circuit-breaker.reset-timeout-millis:20000}",
+      openTimeoutExpression = "${foobar.circuit-breaker.open-timeout-millis:5000}"
+    )
+    @Retryable(
+      include = {
+        TimeoutException.class,
+        IOException.class,
+        FeignException.FeignServerException.class,
+      },
+      maxAttemptsExpression = "${foobar.retry.max-attempts:3}",
+      backoff = @Backoff(
+        delayExpression = "${foobar.retry.delay-millis:1000}",
+        maxDelayExpression = "${foobar.retry.max-delay-millis:0}",
+        multiplierExpression = "${foobar.retry.multiplier:0}",
+        randomExpression = "${foobar.retry.random:false}"
+      )
+    )
+    public {{#returnType}}{{{.}}} {{/returnType}}{{^returnType}}void {{/returnType}}{{nickname}}({{#allParams}}{{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/allParams}}) {
+      try {
+        {{#returnType}}return {{/returnType}}{{^returnType}}{{/returnType}}this.api.{{nickname}}({{#allParams}}{{paramName}}{{^-last}}, {{/-last}}{{/allParams}});
+      }
+      catch(final NoFallbackAvailableException ex) {
+        if(ex.getCause() instanceof RuntimeException) {
+          throw (RuntimeException) ex.getCause();
+        }
+        else if(ex.getCause() != null) {
+          throw new RuntimeException(ex.getCause());
+        }
+        else {
+          throw ex;
+        }
+      }
+    }
+
+    {{#isDeprecated}}
+      @Deprecated
+    {{/isDeprecated}}
+      @Override
+      @CircuitBreaker(
+        include = {
+          TimeoutException.class,
+          IOException.class,
+          FeignException.FeignServerException.class,
+        },
+        maxAttemptsExpression = "${foobar.circuit-breaker.max-attempts:3}",
+        resetTimeoutExpression = "${foobar.circuit-breaker.reset-timeout-millis:20000}",
+        openTimeoutExpression = "${foobar.circuit-breaker.open-timeout-millis:5000}"
+      )
+      @Retryable(
+        include = {
+          TimeoutException.class,
+          IOException.class,
+          FeignException.FeignServerException.class,
+        },
+        maxAttemptsExpression = "${foobar.retry.max-attempts:3}",
+        backoff = @Backoff(
+          delayExpression = "${foobar.retry.delay-millis:1000}",
+          maxDelayExpression = "${foobar.retry.max-delay-millis:0}",
+          multiplierExpression = "${foobar.retry.multiplier:0}",
+          randomExpression = "${foobar.retry.random:false}"
+        )
+      )
+      public ApiResponse<{{#returnType}}{{{.}}}{{/returnType}}{{^returnType}}Void{{/returnType}}> {{nickname}}WithHttpInfo({{#allParams}}{{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/allParams}}) {
+        try {
+          return this.api.{{nickname}}WithHttpInfo({{#allParams}}{{paramName}}{{^-last}}, {{/-last}}{{/allParams}});
+        }
+        catch(final NoFallbackAvailableException ex) {
+          if(ex.getCause() instanceof RuntimeException) {
+            throw (RuntimeException) ex.getCause();
+          }
+          else if(ex.getCause() != null) {
+            throw new RuntimeException(ex.getCause());
+          }
+          else {
+            throw ex;
+          }
+        }
+    }
+
+    {{#hasQueryParams}}
+  {{#isDeprecated}}
+    @Deprecated
+  {{/isDeprecated}}
+    @Override
+    @CircuitBreaker(
+      include = {
+        TimeoutException.class,
+        IOException.class,
+        FeignException.FeignServerException.class,
+      },
+      maxAttemptsExpression = "${foobar.circuit-breaker.max-attempts:3}",
+      resetTimeoutExpression = "${foobar.circuit-breaker.reset-timeout-millis:20000}",
+      openTimeoutExpression = "${foobar.circuit-breaker.open-timeout-millis:5000}"
+    )
+    @Retryable(
+      include = {
+        TimeoutException.class,
+        IOException.class,
+        FeignException.FeignServerException.class,
+      },
+      maxAttemptsExpression = "${foobar.retry.max-attempts:3}",
+      backoff = @Backoff(
+        delayExpression = "${foobar.retry.delay-millis:1000}",
+        maxDelayExpression = "${foobar.retry.max-delay-millis:0}",
+        multiplierExpression = "${foobar.retry.multiplier:0}",
+        randomExpression = "${foobar.retry.random:false}"
+      )
+    )
+    public {{#returnType}}{{{.}}} {{/returnType}}{{^returnType}}void {{/returnType}}{{nickname}}({{#allParams}}{{^isQueryParam}}{{{dataType}}} {{paramName}}, {{/isQueryParam}}{{/allParams}} Map<String, Object> queryParams) {
+      {{#returnType}}return {{/returnType}}{{^returnType}}{{/returnType}} this.api.{{nickname}}({{#allParams}}{{^isQueryParam}} {{paramName}}, {{/isQueryParam}}{{/allParams}} queryParams);
+    }
+
+  {{#isDeprecated}}
+    @Deprecated
+  {{/isDeprecated}}
+    @Override
+    @CircuitBreaker(
+      include = {
+        TimeoutException.class,
+        IOException.class,
+        FeignException.FeignServerException.class,
+      },
+      maxAttemptsExpression = "${foobar.circuit-breaker.max-attempts:3}",
+      resetTimeoutExpression = "${foobar.circuit-breaker.reset-timeout-millis:20000}",
+      openTimeoutExpression = "${foobar.circuit-breaker.open-timeout-millis:5000}"
+    )
+    @Retryable(
+      include = {
+        TimeoutException.class,
+        IOException.class,
+        FeignException.FeignServerException.class,
+      },
+      maxAttemptsExpression = "${foobar.retry.max-attempts:3}",
+      backoff = @Backoff(
+        delayExpression = "${foobar.retry.delay-millis:1000}",
+        maxDelayExpression = "${foobar.retry.max-delay-millis:0}",
+        multiplierExpression = "${foobar.retry.multiplier:0}",
+        randomExpression = "${foobar.retry.random:false}"
+      )
+    )
+    public ApiResponse<{{#returnType}}{{{.}}}{{/returnType}}{{^returnType}}Void{{/returnType}}> {{nickname}}WithHttpInfo({{#allParams}}{{^isQueryParam}}{{{dataType}}} {{paramName}}, {{/isQueryParam}}{{/allParams}} Map<String, Object> queryParams) {
+      return this.api.{{nickname}}WithHttpInfo({{#allParams}}{{^isQueryParam}} {{paramName}}, {{/isQueryParam}}{{/allParams}} queryParams);
+    }
+
+    {{/hasQueryParams}}
+
+      {{/operation}}
+    {{/operations}}
+  }
+
+  @Bulkhead(
+    name = {{classname}}.ENTITY_TYPE + "_BULKHEAD",
+    type = Bulkhead.Type.SEMAPHORE
+  )
+  class Limit implements {{classname}} {
+
+    private final {{classname}} api;
+
+    public Limit(final {{classname}} api) {
+      java.util.Objects.requireNonNull(api);
+      this.api = api;
+    }
+
+    {{#operations}}{{#operation}}
+    {{#isDeprecated}}
+    @Deprecated
+    {{/isDeprecated}}
+    @Override
+    public {{#returnType}}{{{.}}} {{/returnType}}{{^returnType}}void {{/returnType}}{{nickname}}({{#allParams}}{{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/allParams}}) {
+      try {
+        {{#returnType}}return {{/returnType}}{{^returnType}}{{/returnType}}this.api.{{nickname}}({{#allParams}}{{paramName}}{{^-last}}, {{/-last}}{{/allParams}});
+      }
+      catch(final NoFallbackAvailableException ex) {
+        if(ex.getCause() instanceof RuntimeException) {
+          throw (RuntimeException) ex.getCause();
+        }
+        else if(ex.getCause() != null) {
+          throw new RuntimeException(ex.getCause());
+        }
+        else {
+          throw ex;
+        }
+      }
+    }
+
+    {{#isDeprecated}}
+    @Deprecated
+    {{/isDeprecated}}
+    @Override
+    public ApiResponse<{{#returnType}}{{{.}}}{{/returnType}}{{^returnType}}Void{{/returnType}}> {{nickname}}WithHttpInfo({{#allParams}}{{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/allParams}}) {
+      try {
+        return this.api.{{nickname}}WithHttpInfo({{#allParams}}{{paramName}}{{^-last}}, {{/-last}}{{/allParams}});
+      }
+      catch(final NoFallbackAvailableException ex) {
+        if(ex.getCause() instanceof RuntimeException) {
+          throw (RuntimeException) ex.getCause();
+        }
+        else if(ex.getCause() != null) {
+          throw new RuntimeException(ex.getCause());
+        }
+        else {
+          throw ex;
+        }
+      }
+    }
+
+    {{#hasQueryParams}}
+    {{#isDeprecated}}
+    @Deprecated
+    {{/isDeprecated}}
+    @Override
+    public {{#returnType}}{{{.}}} {{/returnType}}{{^returnType}}void {{/returnType}}{{nickname}}({{#allParams}}{{^isQueryParam}}{{{dataType}}} {{paramName}}, {{/isQueryParam}}{{/allParams}} Map<String, Object> queryParams) {
+      {{#returnType}}return {{/returnType}}{{^returnType}}{{/returnType}} this.api.{{nickname}}({{#allParams}}{{^isQueryParam}} {{paramName}}, {{/isQueryParam}}{{/allParams}} queryParams);
+    }
+
+    {{#isDeprecated}}
+    @Deprecated
+    {{/isDeprecated}}
+    @Override
+    public ApiResponse<{{#returnType}}{{{.}}}{{/returnType}}{{^returnType}}Void{{/returnType}}> {{nickname}}WithHttpInfo({{#allParams}}{{^isQueryParam}}{{{dataType}}} {{paramName}}, {{/isQueryParam}}{{/allParams}} Map<String, Object> queryParams) {
+      return this.api.{{nickname}}WithHttpInfo({{#allParams}}{{^isQueryParam}} {{paramName}}, {{/isQueryParam}}{{/allParams}} queryParams);
+    }
+
+    {{/hasQueryParams}}
+
+      {{/operation}}
+    {{/operations}}
+  }
 }

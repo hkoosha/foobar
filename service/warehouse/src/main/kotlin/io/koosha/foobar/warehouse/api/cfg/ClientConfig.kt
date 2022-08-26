@@ -3,7 +3,7 @@ package io.koosha.foobar.warehouse.api.cfg
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.koosha.foobar.common.PACKAGE
 import io.koosha.foobar.connect.seller.generated.api.SellerApi
-import io.koosha.foobar.warehouse.api.cfg.prop.ServiceAddress
+import io.koosha.foobar.warehouse.api.cfg.prop.ServicesProperties
 import org.springframework.beans.factory.BeanFactory
 import org.springframework.cloud.openfeign.EnableFeignClients
 import org.springframework.cloud.sleuth.instrument.web.client.feign.SleuthFeignBuilder
@@ -23,21 +23,25 @@ class ClientConfig {
     fun sellerClient(
         beanFactory: BeanFactory,
         om: ObjectMapper,
-        serviceAddress: ServiceAddress,
+        services: ServicesProperties,
     ): SellerApi {
 
         val apiClient = Seller_ApiClient()
         apiClient.objectMapper = om
-        apiClient.basePath = serviceAddress.sellerAddress()
+        apiClient.basePath = services.seller().address()
         apiClient.feignBuilder = SleuthFeignBuilder
             .builder(beanFactory)
             .decoder(Seller_ApiResponseDecoder(om))
 
-        val api = apiClient.buildClient(SellerApi::class.java)
+        var api = apiClient.buildClient(SellerApi::class.java)
 
-        val retry = SellerApi.Retry(api)
+        if (services.seller().retry)
+            api = SellerApi.Retry(api)
 
-        return retry
+        if (services.seller().limit)
+            api = SellerApi.Limit(api)
+
+        return api
     }
 
 }

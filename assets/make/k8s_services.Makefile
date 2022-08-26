@@ -296,6 +296,9 @@ k8s-init-drop-topics:
 .PHONY: k8s-init-recreate-topics
 k8s-init-recreate-topics: k8s-init-drop-topics k8s-init-create-topics
 
+.PHONY: k8s-init
+k8s-init: k8s-init-create-db k8s-init-create-topics
+
 
 .PHONY: k8s-deploy-deps
 k8s-deploy-deps: \
