@@ -15,14 +15,10 @@ object Libraries {
     object Spring {
         const val DependencyManagement = "1.0.13.RELEASE"
         const val springCloudVersion = "2021.0.3"
-        const val springCloudSleuthOtelVersion = "1.1.0-M6"
+        const val springCloudSleuthOtelVersion = "1.1.0-M7"
         const val springBoot2 = "2.7.3"
         const val retry = "1.3.3"
     }
-
-    // object Test {
-    //     const val jupiterApi = "5.9.0"
-    // }
 
     object Proto {
         const val protoPlugin = "0.8.19"
@@ -34,13 +30,12 @@ object Libraries {
     }
 
     object OpenApi {
-        const val ui = "1.6.10"
+        const val ui = "1.6.11"
         const val kotlin = ui
         const val rest = ui
         const val webMvcCore = ui
         const val gradlePlugin = "1.3.4"
         const val generatorPlugin = "6.0.1"
-        // const val swaggerAnnotationVersion = "2.2.1"
         const val jacksonNullable = "0.2.3"
     }
 
@@ -57,13 +52,12 @@ object Libraries {
     }
 
     object Log {
-        // const val logbackJackson = "0.1.5"
         const val logbackJsonClassic = "0.1.5"
         const val logstashLogbackEncoder = "7.2"
     }
 
     const val mariadb = "3.0.7"
-    const val postgres = "42.4.2"
+    const val postgres = "42.5.0"
 
     const val jakartaAnnotationApi = "2.1.1"
     const val javaxAnnotation = "1.3.2"
