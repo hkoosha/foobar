@@ -199,17 +199,13 @@ k8s-exec-maker-cli:
 		--namespace $(FOOBAR_NAMESPACE) \
 		-- bash -c 'chmod +x /maker.sh && echo alias maker="/maker.sh" >> ~/.bashrc && bash'
 
-# Won't work, env vars won't be set
-# .PHONY: k8s-run-maker-cli
-# k8s-run-maker-cli:
-# 	kubectl run foobar-maker \
-# 		--rm \
-# 		--tty \
-# 		-i \
-# 		--restart='Never' \
-# 		--image docker.io/library/foobar-maker:0.0.1-SNAPSHOT \
-# 		--namespace $(FOOBAR_NAMESPACE) \
-# 		--command -- bash -c 'chmod +x /maker.sh && echo alias maker="/maker.sh" >> ~/.bashrc && bash'
+.PHONY: k8s-exec-maker-demo
+k8s-exec-maker-demo:
+	kubectl exec $(shell kubectl get pods --namespace $(FOOBAR_NAMESPACE) -l foobar-tool=maker -o jsonpath='{.items[0].metadata.name}') \
+		--tty \
+		-i \
+		--namespace $(FOOBAR_NAMESPACE) \
+		-- bash -c 'chmod +x /maker.sh && /maker.sh ini --live'
 
 .PHONY: k8s-delete-maker-cli
 k8s-delete-maker-cli:
