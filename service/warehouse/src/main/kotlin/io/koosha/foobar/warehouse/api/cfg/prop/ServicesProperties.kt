@@ -26,7 +26,7 @@ data class ServicesProperties(
                         missing.joinToString()
             )
     }
-    
+
 
     fun seller(): ServiceProperties = this.services["seller"]!!
 

@@ -18,7 +18,7 @@ data class ServicesProperties(
 
     @PostConstruct
     fun validate() {
-        val missing = listOf("customer", "seller", "warehouse")
+        val missing = listOf("customer", "seller", "marketplace")
             .filter { !this.services.containsKey(it) }
         if (missing.isNotEmpty())
             throw IllegalArgumentException(
@@ -32,6 +32,6 @@ data class ServicesProperties(
 
     fun customer(): ServiceProperties = this.services["customer"]!!
 
-    fun warehouse(): ServiceProperties = this.services["warehouse"]!!
+    fun marketplace(): ServiceProperties = this.services["marketplace"]!!
 
 }

@@ -76,7 +76,7 @@ class ClientConfig {
     }
 
     @Bean
-    fun warehouseOrderRequestClient(
+    fun marketplaceOrderRequestClient(
         beanFactory: BeanFactory,
         om: ObjectMapper,
         services: ServicesProperties,
@@ -84,17 +84,17 @@ class ClientConfig {
 
         val apiClient = Marketplace_ApiClient()
         apiClient.objectMapper = om
-        apiClient.basePath = services.warehouse().address()
+        apiClient.basePath = services.marketplace().address()
         apiClient.feignBuilder = SleuthFeignBuilder
             .builder(beanFactory)
             .decoder(Marketplace_ApiResponseDecoder(om))
 
         var api = apiClient.buildClient(OrderRequestApi::class.java)
 
-        if (services.warehouse().retry)
+        if (services.marketplace().retry)
             api = OrderRequestApi.Retry(api)
 
-        if (services.warehouse().limit)
+        if (services.marketplace().limit)
             api = OrderRequestApi.Limit(api)
 
         return api
