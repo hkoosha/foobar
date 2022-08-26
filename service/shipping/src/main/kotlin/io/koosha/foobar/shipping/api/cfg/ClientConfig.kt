@@ -5,7 +5,7 @@ import io.koosha.foobar.common.PACKAGE
 import io.koosha.foobar.connect.customer.generated.api.AddressApi
 import io.koosha.foobar.connect.marketplace.generated.api.OrderRequestApi
 import io.koosha.foobar.connect.seller.generated.api.SellerApi
-import io.koosha.foobar.shipping.api.cfg.prop.ServiceAddress
+import io.koosha.foobar.shipping.api.cfg.prop.ServicesProperties
 import org.springframework.beans.factory.BeanFactory
 import org.springframework.cloud.openfeign.EnableFeignClients
 import org.springframework.cloud.sleuth.instrument.web.client.feign.SleuthFeignBuilder
@@ -29,63 +29,75 @@ class ClientConfig {
     fun customerAddressClient(
         beanFactory: BeanFactory,
         om: ObjectMapper,
-        serviceAddress: ServiceAddress,
+        services: ServicesProperties,
     ): AddressApi {
 
         val apiClient = Customer_ApiClient()
         apiClient.objectMapper = om
-        apiClient.basePath = serviceAddress.customerAddress()
+        apiClient.basePath = services.customer().address()
         apiClient.feignBuilder = SleuthFeignBuilder
             .builder(beanFactory)
             .decoder(Customer_ApiResponseDecoder(om))
 
-        val api = apiClient.buildClient(AddressApi::class.java)
+        var api = apiClient.buildClient(AddressApi::class.java)
 
-        val retry = AddressApi.Retry(api)
+        if (services.customer().retry)
+            api = AddressApi.Retry(api)
 
-        return retry
+        if (services.customer().limit)
+            api = AddressApi.Limit(api)
+
+        return api
     }
 
     @Bean
     fun sellerClient(
         beanFactory: BeanFactory,
         om: ObjectMapper,
-        serviceAddress: ServiceAddress,
+        services: ServicesProperties,
     ): SellerApi {
 
         val apiClient = Seller_ApiClient()
         apiClient.objectMapper = om
-        apiClient.basePath = serviceAddress.sellerAddress()
+        apiClient.basePath = services.seller().address()
         apiClient.feignBuilder = SleuthFeignBuilder
             .builder(beanFactory)
             .decoder(Seller_ApiResponseDecoder(om))
 
-        val api = apiClient.buildClient(SellerApi::class.java)
+        var api = apiClient.buildClient(SellerApi::class.java)
 
-        val retry = SellerApi.Retry(api)
+        if (services.seller().retry)
+            api = SellerApi.Retry(api)
 
-        return retry
+        if (services.seller().limit)
+            api = SellerApi.Limit(api)
+
+        return api
     }
 
     @Bean
-    fun orderRequestClient(
+    fun warehouseOrderRequestClient(
         beanFactory: BeanFactory,
         om: ObjectMapper,
-        serviceAddress: ServiceAddress,
+        services: ServicesProperties,
     ): OrderRequestApi {
 
         val apiClient = Marketplace_ApiClient()
         apiClient.objectMapper = om
-        apiClient.basePath = serviceAddress.marketplaceAddress()
+        apiClient.basePath = services.warehouse().address()
         apiClient.feignBuilder = SleuthFeignBuilder
             .builder(beanFactory)
             .decoder(Marketplace_ApiResponseDecoder(om))
 
-        val api = apiClient.buildClient(OrderRequestApi::class.java)
+        var api = apiClient.buildClient(OrderRequestApi::class.java)
 
-        val retry = OrderRequestApi.Retry(api)
+        if (services.warehouse().retry)
+            api = OrderRequestApi.Retry(api)
 
-        return retry
+        if (services.warehouse().limit)
+            api = OrderRequestApi.Limit(api)
+
+        return api
     }
 
 }

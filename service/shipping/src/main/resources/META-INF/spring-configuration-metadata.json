@@ -6,33 +6,8 @@
       "description": "Desc."
     },
     {
-      "name": "foobar.services.sellerUrl",
-      "type": "java.lang.String",
-      "description": "Desc."
-    },
-    {
-      "name": "foobar.services.sellerPort",
-      "type": "java.lang.Integer",
-      "description": "Desc."
-    },
-    {
-      "name": "foobar.services.customerUrl",
-      "type": "java.lang.String",
-      "description": "Desc."
-    },
-    {
-      "name": "foobar.services.customerPort",
-      "type": "java.lang.Integer",
-      "description": "Desc."
-    },
-    {
-      "name": "foobar.services.marketplaceUrl",
-      "type": "java.lang.String",
-      "description": "Desc."
-    },
-    {
-      "name": "foobar.services.marketplacePort",
-      "type": "java.lang.Integer",
+      "name": "foobar.service.services",
+      "type": "java.util.Map<java.lang.String,io.koosha.foobar.common.cfg.prop.ServiceProperties>",
       "description": "Desc."
     }
   ]

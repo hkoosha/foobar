@@ -53,16 +53,23 @@ ifneq (,$(wildcard ./assets/env/${ENV}.env))
 endif
 
 
-.PHONY: help
-help: # print available help commands
-	@echo "Try '$(MAKE) help0' which required gawk, if that does not work, try '$(MAKE) help1'"
 
-.PHONY: help0
-help0: # try to print make targets using gawk
-	@awk '{match($$0, /^([a-z0-9][a-zA-Z0-9\.\-\/]*):( *)(# .*)*$$/, m) } { print m[0];}' ${MAKEFILE_LIST} | grep -Ev '^$$' | sort | column -t -s'#'
+# Crazy regex here to match -> 'make-target: make-dependency-tatgets* # comment'
+# where '#', 'comment', 'make-dependency-targets(zero or more)' and spaces are optional.
+.PHONY: help
+help: # try to print make targets using gawk
+	@echo "Trying to print help... if this does not work, try '$(MAKE) help-alternative'"
+	@echo ''
+	@awk '{match($$0, /^([a-z0-9][a-zA-Z0-9\.\-\/]*):( *)([a-z0-9\-]* *)*(# .*)*$$/, m) } \
+		{ print m[0];}' ${MAKEFILE_LIST} \
+		| grep -Ev '^$$' \
+		| sort \
+		| sed 's/: \([a-z0-9-]* *\)*//g' \
+		| sed 's/://g' \
+		| column -t -s'#'
 
 .PHONY: help1
-help1: # try to print make targets using sed
+help-alternative: # try to print make targets using sed
 	@sed -n 's/^\([0-9a-z \-]*\):.*/\1/p' ${MAKEFILE_LIST} | column -t -c 2 -s ':#' | sort
 
 
