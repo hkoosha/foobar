@@ -3,26 +3,29 @@ package io.koosha.foobar.shipping.api.cfg.prop
 import io.koosha.foobar.common.cfg.prop.ServiceProperties
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.ConstructorBinding
-import org.springframework.context.ApplicationContext
-import org.springframework.context.ApplicationContextAware
+import org.springframework.validation.annotation.Validated
 import javax.annotation.PostConstruct
-import javax.validation.Validator
+import javax.validation.Valid
 
 
 @ConfigurationProperties("foobar.service")
 @ConstructorBinding
+@Validated
 data class ServicesProperties(
+    @field:Valid
     private val services: Map<String, ServiceProperties>,
-) : ApplicationContextAware {
-
-    private lateinit var validator: Validator
-
-    override fun setApplicationContext(ctx: ApplicationContext) {
-        this.validator = ctx.getBean(Validator::class.java)
-    }
+) {
 
     @PostConstruct
-    fun validate() = ServiceProperties.validate(this.validator, this.services, "seller", "customer", "warehouse")
+    fun validate() {
+        val missing = listOf("customer", "seller", "warehouse")
+            .filter { !this.services.containsKey(it) }
+        if (missing.isNotEmpty())
+            throw IllegalArgumentException(
+                "following services are missing in application configuration: " +
+                        missing.joinToString()
+            )
+    }
 
 
     fun seller(): ServiceProperties = this.services["seller"]!!
