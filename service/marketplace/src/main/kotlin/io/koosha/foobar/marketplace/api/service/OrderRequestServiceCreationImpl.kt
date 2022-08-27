@@ -4,9 +4,9 @@ import feign.FeignException
 import io.koosha.foobar.common.error.EntityBadValueException
 import io.koosha.foobar.common.error.EntityInIllegalStateException
 import io.koosha.foobar.common.error.EntityNotFoundException
-import io.koosha.foobar.common.error.ResourceCurrentlyUnavailableException
 import io.koosha.foobar.common.model.EntityInfo
 import io.koosha.foobar.connect.customer.generated.api.CustomerApi
+import io.koosha.foobar.marketplace.api.error.ResourceCurrentlyUnavailableException
 import io.koosha.foobar.marketplace.api.model.OrderRequestDO
 import io.koosha.foobar.marketplace.api.model.OrderRequestRepository
 import io.koosha.foobar.marketplace.api.model.OrderRequestState
@@ -15,6 +15,7 @@ import net.logstash.logback.argument.StructuredArguments.v
 import org.openapitools.client.model.Customer
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import reactor.core.publisher.Mono
 import java.util.*
 import javax.validation.Validator
 
@@ -30,28 +31,10 @@ class OrderRequestServiceCreationImpl(
 
     private val log = KotlinLogging.logger {}
 
-    private fun validate(
-        request: OrderRequestCreateRequest,
-    ) {
-
-        val errors = this.validator.validate(request)
-        if (errors.isNotEmpty()) {
-            log.trace(
-                "create orderRequest validation error, request={} errors={}",
-                v("request", request),
-                v("validationErrors", errors),
-            )
-            throw EntityBadValueException(
-                entityType = OrderRequestDO.ENTITY_TYPE,
-                entityId = null,
-                errors,
-            )
-        }
-    }
 
     private fun findCustomer(
         request: OrderRequestCreateRequest,
-    ): Customer {
+    ): Mono<Customer> {
 
         log.trace("fetching customer, customerId={}", v("customerId", request.customerId))
 
@@ -87,7 +70,8 @@ class OrderRequestServiceCreationImpl(
             )
         }
 
-        return customer
+        // FIXME blocking call
+        return Mono.just(customer)
     }
 
     @Transactional(
@@ -95,23 +79,39 @@ class OrderRequestServiceCreationImpl(
     )
     fun create(
         request: OrderRequestCreateRequest,
-    ): OrderRequestDO {
+    ): Mono<OrderRequestDO> {
 
-        this.validate(request)
+        val errors = this.validator.validate(request)
+        if (errors.isNotEmpty()) {
+            log.trace(
+                "create orderRequest validation error, request={} errors={}",
+                v("request", request),
+                v("validationErrors", errors),
+            )
+            return Mono.error(
+                EntityBadValueException(
+                    entityType = OrderRequestDO.ENTITY_TYPE,
+                    entityId = null,
+                    errors,
+                )
+            )
+        }
 
-        // Make sure customer exists and is active.
-        this.findCustomer(request)
+        return this
+            .findCustomer(request)
+            .flatMap {
+                val orderRequest = OrderRequestDO()
+                orderRequest.orderRequestId = UUID.randomUUID().toString()
+                orderRequest.customerId = request.customerId.toString()
+                orderRequest.lineItemIdPool = 0
+                orderRequest.state = OrderRequestState.ACTIVE
 
-        val orderRequest = OrderRequestDO()
-        orderRequest.orderRequestId = UUID.randomUUID()
-        orderRequest.customerId = request.customerId
-        orderRequest.lineItemIdPool = 0
-        orderRequest.state = OrderRequestState.ACTIVE
-
-        log.info("creating new orderRequest, orderRequest={}", v("orderRequest", orderRequest))
-        this.orderRequestRepo.save(orderRequest)
-        log.info("new orderRequest created, orderRequest={}", v("orderRequest", orderRequest))
-        return orderRequest
+                log.info("creating new orderRequest, orderRequest={}", v("orderRequest", orderRequest))
+                this.orderRequestRepo.save(orderRequest)
+                    .doOnSuccess {
+                        log.info("new orderRequest created, orderRequest={}", v("orderRequest", orderRequest))
+                    }
+            }
     }
 
 }

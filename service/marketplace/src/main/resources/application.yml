@@ -3,19 +3,15 @@ spring:
     name: FoobarMarketplace
   main:
     banner-mode: off
-  jpa:
-    open-in-view: false
-    hibernate:
-      ddl-auto: ${FOOBAR_DDL_AUTO:none}
-    properties:
-      hibernate:
-        auto_quote_keyword: true
-  cloud:
-    loadbalancer:
-      cache:
-        enabled: false
   zipkin:
     enabled: false
+  r2dbc:
+    url: 'r2dbc:mariadb://${FOOBAR_MYSQL_HOST:localhost:3306}/foobar_marketplace'
+    username: ${FOOBAR_MYSQL_USER:root}
+    password: ${FOOBAR_MYSQL_PASS:.}
+  flyway:
+    create-schemas: false
+    fail-on-missing-locations: true
 
 server:
   port: ${FOOBAR_PORT_MARKETPLACE:8080}

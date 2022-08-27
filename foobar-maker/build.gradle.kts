@@ -58,6 +58,8 @@ dependencyManagement {
 }
 
 dependencies {
+    implementation(project(":common-jpa"))
+
     implementation(project(":connect:customer-api-build"))
     implementation(project(":connect:seller-api-build"))
     implementation(project(":connect:warehouse-api-build"))

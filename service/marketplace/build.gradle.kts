@@ -1,5 +1,5 @@
-import io.gitlab.arturbosch.detekt.Detekt
-import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
+// import io.gitlab.arturbosch.detekt.Detekt
+// import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
 import io.koosha.foobar.Foobar
 import io.koosha.foobar.Libraries
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -7,6 +7,9 @@ import org.springdoc.openapi.gradle.plugin.OpenApiGeneratorTask
 import org.springframework.boot.gradle.tasks.run.BootRun
 
 plugins {
+    @Suppress("RemoveRedundantQualifierName")
+    val l = io.koosha.foobar.Libraries
+
     @Suppress("RemoveRedundantQualifierName")
     val j = io.koosha.foobar.Libraries.Jib
 
@@ -19,7 +22,8 @@ plugins {
     @Suppress("RemoveRedundantQualifierName")
     val d = io.koosha.foobar.Libraries.OpenApi
 
-    id("io.gitlab.arturbosch.detekt") version k.detekt
+    // id("io.gitlab.arturbosch.detekt") version k.detekt
+    id("org.flywaydb.flyway") version "8.2.0"
     id("com.google.cloud.tools.jib") version j.gradlePlugin
     id("org.springdoc.openapi-gradle-plugin") version d.gradlePlugin
     id("org.springframework.boot") version s.springBoot2
@@ -28,6 +32,15 @@ plugins {
     kotlin("plugin.spring") version k.spring
     kotlin("plugin.jpa") version k.jpa
 }
+
+// buildscript {
+//     repositories {
+//         mavenCentral()
+//     }
+//     dependencies {
+//         classpath("org.mariadb.jdbc:mariadb-java-client:3.0.7")
+//     }
+// }
 
 group = Foobar.group
 version = Foobar.appVersion
@@ -64,38 +77,37 @@ dependencyManagement {
 }
 
 dependencies {
-    implementation(project(":common"))
     implementation(project(":definitions"))
+
+    implementation(project(":common"))
+
     implementation(project(":service:common-kafka"))
-    implementation(project(":service:common-service"))
+
     implementation(project(":connect:customer-api-build"))
     implementation(project(":connect:seller-api-build"))
     implementation(project(":connect:warehouse-api-build"))
 
     implementation("org.springframework.boot:spring-boot-starter-actuator")
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
     implementation("org.springframework.boot:spring-boot-starter-validation")
-    implementation("org.springframework.boot:spring-boot-starter-web")
-    // implementation("org.springframework.cloud:spring-cloud-starter-circuitbreaker-reactor-resilience4j")
-    implementation("org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j")
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
+    implementation("org.springframework.cloud:spring-cloud-starter-circuitbreaker-reactor-resilience4j")
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
-    implementation("org.springframework.cloud:spring-cloud-starter-loadbalancer")
-    // implementation("org.springframework.cloud:spring-cloud-starter-gateway")
     implementation("org.springframework.cloud:spring-cloud-starter-sleuth")
     implementation("org.springframework.cloud:spring-cloud-sleuth-zipkin")
-    // implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
-    // implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.kafka:spring-kafka")
+
+    implementation("org.flywaydb:flyway-core:8.2.0")
 
     implementation("io.github.microutils:kotlin-logging-jvm:${Libraries.microutilsKotlinLoggingJvm}")
     implementation("net.logstash.logback:logstash-logback-encoder:${Libraries.Log.logstashLogbackEncoder}")
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-    // implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
+    implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
 
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    // implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
 
     implementation("org.springdoc:springdoc-openapi-ui:${Libraries.OpenApi.ui}")
     implementation("org.springdoc:springdoc-openapi-kotlin:${Libraries.OpenApi.kotlin}")
@@ -103,11 +115,10 @@ dependencies {
 
     implementation("io.github.openfeign:feign-jackson:${Libraries.Feign.core}")
 
-    runtimeOnly("org.postgresql:postgresql:${Libraries.postgres}")
     runtimeOnly("org.mariadb.jdbc:mariadb-java-client:${Libraries.mariadb}")
-    // runtimeOnly("mysql:mysql-connector-java")
-    runtimeOnly("com.h2database:h2")
-    // runtimeOnly("io.r2dbc:r2dbc-h2")
+    runtimeOnly("org.postgresql:r2dbc-postgresql:${Libraries.r2dbcPostgres}")
+    runtimeOnly("org.mariadb:r2dbc-mariadb:${Libraries.r2dbcMariadb}")
+    runtimeOnly("io.r2dbc:r2dbc-h2")
     runtimeOnly("io.micrometer:micrometer-registry-prometheus")
     runtimeOnly("io.github.openfeign:feign-micrometer")
     runtimeOnly("io.micrometer:micrometer-registry-jmx")
@@ -120,9 +131,8 @@ dependencies {
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    // testImplementation("io.projectreactor:reactor-test")
+    testImplementation("io.projectreactor:reactor-test")
     testImplementation("org.springframework.kafka:spring-kafka-test")
-    // testImplementation("org.springframework.security:spring-security-test")
 }
 
 openApi {
@@ -161,10 +171,17 @@ jib {
     }
 }
 
-tasks.withType<Detekt>().configureEach {
-    jvmTarget = Foobar.kotlinJvmTarget
-}
+// tasks.withType<Detekt>().configureEach {
+//     jvmTarget = Foobar.kotlinJvmTarget
+// }
+// 
+// tasks.withType<DetektCreateBaselineTask>().configureEach {
+//     jvmTarget = Foobar.kotlinJvmTarget
+// }
 
-tasks.withType<DetektCreateBaselineTask>().configureEach {
-    jvmTarget = Foobar.kotlinJvmTarget
+flyway {
+    val host = System.getenv("FOOBAR_MYSQL_HOST") ?: "localhost:3306"
+    url = "jdbc:mariadb://$host/foobar_marketplace"
+    user = System.getenv("FOOBAR_MYSQL_USER") ?: "root"
+    password = System.getenv("FOOBAR_MYSQL_PASSWORD") ?: "."
 }

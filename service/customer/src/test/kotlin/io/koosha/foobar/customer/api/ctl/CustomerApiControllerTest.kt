@@ -2,7 +2,6 @@ package io.koosha.foobar.customer.api.ctl
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.koosha.foobar.common.PROFILE__TEST
-import io.koosha.foobar.common.cfg.EntityErrorAdvice
 import io.koosha.foobar.common.model.EntityBadValueApiError
 import io.koosha.foobar.customer.API_PATH_PREFIX
 import io.koosha.foobar.customer.api.IDS

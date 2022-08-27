@@ -65,7 +65,10 @@ dependencyManagement {
 
 dependencies {
     implementation(project(":common"))
+    implementation(project(":common-jpa"))
+
     implementation(project(":service:common-service"))
+    implementation(project(":service:common-web"))
 
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")

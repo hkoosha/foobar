@@ -13,7 +13,6 @@ import java.time.Duration
 import javax.servlet.http.HttpServletResponse
 
 
-// TODO move to common-service
 @ConditionalOnWebApplication
 @RestControllerAdvice
 class RetryableErrorAdvice(

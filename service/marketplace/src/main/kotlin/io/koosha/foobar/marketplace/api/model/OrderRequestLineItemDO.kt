@@ -2,59 +2,34 @@ package io.koosha.foobar.marketplace.api.model
 
 import io.koosha.foobar.marketplace.API_PREFIX
 import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.annotation.Id
 import org.springframework.data.annotation.LastModifiedDate
-import org.springframework.data.jpa.domain.support.AuditingEntityListener
-import java.io.Serializable
+import org.springframework.data.annotation.Version
+import org.springframework.data.relational.core.mapping.Table
 import java.time.LocalDateTime
-import java.util.*
-import javax.persistence.Column
-import javax.persistence.Embeddable
-import javax.persistence.EmbeddedId
-import javax.persistence.Entity
-import javax.persistence.EntityListeners
-import javax.persistence.ManyToOne
-import javax.persistence.Table
-import javax.persistence.Version
 
 
-@Entity
 @Table(name = "${API_PREFIX}__${OrderRequestLineItemDO.ENTITY_TYPE}")
-@EntityListeners(AuditingEntityListener::class)
 open class OrderRequestLineItemDO(
 
-    @EmbeddedId
-    open var orderRequestLineItemPk: Pk = Pk(),
+    @Id
+    open var internalOrderRequestLineItemId: String? = null,
+
+    open var orderRequestLineItemId: Long? = null,
+
+    open var orderRequestId: String? = null,
 
     @Version
-    @Column(name = "VERSION")
     open var version: Long? = null,
 
     @CreatedDate
-    @Column(
-        name = "CREATED",
-        nullable = false,
-    )
     open var created: LocalDateTime? = null,
 
     @LastModifiedDate
-    @Column(
-        name = "UPDATED",
-        nullable = false,
-    )
     open var updated: LocalDateTime? = null,
 
-    @Column(
-        name = "PRODUCT_ID",
-        length = 36,
-        nullable = false,
-    )
-    @org.hibernate.annotations.Type(type = "uuid-char")
-    open var productId: UUID? = null,
+    open var productId: String? = null,
 
-    @Column(
-        name = "UNITS",
-        nullable = false,
-    )
     open var units: Long? = null,
 
     ) {
@@ -70,59 +45,21 @@ open class OrderRequestLineItemDO(
         if (this.javaClass != other?.javaClass)
             return false
         val rhs = other as OrderRequestLineItemDO
-        return this.orderRequestLineItemPk == rhs.orderRequestLineItemPk
+        return this.internalOrderRequestLineItemId != null &&
+                this.internalOrderRequestLineItemId == rhs.internalOrderRequestLineItemId
     }
 
     override fun hashCode(): Int = this.javaClass.hashCode()
 
     override fun toString(): String = this.javaClass.simpleName + "(" +
-            "orderRequestId=" + this.orderRequestLineItemPk.orderRequest?.orderRequestId +
-            ", orderRequestLineItemId=" + this.orderRequestLineItemPk.orderRequestLineItemId +
+            "internalOrderRequestLineItemId=" + this.internalOrderRequestLineItemId +
+            ", orderRequestId=" + this.orderRequestId +
+            ", orderRequestLineItemId=" + this.orderRequestLineItemId +
             ", productId=" + this.productId +
             ", units=" + this.units +
             ", version=" + this.version +
             ", created=" + this.created +
             ", updated=" + this.updated +
             ")"
-
-
-    @Embeddable
-    open class Pk(
-
-        @Column(
-            name = "ORDER_REQUEST_LINE_ITEM_ID",
-            nullable = false,
-        )
-        open var orderRequestLineItemId: Long? = null,
-
-        @ManyToOne(optional = false)
-        open var orderRequest: OrderRequestDO? = null,
-
-        ) : Serializable {
-
-        companion object {
-            private const val serialVersionUID = 0L
-        }
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other)
-                return true
-            if (this.javaClass != other?.javaClass)
-                return false
-            val rhs = other as Pk
-            return this.orderRequestLineItemId != null
-                    && this.orderRequest?.orderRequestId != null
-                    && this.orderRequestLineItemId == rhs.orderRequestLineItemId
-                    && this.orderRequest?.orderRequestId == rhs.orderRequest?.orderRequestId
-        }
-
-        override fun hashCode(): Int = this.javaClass.hashCode()
-
-        override fun toString(): String = this.javaClass.simpleName + "(" +
-                "orderRequestId=" + this.orderRequest?.orderRequestId +
-                ", orderRequestLineItemId=" + this.orderRequestLineItemId +
-                ")"
-
-    }
 
 }

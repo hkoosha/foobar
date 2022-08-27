@@ -5,9 +5,12 @@ include(
 
     "definitions",
     "common",
+    "common-jpa",
 
     "service:common-kafka",
     "service:common-service",
+    "service:common-web",
+
     "service:customer",
     "service:seller",
     "service:marketplace",

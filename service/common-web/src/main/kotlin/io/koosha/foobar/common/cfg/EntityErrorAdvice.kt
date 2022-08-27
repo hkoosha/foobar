@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 import java.util.stream.Collectors
 
 
-// TODO move to common-service
 @ConditionalOnWebApplication
 @RestControllerAdvice
 class EntityErrorAdvice {

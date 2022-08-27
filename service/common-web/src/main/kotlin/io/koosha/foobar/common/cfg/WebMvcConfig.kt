@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 
-// TODO move to common-service
 @Profile(PROFILE__DEBUG_WEB)
 @ConditionalOnWebApplication
 @Configuration

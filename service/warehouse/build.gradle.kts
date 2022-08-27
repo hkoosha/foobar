@@ -64,8 +64,13 @@ dependencyManagement {
 }
 
 dependencies {
-    implementation(project(":common"))
     implementation(project(":definitions"))
+
+    implementation(project(":common"))
+    implementation(project(":common-jpa"))
+
+    implementation(project(":service:common-web"))
+
     implementation(project(":service:common-kafka"))
     implementation(project(":service:common-service"))
     implementation(project(":connect:seller-api-build"))

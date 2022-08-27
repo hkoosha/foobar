@@ -1,5 +1,6 @@
 package io.koosha.foobar.marketplace.api.ctl
 
+import io.koosha.foobar.common.toUUID
 import io.koosha.foobar.marketplace.API_PATH_PREFIX
 import io.koosha.foobar.marketplace.api.model.OrderRequestLineItemDO
 import io.koosha.foobar.marketplace.api.service.LineItemRequest
@@ -7,8 +8,8 @@ import io.koosha.foobar.marketplace.api.service.LineItemUpdateRequest
 import io.koosha.foobar.marketplace.api.service.OrderRequestService
 import io.swagger.v3.oas.annotations.tags.Tag
 import io.swagger.v3.oas.annotations.tags.Tags
-import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
@@ -16,12 +17,9 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.ResponseBody
-import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder
+import reactor.core.publisher.Mono
 import java.util.*
-import javax.servlet.http.HttpServletResponse
 import javax.validation.Valid
 
 
@@ -34,56 +32,71 @@ class LineItemApiController(
     private val service: OrderRequestService,
 ) {
 
+    @Suppress("UNCHECKED_CAST")
+    private fun <T> err(err: Any) = ResponseEntity
+        .badRequest()
+        .contentType(MediaType.APPLICATION_JSON)
+        // FIXME erm...?!!
+        .body(err) as ResponseEntity<T>
+
+    private fun <T> ok(value: T) = ResponseEntity
+        .ok()
+        .contentType(MediaType.APPLICATION_JSON)
+        .body(value)
+
     @GetMapping
-    @ResponseBody
     fun getLineItems(
         @PathVariable
         orderRequestId: UUID,
-    ): List<OrderRequestLineItem> = service.getLineItems(orderRequestId).map(::OrderRequestLineItem)
+    ): Mono<ResponseEntity<List<OrderRequestLineItem>>> =
+        this.service
+            .getLineItems(orderRequestId)
+            .map(::OrderRequestLineItem)
+            .collectList()
+            .map {
+                this.ok(it)
+            }
+            .onErrorResume {
+                Mono.just(this.err(it))
+            }
 
     @GetMapping("/{orderRequestLineItemId}")
-    @ResponseBody
     fun getLineItem(
         @PathVariable
         orderRequestId: UUID,
         @PathVariable
         orderRequestLineItemId: Long,
-    ): OrderRequestLineItem = OrderRequestLineItem(service.getLineItem(orderRequestId, orderRequestLineItemId))
+    ): Mono<ResponseEntity<OrderRequestLineItem>> =
+        this.service
+            .getLineItem(orderRequestId, orderRequestLineItemId)
+            .map(::OrderRequestLineItem)
+            .map {
+                this.ok(it)
+            }
+            .onErrorResume {
+                Mono.just(this.err(it))
+            }
 
     @PostMapping
-    @ResponseBody
-    @ResponseStatus(HttpStatus.CREATED)
     fun postLineItem(
         @PathVariable
         orderRequestId: UUID,
         @Valid
         @RequestBody
         request: LineItemRequest,
-        response: HttpServletResponse,
-    ): OrderRequestLineItem {
-
-        val entity = this.service.addLineItem(orderRequestId, request)
-
-        val location = MvcUriComponentsBuilder
-            .fromMethodName(
-                LineItemApiController::class.java,
-                "getLineItem",
-                orderRequestId,
-                entity.orderRequestLineItemPk.orderRequestLineItemId,
-            )
-            .buildAndExpand(
-                orderRequestId,
-                entity.orderRequestLineItemPk.orderRequestLineItemId,
-            )
-            .toUri()
-            .toASCIIString()
-        response.setHeader(HttpHeaders.LOCATION, location)
-
-        return OrderRequestLineItem(entity)
-    }
+    ): Mono<ResponseEntity<OrderRequestLineItem>> =
+        // TODO set http location header.
+        this.service
+            .addLineItem(orderRequestId, request)
+            .map(::OrderRequestLineItem)
+            .map {
+                this.ok(it)
+            }
+            .onErrorResume {
+                Mono.just(this.err(it))
+            }
 
     @PatchMapping("/{orderRequestLineItemId}")
-    @ResponseBody
     fun patchLineItem(
         @PathVariable
         orderRequestId: UUID,
@@ -91,23 +104,38 @@ class LineItemApiController(
         orderRequestLineItemId: Long,
         @RequestBody
         request: LineItemUpdateRequest,
-    ): OrderRequestLineItem = OrderRequestLineItem(
-        service.updateLineItem(
-            orderRequestId,
-            orderRequestLineItemId,
-            request
-        )
-    )
+    ): Mono<ResponseEntity<OrderRequestLineItem>> =
+        this.service
+            .updateLineItem(
+                orderRequestId,
+                orderRequestLineItemId,
+                request
+            )
+            .map(::OrderRequestLineItem)
+            .map {
+                this.ok(it)
+            }
+            .onErrorResume {
+                Mono.just(this.err(it))
+            }
 
     @DeleteMapping("/{orderRequestLineItemId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteLineItem(
         @PathVariable
         orderRequestId: UUID,
         @PathVariable
         orderRequestLineItemId: Long,
-    ) = this.service.deleteLineItem(orderRequestId, orderRequestLineItemId)
-
+    ): Mono<ResponseEntity<Void>> =
+        this.service
+            .deleteLineItem(orderRequestId, orderRequestLineItemId)
+            .map {
+                ResponseEntity
+                    .noContent()
+                    .build<Void>()
+            }
+            .onErrorResume {
+                Mono.just(this.err(it))
+            }
 
     data class OrderRequestLineItem(
         val orderRequestId: UUID,
@@ -117,9 +145,9 @@ class LineItemApiController(
     ) {
 
         constructor(entity: OrderRequestLineItemDO) : this(
-            orderRequestId = entity.orderRequestLineItemPk.orderRequest!!.orderRequestId!!,
-            lineItemId = entity.orderRequestLineItemPk.orderRequestLineItemId!!,
-            productId = entity.productId!!,
+            orderRequestId = entity.orderRequestId!!.toUUID(),
+            lineItemId = entity.orderRequestLineItemId!!,
+            productId = entity.productId!!.toUUID(),
             units = entity.units!!,
         )
     }
