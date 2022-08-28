@@ -59,12 +59,13 @@ dependencyManagement {
 }
 
 dependencies {
-    implementation(project(":common"))
     implementation(project(":definitions"))
+
+    implementation(project(":common"))
+    implementation(project(":common-jpa"))
+
     implementation(project(":service:common-kafka"))
     implementation(project(":service:common-service"))
-    implementation(project(":connect:marketplace-api"))
-    implementation(project(":connect:marketplace-api-build"))
 
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-web")

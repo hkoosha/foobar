@@ -10,8 +10,6 @@ import io.koosha.foobar.marketplace.api.service.OrderRequestUpdateRequest
 import io.swagger.v3.oas.annotations.tags.Tag
 import io.swagger.v3.oas.annotations.tags.Tags
 import org.springframework.http.HttpStatus
-import org.springframework.http.MediaType
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
@@ -22,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.util.*
 import javax.validation.Valid
@@ -36,49 +35,24 @@ class OrderRequestApiController(
     private val service: OrderRequestService,
 ) {
 
-    @Suppress("UNCHECKED_CAST")
-    private fun <T> err(err: Any) = ResponseEntity
-        .badRequest()
-        .contentType(MediaType.APPLICATION_JSON)
-        // FIXME erm...?!!
-        .body(err) as ResponseEntity<T>
-
-    private fun <T> ok(value: T) = ResponseEntity
-        .ok()
-        .contentType(MediaType.APPLICATION_JSON)
-        .body(value)
-
     @GetMapping
     fun getOrderRequests(
         @RequestParam(required = false)
         customerId: UUID?,
-    ): Mono<ResponseEntity<List<OrderRequest>>> =
+    ): Flux<OrderRequest> =
         when (customerId) {
             null -> this.service.findAll()
             else -> this.service.findAllOrderRequestsOfCustomer(customerId)
-        }
-            .map(::OrderRequest)
-            .collectList()
-            .map {
-                this.ok(it)
-            }
-            .onErrorResume {
-                Mono.just(this.err(it))
-            }
+        }.map(::OrderRequest)
 
     @GetMapping("/{orderRequestId}")
     fun getOrderRequest(
         @PathVariable
         orderRequestId: UUID,
-    ): Mono<ResponseEntity<OrderRequest>> =
+    ): Mono<OrderRequest> =
         this.service
-            .findByIdOrFail(orderRequestId).map(::OrderRequest)
-            .map {
-                this.ok(it)
-            }
-            .onErrorResume {
-                Mono.just(this.err(it))
-            }
+            .findByIdOrFail(orderRequestId)
+            .map(::OrderRequest)
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -86,17 +60,11 @@ class OrderRequestApiController(
         @RequestBody
         @Valid
         request: OrderRequestCreateRequest,
-    ): Mono<ResponseEntity<OrderRequest>> =
+    ): Mono<OrderRequest> =
         // TODO set http location header.
         this.service
             .create(request)
             .map(::OrderRequest)
-            .map {
-                this.ok(it)
-            }
-            .onErrorResume {
-                Mono.just(this.err(it))
-            }
 
     @PatchMapping("/{orderRequestId}")
     fun patchOrderRequest(
@@ -104,32 +72,18 @@ class OrderRequestApiController(
         orderRequestId: UUID,
         @RequestBody
         request: OrderRequestUpdateRequest,
-    ): Mono<ResponseEntity<OrderRequest>> =
+    ): Mono<OrderRequest> =
         this.service
-            .update(orderRequestId, request).map(::OrderRequest)
-            .map {
-                this.ok(it)
-            }
-            .onErrorResume {
-                Mono.just(this.err(it))
-            }
+            .update(orderRequestId, request)
+            .map(::OrderRequest)
 
     @DeleteMapping("/{orderRequestId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteOrderRequest(
         @PathVariable
         orderRequestId: UUID,
-    ): Mono<ResponseEntity<Void>> =
-        this.service
-            .delete(orderRequestId)
-            .map {
-                ResponseEntity
-                    .noContent()
-                    .build<Void>()
-            }
-            .onErrorResume {
-                Mono.just(this.err(it))
-            }
+    ): Mono<Void> =
+        this.service.delete(orderRequestId)
 
     data class OrderRequest(
 
