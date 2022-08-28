@@ -1,15 +1,13 @@
 package io.koosha.foobar.marketplace.api.service
 
-import feign.FeignException
 import io.koosha.foobar.HeaderProto
 import io.koosha.foobar.common.cfg.KafkaConfig
 import io.koosha.foobar.common.error.EntityBadValueException
 import io.koosha.foobar.common.error.EntityInIllegalStateException
-import io.koosha.foobar.common.error.EntityNotFoundException
 import io.koosha.foobar.common.toUUID
-import io.koosha.foobar.connect.seller.generated.api.SellerApi
+import io.koosha.foobar.connect.seller.rx.generated.api.Seller
+import io.koosha.foobar.connect.seller.rx.generated.api.SellerApi
 import io.koosha.foobar.marketplace.SOURCE
-import io.koosha.foobar.marketplace.api.error.ResourceCurrentlyUnavailableException
 import io.koosha.foobar.marketplace.api.model.OrderRequestDO
 import io.koosha.foobar.marketplace.api.model.OrderRequestLineItemRepository
 import io.koosha.foobar.marketplace.api.model.OrderRequestRepository
@@ -17,7 +15,6 @@ import io.koosha.foobar.marketplace.api.model.OrderRequestState
 import io.koosha.foobar.order_request.OrderRequestStateChangedProto
 import mu.KotlinLogging
 import net.logstash.logback.argument.StructuredArguments.v
-import org.openapitools.client.model.Seller
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Service
@@ -53,42 +50,28 @@ class OrderRequestServiceUpdaterImpl(
     ): Mono<Seller> {
 
         log.trace("fetching seller, sellerId={}", v("sellerId", request.sellerId))
-        val seller = try {
-            this.sellerClient.getSeller(request.sellerId!!)
-        }
-        catch (ex: FeignException.NotFound) {
-            log.debug(
-                "refused to update orderRequest, seller not found, orderRequest={}, request={}",
-                v("orderRequest", orderRequest),
-                v("request", request),
-            )
-            throw EntityNotFoundException(
-                entityType = SellerApi.ENTITY_TYPE,
-                entityId = request.sellerId,
-                ex,
-            )
-        }
-        catch (ex: FeignException.FeignServerException) {
-            log.warn("failure while fetching seller", ex)
-            throw ResourceCurrentlyUnavailableException(ex)
-        }
-
-        if (!seller.isActive) {
-            log.debug(
-                "refused to update orderRequest in current state of seller, orderRequest={}, request={}, seller={}",
-                v("orderRequest", orderRequest),
-                v("request", request),
-                v("seller", seller),
-            )
-            throw EntityInIllegalStateException(
-                entityType = OrderRequestDO.ENTITY_TYPE,
-                entityId = orderRequest.orderRequestId,
-                msg = "seller is not active, can not update order request"
-            )
-        }
-
-        // FIXME blocking call
-        return Mono.just(seller)
+        return this.sellerClient
+            .getSeller(request.sellerId!!)
+            .flatMap {
+                if (!it.isActive) {
+                    log.debug(
+                        "refused to update orderRequest in current state of seller, orderRequest={}, request={}, seller={}",
+                        v("orderRequest", orderRequest),
+                        v("request", request),
+                        v("seller", it),
+                    )
+                    Mono.error(
+                        EntityInIllegalStateException(
+                            entityType = OrderRequestDO.ENTITY_TYPE,
+                            entityId = orderRequest.orderRequestId,
+                            msg = "seller is not active, can not update order request"
+                        )
+                    )
+                }
+                else {
+                    Mono.just(it)
+                }
+            }
     }
 
     private fun isStateTransitionValid(

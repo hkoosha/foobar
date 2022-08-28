@@ -1,18 +1,15 @@
 package io.koosha.foobar.marketplace.api.service
 
-import feign.FeignException
 import io.koosha.foobar.common.error.EntityBadValueException
 import io.koosha.foobar.common.error.EntityInIllegalStateException
-import io.koosha.foobar.common.error.EntityNotFoundException
-import io.koosha.foobar.connect.warehouse.generated.api.ProductApi
-import io.koosha.foobar.marketplace.api.error.ResourceCurrentlyUnavailableException
+import io.koosha.foobar.connect.warehouse.rx.generated.api.Product
+import io.koosha.foobar.connect.warehouse.rx.generated.api.ProductApi
 import io.koosha.foobar.marketplace.api.model.OrderRequestDO
 import io.koosha.foobar.marketplace.api.model.OrderRequestLineItemDO
 import io.koosha.foobar.marketplace.api.model.OrderRequestLineItemRepository
 import io.koosha.foobar.marketplace.api.model.OrderRequestState
 import mu.KotlinLogging
 import net.logstash.logback.argument.StructuredArguments.v
-import org.openapitools.client.model.Product
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
 import java.util.*
@@ -66,45 +63,29 @@ class OrderRequestServiceLineItemCreatorImpl(
     ): Mono<Product> {
 
         log.trace("fetching product, productId={}", v("productId", request.productId))
-        val product = try {
-            this.productClient.getProduct(request.productId)
-        }
-        catch (ex: FeignException.NotFound) {
-            log.debug(
-                "refused to add lineItem, product not found, orderRequest={}, request={}",
-                v("orderRequest", orderRequest),
-                v("request", request),
-            )
-            throw EntityNotFoundException(
-                entityType = ProductApi.ENTITY_TYPE,
-                entityId = request.productId,
-                ex,
-            )
-        }
-        catch (ex: FeignException.FeignServerException) {
-            log.warn("failure while fetching seller", ex)
-            throw ResourceCurrentlyUnavailableException(ex)
-        }
-
-        return if (!product.active) {
-            log.debug(
-                "refused to add lineItem in current state of product, orderRequest={}, product={}, request={}",
-                v("orderRequest", orderRequest),
-                v("product", product),
-                v("request", request),
-            )
-            Mono.error(
-                EntityInIllegalStateException(
-                    entityType = ProductApi.ENTITY_TYPE,
-                    request.productId,
-                    msg = "product is not active, can not add line item",
-                )
-            )
-        }
-        else {
-            // FIXME blocking call
-            Mono.just(product)
-        }
+        return this
+            .productClient
+            .getProduct(request.productId)
+            .flatMap {
+                if (it.active) {
+                    Mono.just(it)
+                }
+                else {
+                    log.debug(
+                        "refused to add lineItem in current state of product, orderRequest={}, product={}, request={}",
+                        v("orderRequest", orderRequest),
+                        v("product", it),
+                        v("request", request),
+                    )
+                    Mono.error(
+                        EntityInIllegalStateException(
+                            entityType = ENTITY_TYPE__PRODUCT,
+                            request.productId,
+                            msg = "product is not active, can not add line item",
+                        )
+                    )
+                }
+            }
     }
 
     private fun validateLineItems(

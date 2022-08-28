@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
-import org.openapitools.client.model.ApiResponse;
+import io.koosha.foobar.connect.seller.generated.api.ApiResponse;
 
 public class ApiResponseDecoder extends JacksonDecoder {
 

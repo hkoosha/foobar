@@ -2,14 +2,14 @@ package io.koosha.foobar.connect.marketplace.generated.api;
 
 import io.koosha.foobar.connect.marketplace.generated.ApiClient;
 import io.koosha.foobar.connect.marketplace.generated.EncodingUtils;
-import org.openapitools.client.model.ApiResponse;
+import io.koosha.foobar.connect.marketplace.generated.api.ApiResponse;
 
-import org.openapitools.client.model.EntityBadValueApiError;
-import org.openapitools.client.model.EntityIllegalStateApiError;
-import org.openapitools.client.model.EntityNotFoundApiError;
-import org.openapitools.client.model.LineItemRequest;
-import org.openapitools.client.model.LineItemUpdateRequest;
-import org.openapitools.client.model.OrderRequestLineItem;
+import io.koosha.foobar.connect.marketplace.generated.api.EntityBadValueApiError;
+import io.koosha.foobar.connect.marketplace.generated.api.EntityIllegalStateApiError;
+import io.koosha.foobar.connect.marketplace.generated.api.EntityNotFoundApiError;
+import io.koosha.foobar.connect.marketplace.generated.api.LineItemRequest;
+import io.koosha.foobar.connect.marketplace.generated.api.LineItemUpdateRequest;
+import io.koosha.foobar.connect.marketplace.generated.api.OrderRequestLineItem;
 import java.util.UUID;
 
 import java.util.ArrayList;

@@ -1,13 +1,10 @@
 package io.koosha.foobar.marketplace.api.service
 
-import feign.FeignException
 import io.koosha.foobar.common.error.EntityBadValueException
-import io.koosha.foobar.common.error.EntityInIllegalStateException
 import io.koosha.foobar.common.error.EntityNotFoundException
 import io.koosha.foobar.common.model.EntityInfo
 import io.koosha.foobar.connect.customer.rx.generated.api.Customer
 import io.koosha.foobar.connect.customer.rx.generated.api.CustomerApi
-import io.koosha.foobar.marketplace.api.error.ResourceCurrentlyUnavailableException
 import io.koosha.foobar.marketplace.api.model.OrderRequestDO
 import io.koosha.foobar.marketplace.api.model.OrderRequestRepository
 import io.koosha.foobar.marketplace.api.model.OrderRequestState
@@ -37,41 +34,26 @@ class OrderRequestServiceCreationImpl(
     ): Mono<Customer> {
 
         log.trace("fetching customer, customerId={}", v("customerId", request.customerId))
-
-        val customer = try {
-            this.customerClient.getCustomer(request.customerId!!)
-        }
-        catch (ex: FeignException.NotFound) {
-            log.debug("refused to add orderRequest, customer not found, request={}", v("request", request))
-            throw EntityNotFoundException(
-                context = setOf(
-                    EntityInfo(
-                        entityType = CustomerApi.ENTITY_TYPE,
-                        entityId = request.customerId,
-                    ),
-                ),
-                ex,
-            )
-        }
-        catch (ex: FeignException.FeignServerException) {
-            log.warn("failure while fetching customer", ex)
-            throw ResourceCurrentlyUnavailableException(ex)
-        }
-        if (!customer.isActive) {
-            log.debug(
-                "refused to create order request in current state of customer, customer={}, request={}",
-                v("customer", customer),
-                v("request", request),
-            )
-            throw EntityInIllegalStateException(
-                entityType = CustomerApi.ENTITY_TYPE,
-                entityId = request.customerId,
-                msg = "customer is not active",
-            )
-        }
-
-        // FIXME blocking call
-        return Mono.just(customer)
+        return this.customerClient
+            .getCustomer(request.customerId!!)
+            .flatMap {
+                if (it.isActive) {
+                    Mono.just(it)
+                }
+                else {
+                    log.debug("refused to add orderRequest, customer not found, request={}", v("request", request))
+                    Mono.error(
+                        EntityNotFoundException(
+                            context = setOf(
+                                EntityInfo(
+                                    entityType = ENTITY_TYPE__CUSTOMER,
+                                    entityId = request.customerId,
+                                ),
+                            ),
+                        )
+                    )
+                }
+            }
     }
 
     @Transactional(
