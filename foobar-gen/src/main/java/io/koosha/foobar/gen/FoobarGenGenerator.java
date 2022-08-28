@@ -239,6 +239,7 @@ public class FoobarGenGenerator extends AbstractJavaCodegen
         supportingFiles.add(new SupportingFile("auth/ApiKeyAuth.mustache", authFolder, "ApiKeyAuth.java"));
 
         supportingFiles.add(new SupportingFile("gradlew.mustache", "", "gradlew"));
+        supportingFiles.add(new SupportingFile("gradlew.bat.mustache", "", "gradlew.bat"));
         supportingFiles.add(new SupportingFile("gradle-wrapper.properties.mustache",
                 gradleWrapperPackage.replace(".", File.separator), "gradle-wrapper.properties"));
         supportingFiles.add(new SupportingFile("gradle-wrapper.jar",

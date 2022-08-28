@@ -2,6 +2,7 @@ rootProject.name = "foobar"
 
 include(
     "foobar-gen",
+    "foobar-gen-rx",
 
     "definitions",
     "common",
@@ -22,10 +23,17 @@ include(
     "connect:customer-api-build",
     "connect:seller-api",
     "connect:seller-api-build",
-    "connect:marketplace-api",
-    "connect:marketplace-api-build",
     "connect:warehouse-api",
     "connect:warehouse-api-build",
+    "connect:marketplace-api",
+    "connect:marketplace-api-build",
+
+    "connect:rx-customer-api",
+    "connect:rx-customer-api-build",
+    "connect:rx-seller-api",
+    "connect:rx-seller-api-build",
+    "connect:rx-warehouse-api",
+    "connect:rx-warehouse-api-build",
 
     "foobar-maker",
     "foobar-evil",

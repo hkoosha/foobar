@@ -163,8 +163,8 @@ paths:
                 $ref: '#/components/schemas/EntityIllegalStateApiError'
         "503":
           description: Service Unavailable
-        "201":
-          description: Created
+        "200":
+          description: OK
           content:
             '*/*':
               schema:
@@ -369,8 +369,8 @@ paths:
                 $ref: '#/components/schemas/EntityIllegalStateApiError'
         "503":
           description: Service Unavailable
-        "204":
-          description: No Content
+        "200":
+          description: OK
     patch:
       tags:
       - order-request-line-item

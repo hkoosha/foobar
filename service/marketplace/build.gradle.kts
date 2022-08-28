@@ -23,7 +23,7 @@ plugins {
     val d = io.koosha.foobar.Libraries.OpenApi
 
     // id("io.gitlab.arturbosch.detekt") version k.detekt
-    id("org.flywaydb.flyway") version "8.2.0"
+    id("org.flywaydb.flyway") version "8.5.13"
     id("com.google.cloud.tools.jib") version j.gradlePlugin
     id("org.springdoc.openapi-gradle-plugin") version d.gradlePlugin
     id("org.springframework.boot") version s.springBoot2
@@ -109,9 +109,8 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
 
-    implementation("org.springdoc:springdoc-openapi-ui:${Libraries.OpenApi.ui}")
+    implementation("org.springdoc:springdoc-openapi-webflux-ui:${Libraries.OpenApi.ui}")
     implementation("org.springdoc:springdoc-openapi-kotlin:${Libraries.OpenApi.kotlin}")
-    implementation("org.springdoc:springdoc-openapi-data-rest:${Libraries.OpenApi.rest}")
 
     implementation("io.github.openfeign:feign-jackson:${Libraries.Feign.core}")
 

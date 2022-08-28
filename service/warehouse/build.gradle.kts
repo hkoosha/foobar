@@ -103,7 +103,6 @@ dependencies {
 
     implementation("org.springdoc:springdoc-openapi-ui:${Libraries.OpenApi.ui}")
     implementation("org.springdoc:springdoc-openapi-kotlin:${Libraries.OpenApi.kotlin}")
-    implementation("org.springdoc:springdoc-openapi-data-rest:${Libraries.OpenApi.rest}")
 
     implementation("io.github.openfeign:feign-jackson:${Libraries.Feign.core}")
 

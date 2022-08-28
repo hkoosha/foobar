@@ -1,0 +1,454 @@
+package {{package}};
+
+import {{invokerPackage}}.ApiClient;
+import {{invokerPackage}}.EncodingUtils;
+{{#legacyDates}}
+import {{invokerPackage}}.ParamExpander;
+{{/legacyDates}}
+import {{modelPackage}}.ApiResponse;
+
+{{#imports}}import {{import}};
+{{/imports}}
+
+{{^fullJavaUtil}}
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import java.util.concurrent.TimeoutException;
+import java.io.IOException;
+
+
+{{/fullJavaUtil}}
+import feign.*;
+
+import org.springframework.cloud.client.circuitbreaker.NoFallbackAvailableException;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.CircuitBreaker;
+import org.springframework.retry.annotation.Retryable;
+import io.github.resilience4j.bulkhead.annotation.Bulkhead;
+
+
+public interface {{classname}} extends ApiClient.Api {
+
+  String ENTITY_TYPE = "{{foobar_entity_type}}";
+
+{{#operations}}{{#operation}}
+  /**
+   * {{summary}}
+   * {{notes}}
+{{#allParams}}
+   * @param {{paramName}} {{description}}{{#required}} (required){{/required}}{{^required}} (optional{{^isContainer}}{{#defaultValue}}, default to {{.}}{{/defaultValue}}{{/isContainer}}){{/required}}
+{{/allParams}}
+{{#returnType}}
+   * @return {{.}}
+{{/returnType}}
+{{#externalDocs}}
+   * {{description}}
+   * @see <a href="{{url}}">{{summary}} Documentation</a>
+{{/externalDocs}}
+{{#isDeprecated}}
+   * @deprecated
+{{/isDeprecated}}
+   */
+{{#isDeprecated}}
+  @Deprecated
+{{/isDeprecated}}
+  @RequestLine("{{httpMethod}} {{{path}}}{{#hasQueryParams}}?{{/hasQueryParams}}{{#queryParams}}{{baseName}}={{=<% %>=}}{<%paramName%>}<%={{ }}=%>{{^-last}}&{{/-last}}{{/queryParams}}")
+  @Headers({
+{{#vendorExtensions.x-content-type}}    "Content-Type: {{vendorExtensions.x-content-type}}",
+{{/vendorExtensions.x-content-type}}    "Accept: {{vendorExtensions.x-accepts}}",{{#headerParams}}
+    "{{baseName}}: {{=<% %>=}}{<%paramName%>}<%={{ }}=%>"{{^-last}},
+    {{/-last}}{{/headerParams}}
+  })
+  {{#returnType}}{{{.}}} {{/returnType}}{{^returnType}}void {{/returnType}}{{nickname}}({{#allParams}}{{^isBodyParam}}{{^isFormParam}}{{^legacyDates}}@Param("{{paramName}}") {{/legacyDates}}{{#legacyDates}}@Param(value="{{paramName}}", expander=ParamExpander.class) {{/legacyDates}}{{/isFormParam}}{{#isFormParam}}@Param("{{baseName}}") {{/isFormParam}}{{/isBodyParam}}{{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/allParams}});
+
+  /**
+   * {{summary}}
+   * Similar to <code>{{operationId}}</code> but it also returns the http response headers .
+   * {{notes}}
+{{#allParams}}
+   * @param {{paramName}} {{description}}{{#required}} (required){{/required}}{{^required}} (optional{{^isContainer}}{{#defaultValue}}, default to {{.}}{{/defaultValue}}{{/isContainer}}){{/required}}
+{{/allParams}}
+{{#returnType}}
+   * @return A ApiResponse that wraps the response boyd and the http headers.
+{{/returnType}}
+{{#externalDocs}}
+   * {{description}}
+   * @see <a href="{{url}}">{{summary}} Documentation</a>
+{{/externalDocs}}
+{{#isDeprecated}}
+   * @deprecated
+{{/isDeprecated}}
+   */
+{{#isDeprecated}}
+  @Deprecated
+{{/isDeprecated}}
+  @RequestLine("{{httpMethod}} {{{path}}}{{#hasQueryParams}}?{{/hasQueryParams}}{{#queryParams}}{{baseName}}={{=<% %>=}}{<%paramName%>}<%={{ }}=%>{{^-last}}&{{/-last}}{{/queryParams}}")
+  @Headers({
+{{#vendorExtensions.x-content-type}}    "Content-Type: {{vendorExtensions.x-content-type}}",
+{{/vendorExtensions.x-content-type}}    "Accept: {{vendorExtensions.x-accepts}}",{{#headerParams}}
+    "{{baseName}}: {{=<% %>=}}{<%paramName%>}<%={{ }}=%>"{{^-last}},
+    {{/-last}}{{/headerParams}}
+  })
+  ApiResponse<{{#returnType}}{{{.}}}{{/returnType}}{{^returnType}}Void{{/returnType}}> {{nickname}}WithHttpInfo({{#allParams}}{{^isBodyParam}}{{^isFormParam}}{{^legacyDates}}@Param("{{paramName}}") {{/legacyDates}}{{#legacyDates}}@Param(value="{{paramName}}", expander=ParamExpander.class) {{/legacyDates}}{{/isFormParam}}{{#isFormParam}}@Param("{{baseName}}") {{/isFormParam}}{{/isBodyParam}}{{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/allParams}});
+
+
+  {{#hasQueryParams}}
+  /**
+   * {{summary}}
+   * {{notes}}
+   * Note, this is equivalent to the other <code>{{operationId}}</code> method,
+   * but with the query parameters collected into a single Map parameter. This
+   * is convenient for services with optional query parameters, especially when
+   * used with the {@link {{operationIdCamelCase}}QueryParams} class that allows for
+   * building up this map in a fluent style.
+      {{#allParams}}
+        {{^isQueryParam}}
+   * @param {{paramName}} {{description}}{{#required}} (required){{/required}}{{^required}} (optional{{^isContainer}}{{#defaultValue}}, default to {{.}}{{/defaultValue}}{{/isContainer}}){{/required}}
+        {{/isQueryParam}}
+      {{/allParams}}
+   * @param queryParams Map of query parameters as name-value pairs
+   *   <p>The following elements may be specified in the query map:</p>
+   *   <ul>
+      {{#queryParams}}
+   *   <li>{{paramName}} - {{description}}{{#required}} (required){{/required}}{{^required}} (optional{{^isContainer}}{{#defaultValue}}, default to {{.}}{{/defaultValue}}{{/isContainer}}){{/required}}</li>
+      {{/queryParams}}
+   *   </ul>
+      {{#returnType}}
+   * @return {{.}}
+      {{/returnType}}
+      {{#externalDocs}}
+   * {{description}}
+   * @see <a href="{{url}}">{{summary}} Documentation</a>
+      {{/externalDocs}}
+      {{#isDeprecated}}
+   * @deprecated
+      {{/isDeprecated}}
+   */
+  {{#isDeprecated}}
+  @Deprecated
+  {{/isDeprecated}}
+  @RequestLine("{{httpMethod}} {{{path}}}?{{#queryParams}}{{baseName}}={{=<% %>=}}{<%paramName%>}<%={{ }}=%>{{^-last}}&{{/-last}}{{/queryParams}}")
+  @Headers({
+{{#vendorExtensions.x-content-type}}  "Content-Type: {{vendorExtensions.x-content-type}}",
+{{/vendorExtensions.x-content-type}}  "Accept: {{vendorExtensions.x-accepts}}",{{#headerParams}}
+      "{{baseName}}: {{=<% %>=}}{<%paramName%>}<%={{ }}=%>"{{^-last}},
+      {{/-last}}{{/headerParams}}
+  })
+  {{#returnType}}{{{.}}} {{/returnType}}{{^returnType}}void {{/returnType}}{{nickname}}({{#allParams}}{{^isQueryParam}}{{^isBodyParam}}{{^isFormParam}}{{^legacyDates}}@Param("{{paramName}}") {{/legacyDates}}{{#legacyDates}}@Param(value="{{paramName}}", expander=ParamExpander.class) {{/legacyDates}}{{/isFormParam}}{{#isFormParam}}@Param("{{baseName}}") {{/isFormParam}}{{/isBodyParam}}{{{dataType}}} {{paramName}}, {{/isQueryParam}}{{/allParams}}@QueryMap(encoded=true) Map<String, Object> queryParams);
+
+  /**
+  * {{summary}}
+  * {{notes}}
+  * Note, this is equivalent to the other <code>{{operationId}}</code> that receives the query parameters as a map,
+  * but this one also exposes the Http response headers
+  {{#allParams}}
+      {{^isQueryParam}}
+              * @param {{paramName}} {{description}}{{#required}} (required){{/required}}{{^required}} (optional{{^isContainer}}{{#defaultValue}}, default to {{.}}{{/defaultValue}}{{/isContainer}}){{/required}}
+      {{/isQueryParam}}
+  {{/allParams}}
+      * @param queryParams Map of query parameters as name-value pairs
+      *   <p>The following elements may be specified in the query map:</p>
+      *   <ul>
+      {{#queryParams}}
+          *   <li>{{paramName}} - {{description}}{{#required}} (required){{/required}}{{^required}} (optional{{^isContainer}}{{#defaultValue}}, default to {{.}}{{/defaultValue}}{{/isContainer}}){{/required}}</li>
+      {{/queryParams}}
+      *   </ul>
+  {{#returnType}}
+          * @return {{.}}
+  {{/returnType}}
+  {{#externalDocs}}
+          * {{description}}
+          * @see <a href="{{url}}">{{summary}} Documentation</a>
+  {{/externalDocs}}
+  {{#isDeprecated}}
+          * @deprecated
+  {{/isDeprecated}}
+      */
+  {{#isDeprecated}}
+          @Deprecated
+  {{/isDeprecated}}
+      @RequestLine("{{httpMethod}} {{{path}}}?{{#queryParams}}{{baseName}}={{=<% %>=}}{<%paramName%>}<%={{ }}=%>{{^-last}}&{{/-last}}{{/queryParams}}")
+      @Headers({
+  {{#vendorExtensions.x-content-type}}  "Content-Type: {{vendorExtensions.x-content-type}}",
+  {{/vendorExtensions.x-content-type}}  "Accept: {{vendorExtensions.x-accepts}}",{{#headerParams}}
+          "{{baseName}}: {{=<% %>=}}{<%paramName%>}<%={{ }}=%>"{{^-last}},
+      {{/-last}}{{/headerParams}}
+      })
+   ApiResponse<{{#returnType}}{{{.}}}{{/returnType}}{{^returnType}}Void{{/returnType}}> {{nickname}}WithHttpInfo({{#allParams}}{{^isQueryParam}}{{^isBodyParam}}{{^isFormParam}}{{^legacyDates}}@Param("{{paramName}}") {{/legacyDates}}{{#legacyDates}}@Param(value="{{paramName}}", expander=ParamExpander.class) {{/legacyDates}}{{/isFormParam}}{{#isFormParam}}@Param("{{baseName}}") {{/isFormParam}}{{/isBodyParam}}{{{dataType}}} {{paramName}}, {{/isQueryParam}}{{/allParams}}@QueryMap(encoded=true) Map<String, Object> queryParams);
+
+
+   /**
+   * A convenience class for generating query parameters for the
+   * <code>{{operationId}}</code> method in a fluent style.
+   */
+  public static class {{operationIdCamelCase}}QueryParams extends HashMap<String, Object> {
+      {{#queryParams}}
+    public {{operationIdCamelCase}}QueryParams {{paramName}}(final {{{dataType}}} value) {
+        {{#collectionFormat}}
+      put("{{baseName}}", EncodingUtils.encodeCollection(value, "{{collectionFormat}}"));
+        {{/collectionFormat}}
+        {{^collectionFormat}}
+      put("{{baseName}}", EncodingUtils.encode(value));
+        {{/collectionFormat}}
+      return this;
+    }
+      {{/queryParams}}
+  }
+    {{/hasQueryParams}}
+  {{/operation}}
+{{/operations}}
+
+  // TODO do annotations work at class level? if yes, move them.
+  class Retry implements {{classname}} {
+
+    private final {{classname}} api;
+
+    public Retry(final {{classname}} api) {
+      java.util.Objects.requireNonNull(api);
+      this.api = api;
+    }
+
+    {{#operations}}{{#operation}}
+  {{#isDeprecated}}
+    @Deprecated
+  {{/isDeprecated}}
+    @Override
+    @CircuitBreaker(
+      include = {
+        TimeoutException.class,
+        IOException.class,
+        FeignException.FeignServerException.class,
+      },
+      maxAttemptsExpression = "${foobar.circuit-breaker.max-attempts:3}",
+      resetTimeoutExpression = "${foobar.circuit-breaker.reset-timeout-millis:20000}",
+      openTimeoutExpression = "${foobar.circuit-breaker.open-timeout-millis:5000}"
+    )
+    @Retryable(
+      include = {
+        TimeoutException.class,
+        IOException.class,
+        FeignException.FeignServerException.class,
+      },
+      maxAttemptsExpression = "${foobar.retry.max-attempts:3}",
+      backoff = @Backoff(
+        delayExpression = "${foobar.retry.delay-millis:1000}",
+        maxDelayExpression = "${foobar.retry.max-delay-millis:0}",
+        multiplierExpression = "${foobar.retry.multiplier:0}",
+        randomExpression = "${foobar.retry.random:false}"
+      )
+    )
+    public {{#returnType}}{{{.}}} {{/returnType}}{{^returnType}}void {{/returnType}}{{nickname}}({{#allParams}}{{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/allParams}}) {
+      try {
+        {{#returnType}}return {{/returnType}}{{^returnType}}{{/returnType}}this.api.{{nickname}}({{#allParams}}{{paramName}}{{^-last}}, {{/-last}}{{/allParams}});
+      }
+      catch(final NoFallbackAvailableException ex) {
+        if(ex.getCause() instanceof RuntimeException) {
+          throw (RuntimeException) ex.getCause();
+        }
+        else if(ex.getCause() != null) {
+          throw new RuntimeException(ex.getCause());
+        }
+        else {
+          throw ex;
+        }
+      }
+    }
+
+    {{#isDeprecated}}
+      @Deprecated
+    {{/isDeprecated}}
+      @Override
+      @CircuitBreaker(
+        include = {
+          TimeoutException.class,
+          IOException.class,
+          FeignException.FeignServerException.class,
+        },
+        maxAttemptsExpression = "${foobar.circuit-breaker.max-attempts:3}",
+        resetTimeoutExpression = "${foobar.circuit-breaker.reset-timeout-millis:20000}",
+        openTimeoutExpression = "${foobar.circuit-breaker.open-timeout-millis:5000}"
+      )
+      @Retryable(
+        include = {
+          TimeoutException.class,
+          IOException.class,
+          FeignException.FeignServerException.class,
+        },
+        maxAttemptsExpression = "${foobar.retry.max-attempts:3}",
+        backoff = @Backoff(
+          delayExpression = "${foobar.retry.delay-millis:1000}",
+          maxDelayExpression = "${foobar.retry.max-delay-millis:0}",
+          multiplierExpression = "${foobar.retry.multiplier:0}",
+          randomExpression = "${foobar.retry.random:false}"
+        )
+      )
+      public ApiResponse<{{#returnType}}{{{.}}}{{/returnType}}{{^returnType}}Void{{/returnType}}> {{nickname}}WithHttpInfo({{#allParams}}{{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/allParams}}) {
+        try {
+          return this.api.{{nickname}}WithHttpInfo({{#allParams}}{{paramName}}{{^-last}}, {{/-last}}{{/allParams}});
+        }
+        catch(final NoFallbackAvailableException ex) {
+          if(ex.getCause() instanceof RuntimeException) {
+            throw (RuntimeException) ex.getCause();
+          }
+          else if(ex.getCause() != null) {
+            throw new RuntimeException(ex.getCause());
+          }
+          else {
+            throw ex;
+          }
+        }
+    }
+
+    {{#hasQueryParams}}
+  {{#isDeprecated}}
+    @Deprecated
+  {{/isDeprecated}}
+    @Override
+    @CircuitBreaker(
+      include = {
+        TimeoutException.class,
+        IOException.class,
+        FeignException.FeignServerException.class,
+      },
+      maxAttemptsExpression = "${foobar.circuit-breaker.max-attempts:3}",
+      resetTimeoutExpression = "${foobar.circuit-breaker.reset-timeout-millis:20000}",
+      openTimeoutExpression = "${foobar.circuit-breaker.open-timeout-millis:5000}"
+    )
+    @Retryable(
+      include = {
+        TimeoutException.class,
+        IOException.class,
+        FeignException.FeignServerException.class,
+      },
+      maxAttemptsExpression = "${foobar.retry.max-attempts:3}",
+      backoff = @Backoff(
+        delayExpression = "${foobar.retry.delay-millis:1000}",
+        maxDelayExpression = "${foobar.retry.max-delay-millis:0}",
+        multiplierExpression = "${foobar.retry.multiplier:0}",
+        randomExpression = "${foobar.retry.random:false}"
+      )
+    )
+    public {{#returnType}}{{{.}}} {{/returnType}}{{^returnType}}void {{/returnType}}{{nickname}}({{#allParams}}{{^isQueryParam}}{{{dataType}}} {{paramName}}, {{/isQueryParam}}{{/allParams}} Map<String, Object> queryParams) {
+      {{#returnType}}return {{/returnType}}{{^returnType}}{{/returnType}} this.api.{{nickname}}({{#allParams}}{{^isQueryParam}} {{paramName}}, {{/isQueryParam}}{{/allParams}} queryParams);
+    }
+
+  {{#isDeprecated}}
+    @Deprecated
+  {{/isDeprecated}}
+    @Override
+    @CircuitBreaker(
+      include = {
+        TimeoutException.class,
+        IOException.class,
+        FeignException.FeignServerException.class,
+      },
+      maxAttemptsExpression = "${foobar.circuit-breaker.max-attempts:3}",
+      resetTimeoutExpression = "${foobar.circuit-breaker.reset-timeout-millis:20000}",
+      openTimeoutExpression = "${foobar.circuit-breaker.open-timeout-millis:5000}"
+    )
+    @Retryable(
+      include = {
+        TimeoutException.class,
+        IOException.class,
+        FeignException.FeignServerException.class,
+      },
+      maxAttemptsExpression = "${foobar.retry.max-attempts:3}",
+      backoff = @Backoff(
+        delayExpression = "${foobar.retry.delay-millis:1000}",
+        maxDelayExpression = "${foobar.retry.max-delay-millis:0}",
+        multiplierExpression = "${foobar.retry.multiplier:0}",
+        randomExpression = "${foobar.retry.random:false}"
+      )
+    )
+    public ApiResponse<{{#returnType}}{{{.}}}{{/returnType}}{{^returnType}}Void{{/returnType}}> {{nickname}}WithHttpInfo({{#allParams}}{{^isQueryParam}}{{{dataType}}} {{paramName}}, {{/isQueryParam}}{{/allParams}} Map<String, Object> queryParams) {
+      return this.api.{{nickname}}WithHttpInfo({{#allParams}}{{^isQueryParam}} {{paramName}}, {{/isQueryParam}}{{/allParams}} queryParams);
+    }
+
+    {{/hasQueryParams}}
+
+      {{/operation}}
+    {{/operations}}
+  }
+
+  @Bulkhead(
+    name = {{classname}}.ENTITY_TYPE + "_BULKHEAD",
+    type = Bulkhead.Type.SEMAPHORE
+  )
+  class Limit implements {{classname}} {
+
+    private final {{classname}} api;
+
+    public Limit(final {{classname}} api) {
+      java.util.Objects.requireNonNull(api);
+      this.api = api;
+    }
+
+    {{#operations}}{{#operation}}
+    {{#isDeprecated}}
+    @Deprecated
+    {{/isDeprecated}}
+    @Override
+    public {{#returnType}}{{{.}}} {{/returnType}}{{^returnType}}void {{/returnType}}{{nickname}}({{#allParams}}{{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/allParams}}) {
+      try {
+        {{#returnType}}return {{/returnType}}{{^returnType}}{{/returnType}}this.api.{{nickname}}({{#allParams}}{{paramName}}{{^-last}}, {{/-last}}{{/allParams}});
+      }
+      catch(final NoFallbackAvailableException ex) {
+        if(ex.getCause() instanceof RuntimeException) {
+          throw (RuntimeException) ex.getCause();
+        }
+        else if(ex.getCause() != null) {
+          throw new RuntimeException(ex.getCause());
+        }
+        else {
+          throw ex;
+        }
+      }
+    }
+
+    {{#isDeprecated}}
+    @Deprecated
+    {{/isDeprecated}}
+    @Override
+    public ApiResponse<{{#returnType}}{{{.}}}{{/returnType}}{{^returnType}}Void{{/returnType}}> {{nickname}}WithHttpInfo({{#allParams}}{{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/allParams}}) {
+      try {
+        return this.api.{{nickname}}WithHttpInfo({{#allParams}}{{paramName}}{{^-last}}, {{/-last}}{{/allParams}});
+      }
+      catch(final NoFallbackAvailableException ex) {
+        if(ex.getCause() instanceof RuntimeException) {
+          throw (RuntimeException) ex.getCause();
+        }
+        else if(ex.getCause() != null) {
+          throw new RuntimeException(ex.getCause());
+        }
+        else {
+          throw ex;
+        }
+      }
+    }
+
+    {{#hasQueryParams}}
+    {{#isDeprecated}}
+    @Deprecated
+    {{/isDeprecated}}
+    @Override
+    public {{#returnType}}{{{.}}} {{/returnType}}{{^returnType}}void {{/returnType}}{{nickname}}({{#allParams}}{{^isQueryParam}}{{{dataType}}} {{paramName}}, {{/isQueryParam}}{{/allParams}} Map<String, Object> queryParams) {
+      {{#returnType}}return {{/returnType}}{{^returnType}}{{/returnType}} this.api.{{nickname}}({{#allParams}}{{^isQueryParam}} {{paramName}}, {{/isQueryParam}}{{/allParams}} queryParams);
+    }
+
+    {{#isDeprecated}}
+    @Deprecated
+    {{/isDeprecated}}
+    @Override
+    public ApiResponse<{{#returnType}}{{{.}}}{{/returnType}}{{^returnType}}Void{{/returnType}}> {{nickname}}WithHttpInfo({{#allParams}}{{^isQueryParam}}{{{dataType}}} {{paramName}}, {{/isQueryParam}}{{/allParams}} Map<String, Object> queryParams) {
+      return this.api.{{nickname}}WithHttpInfo({{#allParams}}{{^isQueryParam}} {{paramName}}, {{/isQueryParam}}{{/allParams}} queryParams);
+    }
+
+    {{/hasQueryParams}}
+
+      {{/operation}}
+    {{/operations}}
+  }
+}

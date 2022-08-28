@@ -1,0 +1,82 @@
+import io.koosha.foobar.Libraries
+import io.koosha.foobar.Foobar
+
+
+plugins {
+    id('java')
+    id("org.openapi.generator") version("6.0.1")
+    id("io.spring.dependency-management") version("1.0.12.RELEASE")
+}
+
+group = 'io.koosha.foobar.seller'
+version = 'v0'
+
+sourceCompatibility = JavaVersion.valueOf(Foobar.javaVersion)
+targetCompatibility = JavaVersion.valueOf(Foobar.javaVersion)
+
+repositories {
+    mavenCentral()
+}
+
+test {
+    useJUnitPlatform()
+}
+
+ext {
+    springCloudVersion = Libraries.Spring.springCloudVersion
+}
+
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:${Libraries.Spring.springCloudVersion}")
+    }
+}
+
+dependencies {
+    implementation("io.github.openfeign:feign-core:${Libraries.Feign.core}")
+    implementation("org.springframework.retry:spring-retry:${Libraries.Spring.retry}")
+    implementation("org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j")
+    implementation("org.springframework.boot:spring-boot-starter")
+    implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
+
+    compileOnly("io.swagger:swagger-annotations:1.6.6")
+    compileOnly("com.google.code.findbugs:jsr305:3.0.2")
+    compileOnly("jakarta.annotation:jakarta.annotation-api:${Libraries.jakartaAnnotationApi}")
+    compileOnly("javax.annotation:javax.annotation-api:${Libraries.javaxAnnotation}")
+
+
+    compileOnly("io.github.openfeign:feign-core:${Libraries.Feign.core}")
+    implementation("io.github.openfeign:feign-jackson:${Libraries.Feign.core}")
+    compileOnly("io.github.openfeign:feign-slf4j:${Libraries.Feign.core}")
+    compileOnly("io.github.openfeign:feign-okhttp:${Libraries.Feign.core}")
+    // compileOnly("io.github.openfeign.form:feign-form:${Libraries.Feign.form}")
+
+    compileOnly("com.fasterxml.jackson.core:jackson-core:${Libraries.Jackson.core}")
+    compileOnly("com.fasterxml.jackson.core:jackson-annotations:${Libraries.Jackson.core}")
+    compileOnly("com.fasterxml.jackson.core:jackson-databind:${Libraries.Jackson.core}")
+    compileOnly("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${Libraries.Jackson.core}")
+
+    implementation("org.openapitools:jackson-databind-nullable:${Libraries.OpenApi.jacksonNullable}")
+    implementation("com.github.scribejava:scribejava-core:8.0.0")
+
+    testImplementation("io.swagger:swagger-annotations:1.6.6")
+    testImplementation("io.swagger:swagger-annotations:1.6.6")
+    testImplementation("com.google.code.findbugs:jsr305:3.0.2")
+    testImplementation("jakarta.annotation:jakarta.annotation-api:${Libraries.jakartaAnnotationApi}")
+    testImplementation("javax.annotation:javax.annotation-api:${Libraries.javaxAnnotation}")
+    testImplementation("com.fasterxml.jackson.core:jackson-core:${Libraries.Jackson.core}")
+    testImplementation("com.fasterxml.jackson.core:jackson-annotations:${Libraries.Jackson.core}")
+    testImplementation("com.fasterxml.jackson.core:jackson-databind:${Libraries.Jackson.core}")
+    testImplementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${Libraries.Jackson.core}")
+    testImplementation("io.github.openfeign:feign-core:${Libraries.Feign.core}")
+    testImplementation("io.github.openfeign:feign-slf4j:${Libraries.Feign.core}")
+    testImplementation("io.github.openfeign:feign-okhttp:${Libraries.Feign.core}")
+
+    testImplementation "org.junit.jupiter:junit-jupiter-params:5.7.0"
+    testImplementation "com.github.tomakehurst:wiremock-jre8:2.27.2"
+    testImplementation "org.hamcrest:hamcrest:2.2"
+    testImplementation "commons-io:commons-io:2.8.0"
+    testImplementation "ch.qos.logback:logback-classic:1.2.3"
+    testImplementation "org.junit.jupiter:junit-jupiter:5.7.0"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.7.0"
+}

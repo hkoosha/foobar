@@ -1,0 +1,405 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- description: Generated server url
+  url: http://localhost:4045
+paths:
+  /foobar/seller/v1/sellers:
+    get:
+      operationId: getSellers
+      responses:
+        "404":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityNotFoundApiError'
+          description: Not Found
+        "400":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityBadValueApiError'
+          description: Bad Request
+        "403":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityIllegalStateApiError'
+          description: Forbidden
+        "503":
+          description: Service Unavailable
+        "200":
+          content:
+            '*/*':
+              schema:
+                items:
+                  $ref: '#/components/schemas/Seller'
+                type: array
+          description: OK
+      tags:
+      - seller
+      x-accepts: '*/*'
+    post:
+      operationId: postSeller
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SellerCreateRequest'
+        required: true
+      responses:
+        "404":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityNotFoundApiError'
+          description: Not Found
+        "400":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityBadValueApiError'
+          description: Bad Request
+        "403":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityIllegalStateApiError'
+          description: Forbidden
+        "503":
+          description: Service Unavailable
+        "201":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Seller'
+          description: Created
+      tags:
+      - seller
+      x-content-type: application/json
+      x-accepts: '*/*'
+  /foobar/seller/v1/sellers/{sellerId}:
+    delete:
+      operationId: deleteSeller
+      parameters:
+      - explode: false
+        in: path
+        name: sellerId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      responses:
+        "404":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityNotFoundApiError'
+          description: Not Found
+        "400":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityBadValueApiError'
+          description: Bad Request
+        "403":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityIllegalStateApiError'
+          description: Forbidden
+        "503":
+          description: Service Unavailable
+        "204":
+          description: No Content
+      tags:
+      - seller
+      x-accepts: '*/*'
+    get:
+      operationId: getSeller
+      parameters:
+      - explode: false
+        in: path
+        name: sellerId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      responses:
+        "404":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityNotFoundApiError'
+          description: Not Found
+        "400":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityBadValueApiError'
+          description: Bad Request
+        "403":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityIllegalStateApiError'
+          description: Forbidden
+        "503":
+          description: Service Unavailable
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Seller'
+          description: OK
+      tags:
+      - seller
+      x-accepts: '*/*'
+    patch:
+      operationId: patchSeller
+      parameters:
+      - explode: false
+        in: path
+        name: sellerId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SellerUpdateRequest'
+        required: true
+      responses:
+        "404":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityNotFoundApiError'
+          description: Not Found
+        "400":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityBadValueApiError'
+          description: Bad Request
+        "403":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityIllegalStateApiError'
+          description: Forbidden
+        "503":
+          description: Service Unavailable
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Seller'
+          description: OK
+      tags:
+      - seller
+      x-content-type: application/json
+      x-accepts: '*/*'
+components:
+  schemas:
+    EntityInfo:
+      properties:
+        entityType:
+          type: string
+        entityId:
+          type: object
+      required:
+      - entityType
+      type: object
+    EntityNotFoundApiError:
+      properties:
+        message:
+          type: string
+        context:
+          items:
+            $ref: '#/components/schemas/EntityInfo'
+          type: array
+          uniqueItems: true
+        error:
+          type: string
+      required:
+      - context
+      - error
+      - message
+      type: object
+    EntityBadValueApiError:
+      properties:
+        message:
+          type: string
+        context:
+          additionalProperties:
+            items:
+              type: string
+            type: array
+          type: object
+        error:
+          type: string
+      required:
+      - context
+      - error
+      - message
+      type: object
+    EntityIllegalStateApiError:
+      properties:
+        message:
+          type: string
+        context:
+          items:
+            $ref: '#/components/schemas/EntityInfo'
+          type: array
+          uniqueItems: true
+        error:
+          type: string
+      required:
+      - context
+      - error
+      - message
+      type: object
+    SellerCreateRequest:
+      example:
+        address:
+          zipcode: zipcode
+          country: country
+          city: city
+          addressLine1: addressLine1
+        name: name
+      properties:
+        name:
+          maxLength: 127
+          minLength: 1
+          type: string
+        address:
+          $ref: '#/components/schemas/SellerCreateRequestAddress'
+      required:
+      - address
+      - name
+      type: object
+    SellerCreateRequestAddress:
+      example:
+        zipcode: zipcode
+        country: country
+        city: city
+        addressLine1: addressLine1
+      properties:
+        zipcode:
+          maxLength: 10
+          minLength: 1
+          type: string
+        addressLine1:
+          maxLength: 127
+          minLength: 1
+          type: string
+        country:
+          maxLength: 127
+          minLength: 1
+          type: string
+        city:
+          maxLength: 127
+          minLength: 1
+          type: string
+      required:
+      - addressLine1
+      - city
+      - country
+      - zipcode
+      type: object
+    Address:
+      example:
+        zipcode: zipcode
+        country: country
+        city: city
+        addressLine1: addressLine1
+      properties:
+        zipcode:
+          type: string
+        addressLine1:
+          type: string
+        country:
+          type: string
+        city:
+          type: string
+      required:
+      - addressLine1
+      - city
+      - country
+      - zipcode
+      type: object
+    Seller:
+      example:
+        sellerId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        address:
+          zipcode: zipcode
+          country: country
+          city: city
+          addressLine1: addressLine1
+        name: name
+        isActive: true
+      properties:
+        sellerId:
+          format: uuid
+          type: string
+        name:
+          type: string
+        address:
+          $ref: '#/components/schemas/Address'
+        isActive:
+          type: boolean
+      required:
+      - address
+      - isActive
+      - name
+      - sellerId
+      type: object
+    SellerUpdateRequest:
+      example:
+        address:
+          zipcode: zipcode
+          country: country
+          city: city
+          addressLine1: addressLine1
+        name: name
+      properties:
+        name:
+          maxLength: 127
+          minLength: 1
+          type: string
+        address:
+          $ref: '#/components/schemas/SellerUpdateRequestAddress'
+      type: object
+    SellerUpdateRequestAddress:
+      example:
+        zipcode: zipcode
+        country: country
+        city: city
+        addressLine1: addressLine1
+      properties:
+        zipcode:
+          maxLength: 10
+          minLength: 1
+          type: string
+        addressLine1:
+          maxLength: 127
+          minLength: 1
+          type: string
+        country:
+          maxLength: 127
+          minLength: 1
+          type: string
+        city:
+          maxLength: 127
+          minLength: 1
+          type: string
+      type: object
+
