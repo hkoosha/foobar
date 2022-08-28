@@ -1,6 +1,7 @@
 package io.koosha.foobar.maker.api.cmd
 
 import io.koosha.foobar.connect.customer.generated.api.AddressApi
+import io.koosha.foobar.connect.customer.generated.api.CustomerAddressCreateRequest
 import io.koosha.foobar.connect.customer.generated.api.CustomerApi
 import io.koosha.foobar.maker.api.CliException
 import io.koosha.foobar.maker.api.Command
@@ -12,7 +13,6 @@ import io.koosha.foobar.maker.api.model.EntityId
 import io.koosha.foobar.maker.api.model.EntityIdRepository
 import io.koosha.foobar.maker.api.svc.EntityIdService
 import mu.KotlinLogging
-import org.openapitools.client.model.CustomerAddressCreateRequest
 import org.springframework.boot.ApplicationArguments
 import org.springframework.stereotype.Component
 import java.util.*

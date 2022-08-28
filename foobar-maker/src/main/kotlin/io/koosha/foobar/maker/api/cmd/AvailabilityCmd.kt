@@ -3,6 +3,7 @@ package io.koosha.foobar.maker.api.cmd
 import io.koosha.foobar.connect.customer.generated.api.AddressApi
 import io.koosha.foobar.connect.seller.generated.api.SellerApi
 import io.koosha.foobar.connect.warehouse.generated.api.AvailabilityApi
+import io.koosha.foobar.connect.warehouse.generated.api.AvailabilityCreateRequest
 import io.koosha.foobar.connect.warehouse.generated.api.ProductApi
 import io.koosha.foobar.maker.api.Command
 import io.koosha.foobar.maker.api.assertStatusCode
@@ -13,7 +14,6 @@ import io.koosha.foobar.maker.api.model.EntityIdRepository
 import io.koosha.foobar.maker.api.svc.EntityIdService
 import io.koosha.foobar.maker.api.svc.Rand
 import mu.KotlinLogging
-import org.openapitools.client.model.AvailabilityCreateRequest
 import org.springframework.boot.ApplicationArguments
 import org.springframework.stereotype.Component
 import java.util.*

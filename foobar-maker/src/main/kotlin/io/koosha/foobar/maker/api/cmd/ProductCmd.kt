@@ -1,6 +1,8 @@
 package io.koosha.foobar.maker.api.cmd
 
 import io.koosha.foobar.connect.warehouse.generated.api.ProductApi
+import io.koosha.foobar.connect.warehouse.generated.api.ProductCreateRequest
+import io.koosha.foobar.connect.warehouse.generated.api.ProductUpdateRequest
 import io.koosha.foobar.maker.api.Command
 import io.koosha.foobar.maker.api.assertStatusCode
 import io.koosha.foobar.maker.api.firstOrDef
@@ -12,8 +14,6 @@ import io.koosha.foobar.maker.api.model.EntityId
 import io.koosha.foobar.maker.api.model.EntityIdRepository
 import io.koosha.foobar.maker.api.svc.EntityIdService
 import mu.KotlinLogging
-import org.openapitools.client.model.ProductCreateRequest
-import org.openapitools.client.model.ProductUpdateRequest
 import org.springframework.boot.ApplicationArguments
 import org.springframework.stereotype.Component
 
