@@ -21,11 +21,11 @@ All URIs are relative to *http://localhost:4043*
 
 ```java
 // Import classes:
-import io.koosha.foobar.connect.customer.generated.ApiClient;
-import io.koosha.foobar.connect.customer.generated.ApiException;
-import io.koosha.foobar.connect.customer.generated.Configuration;
-import io.koosha.foobar.connect.customer.generated.models.*;
-import io.koosha.foobar.connect.customer.generated.api.AddressApi;
+import io.koosha.foobar.connect.customer.rx.generated.ApiClient;
+import io.koosha.foobar.connect.customer.rx.generated.ApiException;
+import io.koosha.foobar.connect.customer.rx.generated.Configuration;
+import io.koosha.foobar.connect.customer.rx.generated.models.*;
+import io.koosha.foobar.connect.customer.rx.generated.api.AddressApi;
 
 public class Example {
     public static void main(String[] args) {
@@ -90,11 +90,11 @@ No authorization required
 
 ```java
 // Import classes:
-import io.koosha.foobar.connect.customer.generated.ApiClient;
-import io.koosha.foobar.connect.customer.generated.ApiException;
-import io.koosha.foobar.connect.customer.generated.Configuration;
-import io.koosha.foobar.connect.customer.generated.models.*;
-import io.koosha.foobar.connect.customer.generated.api.AddressApi;
+import io.koosha.foobar.connect.customer.rx.generated.ApiClient;
+import io.koosha.foobar.connect.customer.rx.generated.ApiException;
+import io.koosha.foobar.connect.customer.rx.generated.Configuration;
+import io.koosha.foobar.connect.customer.rx.generated.models.*;
+import io.koosha.foobar.connect.customer.rx.generated.api.AddressApi;
 
 public class Example {
     public static void main(String[] args) {
@@ -160,11 +160,11 @@ No authorization required
 
 ```java
 // Import classes:
-import io.koosha.foobar.connect.customer.generated.ApiClient;
-import io.koosha.foobar.connect.customer.generated.ApiException;
-import io.koosha.foobar.connect.customer.generated.Configuration;
-import io.koosha.foobar.connect.customer.generated.models.*;
-import io.koosha.foobar.connect.customer.generated.api.AddressApi;
+import io.koosha.foobar.connect.customer.rx.generated.ApiClient;
+import io.koosha.foobar.connect.customer.rx.generated.ApiException;
+import io.koosha.foobar.connect.customer.rx.generated.Configuration;
+import io.koosha.foobar.connect.customer.rx.generated.models.*;
+import io.koosha.foobar.connect.customer.rx.generated.api.AddressApi;
 
 public class Example {
     public static void main(String[] args) {
@@ -228,11 +228,11 @@ No authorization required
 
 ```java
 // Import classes:
-import io.koosha.foobar.connect.customer.generated.ApiClient;
-import io.koosha.foobar.connect.customer.generated.ApiException;
-import io.koosha.foobar.connect.customer.generated.Configuration;
-import io.koosha.foobar.connect.customer.generated.models.*;
-import io.koosha.foobar.connect.customer.generated.api.AddressApi;
+import io.koosha.foobar.connect.customer.rx.generated.ApiClient;
+import io.koosha.foobar.connect.customer.rx.generated.ApiException;
+import io.koosha.foobar.connect.customer.rx.generated.Configuration;
+import io.koosha.foobar.connect.customer.rx.generated.models.*;
+import io.koosha.foobar.connect.customer.rx.generated.api.AddressApi;
 
 public class Example {
     public static void main(String[] args) {

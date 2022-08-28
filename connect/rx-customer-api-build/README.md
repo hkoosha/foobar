@@ -79,10 +79,10 @@ Please follow the [installation](#installation) instruction and execute the foll
 
 ```java
 
-import io.koosha.foobar.connect.customer.generated.*;
-import io.koosha.foobar.connect.customer.generated.auth.*;
-import org.openapitools.client.model.*;
-import io.koosha.foobar.connect.customer.generated.api.AddressApi;
+import io.koosha.foobar.connect.customer.rx.generated.*;
+import io.koosha.foobar.connect.customer.rx.generated.auth.*;
+import io.koosha.foobar.connect.customer.rx.generated.api.*;
+import io.koosha.foobar.connect.customer.rx.generated.api.AddressApi;
 
 public class AddressApiExample {
 

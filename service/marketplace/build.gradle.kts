@@ -8,9 +8,6 @@ import org.springframework.boot.gradle.tasks.run.BootRun
 
 plugins {
     @Suppress("RemoveRedundantQualifierName")
-    val l = io.koosha.foobar.Libraries
-
-    @Suppress("RemoveRedundantQualifierName")
     val j = io.koosha.foobar.Libraries.Jib
 
     @Suppress("RemoveRedundantQualifierName")
@@ -83,9 +80,9 @@ dependencies {
 
     implementation(project(":service:common-kafka"))
 
-    implementation(project(":connect:customer-api-build"))
-    implementation(project(":connect:seller-api-build"))
-    implementation(project(":connect:warehouse-api-build"))
+    implementation(project(":connect:rx-customer-api-build"))
+    implementation(project(":connect:rx-seller-api-build"))
+    implementation(project(":connect:rx-warehouse-api-build"))
 
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")

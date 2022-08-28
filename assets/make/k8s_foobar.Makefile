@@ -25,7 +25,7 @@ k8s-redeploy-maker: k8s-undeploy-maker k8s-deploy-maker
 
 .PHONY: remake-yaml-maker
 remake-yaml-maker:
-	vim $(FOOBAR_SERVICES_YAML)/maker.yaml
+	$(EDITOR) $(FOOBAR_SERVICES_YAML)/maker.yaml
 
 
 
@@ -46,7 +46,7 @@ k8s-redeploy-customer: k8s-undeploy-customer k8s-deploy-customer
 
 .PHONY: remake-yaml-customer
 remake-yaml-customer:
-	vim $(FOOBAR_SERVICES_YAML)/customer.yaml
+	$(EDITOR) $(FOOBAR_SERVICES_YAML)/customer.yaml
 
 
 
@@ -67,7 +67,7 @@ k8s-redeploy-seller: k8s-undeploy-seller k8s-deploy-seller
 
 .PHONY: remake-yaml-seller
 remake-yaml-seller:
-	vim $(FOOBAR_SERVICES_YAML)/seller.yaml
+	$(EDITOR) $(FOOBAR_SERVICES_YAML)/seller.yaml
 
 
 
@@ -88,7 +88,7 @@ k8s-redeploy-warehouse: k8s-undeploy-warehouse k8s-deploy-warehouse
 
 .PHONY: remake-yaml-warehouse
 remake-yaml-warehouse:
-	vim $(FOOBAR_SERVICES_YAML)/warehouse.yaml
+	$(EDITOR) $(FOOBAR_SERVICES_YAML)/warehouse.yaml
 
 
 
@@ -109,7 +109,7 @@ k8s-redeploy-shipping: k8s-undeploy-shipping k8s-deploy-shipping
 
 .PHONY: remake-yaml-shipping
 remake-yaml-shipping:
-	vim $(FOOBAR_SERVICES_YAML)/shipping.yaml
+	$(EDITOR) $(FOOBAR_SERVICES_YAML)/shipping.yaml
 
 
 
@@ -130,7 +130,7 @@ k8s-redeploy-marketplace: k8s-undeploy-marketplace k8s-deploy-marketplace
 
 .PHONY: remake-yaml-marketplace
 remake-yaml-marketplace:
-	vim $(FOOBAR_SERVICES_YAML)/marketplace.yaml
+	$(EDITOR) $(FOOBAR_SERVICES_YAML)/marketplace.yaml
 
 
 
@@ -151,12 +151,12 @@ k8s-redeploy-marketplace-engine: k8s-undeploy-marketplace-engine k8s-deploy-mark
 
 .PHONY: remake-yaml-marketplace-engine
 remake-yaml-marketplace-engine:
-	vim $(FOOBAR_SERVICES_YAML)/marketplace_engine.yaml
+	$(EDITOR) $(FOOBAR_SERVICES_YAML)/marketplace_engine.yaml
 
 
 .PHONY: remake-yaml-foobar
 remake-yaml-foobar:
-	vim $(FOOBAR_SERVICES_YAML)/*.yaml
+	$(EDITOR) $(FOOBAR_SERVICES_YAML)/*.yaml
 
 
 .PHONY: k8s-deploy

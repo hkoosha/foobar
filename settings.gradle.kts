@@ -2,7 +2,6 @@ rootProject.name = "foobar"
 
 include(
     "foobar-gen",
-    "foobar-gen-rx",
 
     "definitions",
     "common",

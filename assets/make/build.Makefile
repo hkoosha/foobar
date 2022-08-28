@@ -29,7 +29,7 @@ retest:
 	$(GRADLE_RUNNER) --rerun-tasks test
 
 .PHONY: prepare
-prepare: build-proto build-generator build-generator-rx build-api build-maker build-only 
+prepare: build-proto build-api-generator build-api build-maker build-only 
 
 .PHONY: check
 check:
@@ -47,11 +47,6 @@ build-maker:
 	$(GRADLE_RUNNER) :foobar-maker:build
 
 
-
-.PHONY: build-api-generator-rx
-build-api-generator-rx:
-	$(GRADLE_RUNNER) :foobar-gen-rx:clean :foobar-gen-rx:build
-	cp ./foobar-gen-rx/build/libs/foobar-gen-rx-0.0.1-SNAPSHOT.jar libs/foobar-gen-rx.jar
 
 .PHONY: build-api-generator
 build-api-generator:
@@ -93,7 +88,7 @@ api-marketplace: build-api-generator
 		:connect:marketplace-api:openApiGenerate
 
 .PHONY: api-rx-customer
-api-rx-customer: build-api-generator-rx
+api-rx-customer:
 	@echo "You may also want to enable the spring profile 'no-db'"
 	$(GRADLE_RUNNER) \
 		:service:customer:generateOpenApiDocs \
@@ -101,7 +96,7 @@ api-rx-customer: build-api-generator-rx
 		:connect:rx-customer-api:openApiGenerate
 
 .PHONY: api-rx-seller
-api-rx-seller: build-api-generator-rx
+api-rx-seller:
 	@echo "You may also want to enable the spring profile 'no-db'"
 	$(GRADLE_RUNNER) \
 		:service:seller:generateOpenApiDocs \
@@ -109,20 +104,26 @@ api-rx-seller: build-api-generator-rx
 		:connect:rx-seller-api:openApiGenerate
 
 .PHONY: api-rx-warehouse
-api-rx-warehouse: build-api-generator-rx
+api-rx-warehouse:
 	@echo "You may also want to enable the spring profile 'no-db'"
 	$(GRADLE_RUNNER) \
 		:service:warehouse:generateOpenApiDocs \
 		:connect:rx-warehouse-api:foobar-clean-api-build \
 		:connect:rx-warehouse-api:openApiGenerate
 
-.PHONY: build-api
-build-api: \
-	api-marketplace \
+.PHONY: build-api-rx
+build-api-rx: \
 	api-rx-customer \
 	api-rx-seller \
-	api-rx-warehouse \
+	api-rx-warehouse
+
+.PHONY: build-api-blocking
+build-api-blocking: \
+	api-marketplace \
 	api-customer \
 	api-seller \
-	api-warehouse \
+	api-warehouse
+
+.PHONY: build-api
+build-api: build-api-rx build-api-blocking
 

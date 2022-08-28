@@ -14,7 +14,6 @@ buildscript {
     }
     dependencies {
         classpath("org.openapitools:openapi-generator:6.0.1")
-        classpath(files("../../libs/foobar-gen-rx.jar"))
     }
 }
 
@@ -43,9 +42,10 @@ tasks.named("openApiGenerate") {
 
 openApiGenerate {
     val customerDir = project(":service:customer").projectDir
+    val foobarPackage = "io.koosha.foobar.connect.customer.rx.generated.api"
 
-    apiPackage.set("io.koosha.foobar.connect.customer.generated.api")
-    generatorName.set("io.koosha.foobar.gen.FoobarGenGenerator")
+    apiPackage.set(foobarPackage)
+    modelPackage.set(foobarPackage)
     generatorName.set("java")
     library.set("webclient")
     inputSpec.set("$customerDir/${Foobar.OpenApi.projectRelativeFileName}")

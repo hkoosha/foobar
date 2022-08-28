@@ -1,6 +1,6 @@
 {
     "groupId": "io.koosha.foobar.customer",
-    "packageName": "io.cobalt.foobar.connect.customer.generated.api",
+    "packageName": "io.koosha.foobar.connect.customer.rx.generated.api",
     "serializationLibrary": "jackson",
     "hideGenerationTimestamp": true
 }

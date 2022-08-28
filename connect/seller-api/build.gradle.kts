@@ -44,8 +44,10 @@ tasks.named("openApiGenerate") {
 
 openApiGenerate {
     val sellerDir = project(":service:seller").projectDir
+    val foobarPackage = "io.koosha.foobar.connect.seller.generated.api"
 
-    apiPackage.set("io.koosha.foobar.connect.seller.generated.api")
+    apiPackage.set(foobarPackage)
+    modelPackage.set(foobarPackage)
     generatorName.set("io.koosha.foobar.gen.FoobarGenGenerator")
     library.set("feign")
     inputSpec.set("$sellerDir/${Foobar.OpenApi.projectRelativeFileName}")

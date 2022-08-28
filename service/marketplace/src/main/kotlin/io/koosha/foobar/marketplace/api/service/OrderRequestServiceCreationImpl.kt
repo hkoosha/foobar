@@ -5,14 +5,14 @@ import io.koosha.foobar.common.error.EntityBadValueException
 import io.koosha.foobar.common.error.EntityInIllegalStateException
 import io.koosha.foobar.common.error.EntityNotFoundException
 import io.koosha.foobar.common.model.EntityInfo
-import io.koosha.foobar.connect.customer.generated.api.CustomerApi
+import io.koosha.foobar.connect.customer.rx.generated.api.Customer
+import io.koosha.foobar.connect.customer.rx.generated.api.CustomerApi
 import io.koosha.foobar.marketplace.api.error.ResourceCurrentlyUnavailableException
 import io.koosha.foobar.marketplace.api.model.OrderRequestDO
 import io.koosha.foobar.marketplace.api.model.OrderRequestRepository
 import io.koosha.foobar.marketplace.api.model.OrderRequestState
 import mu.KotlinLogging
 import net.logstash.logback.argument.StructuredArguments.v
-import org.openapitools.client.model.Customer
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import reactor.core.publisher.Mono

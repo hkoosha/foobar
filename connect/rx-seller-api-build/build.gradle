@@ -1,82 +1,141 @@
-import io.koosha.foobar.Libraries
-import io.koosha.foobar.Foobar
-
-
-plugins {
-    id('java')
-    id("org.openapi.generator") version("6.0.1")
-    id("io.spring.dependency-management") version("1.0.12.RELEASE")
-}
+apply plugin: 'idea'
+apply plugin: 'eclipse'
 
 group = 'io.koosha.foobar.seller'
 version = 'v0'
 
-sourceCompatibility = JavaVersion.valueOf(Foobar.javaVersion)
-targetCompatibility = JavaVersion.valueOf(Foobar.javaVersion)
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.3.+'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
+    }
+}
 
 repositories {
     mavenCentral()
 }
 
-test {
-    useJUnitPlatform()
-}
+if(hasProperty('target') && target == 'android') {
 
-ext {
-    springCloudVersion = Libraries.Spring.springCloudVersion
-}
+    apply plugin: 'com.android.library'
+    apply plugin: 'com.github.dcendents.android-maven'
 
-dependencyManagement {
-    imports {
-        mavenBom("org.springframework.cloud:spring-cloud-dependencies:${Libraries.Spring.springCloudVersion}")
+    android {
+        compileSdkVersion 25
+        buildToolsVersion '25.0.2'
+        defaultConfig {
+            minSdkVersion 14
+            targetSdkVersion 25
+        }
+
+        compileOptions {
+            sourceCompatibility JavaVersion.VERSION_1_8
+            targetCompatibility JavaVersion.VERSION_1_8
+        }
+
+        // Rename the aar correctly
+        libraryVariants.all { variant ->
+            variant.outputs.each { output ->
+                def outputFile = output.outputFile
+                if (outputFile != null && outputFile.name.endsWith('.aar')) {
+                    def fileName = "${project.name}-${variant.baseName}-${version}.aar"
+                    output.outputFile = new File(outputFile.parent, fileName)
+                }
+            }
+        }
+
+        dependencies {
+            provided "jakarta.annotation:jakarta.annotation-api:$jakarta_annotation_version"
+        }
+    }
+
+    afterEvaluate {
+        android.libraryVariants.all { variant ->
+            def task = project.tasks.create "jar${variant.name.capitalize()}", Jar
+            task.description = "Create jar artifact for ${variant.name}"
+            task.dependsOn variant.javaCompile
+            task.from variant.javaCompile.destinationDir
+            task.destinationDir = project.file("${project.buildDir}/outputs/jar")
+            task.archiveName = "${project.name}-${variant.baseName}-${version}.jar"
+            artifacts.add('archives', task);
+        }
+    }
+
+    task sourcesJar(type: Jar) {
+        from android.sourceSets.main.java.srcDirs
+        classifier = 'sources'
+    }
+
+    artifacts {
+        archives sourcesJar
+    }
+
+} else {
+
+    apply plugin: 'java'
+    apply plugin: 'maven-publish'
+
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+
+    publishing {
+        publications {
+            maven(MavenPublication) {
+               artifactId = 'openapi-java-client'
+               from components.java
+            }
+        }
+    }
+
+    task execute(type:JavaExec) {
+       main = System.getProperty('mainClass')
+       classpath = sourceSets.main.runtimeClasspath
+    }
+
+    task sourcesJar(type: Jar, dependsOn: classes) {
+        classifier = 'sources'
+        from sourceSets.main.allSource
+    }
+
+    task javadocJar(type: Jar, dependsOn: javadoc) {
+        classifier = 'javadoc'
+        from javadoc.destinationDir
+    }
+
+    artifacts {
+        archives sourcesJar
+        archives javadocJar
     }
 }
 
+ext {
+    swagger_annotations_version = "1.6.3"
+    spring_boot_version = "2.6.6"
+    jackson_version = "2.11.4"
+    jackson_databind_version = "2.11.4"
+    jackson_databind_nullable_version = "0.2.3"
+    jakarta_annotation_version = "1.3.5"
+    reactor_version = "3.4.3"
+    reactor_netty_version = "1.0.4"
+    jodatime_version = "2.9.9"
+    junit_version = "4.13.2"
+}
+
 dependencies {
-    implementation("io.github.openfeign:feign-core:${Libraries.Feign.core}")
-    implementation("org.springframework.retry:spring-retry:${Libraries.Spring.retry}")
-    implementation("org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j")
-    implementation("org.springframework.boot:spring-boot-starter")
-    implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
-
-    compileOnly("io.swagger:swagger-annotations:1.6.6")
-    compileOnly("com.google.code.findbugs:jsr305:3.0.2")
-    compileOnly("jakarta.annotation:jakarta.annotation-api:${Libraries.jakartaAnnotationApi}")
-    compileOnly("javax.annotation:javax.annotation-api:${Libraries.javaxAnnotation}")
-
-
-    compileOnly("io.github.openfeign:feign-core:${Libraries.Feign.core}")
-    implementation("io.github.openfeign:feign-jackson:${Libraries.Feign.core}")
-    compileOnly("io.github.openfeign:feign-slf4j:${Libraries.Feign.core}")
-    compileOnly("io.github.openfeign:feign-okhttp:${Libraries.Feign.core}")
-    // compileOnly("io.github.openfeign.form:feign-form:${Libraries.Feign.form}")
-
-    compileOnly("com.fasterxml.jackson.core:jackson-core:${Libraries.Jackson.core}")
-    compileOnly("com.fasterxml.jackson.core:jackson-annotations:${Libraries.Jackson.core}")
-    compileOnly("com.fasterxml.jackson.core:jackson-databind:${Libraries.Jackson.core}")
-    compileOnly("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${Libraries.Jackson.core}")
-
-    implementation("org.openapitools:jackson-databind-nullable:${Libraries.OpenApi.jacksonNullable}")
-    implementation("com.github.scribejava:scribejava-core:8.0.0")
-
-    testImplementation("io.swagger:swagger-annotations:1.6.6")
-    testImplementation("io.swagger:swagger-annotations:1.6.6")
-    testImplementation("com.google.code.findbugs:jsr305:3.0.2")
-    testImplementation("jakarta.annotation:jakarta.annotation-api:${Libraries.jakartaAnnotationApi}")
-    testImplementation("javax.annotation:javax.annotation-api:${Libraries.javaxAnnotation}")
-    testImplementation("com.fasterxml.jackson.core:jackson-core:${Libraries.Jackson.core}")
-    testImplementation("com.fasterxml.jackson.core:jackson-annotations:${Libraries.Jackson.core}")
-    testImplementation("com.fasterxml.jackson.core:jackson-databind:${Libraries.Jackson.core}")
-    testImplementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${Libraries.Jackson.core}")
-    testImplementation("io.github.openfeign:feign-core:${Libraries.Feign.core}")
-    testImplementation("io.github.openfeign:feign-slf4j:${Libraries.Feign.core}")
-    testImplementation("io.github.openfeign:feign-okhttp:${Libraries.Feign.core}")
-
-    testImplementation "org.junit.jupiter:junit-jupiter-params:5.7.0"
-    testImplementation "com.github.tomakehurst:wiremock-jre8:2.27.2"
-    testImplementation "org.hamcrest:hamcrest:2.2"
-    testImplementation "commons-io:commons-io:2.8.0"
-    testImplementation "ch.qos.logback:logback-classic:1.2.3"
-    testImplementation "org.junit.jupiter:junit-jupiter:5.7.0"
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.7.0"
+    implementation "io.swagger:swagger-annotations:$swagger_annotations_version"
+    implementation "com.google.code.findbugs:jsr305:3.0.2"
+    implementation "io.projectreactor:reactor-core:$reactor_version"
+    implementation "org.springframework.boot:spring-boot-starter-webflux:$spring_boot_version"
+    implementation "io.projectreactor.netty:reactor-netty-http:$reactor_netty_version"
+    implementation "com.fasterxml.jackson.core:jackson-core:$jackson_version"
+    implementation "com.fasterxml.jackson.core:jackson-annotations:$jackson_version"
+    implementation "com.fasterxml.jackson.core:jackson-databind:$jackson_databind_version"
+    implementation "com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:$jackson_version"
+    implementation "org.openapitools:jackson-databind-nullable:$jackson_databind_nullable_version"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jackson_version"
+    implementation "jakarta.annotation:jakarta.annotation-api:$jakarta_annotation_version"
+    testImplementation "junit:junit:$junit_version"
 }
