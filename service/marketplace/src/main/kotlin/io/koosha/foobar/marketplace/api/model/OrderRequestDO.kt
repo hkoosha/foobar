@@ -2,85 +2,36 @@ package io.koosha.foobar.marketplace.api.model
 
 import io.koosha.foobar.marketplace.API_PREFIX
 import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.annotation.Id
 import org.springframework.data.annotation.LastModifiedDate
-import org.springframework.data.jpa.domain.support.AuditingEntityListener
+import org.springframework.data.annotation.Version
+import org.springframework.data.relational.core.mapping.Table
 import java.time.LocalDateTime
-import java.util.*
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.EntityListeners
-import javax.persistence.EnumType
-import javax.persistence.Enumerated
-import javax.persistence.Id
-import javax.persistence.Table
-import javax.persistence.Version
 
 
-@Entity
 @Table(name = "${API_PREFIX}__order_request")
-@EntityListeners(AuditingEntityListener::class)
 open class OrderRequestDO(
 
     @Id
-    @Column(
-        name = "ORDER_REQUEST_ID",
-        length = 36,
-    )
-    @org.hibernate.annotations.Type(type = "uuid-char")
-    open var orderRequestId: UUID? = null,
+    open var orderRequestId: String? = null,
 
     @Version
-    @Column(name = "VERSION")
     open var version: Long? = null,
 
     @CreatedDate
-    @Column(
-        name = "CREATED",
-        nullable = false,
-    )
     open var created: LocalDateTime? = null,
 
     @LastModifiedDate
-    @Column(
-        name = "UPDATED",
-        nullable = false,
-    )
     open var updated: LocalDateTime? = null,
 
-    @Column(
-        name = "LINE_ITEM_ID_POOL",
-        nullable = false,
-    )
     open var lineItemIdPool: Long? = null,
 
-    @Column(
-        name = "CUSTOMER_ID",
-        nullable = true,
-        length = 36,
-    )
-    @org.hibernate.annotations.Type(type = "uuid-char")
-    open var customerId: UUID? = null,
+    open var customerId: String? = null,
 
-    @Column(
-        name = "SELLER_ID",
-        nullable = true,
-        length = 36,
-    )
-    @org.hibernate.annotations.Type(type = "uuid-char")
-    open var sellerId: UUID? = null,
+    open var sellerId: String? = null,
 
-    @Enumerated(EnumType.STRING)
-    @Column(
-        name = "STATE",
-        nullable = false,
-        length = 32,
-    )
     open var state: OrderRequestState? = null,
 
-    @Column(
-        name = "SUB_TOTAL",
-        nullable = true,
-    )
     open var subTotal: Long? = null,
 
     ) {
@@ -92,7 +43,6 @@ open class OrderRequestDO(
 
     fun detachedCopy(): OrderRequestDO = OrderRequestDO(
         orderRequestId = this.orderRequestId,
-        version = this.version,
         created = this.created,
         updated = this.updated,
         lineItemIdPool = this.lineItemIdPool,

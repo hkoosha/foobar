@@ -15,7 +15,6 @@ plugins {
     id("io.spring.dependency-management") version s.DependencyManagement
     kotlin("jvm") version k.jvm
     kotlin("plugin.spring") version k.spring
-    kotlin("plugin.jpa") version k.jpa
 }
 
 group = Foobar.group
@@ -55,8 +54,7 @@ dependencyManagement {
 dependencies {
     compileOnly(project(":definitions"))
 
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    compileOnly("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.boot:spring-boot-starter-validation")
 
     implementation("io.github.microutils:kotlin-logging-jvm:${Libraries.microutilsKotlinLoggingJvm}")

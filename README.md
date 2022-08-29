@@ -186,16 +186,15 @@ make k8s-init-create-db
 # Create kafka topics with proper partitioning configuration.
 make k8s-init-create-topics
 
-# Build the services dependencies, services themselves, their docker image,
-# push the images to minikube and finally run / deploy them.
-# Please wait until at least one pod is ready for each service before running
-# the k8s-deploy command.
+# Build the services dependencies and the services themselves
 make clean \
   libs/opentelemetry-javaagent-1.17.0.jar \
   build-proto \
-  build-api-generator \
-  build-api \
-  build
+  build-api-generator
+ENV=no_db build-api
+make build
+
+# Push to minikube and run on k8s.
 make docker-image
 make k8s-deploy 
 

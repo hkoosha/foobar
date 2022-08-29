@@ -171,12 +171,12 @@ paths:
           description: Forbidden
         "503":
           description: Service Unavailable
-        "201":
+        "200":
           content:
             '*/*':
               schema:
                 $ref: '#/components/schemas/OrderRequestLineItem'
-          description: Created
+          description: OK
       tags:
       - order-request-line-item
       x-content-type: application/json
@@ -349,8 +349,8 @@ paths:
           description: Forbidden
         "503":
           description: Service Unavailable
-        "204":
-          description: No Content
+        "200":
+          description: OK
       tags:
       - order-request-line-item
       x-accepts: '*/*'

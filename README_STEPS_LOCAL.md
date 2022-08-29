@@ -2,9 +2,10 @@
 make clean \
   libs/opentelemetry-javaagent-1.17.0.jar \
   build-proto \
-  build-api-generator \
-  build-api \
-  build
+  build-api-generator
+
+ENV=no_db make build-api
+make build
   
 make local-run-dependencies
 make local-init-create-db

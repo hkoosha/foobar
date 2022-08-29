@@ -1,5 +1,5 @@
 {
     "groupId": "io.koosha.foobar.warehouse",
-    "packageName": "io.cobalt.foobar.connect.warehouse.generated.api",
+    "packageName": "io.koosha.foobar.connect.warehouse.generated.api",
     "serializationLibrary": "jackson"
 }

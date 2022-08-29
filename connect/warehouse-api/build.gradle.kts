@@ -29,9 +29,8 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":common"))
     compileOnly(project(":service:warehouse"))
-    implementation(project(":connect:warehouse-api-build"))
+    // implementation(project(":connect:warehouse-api-build"))
 }
 
 val foobarCleanTask = "foobar-clean-api-build"
@@ -47,8 +46,10 @@ tasks.named("openApiGenerate") {
 
 openApiGenerate {
     val warehouseDir = project(":service:warehouse").projectDir
+    val foobarPackage = "io.koosha.foobar.connect.warehouse.generated.api"
 
-    apiPackage.set("io.koosha.foobar.connect.warehouse.generated.api")
+    apiPackage.set(foobarPackage)
+    modelPackage.set(foobarPackage)
     generatorName.set("io.koosha.foobar.gen.FoobarGenGenerator")
     library.set("feign")
     inputSpec.set("$warehouseDir/${Foobar.OpenApi.projectRelativeFileName}")

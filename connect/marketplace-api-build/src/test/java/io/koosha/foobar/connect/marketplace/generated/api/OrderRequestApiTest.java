@@ -1,12 +1,12 @@
 package io.koosha.foobar.connect.marketplace.generated.api;
 
 import io.koosha.foobar.connect.marketplace.generated.ApiClient;
-import org.openapitools.client.model.EntityBadValueApiError;
-import org.openapitools.client.model.EntityIllegalStateApiError;
-import org.openapitools.client.model.EntityNotFoundApiError;
-import org.openapitools.client.model.OrderRequest;
-import org.openapitools.client.model.OrderRequestCreateRequest;
-import org.openapitools.client.model.OrderRequestUpdateRequest;
+import io.koosha.foobar.connect.marketplace.generated.api.EntityBadValueApiError;
+import io.koosha.foobar.connect.marketplace.generated.api.EntityIllegalStateApiError;
+import io.koosha.foobar.connect.marketplace.generated.api.EntityNotFoundApiError;
+import io.koosha.foobar.connect.marketplace.generated.api.OrderRequest;
+import io.koosha.foobar.connect.marketplace.generated.api.OrderRequestCreateRequest;
+import io.koosha.foobar.connect.marketplace.generated.api.OrderRequestUpdateRequest;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;

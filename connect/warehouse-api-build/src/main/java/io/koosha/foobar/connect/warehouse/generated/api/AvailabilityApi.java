@@ -2,14 +2,14 @@ package io.koosha.foobar.connect.warehouse.generated.api;
 
 import io.koosha.foobar.connect.warehouse.generated.ApiClient;
 import io.koosha.foobar.connect.warehouse.generated.EncodingUtils;
-import org.openapitools.client.model.ApiResponse;
+import io.koosha.foobar.connect.warehouse.generated.api.ApiResponse;
 
-import org.openapitools.client.model.Availability;
-import org.openapitools.client.model.AvailabilityCreateRequest;
-import org.openapitools.client.model.AvailabilityUpdateRequest;
-import org.openapitools.client.model.EntityBadValueApiError;
-import org.openapitools.client.model.EntityIllegalStateApiError;
-import org.openapitools.client.model.EntityNotFoundApiError;
+import io.koosha.foobar.connect.warehouse.generated.api.Availability;
+import io.koosha.foobar.connect.warehouse.generated.api.AvailabilityCreateRequest;
+import io.koosha.foobar.connect.warehouse.generated.api.AvailabilityUpdateRequest;
+import io.koosha.foobar.connect.warehouse.generated.api.EntityBadValueApiError;
+import io.koosha.foobar.connect.warehouse.generated.api.EntityIllegalStateApiError;
+import io.koosha.foobar.connect.warehouse.generated.api.EntityNotFoundApiError;
 import java.util.UUID;
 
 import java.util.ArrayList;

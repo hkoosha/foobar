@@ -9,6 +9,7 @@ import io.koosha.foobar.maker.api.cmd.LineItemCmd
 import io.koosha.foobar.maker.api.cmd.OrderRequestCmd
 import io.koosha.foobar.maker.api.cmd.ProductCmd
 import io.koosha.foobar.maker.api.cmd.SellerCmd
+import io.koosha.foobar.maker.api.cmd.XCreateCmd
 import mu.KotlinLogging
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
@@ -28,6 +29,7 @@ class CliRunner(
     private val lineItemCmd: LineItemCmd,
     private val initCommand: InitCmd,
     private val dumpCmd: DumpCmd,
+    private val xCreateCmd: XCreateCmd,
 ) : ApplicationRunner {
 
     private val log = KotlinLogging.logger {}
@@ -92,6 +94,11 @@ class CliRunner(
         )
 
         matches(this.lineItemCmd.commandName, args.nonOptionArgs.first()) -> this.lineItemCmd.handle(
+            args,
+            args.nonOptionArgs.subList(1, args.nonOptionArgs.size),
+        )
+
+        matches(this.xCreateCmd.commandName, args.nonOptionArgs.first()) -> this.xCreateCmd.handle(
             args,
             args.nonOptionArgs.subList(1, args.nonOptionArgs.size),
         )

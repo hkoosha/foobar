@@ -64,8 +64,13 @@ dependencyManagement {
 }
 
 dependencies {
-    implementation(project(":common"))
     implementation(project(":definitions"))
+
+    implementation(project(":common"))
+    implementation(project(":common-jpa"))
+
+    implementation(project(":service:common-web"))
+
     implementation(project(":service:common-kafka"))
     implementation(project(":service:common-service"))
     implementation(project(":connect:seller-api-build"))
@@ -98,7 +103,6 @@ dependencies {
 
     implementation("org.springdoc:springdoc-openapi-ui:${Libraries.OpenApi.ui}")
     implementation("org.springdoc:springdoc-openapi-kotlin:${Libraries.OpenApi.kotlin}")
-    implementation("org.springdoc:springdoc-openapi-data-rest:${Libraries.OpenApi.rest}")
 
     implementation("io.github.openfeign:feign-jackson:${Libraries.Feign.core}")
 

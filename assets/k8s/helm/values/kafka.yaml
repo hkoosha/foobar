@@ -1,4 +1,4 @@
-deleteTopicEnable: false
+deleteTopicEnable: true
 autoCreateTopicsEnable: false
 
 containerSecurityContext:

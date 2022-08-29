@@ -1,20 +1,19 @@
 package io.koosha.foobar.marketplace.api.service
 
-import feign.FeignException
 import io.koosha.foobar.common.error.EntityBadValueException
-import io.koosha.foobar.common.error.EntityInIllegalStateException
 import io.koosha.foobar.common.error.EntityNotFoundException
-import io.koosha.foobar.common.error.ResourceCurrentlyUnavailableException
 import io.koosha.foobar.common.model.EntityInfo
-import io.koosha.foobar.connect.customer.generated.api.CustomerApi
+import io.koosha.foobar.connect.customer.rx.generated.api.Customer
+import io.koosha.foobar.connect.customer.rx.generated.api.CustomerApi
 import io.koosha.foobar.marketplace.api.model.OrderRequestDO
 import io.koosha.foobar.marketplace.api.model.OrderRequestRepository
 import io.koosha.foobar.marketplace.api.model.OrderRequestState
 import mu.KotlinLogging
 import net.logstash.logback.argument.StructuredArguments.v
-import org.openapitools.client.model.Customer
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.reactive.function.client.WebClientResponseException
+import reactor.core.publisher.Mono
 import java.util.*
 import javax.validation.Validator
 
@@ -30,9 +29,50 @@ class OrderRequestServiceCreationImpl(
 
     private val log = KotlinLogging.logger {}
 
-    private fun validate(
+
+    private fun findCustomer(
         request: OrderRequestCreateRequest,
-    ) {
+    ): Mono<Customer> {
+
+        log.trace("fetching customer, customerId={}", v("customerId", request.customerId))
+        return this
+            .customerClient
+            .getCustomer(request.customerId!!)
+            .flatMap {
+                if (it.isActive) {
+                    Mono.just(it)
+                }
+                else {
+                    log.debug("refused to add orderRequest, customer not found, request={}", v("request", request))
+                    Mono.error(
+                        EntityNotFoundException(
+                            context = setOf(
+                                EntityInfo(
+                                    entityType = ENTITY_TYPE__CUSTOMER,
+                                    entityId = request.customerId,
+                                ),
+                            ),
+                        )
+                    )
+                }
+            }
+            .onErrorMap {
+                if (it is WebClientResponseException.NotFound)
+                    EntityNotFoundException(
+                        entityType = ENTITY_TYPE__SELLER,
+                        entityId = request.customerId,
+                    )
+                else
+                    it
+            }
+    }
+
+    @Transactional(
+        rollbackForClassName = ["java.lang.Exception"]
+    )
+    fun create(
+        request: OrderRequestCreateRequest,
+    ): Mono<OrderRequestDO> {
 
         val errors = this.validator.validate(request)
         if (errors.isNotEmpty()) {
@@ -41,77 +81,30 @@ class OrderRequestServiceCreationImpl(
                 v("request", request),
                 v("validationErrors", errors),
             )
-            throw EntityBadValueException(
-                entityType = OrderRequestDO.ENTITY_TYPE,
-                entityId = null,
-                errors,
-            )
-        }
-    }
-
-    private fun findCustomer(
-        request: OrderRequestCreateRequest,
-    ): Customer {
-
-        log.trace("fetching customer, customerId={}", v("customerId", request.customerId))
-
-        val customer = try {
-            this.customerClient.getCustomer(request.customerId!!)
-        }
-        catch (ex: FeignException.NotFound) {
-            log.debug("refused to add orderRequest, customer not found, request={}", v("request", request))
-            throw EntityNotFoundException(
-                context = setOf(
-                    EntityInfo(
-                        entityType = CustomerApi.ENTITY_TYPE,
-                        entityId = request.customerId,
-                    ),
-                ),
-                ex,
-            )
-        }
-        catch (ex: FeignException.FeignServerException) {
-            log.warn("failure while fetching customer", ex)
-            throw ResourceCurrentlyUnavailableException(ex)
-        }
-        if (!customer.isActive) {
-            log.debug(
-                "refused to create order request in current state of customer, customer={}, request={}",
-                v("customer", customer),
-                v("request", request),
-            )
-            throw EntityInIllegalStateException(
-                entityType = CustomerApi.ENTITY_TYPE,
-                entityId = request.customerId,
-                msg = "customer is not active",
+            return Mono.error(
+                EntityBadValueException(
+                    entityType = OrderRequestDO.ENTITY_TYPE,
+                    entityId = null,
+                    errors,
+                )
             )
         }
 
-        return customer
-    }
+        return this
+            .findCustomer(request)
+            .flatMap {
+                val orderRequest = OrderRequestDO()
+                orderRequest.orderRequestId = UUID.randomUUID().toString()
+                orderRequest.customerId = request.customerId.toString()
+                orderRequest.lineItemIdPool = 0
+                orderRequest.state = OrderRequestState.ACTIVE
 
-    @Transactional(
-        rollbackForClassName = ["java.lang.Exception"]
-    )
-    fun create(
-        request: OrderRequestCreateRequest,
-    ): OrderRequestDO {
-
-        this.validate(request)
-
-        // Make sure customer exists and is active.
-        this.findCustomer(request)
-
-        val orderRequest = OrderRequestDO()
-        orderRequest.orderRequestId = UUID.randomUUID()
-        orderRequest.customerId = request.customerId
-        orderRequest.lineItemIdPool = 0
-        orderRequest.state = OrderRequestState.ACTIVE
-
-        log.info("creating new orderRequest, orderRequest={}", v("orderRequest", orderRequest))
-        this.orderRequestRepo.save(orderRequest)
-        log.info("new orderRequest created, orderRequest={}", v("orderRequest", orderRequest))
-        return orderRequest
+                log.info("creating new orderRequest, orderRequest={}", v("orderRequest", orderRequest))
+                this.orderRequestRepo.save(orderRequest)
+                    .doOnSuccess {
+                        log.info("new orderRequest created, orderRequest={}", v("orderRequest", orderRequest))
+                    }
+            }
     }
 
 }

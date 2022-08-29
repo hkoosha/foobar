@@ -36,3 +36,6 @@
   instead check beforehand, and treat the DataIntegrity exception as http 500
   error.
 - Add paging to REST endpoints.
+
+
+- remove foobar-gen and only override templates

@@ -2,13 +2,13 @@ package io.koosha.foobar.connect.customer.generated.api;
 
 import io.koosha.foobar.connect.customer.generated.ApiClient;
 import io.koosha.foobar.connect.customer.generated.EncodingUtils;
-import org.openapitools.client.model.ApiResponse;
+import io.koosha.foobar.connect.customer.generated.api.ApiResponse;
 
-import org.openapitools.client.model.Address;
-import org.openapitools.client.model.CustomerAddressCreateRequest;
-import org.openapitools.client.model.EntityBadValueApiError;
-import org.openapitools.client.model.EntityIllegalStateApiError;
-import org.openapitools.client.model.EntityNotFoundApiError;
+import io.koosha.foobar.connect.customer.generated.api.Address;
+import io.koosha.foobar.connect.customer.generated.api.CustomerAddressCreateRequest;
+import io.koosha.foobar.connect.customer.generated.api.EntityBadValueApiError;
+import io.koosha.foobar.connect.customer.generated.api.EntityIllegalStateApiError;
+import io.koosha.foobar.connect.customer.generated.api.EntityNotFoundApiError;
 import java.util.UUID;
 
 import java.util.ArrayList;

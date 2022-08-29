@@ -1,0 +1,654 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- description: Generated server url
+  url: http://localhost:4041
+paths:
+  /foobar/warehouse/v1/products:
+    get:
+      operationId: getProducts
+      responses:
+        "404":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityNotFoundApiError'
+          description: Not Found
+        "400":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityBadValueApiError'
+          description: Bad Request
+        "403":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityIllegalStateApiError'
+          description: Forbidden
+        "503":
+          description: Service Unavailable
+        "200":
+          content:
+            '*/*':
+              schema:
+                items:
+                  $ref: '#/components/schemas/Product'
+                type: array
+          description: OK
+      tags:
+      - product
+      x-accepts: '*/*'
+    post:
+      operationId: postProduct
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductCreateRequest'
+        required: true
+      responses:
+        "404":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityNotFoundApiError'
+          description: Not Found
+        "400":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityBadValueApiError'
+          description: Bad Request
+        "403":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityIllegalStateApiError'
+          description: Forbidden
+        "503":
+          description: Service Unavailable
+        "201":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Product'
+          description: Created
+      tags:
+      - product
+      x-content-type: application/json
+      x-accepts: '*/*'
+  /foobar/warehouse/v1/products/{productId}/availabilities:
+    get:
+      operationId: getAvailabilities
+      parameters:
+      - explode: false
+        in: path
+        name: productId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      responses:
+        "404":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityNotFoundApiError'
+          description: Not Found
+        "400":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityBadValueApiError'
+          description: Bad Request
+        "403":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityIllegalStateApiError'
+          description: Forbidden
+        "503":
+          description: Service Unavailable
+        "200":
+          content:
+            '*/*':
+              schema:
+                items:
+                  $ref: '#/components/schemas/Availability'
+                type: array
+          description: OK
+      tags:
+      - availability
+      x-accepts: '*/*'
+    post:
+      operationId: postAvailability
+      parameters:
+      - explode: false
+        in: path
+        name: productId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AvailabilityCreateRequest'
+        required: true
+      responses:
+        "404":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityNotFoundApiError'
+          description: Not Found
+        "400":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityBadValueApiError'
+          description: Bad Request
+        "403":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityIllegalStateApiError'
+          description: Forbidden
+        "503":
+          description: Service Unavailable
+        "201":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Availability'
+          description: Created
+      tags:
+      - availability
+      x-content-type: application/json
+      x-accepts: '*/*'
+  /foobar/warehouse/v1/products/{productId}:
+    delete:
+      operationId: deleteProduct
+      parameters:
+      - explode: false
+        in: path
+        name: productId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      responses:
+        "404":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityNotFoundApiError'
+          description: Not Found
+        "400":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityBadValueApiError'
+          description: Bad Request
+        "403":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityIllegalStateApiError'
+          description: Forbidden
+        "503":
+          description: Service Unavailable
+        "204":
+          description: No Content
+      tags:
+      - product
+      x-accepts: '*/*'
+    get:
+      operationId: getProduct
+      parameters:
+      - explode: false
+        in: path
+        name: productId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      responses:
+        "404":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityNotFoundApiError'
+          description: Not Found
+        "400":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityBadValueApiError'
+          description: Bad Request
+        "403":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityIllegalStateApiError'
+          description: Forbidden
+        "503":
+          description: Service Unavailable
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Product'
+          description: OK
+      tags:
+      - product
+      x-accepts: '*/*'
+    patch:
+      operationId: patchProduct
+      parameters:
+      - explode: false
+        in: path
+        name: productId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductUpdateRequest'
+        required: true
+      responses:
+        "404":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityNotFoundApiError'
+          description: Not Found
+        "400":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityBadValueApiError'
+          description: Bad Request
+        "403":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityIllegalStateApiError'
+          description: Forbidden
+        "503":
+          description: Service Unavailable
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Product'
+          description: OK
+      tags:
+      - product
+      x-content-type: application/json
+      x-accepts: '*/*'
+  /foobar/warehouse/v1/products/{productId}/availabilities/{sellerId}:
+    delete:
+      operationId: deleteAvailability
+      parameters:
+      - explode: false
+        in: path
+        name: productId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: sellerId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      responses:
+        "404":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityNotFoundApiError'
+          description: Not Found
+        "400":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityBadValueApiError'
+          description: Bad Request
+        "403":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityIllegalStateApiError'
+          description: Forbidden
+        "503":
+          description: Service Unavailable
+        "204":
+          description: No Content
+      tags:
+      - availability
+      x-accepts: '*/*'
+    get:
+      operationId: getAvailability
+      parameters:
+      - explode: false
+        in: path
+        name: productId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: sellerId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      responses:
+        "404":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityNotFoundApiError'
+          description: Not Found
+        "400":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityBadValueApiError'
+          description: Bad Request
+        "403":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityIllegalStateApiError'
+          description: Forbidden
+        "503":
+          description: Service Unavailable
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Availability'
+          description: OK
+      tags:
+      - availability
+      x-accepts: '*/*'
+    patch:
+      operationId: patchAvailability
+      parameters:
+      - explode: false
+        in: path
+        name: productId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: sellerId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AvailabilityUpdateRequest'
+        required: true
+      responses:
+        "404":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityNotFoundApiError'
+          description: Not Found
+        "400":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityBadValueApiError'
+          description: Bad Request
+        "403":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EntityIllegalStateApiError'
+          description: Forbidden
+        "503":
+          description: Service Unavailable
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Availability'
+          description: OK
+      tags:
+      - availability
+      x-content-type: application/json
+      x-accepts: '*/*'
+components:
+  schemas:
+    EntityInfo:
+      properties:
+        entityType:
+          type: string
+        entityId:
+          type: object
+      required:
+      - entityType
+      type: object
+    EntityNotFoundApiError:
+      properties:
+        message:
+          type: string
+        context:
+          items:
+            $ref: '#/components/schemas/EntityInfo'
+          type: array
+          uniqueItems: true
+        error:
+          type: string
+      required:
+      - context
+      - error
+      - message
+      type: object
+    EntityBadValueApiError:
+      properties:
+        message:
+          type: string
+        context:
+          additionalProperties:
+            items:
+              type: string
+            type: array
+          type: object
+        error:
+          type: string
+      required:
+      - context
+      - error
+      - message
+      type: object
+    EntityIllegalStateApiError:
+      properties:
+        message:
+          type: string
+        context:
+          items:
+            $ref: '#/components/schemas/EntityInfo'
+          type: array
+          uniqueItems: true
+        error:
+          type: string
+      required:
+      - context
+      - error
+      - message
+      type: object
+    ProductCreateRequest:
+      example:
+        name: name
+        unitSingle: unitSingle
+        active: true
+        unitMultiple: unitMultiple
+      properties:
+        active:
+          type: boolean
+        name:
+          maxLength: 127
+          minLength: 1
+          type: string
+        unitSingle:
+          maxLength: 10
+          minLength: 1
+          type: string
+        unitMultiple:
+          maxLength: 10
+          minLength: 1
+          type: string
+      required:
+      - active
+      - name
+      - unitMultiple
+      - unitSingle
+      type: object
+    Product:
+      example:
+        productId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        name: name
+        unitSingle: unitSingle
+        active: true
+        unitMultiple: unitMultiple
+      properties:
+        productId:
+          format: uuid
+          type: string
+        active:
+          type: boolean
+        name:
+          type: string
+        unitMultiple:
+          type: string
+        unitSingle:
+          type: string
+      required:
+      - active
+      - name
+      - productId
+      - unitMultiple
+      - unitSingle
+      type: object
+    AvailabilityCreateRequest:
+      example:
+        sellerId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        unitsAvailable: 0
+        pricePerUnit: 0
+      properties:
+        sellerId:
+          format: uuid
+          type: string
+        unitsAvailable:
+          format: int64
+          minimum: 0
+          type: integer
+        pricePerUnit:
+          format: int64
+          minimum: 0
+          type: integer
+      required:
+      - pricePerUnit
+      - sellerId
+      - unitsAvailable
+      type: object
+    Availability:
+      example:
+        sellerId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        unitsAvailable: 0
+        frozenUnits: 6
+        pricePerUnit: 1
+      properties:
+        sellerId:
+          format: uuid
+          type: string
+        unitsAvailable:
+          format: int64
+          type: integer
+        frozenUnits:
+          format: int64
+          type: integer
+        pricePerUnit:
+          format: int64
+          type: integer
+      required:
+      - frozenUnits
+      - pricePerUnit
+      - sellerId
+      - unitsAvailable
+      type: object
+    ProductUpdateRequest:
+      example:
+        name: name
+        unitSingle: unitSingle
+        active: true
+        unitMultiple: unitMultiple
+      properties:
+        active:
+          type: boolean
+        name:
+          maxLength: 127
+          minLength: 1
+          type: string
+        unitSingle:
+          maxLength: 10
+          minLength: 1
+          type: string
+        unitMultiple:
+          maxLength: 10
+          minLength: 1
+          type: string
+      type: object
+    AvailabilityUpdateRequest:
+      example:
+        unitsAvailable: 0
+        unitsToFreeze: 0
+        pricePerUnit: 0
+      properties:
+        unitsAvailable:
+          format: int64
+          minimum: 0
+          type: integer
+        unitsToFreeze:
+          format: int64
+          minimum: 0
+          type: integer
+        pricePerUnit:
+          format: int64
+          minimum: 0
+          type: integer
+      type: object
+

@@ -29,7 +29,7 @@ repositories {
 
 dependencies {
     compileOnly(project(":service:marketplace"))
-    implementation(project(":connect:marketplace-api-build"))
+    // implementation(project(":connect:marketplace-api-build"))
 }
 
 tasks.register<Delete>(Foobar.Gradle.foobarCleanApiBuildTaskName) {
@@ -43,8 +43,10 @@ tasks.named("openApiGenerate") {
 
 openApiGenerate {
     val marketplaceDir = project(":service:marketplace").projectDir
+    val foobarPackage = "io.koosha.foobar.connect.marketplace.generated.api"
 
-    apiPackage.set("io.koosha.foobar.connect.marketplace.generated.api")
+    apiPackage.set(foobarPackage)
+    modelPackage.set(foobarPackage)
     generatorName.set("io.koosha.foobar.gen.FoobarGenGenerator")
     library.set("feign")
     inputSpec.set("$marketplaceDir/${Foobar.OpenApi.projectRelativeFileName}")

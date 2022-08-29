@@ -1,5 +1,6 @@
 package io.koosha.foobar.marketplace.api.ctl
 
+import io.koosha.foobar.common.toUUID
 import io.koosha.foobar.marketplace.API_PATH_PREFIX
 import io.koosha.foobar.marketplace.api.model.OrderRequestDO
 import io.koosha.foobar.marketplace.api.model.OrderRequestState
@@ -8,7 +9,6 @@ import io.koosha.foobar.marketplace.api.service.OrderRequestService
 import io.koosha.foobar.marketplace.api.service.OrderRequestUpdateRequest
 import io.swagger.v3.oas.annotations.tags.Tag
 import io.swagger.v3.oas.annotations.tags.Tags
-import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -18,12 +18,11 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder
+import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 import java.util.*
-import javax.servlet.http.HttpServletResponse
 import javax.validation.Valid
 
 
@@ -37,67 +36,54 @@ class OrderRequestApiController(
 ) {
 
     @GetMapping
-    @ResponseBody
     fun getOrderRequests(
         @RequestParam(required = false)
         customerId: UUID?,
-    ): List<OrderRequest> =
+    ): Flux<OrderRequest> =
         when (customerId) {
             null -> this.service.findAll()
             else -> this.service.findAllOrderRequestsOfCustomer(customerId)
         }.map(::OrderRequest)
 
     @GetMapping("/{orderRequestId}")
-    @ResponseBody
     fun getOrderRequest(
         @PathVariable
         orderRequestId: UUID,
-    ): OrderRequest = OrderRequest(this.service.findByIdOrFail(orderRequestId))
+    ): Mono<OrderRequest> =
+        this.service
+            .findByIdOrFail(orderRequestId)
+            .map(::OrderRequest)
 
     @PostMapping
-    @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     fun postOrderRequest(
         @RequestBody
         @Valid
         request: OrderRequestCreateRequest,
-        response: HttpServletResponse,
-    ): OrderRequest {
-
-        val entity: OrderRequestDO = this.service.create(request)
-
-        val location = MvcUriComponentsBuilder
-            .fromMethodName(
-                OrderRequestApiController::class.java,
-                "getOrderRequest",
-                entity.orderRequestId,
-            )
-            .buildAndExpand(
-                entity.orderRequestId,
-            )
-            .toUri()
-            .toASCIIString()
-        response.setHeader(HttpHeaders.LOCATION, location)
-
-        return OrderRequest(entity)
-    }
+    ): Mono<OrderRequest> =
+        // TODO set http location header.
+        this.service
+            .create(request)
+            .map(::OrderRequest)
 
     @PatchMapping("/{orderRequestId}")
-    @ResponseBody
     fun patchOrderRequest(
         @PathVariable
         orderRequestId: UUID,
         @RequestBody
         request: OrderRequestUpdateRequest,
-    ): OrderRequest = OrderRequest(this.service.update(orderRequestId, request))
+    ): Mono<OrderRequest> =
+        this.service
+            .update(orderRequestId, request)
+            .map(::OrderRequest)
 
     @DeleteMapping("/{orderRequestId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteOrderRequest(
         @PathVariable
         orderRequestId: UUID,
-    ) = this.service.delete(orderRequestId)
-
+    ): Mono<Void> =
+        this.service.delete(orderRequestId)
 
     data class OrderRequest(
 
@@ -110,9 +96,9 @@ class OrderRequestApiController(
 
         constructor(entity: OrderRequestDO) : this(
 
-            orderRequestId = entity.orderRequestId!!,
-            customerId = entity.customerId!!,
-            sellerId = entity.sellerId,
+            orderRequestId = entity.orderRequestId!!.toUUID(),
+            customerId = entity.customerId!!.toUUID(),
+            sellerId = entity.sellerId?.toUUID(),
             state = entity.state!!,
             subTotal = entity.subTotal,
         )

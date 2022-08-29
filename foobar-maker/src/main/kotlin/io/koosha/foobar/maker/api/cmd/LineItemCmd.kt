@@ -2,6 +2,7 @@ package io.koosha.foobar.maker.api.cmd
 
 
 import io.koosha.foobar.connect.customer.generated.api.AddressApi
+import io.koosha.foobar.connect.marketplace.generated.api.LineItemRequest
 import io.koosha.foobar.connect.marketplace.generated.api.OrderRequestApi
 import io.koosha.foobar.connect.marketplace.generated.api.OrderRequestLineItemApi
 import io.koosha.foobar.connect.warehouse.generated.api.AvailabilityApi
@@ -14,7 +15,6 @@ import io.koosha.foobar.maker.api.model.EntityId
 import io.koosha.foobar.maker.api.model.EntityIdRepository
 import io.koosha.foobar.maker.api.svc.EntityIdService
 import mu.KotlinLogging
-import org.openapitools.client.model.LineItemRequest
 import org.springframework.boot.ApplicationArguments
 import org.springframework.stereotype.Component
 import java.util.*

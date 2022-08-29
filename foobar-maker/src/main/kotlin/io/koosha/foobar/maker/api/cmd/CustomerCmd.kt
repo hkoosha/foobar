@@ -1,6 +1,10 @@
 package io.koosha.foobar.maker.api.cmd
 
 import io.koosha.foobar.connect.customer.generated.api.CustomerApi
+import io.koosha.foobar.connect.customer.generated.api.CustomerCreateRequest
+import io.koosha.foobar.connect.customer.generated.api.CustomerCreateRequestName
+import io.koosha.foobar.connect.customer.generated.api.CustomerUpdateRequest
+import io.koosha.foobar.connect.customer.generated.api.CustomerUpdateRequestName
 import io.koosha.foobar.maker.api.Command
 import io.koosha.foobar.maker.api.assertStatusCode
 import io.koosha.foobar.maker.api.first
@@ -13,10 +17,6 @@ import io.koosha.foobar.maker.api.stringAll
 import io.koosha.foobar.maker.api.svc.EntityIdService
 import io.koosha.foobar.maker.api.svc.Rand
 import mu.KotlinLogging
-import org.openapitools.client.model.CustomerCreateRequest
-import org.openapitools.client.model.CustomerCreateRequestName
-import org.openapitools.client.model.CustomerUpdateRequest
-import org.openapitools.client.model.CustomerUpdateRequestName
 import org.springframework.boot.ApplicationArguments
 import org.springframework.stereotype.Component
 
