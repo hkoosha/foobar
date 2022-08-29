@@ -78,7 +78,7 @@ dependencies {
 
     implementation(project(":common"))
 
-    // implementation(project(":service:common-kafka"))
+    implementation(project(":service:common-kafka"))
 
     implementation(project(":connect:rx-customer-api-build"))
     implementation(project(":connect:rx-seller-api-build"))
@@ -92,7 +92,7 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
     implementation("org.springframework.cloud:spring-cloud-starter-sleuth")
     implementation("org.springframework.cloud:spring-cloud-sleuth-zipkin")
-    // implementation("org.springframework.kafka:spring-kafka")
+    implementation("org.springframework.kafka:spring-kafka")
 
     runtimeOnly("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.flywaydb:flyway-core:8.2.0")
@@ -102,7 +102,7 @@ dependencies {
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
-    implementation("io.projectreactor.kafka:reactor-kafka:1.3.12")
+    // implementation("io.projectreactor.kafka:reactor-kafka:1.3.12")
 
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
@@ -130,7 +130,7 @@ dependencies {
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.projectreactor:reactor-test")
-    // testImplementation("org.springframework.kafka:spring-kafka-test")
+    testImplementation("org.springframework.kafka:spring-kafka-test")
 }
 
 openApi {

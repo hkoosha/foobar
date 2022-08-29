@@ -29,9 +29,8 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":common"))
     compileOnly(project(":service:warehouse"))
-    implementation(project(":connect:warehouse-api-build"))
+    // implementation(project(":connect:warehouse-api-build"))
 }
 
 val foobarCleanTask = "foobar-clean-api-build"

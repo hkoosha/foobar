@@ -28,7 +28,7 @@ repositories {
 
 dependencies {
     compileOnly(project(":service:customer"))
-    implementation(project(":connect:rx-customer-api-build"))
+    // implementation(project(":connect:rx-customer-api-build"))
 }
 
 tasks.register<Delete>(Foobar.Gradle.foobarCleanApiBuildTaskName) {
@@ -38,6 +38,19 @@ tasks.register<Delete>(Foobar.Gradle.foobarCleanApiBuildTaskName) {
 tasks.named("openApiGenerate") {
     dependsOn(tasks.named(Foobar.Gradle.foobarCleanApiBuildTaskName))
     dependsOn(project(":service:customer").tasks.named("generateOpenApiDocs"))
+
+    // TODO find a way to override webclient's build.gradle mustache template.
+    doLast {
+        val toFix = file("$projectDir/../rx-customer-api-build/build.gradle")
+        val newContent = toFix.readText()
+            .replace(
+                "main = System.getProperty('mainClass')",
+                "mainClass.set(System.getProperty('mainClass'))"
+            )
+        toFix.delete()
+        toFix.createNewFile()
+        toFix.writeText(newContent)
+    }
 }
 
 openApiGenerate {

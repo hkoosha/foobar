@@ -27,6 +27,7 @@ import java.util.*
 @Component
 class OrderRequestSellerProcessor(
     private val processedRepo: ProcessedOrderRequestSellerRepository,
+
     private val orderRequestService: OrderRequestService,
 ) : ConsumerSeekAware {
 

@@ -28,9 +28,8 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":common"))
     compileOnly(project(":service:seller"))
-    implementation(project(":connect:seller-api-build"))
+    // implementation(project(":connect:seller-api-build"))
 }
 
 tasks.register<Delete>(Foobar.Gradle.foobarCleanApiBuildTaskName) {

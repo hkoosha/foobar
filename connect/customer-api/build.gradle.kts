@@ -29,7 +29,7 @@ repositories {
 
 dependencies {
     compileOnly(project(":service:customer"))
-    implementation(project(":connect:customer-api-build"))
+    // implementation(project(":connect:customer-api-build"))
 }
 
 tasks.register<Delete>(Foobar.Gradle.foobarCleanApiBuildTaskName) {
