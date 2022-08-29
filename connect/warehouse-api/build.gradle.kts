@@ -30,7 +30,6 @@ repositories {
 
 dependencies {
     compileOnly(project(":service:warehouse"))
-    // implementation(project(":connect:warehouse-api-build"))
 }
 
 val foobarCleanTask = "foobar-clean-api-build"

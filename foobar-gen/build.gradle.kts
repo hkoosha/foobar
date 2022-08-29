@@ -1,9 +1,10 @@
+@file:Suppress("RemoveRedundantQualifierName")
+
 import io.koosha.foobar.Foobar
 import io.koosha.foobar.Libraries
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    @Suppress("RemoveRedundantQualifierName")
     val k = io.koosha.foobar.Libraries.Kotlin
 
     kotlin("jvm") version k.jvm

@@ -1,3 +1,5 @@
+@file:Suppress("RemoveRedundantQualifierName")
+
 import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
 import io.koosha.foobar.Foobar
@@ -7,16 +9,9 @@ import org.springdoc.openapi.gradle.plugin.OpenApiGeneratorTask
 import org.springframework.boot.gradle.tasks.run.BootRun
 
 plugins {
-    @Suppress("RemoveRedundantQualifierName")
     val j = io.koosha.foobar.Libraries.Jib
-
-    @Suppress("RemoveRedundantQualifierName")
     val s = io.koosha.foobar.Libraries.Spring
-
-    @Suppress("RemoveRedundantQualifierName")
     val k = io.koosha.foobar.Libraries.Kotlin
-
-    @Suppress("RemoveRedundantQualifierName")
     val d = io.koosha.foobar.Libraries.OpenApi
 
     id("io.gitlab.arturbosch.detekt") version k.detekt

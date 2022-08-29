@@ -37,6 +37,7 @@ object Libraries {
         const val gradlePlugin = "1.3.4"
         const val generatorPlugin = "6.0.1"
         const val jacksonNullable = "0.2.3"
+        const val swaggerAnnotations = "1.6.6"
     }
 
     object Feign {
@@ -56,13 +57,19 @@ object Libraries {
         const val logstashLogbackEncoder = "7.2"
     }
 
+    object Reactor {
+        const val core = "3.4.22"
+        const val nettyHttp = "1.0.22"
+    }
+
     const val mariadb = "3.0.7"
     const val postgres = "42.5.0"
     const val r2dbcMariadb = "1.1.2"
     const val r2dbcPostgres = "0.9.1.RELEASE"
     const val flyway = "8.2.0"
 
-    const val jakartaAnnotationApi = "2.1.1"
+    const val jakartaAnnotationApi = "1.3.5"
     const val javaxAnnotation = "1.3.2"
     const val microutilsKotlinLoggingJvm = "2.1.23"
+
 }

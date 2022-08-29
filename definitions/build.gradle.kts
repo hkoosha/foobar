@@ -1,10 +1,11 @@
+@file:Suppress("RemoveRedundantQualifierName")
+
 import com.google.protobuf.gradle.protobuf
 import com.google.protobuf.gradle.protoc
 import io.koosha.foobar.Foobar
 import io.koosha.foobar.Libraries
 
 plugins {
-    @Suppress("RemoveRedundantQualifierName")
     val p = io.koosha.foobar.Libraries.Proto
 
     java

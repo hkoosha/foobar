@@ -29,7 +29,6 @@ repositories {
 
 dependencies {
     compileOnly(project(":service:marketplace"))
-    // implementation(project(":connect:marketplace-api-build"))
 }
 
 tasks.register<Delete>(Foobar.Gradle.foobarCleanApiBuildTaskName) {
