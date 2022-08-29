@@ -25,15 +25,26 @@ microservices, distributed tracing, monitoring, and ... using Spring Boot.
 
 - Feign: is the HTTP client that the microservices use to communicate with each
   other. The underlying deserializer is Jackson and the transport library is
-  OkHTTP.
+  OkHTTP. Feign clients are generated using open API generator.
 
 - ELK stack: to collect logs. elasticsearch and Kibana are there, but the L in
   ELK is replaced by filebeat, which directly sends the logs to elasticsearch.
   With ELK, also comes structured logging. So the application _can_ log in json
   format too. On local deployments it is not enabled by default. On k8s, json
   logs are appended to a file, a second container in the pod dumps it to stdout
-  and finally filebeat DeamonSet scraps it and sends to elasticsearch. This way
+  and finally filebeat DaemonSet scraps it and sends to elasticsearch. This way
   normal readable logs are available too alongside machine readable json logs.
+
+- Open API: is used to generate HTTP client for the endpoints. Both blocking
+  clients (Feign) and reactive/nonblocking (Spring's webclient).
+
+- Spring Webflux / Project reactor: one of the subprojects (foobar-marketplace),
+  is reactive and uses Spring Webflux. Fot the sake of simplicity other
+  subprojects of foobar are blocking.
+
+- R2dbc: it replaces Hibernate in the reactive subproject.
+
+- Flyway: for DB migration. Currently used only in the reactive subproject.
 
 - Kubernetes: it's possible to deploy all the services to kubernetes. The way
   services are wired together are not currently the best way or even the right
