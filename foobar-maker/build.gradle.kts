@@ -1,3 +1,5 @@
+@file:Suppress("RemoveRedundantQualifierName")
+
 import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
 import io.koosha.foobar.Foobar
@@ -5,13 +7,8 @@ import io.koosha.foobar.Libraries
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    @Suppress("RemoveRedundantQualifierName")
     val j = io.koosha.foobar.Libraries.Jib
-
-    @Suppress("RemoveRedundantQualifierName")
     val s = io.koosha.foobar.Libraries.Spring
-
-    @Suppress("RemoveRedundantQualifierName")
     val k = io.koosha.foobar.Libraries.Kotlin
 
     id("io.gitlab.arturbosch.detekt") version k.detekt
