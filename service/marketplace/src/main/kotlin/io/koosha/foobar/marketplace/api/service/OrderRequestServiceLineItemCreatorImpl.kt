@@ -2,6 +2,7 @@ package io.koosha.foobar.marketplace.api.service
 
 import io.koosha.foobar.common.error.EntityBadValueException
 import io.koosha.foobar.common.error.EntityInIllegalStateException
+import io.koosha.foobar.common.error.EntityNotFoundException
 import io.koosha.foobar.connect.warehouse.rx.generated.api.Product
 import io.koosha.foobar.connect.warehouse.rx.generated.api.ProductApi
 import io.koosha.foobar.marketplace.api.model.OrderRequestDO
@@ -11,11 +12,13 @@ import io.koosha.foobar.marketplace.api.model.OrderRequestState
 import mu.KotlinLogging
 import net.logstash.logback.argument.StructuredArguments.v
 import org.springframework.stereotype.Service
+import org.springframework.web.reactive.function.client.WebClientResponseException
 import reactor.core.publisher.Mono
 import java.util.*
 import javax.validation.Validator
 
 
+// TODO handle and translate retryable errors.
 @Service
 class OrderRequestServiceLineItemCreatorImpl(
     private val validator: Validator,
@@ -86,6 +89,15 @@ class OrderRequestServiceLineItemCreatorImpl(
                     )
                 }
             }
+            .onErrorMap {
+                if (it is WebClientResponseException.NotFound)
+                    EntityNotFoundException(
+                        entityType = ENTITY_TYPE__PRODUCT,
+                        entityId = request.productId,
+                    )
+                else
+                    it
+            }
     }
 
     private fun validateLineItems(
@@ -96,19 +108,19 @@ class OrderRequestServiceLineItemCreatorImpl(
             .getLineItems(orderRequestId)
             .filter { it.productId == product.productId.toString() }
             .map { it.productId!! }
-            .last("")
+            .collectList()
             .flatMap { existing ->
                 if (existing.isEmpty()) {
                     Mono.just("")
                 }
                 else {
-                    // TODO how to get all UUIDs?
-                    log.trace("orderRequest already has a line item for productIds={}", v("productIds", existing))
+                    val ids = existing.joinToString(", ")
+                    log.trace("orderRequest already has a line item for productIds={}", v("productIds", ids))
                     Mono.error(
                         EntityBadValueException(
                             entityType = OrderRequestLineItemDO.ENTITY_TYPE,
                             entityId = null,
-                            "orderRequest already has a line item for productId=$existing",
+                            "orderRequest=$orderRequestId already has line item for productIds=$ids",
                         )
                     )
                 }
@@ -128,16 +140,6 @@ class OrderRequestServiceLineItemCreatorImpl(
         lineItem.orderRequestId = orderRequest.orderRequestId
         lineItem.units = request.units
         lineItem.productId = request.productId.toString()
-
-        // val existingLineItem = this.lineItemRepo.findById(
-        //     OrderRequestLineItemDO.Pk(
-        //         lineItemId,
-        //         orderRequest,
-        //     )
-        // )
-        // check(!existingLineItem.isPresent) {
-        //     "duplicate lineItem=${existingLineItem.get().orderRequestLineItemPk}"
-        // }
 
         log.info(
             "adding order request line item, orderRequest={} lineItem={}, request={}",

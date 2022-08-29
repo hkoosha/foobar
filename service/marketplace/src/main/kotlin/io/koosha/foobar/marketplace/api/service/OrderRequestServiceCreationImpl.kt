@@ -12,6 +12,7 @@ import mu.KotlinLogging
 import net.logstash.logback.argument.StructuredArguments.v
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.reactive.function.client.WebClientResponseException
 import reactor.core.publisher.Mono
 import java.util.*
 import javax.validation.Validator
@@ -34,7 +35,8 @@ class OrderRequestServiceCreationImpl(
     ): Mono<Customer> {
 
         log.trace("fetching customer, customerId={}", v("customerId", request.customerId))
-        return this.customerClient
+        return this
+            .customerClient
             .getCustomer(request.customerId!!)
             .flatMap {
                 if (it.isActive) {
@@ -53,6 +55,15 @@ class OrderRequestServiceCreationImpl(
                         )
                     )
                 }
+            }
+            .onErrorMap {
+                if (it is WebClientResponseException.NotFound)
+                    EntityNotFoundException(
+                        entityType = ENTITY_TYPE__SELLER,
+                        entityId = request.customerId,
+                    )
+                else
+                    it
             }
     }
 

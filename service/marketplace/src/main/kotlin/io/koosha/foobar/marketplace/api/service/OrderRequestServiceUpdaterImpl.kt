@@ -4,6 +4,7 @@ import io.koosha.foobar.HeaderProto
 import io.koosha.foobar.common.cfg.KafkaConfig
 import io.koosha.foobar.common.error.EntityBadValueException
 import io.koosha.foobar.common.error.EntityInIllegalStateException
+import io.koosha.foobar.common.error.EntityNotFoundException
 import io.koosha.foobar.common.toUUID
 import io.koosha.foobar.connect.seller.rx.generated.api.Seller
 import io.koosha.foobar.connect.seller.rx.generated.api.SellerApi
@@ -18,6 +19,7 @@ import net.logstash.logback.argument.StructuredArguments.v
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Service
+import org.springframework.web.reactive.function.client.WebClientResponseException
 import reactor.core.publisher.Mono
 import reactor.kotlin.core.publisher.toMono
 import java.time.Clock
@@ -50,7 +52,8 @@ class OrderRequestServiceUpdaterImpl(
     ): Mono<Seller> {
 
         log.trace("fetching seller, sellerId={}", v("sellerId", request.sellerId))
-        return this.sellerClient
+        return this
+            .sellerClient
             .getSeller(request.sellerId!!)
             .flatMap {
                 if (!it.isActive) {
@@ -62,7 +65,7 @@ class OrderRequestServiceUpdaterImpl(
                     )
                     Mono.error(
                         EntityInIllegalStateException(
-                            entityType = OrderRequestDO.ENTITY_TYPE,
+                            entityType = ENTITY_TYPE__SELLER,
                             entityId = orderRequest.orderRequestId,
                             msg = "seller is not active, can not update order request"
                         )
@@ -71,6 +74,15 @@ class OrderRequestServiceUpdaterImpl(
                 else {
                     Mono.just(it)
                 }
+            }
+            .onErrorMap {
+                if (it is WebClientResponseException.NotFound)
+                    EntityNotFoundException(
+                        entityType = ENTITY_TYPE__SELLER,
+                        entityId = request.sellerId,
+                    )
+                else
+                    it
             }
     }
 

@@ -7,7 +7,6 @@ import io.koosha.foobar.marketplace.api.model.OrderRequestState
 import mu.KotlinLogging
 import net.logstash.logback.argument.StructuredArguments.v
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import reactor.core.publisher.Mono
 import reactor.kotlin.core.publisher.switchIfEmpty
 import java.util.*
@@ -23,9 +22,6 @@ class OrderRequestServiceLineItemDeletionImpl(
     private val log = KotlinLogging.logger {}
 
 
-    @Transactional(
-        rollbackForClassName = ["java.lang.Exception"]
-    )
     fun deleteLineItem(
         orderRequestId: UUID,
         lineItemId: Long,
