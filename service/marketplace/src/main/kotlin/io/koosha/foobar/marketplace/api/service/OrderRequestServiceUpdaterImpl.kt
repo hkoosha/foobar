@@ -254,9 +254,6 @@ class OrderRequestServiceUpdaterImpl(
                 val orderRequest = it0.first
                 val changed = it0.second
                 if (changed != null) {
-                    log.trace(
-                        "sending new orderRequest state to kafka, orderRequest={}", v("orderRequest", orderRequest)
-                    )
                     this.orderRequestRepo
                         .save(orderRequest)
                         .flatMap {

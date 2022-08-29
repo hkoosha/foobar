@@ -67,9 +67,8 @@ class OrderRequestSellerProcessor(
                     && it.cause?.message?.contains("Duplicate entry") == true
                 ) {
                     log.trace(
-                        "record already processed, skipping, orderRequestId={}, payload={}",
+                        "record already processed, skipping, orderRequestId={}",
                         v("orderRequestId", orderRequestId),
-                        v("payload", payload)
                     )
                     true
                 }
@@ -115,17 +114,6 @@ class OrderRequestSellerProcessor(
                 )
                 .block()
         }
-
-        this.processedRepo
-            .save(
-                ProcessedOrderRequestSellerDO(
-                    orderRequestId = orderRequestId.toString(),
-                    version = null,
-                    created = null,
-                    updated = null,
-                )
-            )
-            .block()
 
         ack.acknowledge()
     }
