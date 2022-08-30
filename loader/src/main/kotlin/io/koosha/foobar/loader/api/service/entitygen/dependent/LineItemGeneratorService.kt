@@ -91,7 +91,7 @@ class LineItemGeneratorService(
 
             val req = LineItemRequest()
             req.productId = productId
-            req.units = this.rand.long(max = 100, min = 1)
+            req.units = this.rand.long(max = 50, min = 1)
 
             val response = this.lineItemApi.postLineItemWithHttpInfo(orderRequestId, req)
             if (response.statusCode !in 200..299)

@@ -91,7 +91,7 @@ class AvailabilityGeneratorService(
 
             val req = AvailabilityCreateRequest()
             req.sellerId = sellerId
-            req.unitsAvailable = this.rand.long(max = 10000, min = 10)
+            req.unitsAvailable = this.rand.long(max = 10_000, min = 10)
             req.pricePerUnit = this.rand.long(max = 100_000L, min = 10_000)
 
             val response = this.availabilityApi.postAvailabilityWithHttpInfo(productId, req)
