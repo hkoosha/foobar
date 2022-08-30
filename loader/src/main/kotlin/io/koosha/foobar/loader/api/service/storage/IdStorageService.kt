@@ -50,18 +50,6 @@ interface IdStorageService {
 
     // =========================================================================
 
-    fun getSellerProductCursor(sellerId: UUID): Int
-
-    fun incProductCursorOfGenerateAvailability(sellerId: UUID, expectedValue: Int): Int
-
     // =========================================================================
-
-    fun getProductCursorOfGenerateAvailability(): Int
-
-    fun incProductCursorOfGenerateAvailability(expectedValue: Int): Int
-
-    fun getSellerCursorGenerateAvailability(): Int
-
-    fun incSellerCursorGenerateAvailability(expectedValue: Int): Int
 
 }

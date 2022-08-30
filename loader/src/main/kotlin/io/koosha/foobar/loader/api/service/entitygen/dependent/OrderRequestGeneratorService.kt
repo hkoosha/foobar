@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
+import java.util.concurrent.ThreadPoolExecutor
 
 
 @Service
@@ -24,27 +25,39 @@ class OrderRequestGeneratorService(
 
     private val log = KotlinLogging.logger {}
 
-    private val executorService = Executors.newFixedThreadPool(this.numTasks)
+    private val executorService = Executors.newFixedThreadPool(this.numTasks) as ThreadPoolExecutor
 
 
     fun generate(running: () -> Boolean) {
 
         log.info("generating...")
 
+        var i = 0
+
         while (running()) {
 
-            log.info("starting generation batch")
+            i++
+            if (i == Int.MAX_VALUE)
+                i = 0
+            if (i > 0 && i % 10_000 == 0)
+                log.info("generation batch started")
 
             val finish = mutableListOf<Future<*>>()
-            for (i in ids.getCustomerRange().step(this.numTasks))
+            for (j in ids.getCustomerRange().step(this.numTasks))
                 finish += this.executorService.submit {
-                    this.generate(i until (i + this.numTasks))
+                    this.generate(j until (j + this.numTasks))
                 }
 
             for (f in finish)
                 f.get()
 
-            log.info("generation batch finished")
+            if(finish.size == 0) {
+                log.warn("no customer available, sleeping: ${ids.getCustomerRange()}")
+                Thread.sleep(100)
+            }
+
+            if (i > 0 && i % 10_000 == 0)
+                log.info("generation batch completed, running: ${executorService.activeCount}")
         }
 
         this.executorService.shutdown()
@@ -58,7 +71,13 @@ class OrderRequestGeneratorService(
 
 
     fun tryGenerate(customerIndex: Int): Boolean = try {
-        this.generate(customerIndex)
+        if (!this.generate(customerIndex)) {
+            log.error("customer generator failed for customer index: $customerIndex")
+            false
+        }
+        else {
+            true
+        }
     }
     catch (e: Exception) {
         log.error("error: customerIndex=$customerIndex, ${e.javaClass.name} -> ${e.message}")

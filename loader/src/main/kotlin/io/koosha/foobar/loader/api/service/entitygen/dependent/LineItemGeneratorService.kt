@@ -37,12 +37,18 @@ class LineItemGeneratorService(
 
         log.info("generating...")
 
+        var i = 0
+
         while (running()) {
 
-            log.info("starting generation batch")
+            i++
+            if (i == Int.MAX_VALUE)
+                i = 0
+            if (i > 0 && i % 10000 == 0)
+                log.info("generation batch started")
 
             val finish = mutableListOf<Future<*>>()
-            for (i in 0 until this.numTasks)
+            for (j in 0 until this.numTasks)
                 finish += this.executorService.submit {
                     this.tryGenerate()
                 }
@@ -50,14 +56,21 @@ class LineItemGeneratorService(
             for (f in finish)
                 f.get()
 
-            log.info("generation batch finished")
+            if (i > 0 && i % 10000 == 0)
+                log.info("generation batch completed")
         }
 
         this.executorService.shutdown()
     }
 
     fun tryGenerate(): Boolean = try {
-        this.generate()
+        if (!this.generate()) {
+            log.error("line_item generator failed")
+            false
+        }
+        else {
+            true
+        }
     }
     catch (e: Exception) {
         log.error("error:  ${e.javaClass.name} -> ${e.message}")

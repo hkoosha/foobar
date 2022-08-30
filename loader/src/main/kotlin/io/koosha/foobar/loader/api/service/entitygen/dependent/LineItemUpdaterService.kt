@@ -29,12 +29,18 @@ class LineItemUpdaterService(
 
         log.info("generating...")
 
+        var i = 0
+
         while (running()) {
 
-            log.info("starting generation batch")
+            i++
+            if (i == Int.MAX_VALUE)
+                i = 0
+            if (i > 0 && i % 10000 == 0)
+                log.info("generation batch started")
 
             val finish = mutableListOf<Future<*>>()
-            for (i in 0 until this.numTasks)
+            for (j in 0 until this.numTasks)
                 finish += this.executorService.submit {
                     this.tryGenerate()
                 }
@@ -42,14 +48,21 @@ class LineItemUpdaterService(
             for (f in finish)
                 f.get()
 
-            log.info("generation batch finished")
+            if (i > 0 && i % 10000 == 0)
+                log.info("generation batch finished")
         }
 
         this.executorService.shutdown()
     }
 
     fun tryGenerate(): Boolean = try {
-        this.generate()
+        if (!this.generate()) {
+            log.error("line_item updater failed")
+            false
+        }
+        else {
+            true
+        }
     }
     catch (e: Exception) {
         log.error("error:  ${e.javaClass.name} -> ${e.message}")
@@ -63,7 +76,6 @@ class LineItemUpdaterService(
         val req = OrderRequestUpdateRequest()
         req.state = OrderRequestUpdateRequest.StateEnum.LIVE
 
-        log.info { "request:\n$req" }
         val response = this.orderRequestApi.patchOrderRequestWithHttpInfo(orderRequestId, req)
         return response.statusCode in 200..299
     }

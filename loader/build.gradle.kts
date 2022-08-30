@@ -56,7 +56,7 @@ dependencyManagement {
 
 dependencies {
     implementation(project(":common"))
-    implementation(project(":common-jpa"))
+    // implementation(project(":common-jpa"))
 
     implementation(project(":connect:customer-api-build"))
     implementation(project(":connect:seller-api-build"))
@@ -64,8 +64,8 @@ dependencies {
     implementation(project(":connect:marketplace-api-build"))
 
     implementation("org.springframework.boot:spring-boot-starter")
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    // implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    // implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
     implementation("org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j")

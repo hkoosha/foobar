@@ -31,20 +31,26 @@ class AvailabilityGeneratorService(
 
         log.info("generating...")
 
+        var i = 0
         while (running()) {
 
-            log.info("starting generation batch")
+            i++
+            if (i == Int.MAX_VALUE)
+                i = 0
+            if (i > 0 && i % 10000 == 0)
+                log.info("generation batch started")
 
             val finish = mutableListOf<Future<*>>()
-            for (i in ids.getSellerRange().step(this.numTasks))
+            for (j in ids.getSellerRange().step(this.numTasks))
                 finish += this.executorService.submit {
-                    this.generate(i until (i + this.numTasks))
+                    this.generate(j until (j + this.numTasks))
                 }
 
             for (f in finish)
                 f.get()
 
-            log.info("generation batch finished")
+            if (i > 0 && i % 10000 == 0)
+                log.info("generation batch completed")
         }
 
         this.executorService.shutdown()
@@ -58,7 +64,13 @@ class AvailabilityGeneratorService(
 
 
     fun tryGenerate(sellerIndex: Int): Boolean = try {
-        this.generate(sellerIndex)
+        if (!this.generate(sellerIndex)) {
+            log.error("availability generator failed")
+            false
+        }
+        else {
+            true
+        }
     }
     catch (e: Exception) {
         log.error("error: sellerIndex=$sellerIndex, ${e.javaClass.name} -> ${e.message}")

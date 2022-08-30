@@ -37,7 +37,13 @@ interface RootEntityGeneratorService {
     }
 
     fun tryGenerate(): Boolean = try {
-        this.generate()
+        if (!this.generate()) {
+            log.error("failed")
+            false
+        }
+        else {
+            true
+        }
     }
     catch (e: Exception) {
         log.error("generate error: ${e.javaClass.name} -> ${e.message}")
