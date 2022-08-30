@@ -82,7 +82,6 @@ class AvailabilityGeneratorService(
             req.unitsAvailable = this.rand.long(max = 10000, min = 10)
             req.pricePerUnit = this.rand.long(max = 100_000L, min = 10_000)
 
-            log.info { "request:\n$req" }
             val response = this.availabilityApi.postAvailabilityWithHttpInfo(productId, req)
 
             // TODO ignore availability already exists errors.
