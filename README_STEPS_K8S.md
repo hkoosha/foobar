@@ -21,4 +21,6 @@ make k8s-deploy
 
 make k8s-exec-maker-cli
 k8s-port-forward-kibana
+
+# FOOBAR_REPLICAS=4 make k8s-deploy-loader
 ```
