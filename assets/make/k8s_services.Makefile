@@ -17,6 +17,8 @@ minikube-start:
 		--memory=$(FOOBAR_MINIKUBE_MEMORY) \
 		--driver=$(FOOBAR_MINIKUBE_DRIVER) \
 		--nodes=$(FOOBAR_MINIKUBE_NODES)
+	kubectl apply -f assets/k8s/apps/metrics_server.yaml
+	sleep 1s
 	kubectl taint nodes minikube foobar-no-schedule=foobar-no-schedule:NoSchedule
 	@echo "Minikube cluster started. It is better to wait until all nodes in the cluster are ready."
 	@echo "You can check the status if nodes using the app k9s."
@@ -318,10 +320,10 @@ k8s-deploy-deps: \
 	helm-install-mariadb \
 	helm-install-kafka \
 	helm-install-jaeger \
-	helm-install-redis \
 	helm-install-elasticsearch \
 	k8s-apply-filebeat \
 	k8s-apply-zipkin
+	# helm-install-redis \
 	# helm-install-logstash \
 
 

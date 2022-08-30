@@ -2,24 +2,28 @@ global:
   kibanaEnabled: true
 
 master:
+  replicaCount: 1
   containerSecurityContext:
     enabled: true
     runAsUser: 0
     runAsNonRoot: false
 
 data:
+  replicaCount: 1
   containerSecurityContext:
     enabled: true
     runAsUser: 0
     runAsNonRoot: false
 
 coordinating:
+  replicaCount: 1
   containerSecurityContext:
     enabled: true
     runAsUser: 0
     runAsNonRoot: false
 
 ingest:
+  replicaCount: 1
   containerSecurityContext:
     enabled: true
     runAsUser: 0
