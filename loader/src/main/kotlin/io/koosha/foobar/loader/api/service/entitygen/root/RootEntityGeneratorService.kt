@@ -10,8 +10,22 @@ interface RootEntityGeneratorService {
 
     fun generate(running: () -> Boolean) {
 
-        while (running())
+        log.info("generating...")
+
+        var i = 0
+
+        while (running()) {
+
+            i++
+            if (i == Int.MAX_VALUE)
+                i = 0
+            if (i > 0 && i % 3_000 == 0)
+                log.info("still generating...")
+
             this.tryGenerate()
+        }
+
+        log.info("generation finished")
     }
 
     fun generate(count: Int) {

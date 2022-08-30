@@ -35,14 +35,22 @@ class LineItemGeneratorService(
 
     fun generate(running: () -> Boolean) {
 
+        log.info("generating...")
+
         while (running()) {
+
+            log.info("starting generation batch")
+
             val finish = mutableListOf<Future<*>>()
             for (i in 0 until this.numTasks)
                 finish += this.executorService.submit {
                     this.tryGenerate()
                 }
+
             for (f in finish)
                 f.get()
+
+            log.info("generation batch finished")
         }
 
         this.executorService.shutdown()

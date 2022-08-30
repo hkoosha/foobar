@@ -29,14 +29,22 @@ class OrderRequestGeneratorService(
 
     fun generate(running: () -> Boolean) {
 
+        log.info("generating...")
+
         while (running()) {
+
+            log.info("starting generation batch")
+
             val finish = mutableListOf<Future<*>>()
             for (i in ids.getCustomerRange().step(this.numTasks))
                 finish += this.executorService.submit {
                     this.generate(i until (i + this.numTasks))
                 }
+
             for (f in finish)
                 f.get()
+
+            log.info("generation batch finished")
         }
 
         this.executorService.shutdown()
