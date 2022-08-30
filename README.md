@@ -125,7 +125,6 @@ structure.
 - Demonstrate Saga pattern.
 - Demonstrate event sourcing (only in one of microservices).
 - Add helm charts for foobar services.
-- Complete foobar-maker to generate a **lot** of load.
 - Complete foobar-evil to make disruptions in the services.
 
 ### Up and Running: Locally
@@ -164,6 +163,9 @@ make run-shipping
 ./maker.sh init && ./maker.sh ord patch --state=LIVE
 # OR
 ./maker.sh init --live
+
+# If you want to put everything under pressure:
+./loader.sh
 ```
 
 ### Up and Running: Kubernetes
@@ -220,6 +222,9 @@ make k8s-exec-maker-cli
 # "maker init && maker ord patch --state=LIVE"
 # OR
 # "maker init --live"
+
+# If you want to put everything under pressure:
+FOOBAR_REPLICAS=4 make k8s-deploy-loader
 ```
 
 ## Foobar Workflow:

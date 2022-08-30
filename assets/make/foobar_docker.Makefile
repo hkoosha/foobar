@@ -1,4 +1,5 @@
 
+FOOBAR_LOADER_IMAGE := foobar-loader:0.0.1-SNAPSHOT
 FOOBAR_MAKER_IMAGE := foobar-maker:0.0.1-SNAPSHOT
 FOOBAR_CUSTOMER_IMAGE := foobar-customer:0.0.1-SNAPSHOT
 FOOBAR_SELLER_IMAGE := foobar-seller:0.0.1-SNAPSHOT
@@ -20,6 +21,8 @@ define _foobar_push_image
 	fi
 endef
 
+
+
 .PHONY: docker-image-maker-build
 docker-image-maker-build:
 	$(GRADLE_RUNNER) :foobar-maker:jibDockerBuild
@@ -37,6 +40,26 @@ docker-image-maker: \
 	docker-image-maker-build \
 	docker-image-maker-unpush \
 	docker-image-maker-push
+
+
+
+.PHONY: docker-image-loader-build
+docker-image-loader-build:
+	$(GRADLE_RUNNER) :loader:jibDockerBuild
+
+.PHONY: docker-image-loader-push
+docker-image-loader-push:
+	$(call _foobar_push_image,$(FOOBAR_LOADER_IMAGE))
+
+.PHONY: docker-image-loader-unpush
+docker-image-loader-unpush:
+	minikube image rm foobar-loader:0.0.1-SNAPSHOT || true
+
+.PHONY: docker-image-loader
+docker-image-loader: \
+	docker-image-loader-build \
+	docker-image-loader-unpush \
+	docker-image-loader-push
 
 
 
@@ -159,10 +182,13 @@ docker-image-marketplace-engine: \
 	docker-image-marketplace-engine-push
 
 
+
+
 .PHONY: docker-image-build
 docker-image-build: \
 	build-only \
 	docker-image-maker-build \
+	docker-image-loader-build \
 	docker-image-customer-build \
 	docker-image-seller-build \
 	docker-image-shipping-build \
@@ -173,6 +199,7 @@ docker-image-build: \
 .PHONY: docker-image-push
 docker-image-push: \
 	docker-image-maker-push \
+	docker-image-loader-push \
 	docker-image-customer-push \
 	docker-image-seller-push \
 	docker-image-shipping-push \
@@ -183,6 +210,7 @@ docker-image-push: \
 .PHONY: docker-image-unpush
 docker-image-unpush: \
 	docker-image-maker-unpush \
+	docker-image-loader-unpush \
 	docker-image-customer-unpush \
 	docker-image-seller-unpush \
 	docker-image-shipping-unpush \

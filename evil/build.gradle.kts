@@ -7,12 +7,10 @@ import io.koosha.foobar.Libraries
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    val j = io.koosha.foobar.Libraries.Jib
     val s = io.koosha.foobar.Libraries.Spring
     val k = io.koosha.foobar.Libraries.Kotlin
 
     id("io.gitlab.arturbosch.detekt") version k.detekt
-    id("com.google.cloud.tools.jib") version j.gradlePlugin
     id("org.springframework.boot") version s.springBoot2
     id("io.spring.dependency-management") version s.DependencyManagement
     kotlin("jvm") version k.jvm
@@ -56,19 +54,10 @@ dependencyManagement {
 
 dependencies {
     implementation(project(":common"))
-    implementation(project(":common-jpa"))
-
-    implementation(project(":connect:customer-api-build"))
-    implementation(project(":connect:seller-api-build"))
-    implementation(project(":connect:warehouse-api-build"))
-    implementation(project(":connect:marketplace-api-build"))
 
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-validation")
-    implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
-    implementation("org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j")
-    runtimeOnly("io.github.openfeign:feign-okhttp")
-    runtimeOnly("com.squareup.okhttp3:okhttp")
+    implementation("com.squareup.okhttp3:okhttp")
 
     implementation("io.github.microutils:kotlin-logging-jvm:${Libraries.microutilsKotlinLoggingJvm}")
 
@@ -85,18 +74,6 @@ dependencies {
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-}
-
-jib {
-    container {
-        extraDirectories.setPaths(
-            "${project.projectDir}/extra",
-        )
-        entrypoint = listOf(
-            "sleep",
-            "infinity",
-        )
-    }
 }
 
 tasks.withType<Detekt>().configureEach {

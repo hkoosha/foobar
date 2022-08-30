@@ -46,6 +46,10 @@ build-proto:
 build-maker:
 	$(GRADLE_RUNNER) :foobar-maker:build
 
+.PHONY: build-loader
+build-loader:
+	$(GRADLE_RUNNER) :loader:build
+
 
 
 .PHONY: build-api-generator

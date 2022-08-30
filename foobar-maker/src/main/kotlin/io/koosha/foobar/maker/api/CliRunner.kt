@@ -1,15 +1,15 @@
 package io.koosha.foobar.maker.api
 
-import io.koosha.foobar.maker.api.cmd.AddressCmd
-import io.koosha.foobar.maker.api.cmd.AvailabilityCmd
-import io.koosha.foobar.maker.api.cmd.CustomerCmd
-import io.koosha.foobar.maker.api.cmd.DumpCmd
-import io.koosha.foobar.maker.api.cmd.InitCmd
-import io.koosha.foobar.maker.api.cmd.LineItemCmd
-import io.koosha.foobar.maker.api.cmd.OrderRequestCmd
-import io.koosha.foobar.maker.api.cmd.ProductCmd
-import io.koosha.foobar.maker.api.cmd.SellerCmd
-import io.koosha.foobar.maker.api.cmd.XCreateCmd
+import io.koosha.foobar.maker.api.svc.cmd.AddressCmd
+import io.koosha.foobar.maker.api.svc.cmd.AvailabilityCmd
+import io.koosha.foobar.maker.api.svc.cmd.CustomerCmd
+import io.koosha.foobar.maker.api.svc.cmd.DumpCmd
+import io.koosha.foobar.maker.api.svc.cmd.InitCmd
+import io.koosha.foobar.maker.api.svc.cmd.LineItemCmd
+import io.koosha.foobar.maker.api.svc.cmd.OrderRequestCmd
+import io.koosha.foobar.maker.api.svc.cmd.ProductCmd
+import io.koosha.foobar.maker.api.svc.cmd.SellerCmd
+import io.koosha.foobar.maker.api.svc.cmd.XCreateCmd
 import mu.KotlinLogging
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner

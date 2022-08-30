@@ -17,6 +17,8 @@ minikube-start:
 		--memory=$(FOOBAR_MINIKUBE_MEMORY) \
 		--driver=$(FOOBAR_MINIKUBE_DRIVER) \
 		--nodes=$(FOOBAR_MINIKUBE_NODES)
+	kubectl apply -f assets/k8s/apps/metrics_server.yaml
+	sleep 1s
 	kubectl taint nodes minikube foobar-no-schedule=foobar-no-schedule:NoSchedule
 	@echo "Minikube cluster started. It is better to wait until all nodes in the cluster are ready."
 	@echo "You can check the status if nodes using the app k9s."
@@ -69,6 +71,18 @@ helm-add-bitnami:
 # .PHONY: helm-add-jaeger
 # helm-add-jaeger:
 # 	helm repo add jaegertracing https://jaegertracing.github.io/helm-charts
+
+.PHONY: helm-install-redis
+helm-install-redis:
+	helm install \
+		-n $(FOOBAR_NAMESPACE) \
+		redis bitnami/redis
+
+.PHONY: helm-uninstall-redis
+helm-uninstall-redis:
+	helm uninstall \
+		-n $(FOOBAR_NAMESPACE) \
+		redis
 
 .PHONY: helm-install-mariadb
 helm-install-mariadb:
@@ -309,6 +323,7 @@ k8s-deploy-deps: \
 	helm-install-elasticsearch \
 	k8s-apply-filebeat \
 	k8s-apply-zipkin
+	# helm-install-redis \
 	# helm-install-logstash \
 
 

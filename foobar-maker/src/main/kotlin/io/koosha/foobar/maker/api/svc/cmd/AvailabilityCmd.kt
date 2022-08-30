@@ -1,4 +1,4 @@
-package io.koosha.foobar.maker.api.cmd
+package io.koosha.foobar.maker.api.svc.cmd
 
 import io.koosha.foobar.connect.customer.generated.api.AddressApi
 import io.koosha.foobar.connect.seller.generated.api.SellerApi

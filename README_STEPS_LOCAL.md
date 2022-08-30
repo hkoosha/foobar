@@ -19,5 +19,6 @@ make run-marketplace-engine
 make run-shipping
 
 ./maker.sh init --live
-```
 
+# ./loader.sh
+```

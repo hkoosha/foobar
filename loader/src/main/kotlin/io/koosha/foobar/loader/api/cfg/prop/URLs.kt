@@ -1,4 +1,4 @@
-package io.koosha.foobar.maker.api.cfg.prop
+package io.koosha.foobar.loader.api.cfg.prop
 
 import io.koosha.foobar.common.conv.UrlOrEmpty
 import org.springframework.boot.context.properties.ConfigurationProperties

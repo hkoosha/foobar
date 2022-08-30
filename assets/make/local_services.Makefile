@@ -87,6 +87,11 @@ local-init-host-create-db:
 local-init-host-recreate-db: local-init-host-drop-db local-init-host-create-db
 
 
+define _local_init_my_exec
+	docker-compose -f assets/local_deployment/$(1)/docker-compose.yml exec mariadb bash -c \
+	 ' mysql -D $3 -e $2 -u "$(MYSQL_USER)" -p"$(MYSQL_PASSWORD)" '
+endef
+
 define _local_init_drop_db
 	docker-compose -f assets/local_deployment/$(1)/docker-compose.yml exec mariadb bash -c 		   \
 	 ' mysql -e "DROP DATABASE foobar_maker"              -u "$(MYSQL_USER)" -p"$(MYSQL_PASSWORD)" \
@@ -129,6 +134,36 @@ local-init-create-db:
 .PHONY: local-init-recreate-db
 local-init-recreate-db: local-init-drop-db local-init-create-db
 
+.PHONY: local-init-truncate-db
+local-init-truncate-db:
+	if docker-compose -f assets/local_deployment/all/docker-compose.yml top | grep PPID > /dev/null; then \
+		$(call _local_init_my_exec,all,"truncate customer__address",foobar_customer); \
+		$(call _local_init_my_exec,all,"DELETE FROM customer__customer WHERE 1=1",foobar_customer); \
+		$(call _local_init_my_exec,all,"truncate seller__seller",foobar_seller); \
+		$(call _local_init_my_exec,all,"truncate warehouse__availability",foobar_warehouse); \
+		$(call _local_init_my_exec,all,"DELETE FROM warehouse__product WHERE 1=1",foobar_warehouse); \
+		$(call _local_init_my_exec,all,"truncate marketplace__order_request",foobar_marketplace); \
+		$(call _local_init_my_exec,all,"truncate marketplace__order_request_line_item",foobar_marketplace); \
+		$(call _local_init_my_exec,all,"truncate marketplace__processed_order_request_seller",foobar_marketplace); \
+		$(call _local_init_my_exec,all,"truncate marketplace_engine__availability",foobar_marketplace_engine); \
+		$(call _local_init_my_exec,all,"truncate marketplace_engine__processed_uuid",foobar_marketplace_engine); \
+		$(call _local_init_my_exec,all,"truncate shipping__shipping",foobar_shipping); \
+	else \
+		$(call _local_init_my_exec,mariadb,"truncate customer__customer",foobar_customer); \
+		$(call _local_init_my_exec,mariadb,"truncate customer__address",foobar_customer); \
+		$(call _local_init_my_exec,mariadb,"truncate seller__seller",foobar_seller); \
+		$(call _local_init_my_exec,mariadb,"truncate warehouse__availability",foobar_warehouse); \
+		$(call _local_init_my_exec,mariadb,"truncate warehouse__product",foobar_warehouse); \
+		$(call _local_init_my_exec,mariadb,"truncate marketplace__order_request",foobar_marketplace); \
+		$(call _local_init_my_exec,mariadb,"truncate marketplace__order_request_line_item",foobar_marketplace); \
+		$(call _local_init_my_exec,mariadb,"truncate marketplace__processed_order_request_seller",foobar_marketplace); \
+		$(call _local_init_my_exec,mariadb,"truncate marketplace_engine__availability",foobar_marketplace_engine); \
+		$(call _local_init_my_exec,mariadb,"truncate marketplace_engine__processed_uuid",foobar_marketplace_engine); \
+		$(call _local_init_my_exec,mariadb,"truncate shipping__shipping",foobar_shipping); \
+	fi
+
+
+
 
 define _local_my_cli
 	docker-compose -f assets/local_deployment/$(1)/docker-compose.yml exec mariadb bash -c \
@@ -149,6 +184,20 @@ local-my-cli:
 ## =============================================================================
 ## =============================================================================
 
+define _local_init_truncate_topics
+	docker-compose -f assets/local_deployment/$(1)/docker-compose.yml exec kafka bash -c \
+		'kafka-configs.sh --bootstrap-server localhost:9092 --alter --entity-type topics --entity-name foobar__marketplace__order_request__state_changed --add-config retention.ms=100; \
+		 kafka-configs.sh --bootstrap-server localhost:9092 --alter --entity-type topics --entity-name foobar__marketplace__order_request__state_changed__dead_letter --add-config retention.ms=100; \
+		 kafka-configs.sh --bootstrap-server localhost:9092 --alter --entity-type topics --entity-name foobar__marketplace_engine__order_request__seller_found --add-config retention.ms=100; \
+		 kafka-configs.sh --bootstrap-server localhost:9092 --alter --entity-type topics --entity-name foobar__warehouse__availability --add-config retention.ms=100; \
+		 sleep 2s; \
+		 kafka-configs.sh --bootstrap-server localhost:9092 --alter --entity-type topics --entity-name foobar__marketplace__order_request__state_changed --delete-config retention.ms; \
+		 kafka-configs.sh --bootstrap-server localhost:9092 --alter --entity-type topics --entity-name foobar__marketplace__order_request__state_changed__dead_letter --delete-config retention.ms; \
+		 kafka-configs.sh --bootstrap-server localhost:9092 --alter --entity-type topics --entity-name foobar__marketplace_engine__order_request__seller_found --delete-config retention.ms; \
+		 kafka-configs.sh --bootstrap-server localhost:9092 --alter --entity-type topics --entity-name foobar__warehouse__availability --delete-config retention.ms;'
+endef
+
+
 define _local_init_create_topics
 	docker-compose -f assets/local_deployment/$(1)/docker-compose.yml exec kafka bash -c \
 		'kafka-topics.sh --bootstrap-server localhost:9092 --create --replication-factor 1 --partitions 16 --topic foobar__marketplace__order_request__state_changed; \
@@ -164,6 +213,14 @@ define _local_init_drop_topics
 		 kafka-topics.sh --bootstrap-server localhost:9092 --delete --topic foobar__marketplace_engine__order_request__seller_found; \
 		 kafka-topics.sh --bootstrap-server localhost:9092 --delete --topic foobar__warehouse__availability'
 endef
+
+.PHONY: local-init-truncate-topics
+local-init-truncate-topics:
+	if docker-compose -f assets/local_deployment/all/docker-compose.yml top | grep PPID > /dev/null; then \
+		$(call _local_init_truncate_topics,all); \
+	else \
+		$(call _local_init_truncate_topics,kafka); \
+	fi
 
 .PHONY: local-init-create-topics
 local-init-create-topics:

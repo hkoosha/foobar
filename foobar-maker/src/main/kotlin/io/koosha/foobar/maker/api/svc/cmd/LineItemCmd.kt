@@ -1,7 +1,6 @@
-package io.koosha.foobar.maker.api.cmd
+package io.koosha.foobar.maker.api.svc.cmd
 
 
-import io.koosha.foobar.connect.customer.generated.api.AddressApi
 import io.koosha.foobar.connect.marketplace.generated.api.LineItemRequest
 import io.koosha.foobar.connect.marketplace.generated.api.OrderRequestApi
 import io.koosha.foobar.connect.marketplace.generated.api.OrderRequestLineItemApi
@@ -78,7 +77,7 @@ class LineItemCmd(
             EntityId(
                 entityId = "$orderRequestId/$productId",
                 internalId = internalId,
-                entityType = AddressApi.ENTITY_TYPE,
+                entityType = AvailabilityApi.ENTITY_TYPE,
             )
         )
 

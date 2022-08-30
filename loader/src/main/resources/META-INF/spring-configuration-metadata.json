@@ -1,0 +1,59 @@
+{
+  "properties": [
+    {
+      "name": "foobar.port.marketplace",
+      "type": "java.lang.Integer",
+      "description": "Description."
+    },
+    {
+      "name": "foobar.port.warehouse",
+      "type": "java.lang.Integer",
+      "description": "Description."
+    },
+    {
+      "name": "foobar.port.shipping",
+      "type": "java.lang.Integer",
+      "description": "Description."
+    },
+    {
+      "name": "foobar.port.customer",
+      "type": "java.lang.Integer",
+      "description": "Description."
+    },
+    {
+      "name": "foobar.port.seller",
+      "type": "java.lang.Integer",
+      "description": "Description."
+    },
+    {
+      "name": "foobar.url.defaultUrl",
+      "type": "java.lang.String",
+      "description": "Description."
+    },
+    {
+      "name": "foobar.url.marketplace",
+      "type": "java.lang.String",
+      "description": "Description."
+    },
+    {
+      "name": "foobar.url.warehouse",
+      "type": "java.lang.String",
+      "description": "Description."
+    },
+    {
+      "name": "foobar.url.shipping",
+      "type": "java.lang.String",
+      "description": "Description."
+    },
+    {
+      "name": "foobar.url.customer",
+      "type": "java.lang.String",
+      "description": "Description."
+    },
+    {
+      "name": "foobar.url.seller",
+      "type": "java.lang.String",
+      "description": "Description."
+    }
+  ]
+}
