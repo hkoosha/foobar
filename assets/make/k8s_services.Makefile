@@ -112,6 +112,18 @@ helm-uninstall-kafka:
 		kafka
 
 
+.PHONY: helm-install-prometheus
+helm-install-prometheus:
+	helm install \
+		-n $(FOOBAR_NAMESPACE) \
+		prometheus bitnami/kube-prometheus
+
+.PHONY: helm-uninstall-prometheus
+helm-uninstall-prometheus:
+	helm uninstall \
+		-n $(FOOBAR_NAMESPACE) \
+		prometheus
+
 # .PHONY: helm-install-jaeger
 # helm-install-jaeger:
 # 	helm install \
@@ -224,11 +236,24 @@ k8s-port-forward-elasticsearch:
 
 .PHONY: k8s-port-forward-kibana
 k8s-port-forward-kibana:
-	kubectl port-forward --namespace foobar svc/elasticsearch-kibana 5601:5601
+	kubectl port-forward --namespace $(FOOBAR_NAMESPACE) svc/elasticsearch-kibana 5601:5601
 # kubectl port-forward \
 # --namespace $(FOOBAR_NAMESPACE) \
 # $(shell kubectl get pods --namespace foobar -l "k8s-app=kibana-logging" -o jsonpath="{.items[0].metadata.name}") \
 # 5601:5601
+
+
+.PHONY: k8s-port-forward-prometheus
+k8s-port-forward-prometheus:
+	kubectl port-forward \
+		--namespace $(FOOBAR_NAMESPACE) \
+		svc/prometheus-kube-prometheus-prometheus 9090:9090
+
+.PHONY: k8s-port-forward-alertmanager
+k8s-port-forward-alertmanager:
+	kubectl port-forward \
+		--namespace $(FOOBAR_NAMESPACE) \
+		svc/prometheus-kube-prometheus-alertmanager 9093:9093
 
 
 # ===============================================================================
