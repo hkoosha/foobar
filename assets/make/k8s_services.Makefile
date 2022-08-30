@@ -346,6 +346,7 @@ k8s-deploy-deps: \
 	helm-install-kafka \
 	helm-install-jaeger \
 	helm-install-elasticsearch \
+	helm-install-prometheus \
 	k8s-apply-filebeat \
 	k8s-apply-zipkin
 	# helm-install-redis \
