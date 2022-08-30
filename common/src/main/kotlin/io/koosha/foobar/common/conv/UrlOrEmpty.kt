@@ -1,4 +1,4 @@
-package io.koosha.foobar.maker.api.conv
+package io.koosha.foobar.common.conv
 
 import java.net.URL
 import javax.validation.Constraint

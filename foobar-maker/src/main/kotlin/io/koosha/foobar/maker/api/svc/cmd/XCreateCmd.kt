@@ -1,4 +1,4 @@
-package io.koosha.foobar.maker.api.cmd
+package io.koosha.foobar.maker.api.svc.cmd
 
 import io.koosha.foobar.maker.api.Command
 import io.koosha.foobar.maker.api.matches

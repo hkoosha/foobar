@@ -22,4 +22,3 @@ make k8s-deploy
 make k8s-exec-maker-cli
 k8s-port-forward-kibana
 ```
-

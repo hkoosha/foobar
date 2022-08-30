@@ -20,4 +20,3 @@ make run-shipping
 
 ./maker.sh init --live
 ```
-

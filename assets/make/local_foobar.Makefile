@@ -28,6 +28,9 @@ run-marketplace:
 run-marketplace-engine:
 	$(GRADLE_RUNNER) :service:marketplace_engine:bootRun
 
+.PHONY: run-loader
+run-loader:
+	$(GRADLE_RUNNER) :loader:bootRun
 
 	
 
@@ -55,4 +58,8 @@ debug-marketplace:
 .PHONY: debug-marketplace-engine
 debug-marketplace-engine:
 	$(GRADLE_RUNNER) :service:marketplace_engine:bootRun --debug-jvm
+
+.PHONY: debug-loader
+debug-loader:
+	$(GRADLE_RUNNER) :loader:bootRun --debug-jvm
 

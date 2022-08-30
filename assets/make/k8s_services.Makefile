@@ -70,6 +70,18 @@ helm-add-bitnami:
 # helm-add-jaeger:
 # 	helm repo add jaegertracing https://jaegertracing.github.io/helm-charts
 
+.PHONY: helm-install-redis
+helm-install-redis:
+	helm install \
+		-n $(FOOBAR_NAMESPACE) \
+		redis bitnami/redis
+
+.PHONY: helm-uninstall-redis
+helm-uninstall-redis:
+	helm uninstall \
+		-n $(FOOBAR_NAMESPACE) \
+		redis
+
 .PHONY: helm-install-mariadb
 helm-install-mariadb:
 	helm install \
@@ -306,6 +318,7 @@ k8s-deploy-deps: \
 	helm-install-mariadb \
 	helm-install-kafka \
 	helm-install-jaeger \
+	helm-install-redis \
 	helm-install-elasticsearch \
 	k8s-apply-filebeat \
 	k8s-apply-zipkin

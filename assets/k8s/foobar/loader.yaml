@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: foobar-loader
+  labels:
+    foobar-service: loader
+spec:
+  selector:
+    matchLabels:
+      foobar-service: loader
+  replicas: ${FOOBAR_LOADER_REPLICAS}
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        foobar-service: loader
+        foobar-json-log: enabled
+    spec:
+      dnsPolicy: ClusterFirst
+      terminationGracePeriodSeconds: 10
+      volumes:
+        - name: foobar-log
+          emptyDir: {}
+      containers:
+        - name: foobar-logger
+          image: 'busybox'
+          args: [/bin/sh, -c, 'tail -n+1 -F /foobar-log/foobar.log 2>/dev/null']
+          volumeMounts:
+            - name: foobar-log
+              mountPath: /foobar-log
+        - name: foobar-loader
+          image: 'docker.io/library/foobar-loader:0.0.1-SNAPSHOT'
+          imagePullPolicy: Never
+          terminationMessagePolicy: File
+          volumeMounts:
+            - name: foobar-log
+              mountPath: /foobar-log
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: 'json-logging,zipkin'
+            - name: FOOBAR_LOG_LEVEL
+              value: trace
+            - name: OTEL_EXPORTER_JAEGER_ENDPOINT
+              value: 'http://jaeger-collector.foobar.svc.cluster.local:14250'
+            - name: OTEL_METRICS_EXPORTER
+              value: 'none'
+            - name: FOOBAR_ZIPKIN_HOST
+              value: 'http://zipkin:9411'
+            - name: FOOBAR_PORT_MARKETPLACE
+              value: '8080'
+            - name: FOOBAR_PORT_WAREHOUSE
+              value: '8080'
+            - name: FOOBAR_PORT_SHIPPING
+              value: '8080'
+            - name: FOOBAR_PORT_CUSTOMER
+              value: '8080'
+            - name: FOOBAR_PORT_SELLER
+              value: '8080'
+            - name: FOOBAR_URL_MARKETPLACE
+              value: 'http://foobar-marketplace'
+            - name: FOOBAR_URL_WAREHOUSE
+              value: 'http://foobar-warehouse'
+            - name: FOOBAR_URL_SHIPPING
+              value: 'http://foobar-shipping'
+            - name: FOOBAR_URL_CUSTOMER
+              value: 'http://foobar-customer'
+            - name: FOOBAR_URL_SELLER
+              value: 'http://foobar-seller'
+
+

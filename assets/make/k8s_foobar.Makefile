@@ -8,6 +8,27 @@ remake-k8s-foobar:
 
 
 
+.PHONY: _k8s-deploy-loader-compile
+_k8s-deploy-loader-compile:
+	cat $(FOOBAR_SERVICES_YAML)/loader.yaml | envsubst > $(FOOBAR_SERVICES_YAML)/compiled/loader.yaml
+
+.PHONY: k8s-deploy-loader
+k8s-deploy-loader: _k8s-deploy-loader-compile
+	kubectl -n $(FOOBAR_NAMESPACE) apply -f $(FOOBAR_SERVICES_YAML)/compiled/loader.yaml
+
+.PHONY: k8s-undeploy-loader
+k8s-undeploy-loader: _k8s-deploy-loader-compile
+	kubectl -n $(FOOBAR_NAMESPACE) delete -f $(FOOBAR_SERVICES_YAML)/compiled/loader.yaml || true
+
+.PHONY: k8s-redeploy-loader
+k8s-redeploy-loader: k8s-undeploy-loader k8s-deploy-loader
+
+.PHONY: remake-yaml-loader
+remake-yaml-loader:
+	$(EDITOR) $(FOOBAR_SERVICES_YAML)/loader.yaml
+
+
+
 .PHONY: _k8s-deploy-maker-compile
 _k8s-deploy-maker-compile:
 	cat $(FOOBAR_SERVICES_YAML)/maker.yaml | envsubst > $(FOOBAR_SERVICES_YAML)/compiled/maker.yaml
@@ -177,7 +198,8 @@ k8s-undeploy: \
 	k8s-undeploy-marketplace \
 	k8s-undeploy-marketplace-engine \
 	k8s-undeploy-shipping \
-	k8s-undeploy-maker
+	k8s-undeploy-maker \
+	k8s-undeploy-loader
 
 .PHONY: k8s-redeploy
 k8s-redeploy: \
