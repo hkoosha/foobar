@@ -1507,7 +1507,8 @@
   "schemaVersion": 36,
   "style": "dark",
   "tags": [
-    "prometheus"
+    "prometheus",
+    "foobar"
   ],
   "templating": {
     "list": []

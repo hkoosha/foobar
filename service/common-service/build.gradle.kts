@@ -67,3 +67,12 @@ tasks.withType<Detekt>().configureEach {
 tasks.withType<DetektCreateBaselineTask>().configureEach {
     jvmTarget = Foobar.kotlinJvmTarget
 }
+
+tasks.bootRun {
+    enabled = false
+}
+
+tasks.bootJar {
+    enabled = false
+}
+

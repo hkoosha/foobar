@@ -3697,7 +3697,9 @@
   "refresh": "30s",
   "schemaVersion": 36,
   "style": "dark",
-  "tags": [],
+  "tags": [
+      "foobar"
+  ],
   "templating": {
     "list": [
       {
