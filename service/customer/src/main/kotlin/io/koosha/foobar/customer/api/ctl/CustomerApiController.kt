@@ -7,6 +7,7 @@ import io.koosha.foobar.customer.api.model.Title
 import io.koosha.foobar.customer.api.service.CustomerCreateRequest
 import io.koosha.foobar.customer.api.service.CustomerService
 import io.koosha.foobar.customer.api.service.CustomerUpdateRequest
+import io.micrometer.core.annotation.Timed
 import io.swagger.v3.oas.annotations.tags.Tag
 import io.swagger.v3.oas.annotations.tags.Tags
 import org.springframework.http.HttpHeaders
@@ -42,10 +43,12 @@ class CustomerApiController(
 
     }
 
+    @Timed
     @GetMapping
     @ResponseBody
     fun getCustomers(): List<Customer> = service.findAll().map(::Customer)
 
+    @Timed
     @GetMapping("/{$URI__PART__CUSTOMER_ID}")
     @ResponseBody
     fun getCustomer(
@@ -53,6 +56,7 @@ class CustomerApiController(
         customerId: UUID,
     ): Customer = Customer(service.findByCustomerIdOrFail(customerId))
 
+    @Timed
     @PatchMapping("/{$URI__PART__CUSTOMER_ID}")
     @ResponseBody
     fun patchCustomer(
@@ -62,6 +66,7 @@ class CustomerApiController(
         request: CustomerUpdateRequest,
     ): Customer = Customer(service.update(customerId, request))
 
+    @Timed
     @PostMapping
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
@@ -89,6 +94,7 @@ class CustomerApiController(
         return Customer(entity)
     }
 
+    @Timed
     @DeleteMapping("/{$URI__PART__CUSTOMER_ID}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteCustomer(

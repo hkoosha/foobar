@@ -7,6 +7,7 @@ import io.koosha.foobar.marketplaceengine.SOURCE
 import io.koosha.foobar.marketplaceengine.api.model.AvailabilityDO
 import io.koosha.foobar.marketplaceengine.api.model.AvailabilityRepository
 import io.koosha.foobar.product.AvailabilityProto
+import io.micrometer.core.annotation.Timed
 import mu.KotlinLogging
 import net.logstash.logback.argument.StructuredArguments.v
 import org.springframework.kafka.annotation.KafkaListener
@@ -23,6 +24,7 @@ class AvailabilityProcessor(
 
     private val log = KotlinLogging.logger {}
 
+    @Timed
     @KafkaListener(
         groupId = "${SOURCE}__availability",
         concurrency = "2",

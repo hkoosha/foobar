@@ -61,6 +61,7 @@ dependencyManagement {
 dependencies {
     implementation(project(":common"))
     implementation(project(":common-jpa"))
+    implementation(project(":common-meter"))
 
     implementation(project(":service:common-service"))
     implementation(project(":service:common-web"))

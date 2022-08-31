@@ -6,6 +6,7 @@ include(
     "definitions",
     "common",
     "common-jpa",
+    "common-meter",
 
     "service:common-kafka",
     "service:common-service",

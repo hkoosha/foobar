@@ -6,6 +6,7 @@ import io.koosha.foobar.seller.api.model.SellerState
 import io.koosha.foobar.seller.api.service.SellerCreateRequest
 import io.koosha.foobar.seller.api.service.SellerService
 import io.koosha.foobar.seller.api.service.SellerUpdateRequest
+import io.micrometer.core.annotation.Timed
 import io.swagger.v3.oas.annotations.tags.Tag
 import io.swagger.v3.oas.annotations.tags.Tags
 import org.springframework.http.HttpHeaders
@@ -41,10 +42,12 @@ class SellerApiController(
 
     }
 
+    @Timed
     @GetMapping
     @ResponseBody
     fun getSellers(): List<Seller> = service.findAll().map(::Seller)
 
+    @Timed
     @GetMapping("/{$URI__PART__SELLER_ID}")
     @ResponseBody
     fun getSeller(
@@ -52,6 +55,7 @@ class SellerApiController(
         sellerId: UUID,
     ): Seller = Seller(service.findByIdOrFail(sellerId))
 
+    @Timed
     @PatchMapping("/{$URI__PART__SELLER_ID}")
     @ResponseBody
     fun patchSeller(
@@ -61,6 +65,7 @@ class SellerApiController(
         request: SellerUpdateRequest,
     ): Seller = Seller(service.update(sellerId, request))
 
+    @Timed
     @PostMapping
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
@@ -88,6 +93,7 @@ class SellerApiController(
         return Seller(entity)
     }
 
+    @Timed
     @DeleteMapping("/{$URI__PART__SELLER_ID}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteSeller(

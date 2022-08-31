@@ -4,6 +4,7 @@ import io.koosha.foobar.common.cfg.KafkaConfig
 import io.koosha.foobar.common.toUUID
 import io.koosha.foobar.order_request.OrderRequestSellerFoundProto
 import io.koosha.foobar.shipping.SOURCE
+import io.micrometer.core.annotation.Timed
 import mu.KotlinLogging
 import net.logstash.logback.argument.StructuredArguments.v
 import org.springframework.kafka.annotation.KafkaListener
@@ -23,6 +24,7 @@ class OrderRequestSellerProcessor(
 
     private val log = KotlinLogging.logger {}
 
+    @Timed
     @KafkaListener(
         groupId = "${SOURCE}__order_request_seller",
         concurrency = "2",

@@ -5,6 +5,7 @@ import io.koosha.foobar.warehouse.api.model.AvailabilityDO
 import io.koosha.foobar.warehouse.api.service.AvailabilityCreateRequest
 import io.koosha.foobar.warehouse.api.service.AvailabilityUpdateRequest
 import io.koosha.foobar.warehouse.api.service.ProductService
+import io.micrometer.core.annotation.Timed
 import io.swagger.v3.oas.annotations.tags.Tag
 import io.swagger.v3.oas.annotations.tags.Tags
 import org.springframework.http.HttpHeaders
@@ -41,6 +42,7 @@ class AvailabilityAPIController(
 
     }
 
+    @Timed
     @GetMapping
     @ResponseBody
     fun getAvailabilities(
@@ -48,6 +50,7 @@ class AvailabilityAPIController(
         productId: UUID,
     ): List<Availability> = service.getAvailabilitiesOf(productId).map(::Availability)
 
+    @Timed
     @GetMapping("/{$URI__PART__SELLER_ID}")
     @ResponseBody
     fun getAvailability(
@@ -57,6 +60,7 @@ class AvailabilityAPIController(
         sellerId: UUID,
     ): Availability = Availability(service.getAvailability(productId, sellerId))
 
+    @Timed
     @PatchMapping("{$URI__PART__SELLER_ID}")
     @ResponseBody
     fun patchAvailability(
@@ -68,6 +72,7 @@ class AvailabilityAPIController(
         request: AvailabilityUpdateRequest,
     ): Availability = Availability(service.updateAvailability(productId, sellerId, request))
 
+    @Timed
     @PostMapping
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
@@ -99,6 +104,7 @@ class AvailabilityAPIController(
         return Availability(entity)
     }
 
+    @Timed
     @DeleteMapping("/{$URI__PART__SELLER_ID}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteAvailability(

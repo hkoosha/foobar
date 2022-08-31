@@ -11,6 +11,7 @@ import io.koosha.foobar.marketplaceengine.api.model.ProcessedOrderRequestDO
 import io.koosha.foobar.marketplaceengine.api.model.ProcessedOrderRequestRepository
 import io.koosha.foobar.order_request.OrderRequestSellerFoundProto
 import io.koosha.foobar.order_request.OrderRequestStateChangedProto
+import io.micrometer.core.annotation.Timed
 import mu.KotlinLogging
 import net.logstash.logback.argument.StructuredArguments.v
 import org.apache.kafka.common.TopicPartition
@@ -47,6 +48,7 @@ class OrderRequestProcessor(
 
     private val log = KotlinLogging.logger {}
 
+    @Timed
     @KafkaListener(
         groupId = "${SOURCE}__state_change",
         concurrency = "2",

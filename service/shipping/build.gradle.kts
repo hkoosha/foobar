@@ -63,6 +63,7 @@ dependencies {
 
     implementation(project(":common"))
     implementation(project(":common-jpa"))
+    implementation(project(":common-meter"))
 
     implementation(project(":service:common-kafka"))
     implementation(project(":service:common-service"))

@@ -6,6 +6,7 @@ import io.koosha.foobar.shipping.api.model.ShippingDO
 import io.koosha.foobar.shipping.api.model.ShippingState
 import io.koosha.foobar.shipping.api.service.ShippingService
 import io.koosha.foobar.shipping.api.service.ShippingUpdateRequest
+import io.micrometer.core.annotation.Timed
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -32,10 +33,12 @@ class ShippingApiController(
 
     }
 
+    @Timed
     @GetMapping
     @ResponseBody
     fun getShippings(): List<Shipping> = this.service.findAll().map(::Shipping)
 
+    @Timed
     @GetMapping("/{$URI__PART__SHIPPING_ID}")
     @ResponseBody
     fun getShipping(
@@ -43,6 +46,7 @@ class ShippingApiController(
         shippingId: UUID,
     ): Shipping = Shipping(this.service.findByIdOrFail(shippingId))
 
+    @Timed
     @PatchMapping("/{$URI__PART__SHIPPING_ID}")
     @ResponseBody
     @Bulkhead(name = "patch-shipping")
@@ -53,6 +57,7 @@ class ShippingApiController(
         request: ShippingUpdateRequest,
     ): Shipping = Shipping(this.service.update(shippingId, request))
 
+    @Timed
     @DeleteMapping("/{$URI__PART__SHIPPING_ID}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteShipping(

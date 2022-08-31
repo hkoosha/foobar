@@ -72,6 +72,7 @@ dependencies {
     implementation(project(":definitions"))
 
     implementation(project(":common"))
+    implementation(project(":common-meter"))
 
     implementation(project(":service:common-kafka"))
 

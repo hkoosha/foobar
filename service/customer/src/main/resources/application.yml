@@ -36,8 +36,12 @@ foobar:
     on-concurrency-error-retry-after: 1s
 
 management:
+  metrics:
+    tags:
+      application: FoobarCustomer
   endpoints:
     web:
       exposure:
         include:
           - '*'
+

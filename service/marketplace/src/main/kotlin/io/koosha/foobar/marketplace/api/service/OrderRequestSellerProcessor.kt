@@ -7,6 +7,7 @@ import io.koosha.foobar.marketplace.api.model.OrderRequestState
 import io.koosha.foobar.marketplace.api.model.ProcessedOrderRequestSellerDO
 import io.koosha.foobar.marketplace.api.model.ProcessedOrderRequestSellerRepository
 import io.koosha.foobar.order_request.OrderRequestSellerFoundProto
+import io.micrometer.core.annotation.Timed
 import mu.KotlinLogging
 import net.logstash.logback.argument.StructuredArguments.v
 import org.apache.kafka.common.TopicPartition
@@ -39,6 +40,7 @@ class OrderRequestSellerProcessor(
     }
 
     // TODO switch to RX
+    @Timed
     @KafkaListener(
         groupId = "${SOURCE}__order_request_seller",
         concurrency = "2",
