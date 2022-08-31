@@ -48,10 +48,11 @@ include ./assets/make/local_foobar.Makefile
 
 
 
+include ./assets/env/_address.env
 ifneq (,$(wildcard ./assets/env/${ENV}.env))
 	include ./assets/env/${ENV}.env
-	export
 endif
+export
 
 
 

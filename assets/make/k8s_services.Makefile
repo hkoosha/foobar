@@ -124,6 +124,19 @@ helm-uninstall-prometheus:
 		-n $(FOOBAR_NAMESPACE) \
 		prometheus
 
+
+.PHONY: helm-install-grafana
+helm-install-grafana:
+	helm install \
+		-n $(FOOBAR_NAMESPACE) \
+		grafana bitnami/grafana
+
+.PHONY: helm-uninstall-grafana
+helm-uninstall-grafana:
+	helm uninstall \
+		-n $(FOOBAR_NAMESPACE) \
+		grafana
+
 # .PHONY: helm-install-jaeger
 # helm-install-jaeger:
 # 	helm install \
@@ -262,35 +275,18 @@ k8s-port-forward-alertmanager:
 
 .PHONY: k8s-run-kafka-cli
 k8s-run-kafka-cli:
-	kubectl run kafka-client \
-		--rm \
-		--tty \
-		-i \
-		--restart='Never' \
-		--image docker.io/bitnami/kafka:3.2.1-debian-11-r4 \
+	kubectl exec kafka-0 \
+		-it \
 		--namespace $(FOOBAR_NAMESPACE) \
-		--command bash
-
-.PHONY: k8s-delete-kafka-cli
-k8s-delete-kafka-cli:
-	kubectl delete pod kafka-client --namespace $(FOOBAR_NAMESPACE) 
+		-- bash
 
 .PHONY: k8s-run-my-cli
 k8s-run-my-cli:
-	kubectl run mariadb-client \
-		--rm \
-		--tty \
-		-i \
-		--restart='Never' \
-		--image  docker.io/bitnami/mariadb:10.6.8-debian-11-r25 \
+	kubectl exec mariadb-0 \
+		-it \
 		--namespace $(FOOBAR_NAMESPACE) \
-		--command -- bash -c \
+		-- bash -c \
 		'mysql -h mariadb.foobar.svc.cluster.local -uroot -p"$(shell kubectl get secret --namespace foobar mariadb -o jsonpath="{.data.mariadb-root-password}" | base64 -d)"'
-
-.PHONY: k8s-delete-mycli
-k8s-delete-mycli:
-	kubectl delete pod mariadb-client --namespace $(FOOBAR_NAMESPACE) 
-
 
 
 # ===============================================================================
@@ -299,26 +295,59 @@ k8s-delete-mycli:
 
 .PHONY: k8s-init-create-db
 k8s-init-create-db:
-	kubectl run mariadb-client \
-		--rm --tty -i --restart='Never' \
-		--image  docker.io/bitnami/mariadb:10.6.8-debian-11-r25 \
-		--namespace $(FOOBAR_NAMESPACE) --command -- bash -c \
-		'mysql -h mariadb.foobar.svc.cluster.local -uroot -p"$(shell kubectl get secret --namespace foobar mariadb -o jsonpath="{.data.mariadb-root-password}" | base64 -d)" -e "CREATE DATABASE foobar_customer; CREATE DATABASE foobar_seller; CREATE DATABASE foobar_marketplace; CREATE DATABASE foobar_marketplace_engine; CREATE DATABASE foobar_shipping; CREATE DATABASE foobar_warehouse; CREATE DATABASE foobar_maker; SHOW DATABASES"'
+	kubectl exec mariadb-0 -it --namespace $(FOOBAR_NAMESPACE) -- bash -c \
+		  'mysql -h mariadb.foobar.svc.cluster.local -uroot \
+		  -p"$(shell kubectl get secret --namespace foobar mariadb -o jsonpath="{.data.mariadb-root-password}" | base64 -d)" \
+		  -e "CREATE DATABASE foobar_customer; \
+		      CREATE DATABASE foobar_seller; \
+			  CREATE DATABASE foobar_marketplace; \
+			  CREATE DATABASE foobar_marketplace_engine; \
+			  CREATE DATABASE foobar_shipping; \
+			  CREATE DATABASE foobar_warehouse; \
+			  CREATE DATABASE foobar_maker; \
+			  SHOW DATABASES"'
 
 .PHONY: k8s-init-drop-db
 k8s-init-drop-db:
-	kubectl run mariadb-client \
-		--rm --tty -i --restart='Never' \
-		--image  docker.io/bitnami/mariadb:10.6.8-debian-11-r25 \
-		--namespace $(FOOBAR_NAMESPACE) --command -- bash -c \
-		'mysql -h mariadb.foobar.svc.cluster.local -uroot -p"$(shell kubectl get secret --namespace foobar mariadb -o jsonpath="{.data.mariadb-root-password}" | base64 -d)" -e "DROP DATABASE foobar_customer; DROP DATABASE foobar_seller; DROP DATABASE foobar_marketplace; DROP DATABASE foobar_marketplace_engine; DROP DATABASE foobar_shipping; DROP DATABASE foobar_warehouse; DROP DATABASE foobar_maker; SHOW DATABASES"'
+	kubectl exec mariadb-0 -it --namespace $(FOOBAR_NAMESPACE) -- bash -c \
+		  'mysql -h mariadb.foobar.svc.cluster.local -uroot \
+		  -p"$(shell kubectl get secret --namespace foobar mariadb -o jsonpath="{.data.mariadb-root-password}" | base64 -d)" \
+		  -e "DROP DATABASE foobar_customer; \
+		      DROP DATABASE foobar_seller; \
+			  DROP DATABASE foobar_marketplace; \
+			  DROP DATABASE foobar_marketplace_engine; \
+			  DROP DATABASE foobar_shipping; \
+			  DROP DATABASE foobar_warehouse; \
+			  DROP DATABASE foobar_maker; \
+			  SHOW DATABASES"'
+
+define _k8s_init_my_exec
+	kubectl exec mariadb-0 -it --namespace $(FOOBAR_NAMESPACE) -- bash -c \
+		  'mysql -h mariadb.foobar.svc.cluster.local -uroot -D $2 \
+		  -p"$(shell kubectl get secret --namespace foobar mariadb -o jsonpath="{.data.mariadb-root-password}" | base64 -d)" \
+		  -e $1'
+endef
+
+.PHONY: k8s-init-truncate-db
+k8s-init-truncate-db:
+	$(call _k8s_init_my_exec,"truncate customer__address",foobar_customer); \
+	$(call _k8s_init_my_exec,"DELETE FROM customer__customer WHERE 1=1",foobar_customer); \
+	$(call _k8s_init_my_exec,"truncate seller__seller",foobar_seller); \
+	$(call _k8s_init_my_exec,"truncate warehouse__availability",foobar_warehouse); \
+	$(call _k8s_init_my_exec,"DELETE FROM warehouse__product WHERE 1=1",foobar_warehouse); \
+	$(call _k8s_init_my_exec,"truncate marketplace__order_request",foobar_marketplace); \
+	$(call _k8s_init_my_exec,"truncate marketplace__order_request_line_item",foobar_marketplace); \
+	$(call _k8s_init_my_exec,"truncate marketplace__processed_order_request_seller",foobar_marketplace); \
+	$(call _k8s_init_my_exec,"truncate marketplace_engine__availability",foobar_marketplace_engine); \
+	$(call _k8s_init_my_exec,"truncate marketplace_engine__processed_uuid",foobar_marketplace_engine); \
+	$(call _k8s_init_my_exec,"truncate shipping__shipping",foobar_shipping);
 
 .PHONY: k8s-init-recreate-db
 k8s-init-recreate-db: k8s-init-drop-db k8s-init-create-db
 
 .PHONY: k8s-init-create-topics
 k8s-init-create-topics:
-	kubectl run kafka-client --rm --tty -i --restart='Never' --image docker.io/bitnami/kafka:3.2.1-debian-11-r4 --namespace $(FOOBAR_NAMESPACE) --command -- bash -c \
+	kubectl exec kafka-0 -it --namespace $(FOOBAR_NAMESPACE) -- bash -c \
 		'kafka-topics.sh --bootstrap-server kafka-0.kafka-headless.foobar.svc.cluster.local:9092 --create --replication-factor 1 --partitions 16 --topic foobar__marketplace__order_request__state_changed; \
 		 kafka-topics.sh --bootstrap-server kafka-0.kafka-headless.foobar.svc.cluster.local:9092 --create --replication-factor 1 --partitions 16 --topic foobar__marketplace__order_request__state_changed__dead_letter; \
 		 kafka-topics.sh --bootstrap-server kafka-0.kafka-headless.foobar.svc.cluster.local:9092 --create --replication-factor 1 --partitions 16 --topic foobar__marketplace_engine__order_request__seller_found; \
@@ -326,7 +355,7 @@ k8s-init-create-topics:
 
 .PHONY: k8s-init-drop-topics
 k8s-init-drop-topics:
-	kubectl run kafka-client --rm --tty -i --restart='Never' --image docker.io/bitnami/kafka:3.2.1-debian-11-r4 --namespace $(FOOBAR_NAMESPACE) --command -- bash -c \
+	kubectl exec kafka-0 -it --namespace $(FOOBAR_NAMESPACE) -- bash -c \
 		'kafka-topics.sh --bootstrap-server kafka-0.kafka-headless.foobar.svc.cluster.local:9092 --delete --topic foobar__marketplace__order_request__state_changed; \
 		 kafka-topics.sh --bootstrap-server kafka-0.kafka-headless.foobar.svc.cluster.local:9092 --delete --topic foobar__marketplace__order_request__state_changed__dead_letter; \
 		 kafka-topics.sh --bootstrap-server kafka-0.kafka-headless.foobar.svc.cluster.local:9092 --delete --topic foobar__marketplace_engine__order_request__seller_found; \
