@@ -18,7 +18,7 @@ spring:
     enabled: false
 
 server:
-  port: ${FOOBAR_SERVICE_PORT_MARKETPLACE_ENGINE:8080}
+  port: ${FOOBAR_SERVICE_PORT_MARKETPLACE_ENGINE:4042}
   error:
     include-message: always
     include-binding-errors: always

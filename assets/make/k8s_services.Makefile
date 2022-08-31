@@ -117,6 +117,9 @@ helm-install-prometheus:
 	helm install \
 		-n $(FOOBAR_NAMESPACE) \
 		prometheus bitnami/kube-prometheus
+	kubectl apply -f assets/k8s/monitoring/podmonitor.yaml
+	kubectl apply -f assets/k8s/monitoring/servicemonitor.yaml
+	kubectl apply -f assets/k8s/monitoring/prometheus.yaml
 
 .PHONY: helm-uninstall-prometheus
 helm-uninstall-prometheus:
@@ -129,7 +132,8 @@ helm-uninstall-prometheus:
 helm-install-grafana:
 	helm install \
 		-n $(FOOBAR_NAMESPACE) \
-		grafana bitnami/grafana
+		grafana bitnami/grafana \
+		-f ./assets/k8s/helm/values/grafana.yaml
 
 .PHONY: helm-uninstall-grafana
 helm-uninstall-grafana:
@@ -268,6 +272,12 @@ k8s-port-forward-alertmanager:
 		--namespace $(FOOBAR_NAMESPACE) \
 		svc/prometheus-kube-prometheus-alertmanager 9093:9093
 
+.PHONY: k8s-port-forward-grafana
+k8s-port-forward-grafana:
+	kubectl port-forward \
+		--namespace $(FOOBAR_NAMESPACE) \
+		svc/grafana \
+		8089:3000
 
 # ===============================================================================
 # ================================== CLI ========================================
@@ -376,6 +386,7 @@ k8s-deploy-deps: \
 	helm-install-jaeger \
 	helm-install-elasticsearch \
 	helm-install-prometheus \
+	helm-install-grafana \
 	k8s-apply-filebeat \
 	k8s-apply-zipkin
 	# helm-install-redis \

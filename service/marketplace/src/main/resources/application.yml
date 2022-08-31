@@ -18,7 +18,7 @@ spring:
     url: 'jdbc:mariadb://${FOOBAR_MYSQL_HOST:localhost:3306}/foobar_marketplace'
 
 server:
-  port: ${FOOBAR_PORT_MARKETPLACE:8080}
+  port: ${FOOBAR_SERVICE_PORT_MARKETPLACE:4041}
   error:
     include-message: always
     include-binding-errors: always

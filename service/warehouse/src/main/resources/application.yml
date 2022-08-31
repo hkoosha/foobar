@@ -19,7 +19,7 @@ spring:
 
 
 server:
-  port: ${FOOBAR_PORT_WAREHOUSE:8080}
+  port: ${FOOBAR_SERVICE_PORT_WAREHOUSE:4045}
   error:
     include-message: always
     include-binding-errors: always

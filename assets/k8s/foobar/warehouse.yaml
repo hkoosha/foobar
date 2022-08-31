@@ -49,7 +49,7 @@ spec:
               value: trace
             - name: FOOBAR_DDL_AUTO
               value: update
-            - name: FOOBAR_PORT_WAREHOUSE
+            - name: FOOBAR_SERVICE_PORT_WAREHOUSE
               value: '8080'
             - name: FOOBAR_MYSQL_HOST
               value: 'mariadb.foobar.svc.cluster.local:3306'
