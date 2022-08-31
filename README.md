@@ -168,6 +168,12 @@ make run-shipping
 
 ### Up and Running: Kubernetes
 
+**IMPORTANT!!** seriously consider defining the 
+`FOOBAR_FAST_DOCKER_REGISTRY=true` environment variable, it will make minikube
+read images from a local docker container running a docker registry, rather than
+than pushing images to minikube internal docker registry. It\s way faster! but
+requires opening port 5000 on your local host.
+
 Use the following sequence of commands to spawn a minikube cluster and deploy
 all foobar microservices to it:
 
