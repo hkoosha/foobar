@@ -1,3 +1,4 @@
+
 spring:
   application:
     name: FoobarCustomer
@@ -33,3 +34,10 @@ logging:
 foobar:
   rest:
     on-concurrency-error-retry-after: 1s
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - '*'

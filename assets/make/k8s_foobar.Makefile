@@ -233,3 +233,52 @@ k8s-exec-maker-demo:
 k8s-delete-maker-cli:
 	kubectl delete pod foobar-maker --namespace $(FOOBAR_NAMESPACE)
 
+
+.PHONY: k8s-port-forward-customer
+k8s-port-forward-customer:
+	kubectl port-forward \
+      --namespace $(FOOBAR_NAMESPACE) \
+      svc/foobar-customer \
+	  4040:8080
+
+.PHONY: k8s-port-forward-seller
+k8s-port-forward-seller:
+	kubectl port-forward \
+      --namespace $(FOOBAR_NAMESPACE) \
+      svc/foobar-seller \
+	  4041:8080
+
+.PHONY: k8s-port-forward-marketplace
+k8s-port-forward-marketplace:
+	kubectl port-forward \
+      --namespace $(FOOBAR_NAMESPACE) \
+      svc/foobar-marketplace \
+	  4042:8080
+
+.PHONY: k8s-port-forward-marketplace-engine
+k8s-port-forward-marketplace-engine:
+	kubectl port-forward \
+      --namespace $(FOOBAR_NAMESPACE) \
+      svc/foobar-marketplace-engine \
+	  4043:8080
+
+.PHONY: k8s-port-forward-shipping
+k8s-port-forward-shipping:
+	kubectl port-forward \
+      --namespace $(FOOBAR_NAMESPACE) \
+      svc/foobar-shipping \
+	  4044:8080
+
+.PHONY: k8s-port-forward-warehouse
+k8s-port-forward-warehouse:
+	kubectl port-forward \
+      --namespace $(FOOBAR_NAMESPACE) \
+      svc/foobar-warehouse \
+	  4045:8080
+
+.PHONY: k8s-port-forward-loader
+k8s-port-forward-loader:
+	kubectl port-forward \
+      --namespace $(FOOBAR_NAMESPACE) \
+      svc/foobar-loader \
+	  4046:8080

@@ -4,6 +4,7 @@ metadata:
   name: foobar-loader
   labels:
     foobar-service: loader
+    foobarmonitoring: enabled
 spec:
   selector:
     matchLabels:
@@ -16,6 +17,7 @@ spec:
       labels:
         foobar-service: loader
         foobar-json-log: enabled
+        foobarmonitoring: enabled
     spec:
       dnsPolicy: ClusterFirst
       terminationGracePeriodSeconds: 10
@@ -36,6 +38,10 @@ spec:
           volumeMounts:
             - name: foobar-log
               mountPath: /foobar-log
+          ports:
+            - name: server
+              containerPort: 8080
+              protocol: TCP
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: 'json-logging,zipkin'
@@ -68,4 +74,23 @@ spec:
             - name: FOOBAR_URL_SELLER
               value: 'http://foobar-seller'
 
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: foobar-loader
+    foobarmonitoring: enabled
+  name: foobar-loader
+spec:
+  ports:
+  - name: server
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    foobar-service: loader
+  type: ClusterIP
 

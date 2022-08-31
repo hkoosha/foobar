@@ -4,6 +4,7 @@ metadata:
   name: foobar-shipping
   labels:
     foobar-service: shipping
+    foobarmonitoring: enabled
 spec:
   selector:
     matchLabels:
@@ -16,6 +17,7 @@ spec:
       labels:
         foobar-service: shipping
         foobar-json-log: enabled
+        foobarmonitoring: enabled
     spec:
       dnsPolicy: ClusterFirst
       terminationGracePeriodSeconds: 10
@@ -98,10 +100,11 @@ kind: Service
 metadata:
   labels:
     app: foobar-shipping
+    foobarmonitoring: enabled
   name: foobar-shipping
 spec:
   ports:
-  - name: foobar-shipping
+  - name: server
     port: 8080
     protocol: TCP
     targetPort: 8080

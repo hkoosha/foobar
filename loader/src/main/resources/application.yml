@@ -32,3 +32,10 @@ foobar:
     shipping: ${FOOBAR_URL_SHIPPING:}
     customer: ${FOOBAR_URL_CUSTOMER:}
     seller: ${FOOBAR_URL_SELLER:}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - '*'

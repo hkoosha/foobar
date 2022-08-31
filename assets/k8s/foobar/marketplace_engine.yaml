@@ -4,6 +4,7 @@ metadata:
   name: foobar-marketplace-engine
   labels:
     foobar-service: marketplace-engine
+    foobarmonitoring: enabled
 spec:
   selector:
     matchLabels:
@@ -16,6 +17,7 @@ spec:
       labels:
         foobar-service: marketplace-engine
         foobar-json-log: enabled
+        foobarmonitoring: enabled
     spec:
       dnsPolicy: ClusterFirst
       terminationGracePeriodSeconds: 10
@@ -79,4 +81,23 @@ spec:
               path: /actuator/health/readiness
               port: 8080
               scheme: HTTP
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: foobar-marketplace-engine
+    foobarmonitoring: enabled
+  name: foobar-marketplace-engine
+spec:
+  ports:
+  - name: server
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    foobar-service: marketplace-engine
+  type: ClusterIP
 

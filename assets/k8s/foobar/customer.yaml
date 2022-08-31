@@ -4,6 +4,7 @@ metadata:
   name: foobar-customer
   labels:
     foobar-service: customer
+    foobarmonitoring: enabled
 spec:
   selector:
     matchLabels:
@@ -16,6 +17,7 @@ spec:
       labels:
         foobar-service: customer
         foobar-json-log: enabled
+        foobarmonitoring: enabled
     spec:
       dnsPolicy: ClusterFirst
       terminationGracePeriodSeconds: 10
@@ -84,10 +86,11 @@ kind: Service
 metadata:
   labels:
     app: foobar-customer
+    foobarmonitoring: enabled
   name: foobar-customer
 spec:
   ports:
-  - name: foobar-customer
+  - name: server
     port: 8080
     protocol: TCP
     targetPort: 8080

@@ -65,7 +65,9 @@ object Foobar {
         fun jvmArgs(project: Project) = listOf(
             "-javaagent:${project.rootDir}/libs/opentelemetry-javaagent-1.17.0.jar",
             "-Dotel.service.name=${project.name}",
-            "-Dotel.traces.sampler=always_on" // parentbased_traceidratio && -Dotel.traces.sampler.arg=RATIO
+            // "-Dotel.traces.sampler=always_on",
+            "-Dotel.traces.sampler=parentbased_traceidratio",
+            "-Dotel.traces.sampler.arg=0.1",
         )
 
     }
@@ -79,7 +81,10 @@ object Foobar {
         fun jvmFlags(project: Project) = listOf(
             "-javaagent:/opentelemetry-javaagent-1.17.0.jar",
             "-Dotel.service.name=${project.name}",
-            "-Dotel.traces.sampler=always_on", // parentbased_traceidratio && -Dotel.traces.sampler.arg=RATIO
+            // "-Dotel.traces.sampler=always_on",
+            "-Dotel.traces.sampler=parentbased_traceidratio",
+            // TODO move ratio to env var
+            "-Dotel.traces.sampler.arg=0.1",
             "-Dotel.traces.exporter=jaeger",
         )
 

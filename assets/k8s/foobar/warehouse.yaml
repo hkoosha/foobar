@@ -4,6 +4,7 @@ metadata:
   name: foobar-warehouse
   labels:
     foobar-service: warehouse
+    foobarmonitoring: enabled
 spec:
   selector:
     matchLabels:
@@ -16,6 +17,7 @@ spec:
       labels:
         foobar-service: warehouse
         foobar-json-log: enabled
+        foobarmonitoring: enabled
     spec:
       dnsPolicy: ClusterFirst
       terminationGracePeriodSeconds: 10
@@ -90,10 +92,11 @@ kind: Service
 metadata:
   labels:
     app: foobar-warehouse
+    foobarmonitoring: enabled
   name: foobar-warehouse
 spec:
   ports:
-  - name: foobar-warehouse
+  - name: server
     port: 8080
     protocol: TCP
     targetPort: 8080
