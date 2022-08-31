@@ -1,6 +1,5 @@
 package io.koosha.foobar.warehouse.api.ctl
 
-import io.koosha.foobar.common.FOOBAR_METRIC
 import io.koosha.foobar.warehouse.API_PATH_PREFIX
 import io.koosha.foobar.warehouse.api.model.ProductDO
 import io.koosha.foobar.warehouse.api.service.ProductCreateRequest
@@ -42,12 +41,12 @@ class ProductAPIController(
 
     }
 
-    @Timed(extraTags = [FOOBAR_METRIC])
+    @Timed
     @GetMapping
     @ResponseBody
     fun getProducts(): List<Product> = service.findAll().map(::Product)
 
-    @Timed(extraTags = [FOOBAR_METRIC])
+    @Timed
     @GetMapping("/{$URI__PART__PRODUCT_ID}")
     @ResponseBody
     fun getProduct(
@@ -55,7 +54,7 @@ class ProductAPIController(
         productId: UUID,
     ): Product = Product(service.findByIdOrFail(productId))
 
-    @Timed(extraTags = [FOOBAR_METRIC])
+    @Timed
     @PostMapping
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
@@ -83,7 +82,7 @@ class ProductAPIController(
         return Product(entity)
     }
 
-    @Timed(extraTags = [FOOBAR_METRIC])
+    @Timed
     @PatchMapping("/{$URI__PART__PRODUCT_ID}")
     @ResponseBody
     fun patchProduct(
@@ -93,7 +92,7 @@ class ProductAPIController(
         request: ProductUpdateRequest,
     ): Product = Product(service.update(productId, request))
 
-    @Timed(extraTags = [FOOBAR_METRIC])
+    @Timed
     @DeleteMapping("/{$URI__PART__PRODUCT_ID}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteProduct(

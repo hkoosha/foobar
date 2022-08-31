@@ -1,6 +1,5 @@
 package io.koosha.foobar.shipping.api.service
 
-import io.koosha.foobar.common.FOOBAR_METRIC
 import io.koosha.foobar.common.cfg.KafkaConfig
 import io.koosha.foobar.common.toUUID
 import io.koosha.foobar.order_request.OrderRequestSellerFoundProto
@@ -25,7 +24,7 @@ class OrderRequestSellerProcessor(
 
     private val log = KotlinLogging.logger {}
 
-    @Timed(extraTags = [FOOBAR_METRIC])
+    @Timed
     @KafkaListener(
         groupId = "${SOURCE}__order_request_seller",
         concurrency = "2",

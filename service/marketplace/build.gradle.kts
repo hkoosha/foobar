@@ -153,6 +153,7 @@ tasks.withType<BootRun> {
 }
 
 jib {
+    setAllowInsecureRegistries(true)
     extraDirectories.setPaths(
         Foobar.Jib.extraDirs(project)
     )
@@ -161,7 +162,7 @@ jib {
         jvmFlags = Foobar.Jib.jvmFlags(project)
     }
     to {
-        image = "foobar-marketplace:${Foobar.appVersion}"
+        image = "${Foobar.dockerRegistry()}foobar-marketplace:${Foobar.appVersion}"
     }
 }
 

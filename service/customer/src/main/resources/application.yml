@@ -38,7 +38,8 @@ foobar:
 management:
   metrics:
     tags:
-      application: FoobarCustomer
+      foobar-metric: enabled
+      foobar-service: foobar-customer
   endpoints:
     web:
       exposure:

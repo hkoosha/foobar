@@ -1,6 +1,5 @@
 package io.koosha.foobar.warehouse.api.ctl
 
-import io.koosha.foobar.common.FOOBAR_METRIC
 import io.koosha.foobar.warehouse.API_PATH_PREFIX
 import io.koosha.foobar.warehouse.api.model.AvailabilityDO
 import io.koosha.foobar.warehouse.api.service.AvailabilityCreateRequest
@@ -43,7 +42,7 @@ class AvailabilityAPIController(
 
     }
 
-    @Timed(extraTags = [FOOBAR_METRIC])
+    @Timed
     @GetMapping
     @ResponseBody
     fun getAvailabilities(
@@ -51,7 +50,7 @@ class AvailabilityAPIController(
         productId: UUID,
     ): List<Availability> = service.getAvailabilitiesOf(productId).map(::Availability)
 
-    @Timed(extraTags = [FOOBAR_METRIC])
+    @Timed
     @GetMapping("/{$URI__PART__SELLER_ID}")
     @ResponseBody
     fun getAvailability(
@@ -61,7 +60,7 @@ class AvailabilityAPIController(
         sellerId: UUID,
     ): Availability = Availability(service.getAvailability(productId, sellerId))
 
-    @Timed(extraTags = [FOOBAR_METRIC])
+    @Timed
     @PatchMapping("{$URI__PART__SELLER_ID}")
     @ResponseBody
     fun patchAvailability(
@@ -73,7 +72,7 @@ class AvailabilityAPIController(
         request: AvailabilityUpdateRequest,
     ): Availability = Availability(service.updateAvailability(productId, sellerId, request))
 
-    @Timed(extraTags = [FOOBAR_METRIC])
+    @Timed
     @PostMapping
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
@@ -105,7 +104,7 @@ class AvailabilityAPIController(
         return Availability(entity)
     }
 
-    @Timed(extraTags = [FOOBAR_METRIC])
+    @Timed
     @DeleteMapping("/{$URI__PART__SELLER_ID}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteAvailability(

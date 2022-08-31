@@ -110,4 +110,15 @@ object Foobar {
             setUrl("https://plugins.gradle.org/m2/")
         }
     }
+
+    fun dockerRegistry(): String {
+
+        val registry = System.getenv("FOOBAR_DOCKER_REGISTRY")?.trim()
+        if (registry == null)
+            return ""
+
+        if (!registry.endsWith("/"))
+            throw GradleException("foobar docker registry (env var: FOOBAR_DOCKER_REGISTRY) must end with a slash, actual value: $registry")
+        return registry
+    }
 }

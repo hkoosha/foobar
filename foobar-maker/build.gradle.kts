@@ -88,14 +88,18 @@ dependencies {
 }
 
 jib {
+    setAllowInsecureRegistries(true)
+    extraDirectories.setPaths(
+        "${project.projectDir}/extra",
+    )
     container {
-        extraDirectories.setPaths(
-            "${project.projectDir}/extra",
-        )
         entrypoint = listOf(
             "sleep",
             "infinity",
         )
+    }
+    to {
+        image = "${Foobar.dockerRegistry()}foobar-maker:${Foobar.appVersion}"
     }
 }
 

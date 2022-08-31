@@ -12,6 +12,7 @@ remake-k8s-services:
 .PHONY: minikube-start
 minikube-start:
 	minikube start \
+		--insecure-registry host.minikube.internal:5000 \
 		--addons=$(FOOBAR_MINIKUBE_ADDONS) \
 		--cpus=$(FOOBAR_MINIKUBE_NUM_CPU) \
 		--memory=$(FOOBAR_MINIKUBE_MEMORY) \
@@ -23,11 +24,16 @@ minikube-start:
 	@echo "Minikube cluster started. It is better to wait until all nodes in the cluster are ready."
 	@echo "You can check the status if nodes using the app k9s."
 	@echo "Your next step is probabaly running '$(MAKE) k8s-namespace kubectl-set-ns'."
+	if [[ "$(FOOBAR_FAST_DOCKER_REGISTRY)" == "true" ]]; then \
+		$(MAKE) docker-registry; \
+	fi
 
 .PHONY: minikube-kill
 minikube-kill:
 	minikube stop
 	minikube delete
+	docker kill foobar-registry
+	docker rm foobar-registry
 
 .PHONY: minikube-check
 minikube-check:
@@ -337,10 +343,12 @@ k8s-init-drop-db:
 			  DROP DATABASE foobar_maker; \
 			  SHOW DATABASES"'
 
+_FOOBAR_K8S_MARIADB_PASSWORD ?= $(shell kubectl get secret --namespace foobar mariadb -o jsonpath="{.data.mariadb-root-password}" 2>/dev/null | base64 -d 2>/dev/null)
+
 define _k8s_init_my_exec
 	kubectl exec mariadb-0 -it --namespace $(FOOBAR_NAMESPACE) -- bash -c \
 		  'mysql -h mariadb.foobar.svc.cluster.local -uroot -D $2 \
-		  -p"$(shell kubectl get secret --namespace foobar mariadb -o jsonpath="{.data.mariadb-root-password}" | base64 -d)" \
+		  -p"$(_FOOBAR_K8S_MARIADB_PASSWORD)" \
 		  -e $1'
 endef
 

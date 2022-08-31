@@ -1,6 +1,5 @@
 package io.koosha.foobar.seller.api.ctl
 
-import io.koosha.foobar.common.FOOBAR_METRIC
 import io.koosha.foobar.seller.API_PATH_PREFIX
 import io.koosha.foobar.seller.api.model.SellerDO
 import io.koosha.foobar.seller.api.model.SellerState
@@ -43,12 +42,12 @@ class SellerApiController(
 
     }
 
-    @Timed(extraTags = [FOOBAR_METRIC])
+    @Timed
     @GetMapping
     @ResponseBody
     fun getSellers(): List<Seller> = service.findAll().map(::Seller)
 
-    @Timed(extraTags = [FOOBAR_METRIC])
+    @Timed
     @GetMapping("/{$URI__PART__SELLER_ID}")
     @ResponseBody
     fun getSeller(
@@ -56,7 +55,7 @@ class SellerApiController(
         sellerId: UUID,
     ): Seller = Seller(service.findByIdOrFail(sellerId))
 
-    @Timed(extraTags = [FOOBAR_METRIC])
+    @Timed
     @PatchMapping("/{$URI__PART__SELLER_ID}")
     @ResponseBody
     fun patchSeller(
@@ -66,7 +65,7 @@ class SellerApiController(
         request: SellerUpdateRequest,
     ): Seller = Seller(service.update(sellerId, request))
 
-    @Timed(extraTags = [FOOBAR_METRIC])
+    @Timed
     @PostMapping
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
@@ -94,7 +93,7 @@ class SellerApiController(
         return Seller(entity)
     }
 
-    @Timed(extraTags = [FOOBAR_METRIC])
+    @Timed
     @DeleteMapping("/{$URI__PART__SELLER_ID}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteSeller(

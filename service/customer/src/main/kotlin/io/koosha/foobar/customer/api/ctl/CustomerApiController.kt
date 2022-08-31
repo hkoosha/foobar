@@ -1,6 +1,5 @@
 package io.koosha.foobar.customer.api.ctl
 
-import io.koosha.foobar.common.FOOBAR_METRIC
 import io.koosha.foobar.customer.API_PATH_PREFIX
 import io.koosha.foobar.customer.api.model.CustomerDO
 import io.koosha.foobar.customer.api.model.CustomerState
@@ -44,12 +43,12 @@ class CustomerApiController(
 
     }
 
-    @Timed(extraTags = [FOOBAR_METRIC])
+    @Timed
     @GetMapping
     @ResponseBody
     fun getCustomers(): List<Customer> = service.findAll().map(::Customer)
 
-    @Timed(extraTags = [FOOBAR_METRIC])
+    @Timed
     @GetMapping("/{$URI__PART__CUSTOMER_ID}")
     @ResponseBody
     fun getCustomer(
@@ -57,7 +56,7 @@ class CustomerApiController(
         customerId: UUID,
     ): Customer = Customer(service.findByCustomerIdOrFail(customerId))
 
-    @Timed(extraTags = [FOOBAR_METRIC])
+    @Timed
     @PatchMapping("/{$URI__PART__CUSTOMER_ID}")
     @ResponseBody
     fun patchCustomer(
@@ -67,7 +66,7 @@ class CustomerApiController(
         request: CustomerUpdateRequest,
     ): Customer = Customer(service.update(customerId, request))
 
-    @Timed(extraTags = [FOOBAR_METRIC])
+    @Timed
     @PostMapping
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
@@ -95,7 +94,7 @@ class CustomerApiController(
         return Customer(entity)
     }
 
-    @Timed(extraTags = [FOOBAR_METRIC])
+    @Timed
     @DeleteMapping("/{$URI__PART__CUSTOMER_ID}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteCustomer(

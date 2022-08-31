@@ -20,8 +20,8 @@ spec:
       terminationGracePeriodSeconds: 10
       containers:
         - name: foobar-maker
-          image: 'docker.io/library/foobar-maker:0.0.1-SNAPSHOT'
-          imagePullPolicy: Never
+          image: '${FOOBAR_DOCKER_IMAGE_BASE}/foobar-maker:0.0.1-SNAPSHOT'
+          imagePullPolicy: ${FOOBAR_DOCKER_IMAGE_PULL_POLICY}
           terminationMessagePolicy: File
           env:
             - name: SPRING_PROFILES_ACTIVE
