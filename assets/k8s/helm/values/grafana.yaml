@@ -1,6 +1,18 @@
 admin:
   password: '.'
 
+dashboardsProvider:
+  enabled: true
+
+datasources:
+  secretName: foobar-grafana-datasource
+
+dashboardsConfigMaps:
+  - configMapName: foobar-grafana-dash-foobar-jvm
+    fileName: dash_jvm_by_foobar_pod.json
+  - configMapName: foobar-grafana-dash-prometheus
+    fileName: dash_prometheus.json
+
 grafana:
   containerSecurityContext:
     enabled: true
