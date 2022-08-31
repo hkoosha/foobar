@@ -1,5 +1,6 @@
 package io.koosha.foobar.customer.api.ctl
 
+import io.koosha.foobar.common.FOOBAR_METRIC
 import io.koosha.foobar.customer.api.model.AddressDO
 import io.koosha.foobar.customer.api.service.CustomerAddressCreateRequest
 import io.koosha.foobar.customer.api.service.CustomerService
@@ -38,7 +39,7 @@ class AddressApiController(
 
     }
 
-    @Timed
+    @Timed(extraTags = [FOOBAR_METRIC])
     @GetMapping
     @ResponseBody
     fun getAddresses(
@@ -46,7 +47,7 @@ class AddressApiController(
         customerId: UUID,
     ): List<Address> = service.getAddressesOfCustomer(customerId).map(::Address)
 
-    @Timed
+    @Timed(extraTags = [FOOBAR_METRIC])
     @GetMapping("/{$URI__PART__ADDRESS_ID}")
     @ResponseBody
     fun getAddress(
@@ -56,7 +57,7 @@ class AddressApiController(
         addressId: Long,
     ): Address = Address(service.getAddress(customerId, addressId))
 
-    @Timed
+    @Timed(extraTags = [FOOBAR_METRIC])
     @PostMapping
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
@@ -88,7 +89,7 @@ class AddressApiController(
         return Address(entity)
     }
 
-    @Timed
+    @Timed(extraTags = [FOOBAR_METRIC])
     @DeleteMapping("/{$URI__PART__ADDRESS_ID}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteAddress(

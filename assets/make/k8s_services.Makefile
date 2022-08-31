@@ -384,6 +384,7 @@ k8s-init-recreate-topics: k8s-init-drop-topics k8s-init-create-topics
 k8s-init: k8s-init-create-db k8s-init-create-topics
 
 
+
 .PHONY: k8s-deploy-deps
 k8s-deploy-deps: \
 	helm-add-bitnami \
@@ -398,4 +399,12 @@ k8s-deploy-deps: \
 	# helm-install-redis \
 	# helm-install-logstash \
 
+
+# ===============================================================================
+# ================================= REGISTRY ====================================
+# ===============================================================================
+
+.PHONY: docker-registry
+docker-registry:
+	docker run -d -p 5000:5000 --restart=always --name foobar-registry registry:2
 

@@ -1,6 +1,7 @@
 package io.koosha.foobar.shipping.api.ctl
 
 import io.github.resilience4j.bulkhead.annotation.Bulkhead
+import io.koosha.foobar.common.FOOBAR_METRIC
 import io.koosha.foobar.shipping.API_PATH_PREFIX
 import io.koosha.foobar.shipping.api.model.ShippingDO
 import io.koosha.foobar.shipping.api.model.ShippingState
@@ -33,12 +34,12 @@ class ShippingApiController(
 
     }
 
-    @Timed
+    @Timed(extraTags = [FOOBAR_METRIC])
     @GetMapping
     @ResponseBody
     fun getShippings(): List<Shipping> = this.service.findAll().map(::Shipping)
 
-    @Timed
+    @Timed(extraTags = [FOOBAR_METRIC])
     @GetMapping("/{$URI__PART__SHIPPING_ID}")
     @ResponseBody
     fun getShipping(
@@ -46,7 +47,7 @@ class ShippingApiController(
         shippingId: UUID,
     ): Shipping = Shipping(this.service.findByIdOrFail(shippingId))
 
-    @Timed
+    @Timed(extraTags = [FOOBAR_METRIC])
     @PatchMapping("/{$URI__PART__SHIPPING_ID}")
     @ResponseBody
     @Bulkhead(name = "patch-shipping")
@@ -57,7 +58,7 @@ class ShippingApiController(
         request: ShippingUpdateRequest,
     ): Shipping = Shipping(this.service.update(shippingId, request))
 
-    @Timed
+    @Timed(extraTags = [FOOBAR_METRIC])
     @DeleteMapping("/{$URI__PART__SHIPPING_ID}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteShipping(
