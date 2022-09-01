@@ -73,17 +73,17 @@ foobar:
     services:
       customer:
         url: ${FOOBAR_SERVICE_URL_CUSTOMER:http://localhost}
-        port: ${FOOBAR_SERVICE_PORT_CUSTOMER:4043}
+        port: ${FOOBAR_SERVICE_PORT_CUSTOMER:4040}
         retry: true
         limit: false
       seller:
         url: ${FOOBAR_SERVICE_URL_SELLER:http://localhost}
-        port: ${FOOBAR_SERVICE_PORT_SELLER:4045}
+        port: ${FOOBAR_SERVICE_PORT_SELLER:4043}
         retry: true
         limit: false
       marketplace:
         url: ${FOOBAR_SERVICE_URL_MARKETPLACE:http://localhost}
-        port: ${FOOBAR_SERVICE_PORT_MARKETPLACE:4040}
+        port: ${FOOBAR_SERVICE_PORT_MARKETPLACE:4041}
         retry: true
         limit: false
   rest:

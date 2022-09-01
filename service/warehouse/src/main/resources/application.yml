@@ -19,7 +19,7 @@ spring:
 
 
 server:
-  port: ${FOOBAR_SERVICE_PORT_WAREHOUSE:4045}
+  port: ${FOOBAR_SERVICE_PORT_WAREHOUSE:4046}
   error:
     include-message: always
     include-binding-errors: always
@@ -65,7 +65,7 @@ foobar:
     services:
       seller:
         url: ${FOOBAR_SERVICE_URL_SELLER:http://localhost}
-        port: ${FOOBAR_SERVICE_PORT_SELLER:4045}
+        port: ${FOOBAR_SERVICE_PORT_SELLER:4043}
         retry: true
         limit: false
   rest:

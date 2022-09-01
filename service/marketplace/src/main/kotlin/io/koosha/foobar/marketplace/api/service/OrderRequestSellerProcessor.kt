@@ -60,8 +60,6 @@ class OrderRequestSellerProcessor(
         ack: Acknowledgment,
     ) {
 
-        log.trace("kafka payload=$payload", v("payload", payload))
-
         val isNewRecord = this.processedRepo
             .save(
                 ProcessedOrderRequestSellerDO(

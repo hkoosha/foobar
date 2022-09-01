@@ -49,7 +49,7 @@ object Foobar {
 
         fun shipping(project: Project?) = getEnv(project, "FOOBAR_SERVICE_PORT_SHIPPING", "4044")
 
-        fun warehouse(project: Project?) = getEnv(project, "FOOBAR_SERVICE_PORT_WAREHOUSE", "4045")
+        fun warehouse(project: Project?) = getEnv(project, "FOOBAR_SERVICE_PORT_WAREHOUSE", "4046")
     }
 
 
