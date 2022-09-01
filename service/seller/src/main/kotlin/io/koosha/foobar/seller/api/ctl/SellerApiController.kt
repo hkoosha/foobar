@@ -1,14 +1,11 @@
 package io.koosha.foobar.seller.api.ctl
 
-import io.koosha.foobar.common.TAG
-import io.koosha.foobar.common.TAG_VALUE
 import io.koosha.foobar.seller.API_PATH_PREFIX
 import io.koosha.foobar.seller.api.model.SellerDO
 import io.koosha.foobar.seller.api.model.SellerState
 import io.koosha.foobar.seller.api.service.SellerCreateRequest
 import io.koosha.foobar.seller.api.service.SellerService
 import io.koosha.foobar.seller.api.service.SellerUpdateRequest
-import io.micrometer.core.annotation.Timed
 import io.swagger.v3.oas.annotations.tags.Tag
 import io.swagger.v3.oas.annotations.tags.Tags
 import org.springframework.http.HttpHeaders
@@ -44,12 +41,10 @@ class SellerApiController(
 
     }
 
-    @Timed(extraTags = [TAG, TAG_VALUE])
     @GetMapping
     @ResponseBody
     fun getSellers(): List<Seller> = service.findAll().map(::Seller)
 
-    @Timed(extraTags = [TAG, TAG_VALUE])
     @GetMapping("/{$URI__PART__SELLER_ID}")
     @ResponseBody
     fun getSeller(
@@ -57,7 +52,6 @@ class SellerApiController(
         sellerId: UUID,
     ): Seller = Seller(service.findByIdOrFail(sellerId))
 
-    @Timed(extraTags = [TAG, TAG_VALUE])
     @PatchMapping("/{$URI__PART__SELLER_ID}")
     @ResponseBody
     fun patchSeller(
@@ -67,7 +61,6 @@ class SellerApiController(
         request: SellerUpdateRequest,
     ): Seller = Seller(service.update(sellerId, request))
 
-    @Timed(extraTags = [TAG, TAG_VALUE])
     @PostMapping
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
@@ -95,7 +88,6 @@ class SellerApiController(
         return Seller(entity)
     }
 
-    @Timed(extraTags = [TAG, TAG_VALUE])
     @DeleteMapping("/{$URI__PART__SELLER_ID}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteSeller(

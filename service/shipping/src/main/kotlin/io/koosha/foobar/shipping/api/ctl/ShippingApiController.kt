@@ -1,14 +1,11 @@
 package io.koosha.foobar.shipping.api.ctl
 
 import io.github.resilience4j.bulkhead.annotation.Bulkhead
-import io.koosha.foobar.common.TAG
-import io.koosha.foobar.common.TAG_VALUE
 import io.koosha.foobar.shipping.API_PATH_PREFIX
 import io.koosha.foobar.shipping.api.model.ShippingDO
 import io.koosha.foobar.shipping.api.model.ShippingState
 import io.koosha.foobar.shipping.api.service.ShippingService
 import io.koosha.foobar.shipping.api.service.ShippingUpdateRequest
-import io.micrometer.core.annotation.Timed
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -35,12 +32,10 @@ class ShippingApiController(
 
     }
 
-    @Timed(extraTags = [TAG, TAG_VALUE])
     @GetMapping
     @ResponseBody
     fun getShippings(): List<Shipping> = this.service.findAll().map(::Shipping)
 
-    @Timed(extraTags = [TAG, TAG_VALUE])
     @GetMapping("/{$URI__PART__SHIPPING_ID}")
     @ResponseBody
     fun getShipping(
@@ -48,7 +43,6 @@ class ShippingApiController(
         shippingId: UUID,
     ): Shipping = Shipping(this.service.findByIdOrFail(shippingId))
 
-    @Timed(extraTags = [TAG, TAG_VALUE])
     @PatchMapping("/{$URI__PART__SHIPPING_ID}")
     @ResponseBody
     @Bulkhead(name = "patch-shipping")
@@ -59,7 +53,6 @@ class ShippingApiController(
         request: ShippingUpdateRequest,
     ): Shipping = Shipping(this.service.update(shippingId, request))
 
-    @Timed(extraTags = [TAG, TAG_VALUE])
     @DeleteMapping("/{$URI__PART__SHIPPING_ID}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteShipping(

@@ -1,13 +1,10 @@
 package io.koosha.foobar.warehouse.api.ctl
 
-import io.koosha.foobar.common.TAG
-import io.koosha.foobar.common.TAG_VALUE
 import io.koosha.foobar.warehouse.API_PATH_PREFIX
 import io.koosha.foobar.warehouse.api.model.AvailabilityDO
 import io.koosha.foobar.warehouse.api.service.AvailabilityCreateRequest
 import io.koosha.foobar.warehouse.api.service.AvailabilityUpdateRequest
 import io.koosha.foobar.warehouse.api.service.ProductService
-import io.micrometer.core.annotation.Timed
 import io.swagger.v3.oas.annotations.tags.Tag
 import io.swagger.v3.oas.annotations.tags.Tags
 import org.springframework.http.HttpHeaders
@@ -44,7 +41,6 @@ class AvailabilityAPIController(
 
     }
 
-    @Timed(extraTags = [TAG, TAG_VALUE])
     @GetMapping
     @ResponseBody
     fun getAvailabilities(
@@ -52,7 +48,6 @@ class AvailabilityAPIController(
         productId: UUID,
     ): List<Availability> = service.getAvailabilitiesOf(productId).map(::Availability)
 
-    @Timed(extraTags = [TAG, TAG_VALUE])
     @GetMapping("/{$URI__PART__SELLER_ID}")
     @ResponseBody
     fun getAvailability(
@@ -62,7 +57,6 @@ class AvailabilityAPIController(
         sellerId: UUID,
     ): Availability = Availability(service.getAvailability(productId, sellerId))
 
-    @Timed(extraTags = [TAG, TAG_VALUE])
     @PatchMapping("{$URI__PART__SELLER_ID}")
     @ResponseBody
     fun patchAvailability(
@@ -74,7 +68,6 @@ class AvailabilityAPIController(
         request: AvailabilityUpdateRequest,
     ): Availability = Availability(service.updateAvailability(productId, sellerId, request))
 
-    @Timed(extraTags = [TAG, TAG_VALUE])
     @PostMapping
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
@@ -106,7 +99,6 @@ class AvailabilityAPIController(
         return Availability(entity)
     }
 
-    @Timed(extraTags = [TAG, TAG_VALUE])
     @DeleteMapping("/{$URI__PART__SELLER_ID}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteAvailability(

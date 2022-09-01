@@ -25,12 +25,6 @@
     },
     {
       "type": "panel",
-      "id": "stat",
-      "name": "Stat",
-      "version": ""
-    },
-    {
-      "type": "panel",
       "id": "timeseries",
       "name": "Time series",
       "version": ""
@@ -73,9 +67,9 @@
         "x": 0,
         "y": 0
       },
-      "id": 24,
+      "id": 42,
       "panels": [],
-      "title": "Seller",
+      "title": "Marketplace Engine",
       "type": "row"
     },
     {
@@ -83,6 +77,7 @@
         "type": "prometheus",
         "uid": "${DS_DS_PROMETHUES}"
       },
+      "description": "",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -142,6 +137,315 @@
         "x": 0,
         "y": 1
       },
+      "id": 44,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_DS_PROMETHUES}"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "sum(rate(onEntityStateChanged_seconds_count{\n    foobar_service=\"foobar-marketplace-engine\"\n}[$__rate_interval]))",
+          "interval": "",
+          "legendFormat": "RPS",
+          "range": true,
+          "refId": "ok"
+        }
+      ],
+      "title": "Engine / State Change Processed Rate",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_DS_PROMETHUES}"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "smooth",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 4,
+        "x": 4,
+        "y": 1
+      },
+      "id": 45,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_DS_PROMETHUES}"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "sum(rate(onEntityStateChanged_seconds_sum{\n    foobar_service=\"foobar-marketplace-engine\"\n}[$__rate_interval]))\n/\nsum(rate(onEntityStateChanged_seconds_count{\n    foobar_service=\"foobar-marketplace-engine\"\n}[$__rate_interval]))",
+          "legendFormat": "Success",
+          "range": true,
+          "refId": "ok"
+        }
+      ],
+      "title": "Engine / State Change Processed Time",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_DS_PROMETHUES}"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "smooth",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 4,
+        "x": 8,
+        "y": 1
+      },
+      "id": 49,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_DS_PROMETHUES}"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "sum(rate(seller_found_total{\n    foobar_service=\"foobar-marketplace\"\n}[$__rate_interval]))",
+          "legendFormat": "Found",
+          "range": true,
+          "refId": "Found"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_DS_PROMETHUES}"
+          },
+          "editorMode": "code",
+          "expr": "sum(rate(seller_not_found_total{\n    foobar_service=\"foobar-marketplace\"\n}[$__rate_interval]))",
+          "hide": false,
+          "legendFormat": "Not Found",
+          "range": true,
+          "refId": "NotFound"
+        }
+      ],
+      "title": "Market / Seller Result Rate",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 9
+      },
+      "id": 24,
+      "panels": [],
+      "title": "Seller",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_DS_PROMETHUES}"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "smooth",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 4,
+        "x": 0,
+        "y": 10
+      },
       "id": 26,
       "options": {
         "legend": {
@@ -162,7 +466,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum(rate(method_timed_seconds_count{foobar_service=\"foobar-seller\", method=\"getSeller\", exception=\"none\"}[$__rate_interval]))",
+          "expr": "sum(rate(http_server_requests_seconds_count{\n    foobar_service=\"foobar-seller\",method=\"GET\",status=\"200\",uri=\"/foobar/seller/v1/sellers/{sellerId}\"\n}[$__rate_interval]))\n",
           "legendFormat": "Success",
           "range": true,
           "refId": "ok"
@@ -173,7 +477,7 @@
             "uid": "${DS_DS_PROMETHUES}"
           },
           "editorMode": "code",
-          "expr": "sum(rate(method_timed_seconds_count{foobar_service=\"foobar-seller\", method=\"getSeller\", exception!=\"none\"}[$__rate_interval]))",
+          "expr": "sum(rate(http_server_requests_seconds_count{\n    foobar_service=\"foobar-seller\",method=\"GET\",status!=\"200\",uri=\"/foobar/seller/v1/sellers/{sellerId}\"\n}[$__rate_interval]))\n",
           "hide": false,
           "interval": "",
           "legendFormat": "Failed",
@@ -181,7 +485,7 @@
           "refId": "failed"
         }
       ],
-      "title": "Get Seller Rate",
+      "title": "Get Seller RPS",
       "type": "timeseries"
     },
     {
@@ -206,14 +510,14 @@
               "tooltip": false,
               "viz": false
             },
-            "lineInterpolation": "linear",
+            "lineInterpolation": "smooth",
             "lineWidth": 1,
             "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
             },
             "showPoints": "auto",
-            "spanNulls": false,
+            "spanNulls": true,
             "stacking": {
               "group": "A",
               "mode": "none"
@@ -243,7 +547,7 @@
         "h": 8,
         "w": 4,
         "x": 4,
-        "y": 1
+        "y": 10
       },
       "id": 28,
       "options": {
@@ -264,7 +568,7 @@
             "uid": "${DS_DS_PROMETHUES}"
           },
           "editorMode": "code",
-          "expr": "sum(rate(method_timed_seconds_count{foobar_service=\"foobar-seller\", method=\"postSeller\", exception=\"none\"}[$__rate_interval]))",
+          "expr": "sum(rate(http_server_requests_seconds_count{\n    foobar_service=\"foobar-seller\",method=\"POST\",status=\"201\",uri=\"/foobar/seller/v1/sellers\"\n}[$__rate_interval]))\n",
           "legendFormat": "Success",
           "range": true,
           "refId": "Success"
@@ -275,89 +579,15 @@
             "uid": "${DS_DS_PROMETHUES}"
           },
           "editorMode": "code",
-          "expr": "sum(rate(method_timed_seconds_count{foobar_service=\"foobar-seller\", method=\"postSeller\", exception!=\"none\"}[$__rate_interval]))",
+          "expr": "sum(rate(http_server_requests_seconds_count{\n    foobar_service=\"foobar-seller\",method=\"POST\",status!=\"201\",uri=\"/foobar/seller/v1/sellers\"\n}[$__rate_interval]))\n",
           "hide": false,
           "legendFormat": "Failed",
           "range": true,
           "refId": "Failed"
         }
       ],
-      "title": "Post Seller Rate",
+      "title": "Post Seller RPS",
       "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS_DS_PROMETHUES}"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [
-            {
-              "options": {
-                "null": {
-                  "index": 0,
-                  "text": "N/A"
-                }
-              },
-              "type": "value"
-            }
-          ],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "none"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 2,
-        "w": 3,
-        "x": 8,
-        "y": 1
-      },
-      "id": 30,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "horizontal",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "auto"
-      },
-      "pluginVersion": "9.0.7",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_DS_PROMETHUES}"
-          },
-          "expr": "sum(method_timed_seconds_count{foobar_service=\"foobar-seller\", method=\"getSeller\", exception=\"none\"})",
-          "refId": "A"
-        }
-      ],
-      "title": "Total Ok Get Seller",
-      "type": "stat"
     },
     {
       "datasource": {
@@ -381,14 +611,14 @@
               "tooltip": false,
               "viz": false
             },
-            "lineInterpolation": "linear",
+            "lineInterpolation": "smooth",
             "lineWidth": 1,
             "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
             },
             "showPoints": "auto",
-            "spanNulls": false,
+            "spanNulls": true,
             "stacking": {
               "group": "A",
               "mode": "none"
@@ -397,7 +627,17 @@
               "mode": "off"
             }
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "NaN": {
+                  "index": 0,
+                  "text": "0"
+                }
+              },
+              "type": "value"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -418,8 +658,8 @@
       "gridPos": {
         "h": 8,
         "w": 5,
-        "x": 11,
-        "y": 1
+        "x": 8,
+        "y": 10
       },
       "id": 38,
       "options": {
@@ -440,26 +680,13 @@
             "uid": "${DS_DS_PROMETHUES}"
           },
           "editorMode": "code",
-          "expr": "sum(method_timed_seconds_sum{foobar_service=\"foobar-seller\", method=\"getSeller\", exception=\"none\"})",
+          "expr": "sum(rate(http_server_requests_seconds_count{\n    foobar_service=\"foobar-seller\",method=\"GET\",status=\"200\",uri=\"/foobar/seller/v1/sellers/{sellerId}\"\n}[$__rate_interval]))\n/\nsum(rate(http_server_requests_seconds_count{\n    foobar_service=\"foobar-seller\",method=\"GET\",status=\"200\",uri=\"/foobar/seller/v1/sellers/{sellerId}\"\n}[$__rate_interval]))",
           "legendFormat": "Successful",
           "range": true,
           "refId": "Successful"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_DS_PROMETHUES}"
-          },
-          "editorMode": "code",
-          "expr": "sum(method_timed_seconds_sum{foobar_service=\"foobar-seller\", method=\"getSeller\", exception!=\"none\"})",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "Failed",
-          "range": true,
-          "refId": "Failed"
         }
       ],
-      "title": "Get Seller Time",
+      "title": "Get Seller Time Per Request",
       "type": "timeseries"
     },
     {
@@ -484,14 +711,14 @@
               "tooltip": false,
               "viz": false
             },
-            "lineInterpolation": "linear",
+            "lineInterpolation": "smooth",
             "lineWidth": 1,
             "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
             },
             "showPoints": "auto",
-            "spanNulls": false,
+            "spanNulls": true,
             "stacking": {
               "group": "A",
               "mode": "none"
@@ -521,8 +748,8 @@
       "gridPos": {
         "h": 8,
         "w": 5,
-        "x": 16,
-        "y": 1
+        "x": 13,
+        "y": 10
       },
       "id": 40,
       "options": {
@@ -543,249 +770,14 @@
             "uid": "${DS_DS_PROMETHUES}"
           },
           "editorMode": "code",
-          "expr": "sum(method_timed_seconds_sum{foobar_service=\"foobar-seller\", method=\"postSeller\", exception=\"none\"})",
+          "expr": "sum(rate(http_server_requests_seconds_count{\n    foobar_service=\"foobar-seller\",method=\"POST\",status=\"201\",uri=\"/foobar/seller/v1/sellers\"\n}[$__rate_interval]))\n/\nsum(rate(http_server_requests_seconds_count{\n    foobar_service=\"foobar-seller\",method=\"POST\",status=\"201\",uri=\"/foobar/seller/v1/sellers\"\n}[$__rate_interval]))",
           "legendFormat": "Successful",
           "range": true,
           "refId": "Successful"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_DS_PROMETHUES}"
-          },
-          "editorMode": "code",
-          "expr": "sum(method_timed_seconds_sum{foobar_service=\"foobar-seller\", method=\"postSeller\", exception!=\"none\"})",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "Failed",
-          "range": true,
-          "refId": "Failed"
         }
       ],
       "title": "Post Seller Time",
       "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS_DS_PROMETHUES}"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [
-            {
-              "options": {
-                "null": {
-                  "index": 0,
-                  "text": "N/A"
-                }
-              },
-              "type": "value"
-            }
-          ],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "none"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 2,
-        "w": 3,
-        "x": 8,
-        "y": 3
-      },
-      "id": 32,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "horizontal",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "auto"
-      },
-      "pluginVersion": "9.0.7",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_DS_PROMETHUES}"
-          },
-          "expr": "sum(method_timed_seconds_count{foobar_service=\"foobar-seller\", method=\"postSeller\", exception=\"none\"})",
-          "refId": "A"
-        }
-      ],
-      "title": "Total Ok Post Seller",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS_DS_PROMETHUES}"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [
-            {
-              "options": {
-                "null": {
-                  "index": 0,
-                  "text": "N/A"
-                }
-              },
-              "type": "value"
-            }
-          ],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "none"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 2,
-        "w": 3,
-        "x": 8,
-        "y": 5
-      },
-      "id": 34,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "horizontal",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "auto"
-      },
-      "pluginVersion": "9.0.7",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_DS_PROMETHUES}"
-          },
-          "expr": "sum(method_timed_seconds_count{foobar_service=\"foobar-seller\", method=\"getSeller\", exception!=\"none\"})",
-          "refId": "A"
-        }
-      ],
-      "title": "Total Failed Get Seller",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS_DS_PROMETHUES}"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [
-            {
-              "options": {
-                "null": {
-                  "index": 0,
-                  "text": "N/A"
-                }
-              },
-              "type": "value"
-            }
-          ],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "none"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 2,
-        "w": 3,
-        "x": 8,
-        "y": 7
-      },
-      "id": 36,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "horizontal",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "auto"
-      },
-      "pluginVersion": "9.0.7",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_DS_PROMETHUES}"
-          },
-          "expr": "sum(method_timed_seconds_count{foobar_service=\"foobar-seller\", method=\"postSeller\", exception!=\"none\"})",
-          "refId": "A"
-        }
-      ],
-      "title": "Total Failed Post Seller",
-      "type": "stat"
     },
     {
       "collapsed": false,
@@ -793,7 +785,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 9
+        "y": 18
       },
       "id": 2,
       "panels": [],
@@ -862,7 +854,7 @@
         "h": 8,
         "w": 4,
         "x": 0,
-        "y": 10
+        "y": 19
       },
       "id": 6,
       "options": {
@@ -884,7 +876,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum(rate(method_timed_seconds_count{foobar_service=\"foobar-customer\", method=\"getCustomer\", exception=\"none\"}[$__rate_interval]))",
+          "expr": "sum(rate(http_server_requests_seconds_count{\n    foobar_service=\"foobar-customer\",method=\"GET\",status=\"200\",uri=\"/foobar/customer/v1/customers/{customerId}\"\n}[$__rate_interval]))\n",
           "legendFormat": "Success",
           "range": true,
           "refId": "ok"
@@ -895,7 +887,7 @@
             "uid": "${DS_DS_PROMETHUES}"
           },
           "editorMode": "code",
-          "expr": "sum(rate(method_timed_seconds_count{foobar_service=\"foobar-customer\", method=\"getCustomer\", exception!=\"none\"}[$__rate_interval]))",
+          "expr": "sum(rate(http_server_requests_seconds_count{\n    foobar_service=\"foobar-customer\",method=\"GET\",status!=\"200\",uri=\"/foobar/customer/v1/customers/{customerId}\"\n}[$__rate_interval]))\n",
           "hide": false,
           "interval": "",
           "legendFormat": "Failed",
@@ -903,7 +895,7 @@
           "refId": "failed"
         }
       ],
-      "title": "Get Customer Rate",
+      "title": "Get Customer RPS",
       "type": "timeseries"
     },
     {
@@ -928,14 +920,14 @@
               "tooltip": false,
               "viz": false
             },
-            "lineInterpolation": "linear",
+            "lineInterpolation": "smooth",
             "lineWidth": 1,
             "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
             },
             "showPoints": "auto",
-            "spanNulls": false,
+            "spanNulls": true,
             "stacking": {
               "group": "A",
               "mode": "none"
@@ -965,7 +957,7 @@
         "h": 8,
         "w": 4,
         "x": 4,
-        "y": 10
+        "y": 19
       },
       "id": 4,
       "options": {
@@ -986,100 +978,15 @@
             "uid": "${DS_DS_PROMETHUES}"
           },
           "editorMode": "code",
-          "expr": "sum(rate(method_timed_seconds_count{foobar_service=\"foobar-customer\", method=\"postCustomer\", exception=\"none\"}[$__rate_interval]))",
-          "legendFormat": "Success",
+          "expr": "sum(rate(http_server_requests_seconds_count{\n    foobar_service=\"foobar-customer\",method=\"POST\",status=\"201\",uri=\"/foobar/customer/v1/customers\",\n}[$__rate_interval]))",
+          "interval": "",
+          "legendFormat": "Successful",
           "range": true,
           "refId": "Success"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_DS_PROMETHUES}"
-          },
-          "editorMode": "code",
-          "expr": "sum(rate(method_timed_seconds_count{foobar_service=\"foobar-customer\", method=\"postCustomer\", exception!=\"none\"}[$__rate_interval]))",
-          "hide": false,
-          "legendFormat": "Failed",
-          "range": true,
-          "refId": "Failed"
         }
       ],
-      "title": "Post Customer Rate",
+      "title": "Post Customer RPS",
       "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS_DS_PROMETHUES}"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [
-            {
-              "options": {
-                "null": {
-                  "index": 0,
-                  "text": "N/A"
-                }
-              },
-              "type": "value"
-            }
-          ],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "none"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 2,
-        "w": 3,
-        "x": 8,
-        "y": 10
-      },
-      "id": 10,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "horizontal",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "auto"
-      },
-      "pluginVersion": "9.0.7",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_DS_PROMETHUES}"
-          },
-          "expr": "sum(method_timed_seconds_count{foobar_service=\"foobar-customer\", method=\"getCustomer\", exception=\"none\"})",
-          "refId": "A"
-        }
-      ],
-      "title": "Total Ok Get Customer",
-      "type": "stat"
     },
     {
       "datasource": {
@@ -1103,14 +1010,14 @@
               "tooltip": false,
               "viz": false
             },
-            "lineInterpolation": "linear",
+            "lineInterpolation": "smooth",
             "lineWidth": 1,
             "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
             },
             "showPoints": "auto",
-            "spanNulls": false,
+            "spanNulls": true,
             "stacking": {
               "group": "A",
               "mode": "none"
@@ -1140,8 +1047,8 @@
       "gridPos": {
         "h": 8,
         "w": 5,
-        "x": 11,
-        "y": 10
+        "x": 8,
+        "y": 19
       },
       "id": 19,
       "options": {
@@ -1162,7 +1069,7 @@
             "uid": "${DS_DS_PROMETHUES}"
           },
           "editorMode": "code",
-          "expr": "sum(method_timed_seconds_sum{foobar_service=\"foobar-customer\", method=\"getCustomer\", exception=\"none\"})",
+          "expr": "sum(increase(http_server_requests_seconds_sum{\n    foobar_service=\"foobar-customer\", method=\"GET\", status=\"200\", uri=\"/foobar/customer/v1/customers/{customerId}\"\n}[$__rate_interval]))\n/\nsum(increase(http_server_requests_seconds_count{\n    foobar_service=\"foobar-customer\", method=\"GET\", status=\"200\", uri=\"/foobar/customer/v1/customers/{customerId}\"\n}[$__rate_interval]))",
           "legendFormat": "Successful",
           "range": true,
           "refId": "Successful"
@@ -1173,7 +1080,7 @@
             "uid": "${DS_DS_PROMETHUES}"
           },
           "editorMode": "code",
-          "expr": "sum(method_timed_seconds_sum{foobar_service=\"foobar-customer\", method=\"getCustomer\", exception!=\"none\"})",
+          "expr": "sum(increase(http_server_requests_seconds_sum{\n    foobar_service=\"foobar-customer\", method=\"GET\", status!=\"200\", uri=\"/foobar/customer/v1/customers/{customerId}\"\n}[$__rate_interval]))\n/\nsum(increase(http_server_requests_seconds_count{\n    foobar_service=\"foobar-customer\", method=\"GET\", status!=\"200\", uri=\"/foobar/customer/v1/customers/{customerId}\"\n}[$__rate_interval]))",
           "hide": false,
           "interval": "",
           "legendFormat": "Failed",
@@ -1181,7 +1088,7 @@
           "refId": "Failed"
         }
       ],
-      "title": "Get Customer Time",
+      "title": "Get Customer Time Per Request",
       "type": "timeseries"
     },
     {
@@ -1206,14 +1113,14 @@
               "tooltip": false,
               "viz": false
             },
-            "lineInterpolation": "linear",
+            "lineInterpolation": "smooth",
             "lineWidth": 1,
             "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
             },
             "showPoints": "auto",
-            "spanNulls": false,
+            "spanNulls": true,
             "stacking": {
               "group": "A",
               "mode": "none"
@@ -1243,8 +1150,8 @@
       "gridPos": {
         "h": 8,
         "w": 5,
-        "x": 16,
-        "y": 10
+        "x": 13,
+        "y": 19
       },
       "id": 21,
       "options": {
@@ -1265,249 +1172,14 @@
             "uid": "${DS_DS_PROMETHUES}"
           },
           "editorMode": "code",
-          "expr": "sum(method_timed_seconds_sum{foobar_service=\"foobar-customer\", method=\"postCustomer\", exception=\"none\"})",
+          "expr": "sum(increase(http_server_requests_seconds_sum{\n    foobar_service=\"foobar-customer\", method=\"POST\", status=\"201\", uri=\"/foobar/customer/v1/customers\"\n}[$__rate_interval]))\n/\nsum(increase(http_server_requests_seconds_count{\n    foobar_service=\"foobar-customer\", method=\"POST\", status=\"201\", uri=\"/foobar/customer/v1/customers\"\n}[$__rate_interval]))",
           "legendFormat": "Successful",
           "range": true,
           "refId": "Successful"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_DS_PROMETHUES}"
-          },
-          "editorMode": "code",
-          "expr": "sum(method_timed_seconds_sum{foobar_service=\"foobar-customer\", method=\"postCustomer\", exception!=\"none\"})",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "Failed",
-          "range": true,
-          "refId": "Failed"
         }
       ],
-      "title": "Post Customer Time",
+      "title": "Post Customer Time Per Request",
       "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS_DS_PROMETHUES}"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [
-            {
-              "options": {
-                "null": {
-                  "index": 0,
-                  "text": "N/A"
-                }
-              },
-              "type": "value"
-            }
-          ],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "none"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 2,
-        "w": 3,
-        "x": 8,
-        "y": 12
-      },
-      "id": 14,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "horizontal",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "auto"
-      },
-      "pluginVersion": "9.0.7",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_DS_PROMETHUES}"
-          },
-          "expr": "sum(method_timed_seconds_count{foobar_service=\"foobar-customer\", method=\"postCustomer\", exception=\"none\"})",
-          "refId": "A"
-        }
-      ],
-      "title": "Total Ok Post Customer",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS_DS_PROMETHUES}"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [
-            {
-              "options": {
-                "null": {
-                  "index": 0,
-                  "text": "N/A"
-                }
-              },
-              "type": "value"
-            }
-          ],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "none"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 2,
-        "w": 3,
-        "x": 8,
-        "y": 14
-      },
-      "id": 12,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "horizontal",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "auto"
-      },
-      "pluginVersion": "9.0.7",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_DS_PROMETHUES}"
-          },
-          "expr": "sum(method_timed_seconds_count{foobar_service=\"foobar-customer\", method=\"getCustomer\", exception!=\"none\"})",
-          "refId": "A"
-        }
-      ],
-      "title": "Total Failed Get Customer",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS_DS_PROMETHUES}"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [
-            {
-              "options": {
-                "null": {
-                  "index": 0,
-                  "text": "N/A"
-                }
-              },
-              "type": "value"
-            }
-          ],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "none"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 2,
-        "w": 3,
-        "x": 8,
-        "y": 16
-      },
-      "id": 15,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "horizontal",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "auto"
-      },
-      "pluginVersion": "9.0.7",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_DS_PROMETHUES}"
-          },
-          "expr": "sum(method_timed_seconds_count{foobar_service=\"foobar-customer\", method=\"postCustomer\", exception!=\"none\"})",
-          "refId": "A"
-        }
-      ],
-      "title": "Total Failed Post Customer",
-      "type": "stat"
     },
     {
       "datasource": {
@@ -1531,14 +1203,14 @@
               "tooltip": false,
               "viz": false
             },
-            "lineInterpolation": "linear",
+            "lineInterpolation": "smooth",
             "lineWidth": 1,
             "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
             },
             "showPoints": "auto",
-            "spanNulls": false,
+            "spanNulls": true,
             "stacking": {
               "group": "A",
               "mode": "none"
@@ -1568,7 +1240,7 @@
         "h": 8,
         "w": 4,
         "x": 0,
-        "y": 18
+        "y": 27
       },
       "id": 7,
       "options": {
@@ -1590,7 +1262,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum(rate(method_timed_seconds_count{foobar_service=\"foobar-customer\", method=\"getAddresses\", excpetion=\"none\"}[$__rate_interval]))",
+          "expr": "sum(rate(http_server_requests_seconds_count{\n    foobar_service=\"foobar-customer\",method=\"GET\",status=\"200\",uri=\"/foobar/customer/v1/customers/{customerId}/addresses\"\n}[$__rate_interval]))\n",
           "legendFormat": "Success",
           "range": true,
           "refId": "Success"
@@ -1602,14 +1274,14 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum(rate(method_timed_seconds_count{foobar_service=\"foobar-customer\", method=\"getAddresses\", excpetion!=\"none\"}[$__rate_interval]))",
+          "expr": "sum(rate(http_server_requests_seconds_count{\n    foobar_service=\"foobar-customer\",method=\"GET\",status!=\"200\",uri=\"/foobar/customer/v1/customers/{customerId}/addresses\"\n}[$__rate_interval]))\n",
           "hide": false,
           "legendFormat": "Failed",
           "range": true,
           "refId": "Failed"
         }
       ],
-      "title": "Get Addresses",
+      "title": "Get Addresses RPS",
       "type": "timeseries"
     },
     {
@@ -1635,14 +1307,14 @@
               "tooltip": false,
               "viz": false
             },
-            "lineInterpolation": "linear",
+            "lineInterpolation": "smooth",
             "lineWidth": 1,
             "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
             },
             "showPoints": "auto",
-            "spanNulls": false,
+            "spanNulls": true,
             "stacking": {
               "group": "A",
               "mode": "none"
@@ -1672,7 +1344,7 @@
         "h": 8,
         "w": 4,
         "x": 4,
-        "y": 18
+        "y": 27
       },
       "id": 8,
       "options": {
@@ -1693,90 +1365,14 @@
             "uid": "${DS_DS_PROMETHUES}"
           },
           "editorMode": "code",
-          "expr": "sum(rate(method_timed_seconds_count{foobar_service=\"foobar-customer\", method=\"postAddress\", exception=\"none\"}[$__rate_interval]))",
+          "expr": "sum(rate(http_server_requests_seconds_count{\n    foobar_service=\"foobar-customer\",method=\"POST\",status=\"201\",uri=\"/foobar/customer/v1/customers/{customerId}/addresses\"\n}[$__rate_interval]))\n",
           "legendFormat": "Success",
           "range": true,
           "refId": "Success"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_DS_PROMETHUES}"
-          },
-          "editorMode": "code",
-          "expr": "sum(rate(method_timed_seconds_count{foobar_service=\"foobar-customer\", method=\"postAddress\", exception!=\"none\"}[$__rate_interval]))",
-          "hide": false,
-          "legendFormat": "Failed",
-          "range": true,
-          "refId": "Failed"
         }
       ],
       "title": "Post Address Rate",
       "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS_DS_PROMETHUES}"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "none"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 2,
-        "w": 3,
-        "x": 8,
-        "y": 18
-      },
-      "id": 11,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "horizontal",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "auto"
-      },
-      "pluginVersion": "9.0.7",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_DS_PROMETHUES}"
-          },
-          "expr": "sum(method_timed_seconds_count{foobar_service=\"foobar-customer\", method=\"getAddresses\", exception=\"none\"})",
-          "refId": "A"
-        }
-      ],
-      "title": "Total Ok Get Addresses",
-      "type": "stat"
     },
     {
       "datasource": {
@@ -1800,14 +1396,14 @@
               "tooltip": false,
               "viz": false
             },
-            "lineInterpolation": "linear",
+            "lineInterpolation": "smooth",
             "lineWidth": 1,
             "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
             },
             "showPoints": "auto",
-            "spanNulls": false,
+            "spanNulls": true,
             "stacking": {
               "group": "A",
               "mode": "none"
@@ -1837,8 +1433,8 @@
       "gridPos": {
         "h": 8,
         "w": 5,
-        "x": 11,
-        "y": 18
+        "x": 8,
+        "y": 27
       },
       "id": 20,
       "options": {
@@ -1859,7 +1455,7 @@
             "uid": "${DS_DS_PROMETHUES}"
           },
           "editorMode": "code",
-          "expr": "sum(method_timed_seconds_sum{foobar_service=\"foobar-customer\", method=\"getAddresses\", exception=\"none\"})",
+          "expr": "sum(rate(http_server_requests_seconds_sum{\n    foobar_service=\"foobar-customer\",method=\"GET\",status=\"200\",uri=\"/foobar/customer/v1/customers/{customerId}/addresses\"\n}[$__rate_interval]))\n/\nsum(rate(http_server_requests_seconds_count{\n    foobar_service=\"foobar-customer\",method=\"GET\",status=\"200\",uri=\"/foobar/customer/v1/customers/{customerId}/addresses\"\n}[$__rate_interval]))\n",
           "legendFormat": "Successful",
           "range": true,
           "refId": "Successful"
@@ -1870,7 +1466,7 @@
             "uid": "${DS_DS_PROMETHUES}"
           },
           "editorMode": "code",
-          "expr": "sum(method_timed_seconds_sum{foobar_service=\"foobar-customer\", method=\"getAddresses\", exception!=\"none\"})",
+          "expr": "sum(rate(http_server_requests_seconds_sum{\n    foobar_service=\"foobar-customer\",method=\"GET\",status!=\"200\",uri=\"/foobar/customer/v1/customers/{customerId}/addresses\"\n}[$__rate_interval]))\n/\nsum(rate(http_server_requests_seconds_count{\n    foobar_service=\"foobar-customer\",method=\"GET\",status!=\"200\",uri=\"/foobar/customer/v1/customers/{customerId}/addresses\"\n}[$__rate_interval]))\n",
           "hide": false,
           "interval": "",
           "legendFormat": "Failed",
@@ -1904,14 +1500,14 @@
               "tooltip": false,
               "viz": false
             },
-            "lineInterpolation": "linear",
+            "lineInterpolation": "smooth",
             "lineWidth": 1,
             "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
             },
             "showPoints": "auto",
-            "spanNulls": false,
+            "spanNulls": true,
             "stacking": {
               "group": "A",
               "mode": "none"
@@ -1941,8 +1537,8 @@
       "gridPos": {
         "h": 8,
         "w": 5,
-        "x": 16,
-        "y": 18
+        "x": 13,
+        "y": 27
       },
       "id": 22,
       "options": {
@@ -1963,242 +1559,17 @@
             "uid": "${DS_DS_PROMETHUES}"
           },
           "editorMode": "code",
-          "expr": "sum(method_timed_seconds_sum{foobar_service=\"foobar-customer\", method=\"postAddress\", exception=\"none\"})",
+          "expr": "sum(rate(http_server_requests_seconds_sum{\n    foobar_service=\"foobar-customer\",method=\"POST\",status=\"201\",uri=\"/foobar/customer/v1/customers/{customerId}/addresses\"\n}[$__rate_interval]))\n/\nsum(rate(http_server_requests_seconds_count{\n    foobar_service=\"foobar-customer\",method=\"POST\",status=\"201\",uri=\"/foobar/customer/v1/customers/{customerId}/addresses\"\n}[$__rate_interval]))\n",
           "legendFormat": "Successful",
           "range": true,
           "refId": "Successful"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_DS_PROMETHUES}"
-          },
-          "editorMode": "code",
-          "expr": "sum(method_timed_seconds_sum{foobar_service=\"foobar-customer\", method=\"getAddress\", exception!=\"none\"})",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "Failed",
-          "range": true,
-          "refId": "Failed"
         }
       ],
       "title": "Post Address Time",
       "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS_DS_PROMETHUES}"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [
-            {
-              "options": {
-                "null": {
-                  "index": 0,
-                  "text": "N/A"
-                }
-              },
-              "type": "value"
-            }
-          ],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "none"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 2,
-        "w": 3,
-        "x": 8,
-        "y": 20
-      },
-      "id": 13,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "horizontal",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "auto"
-      },
-      "pluginVersion": "9.0.7",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_DS_PROMETHUES}"
-          },
-          "expr": "sum(method_timed_seconds_count{foobar_service=\"foobar-customer\", method=\"postAddress\", exception=\"none\"})",
-          "refId": "A"
-        }
-      ],
-      "title": "Total Ok Post Address",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS_DS_PROMETHUES}"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "none"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 2,
-        "w": 3,
-        "x": 8,
-        "y": 22
-      },
-      "id": 16,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "horizontal",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "auto"
-      },
-      "pluginVersion": "9.0.7",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_DS_PROMETHUES}"
-          },
-          "expr": "sum(method_timed_seconds_count{foobar_service=\"foobar-customer\", method=\"getAddresses\", exception!=\"none\"})",
-          "refId": "A"
-        }
-      ],
-      "title": "Total Failed Get Addresses",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS_DS_PROMETHUES}"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [
-            {
-              "options": {
-                "null": {
-                  "index": 0,
-                  "text": "N/A"
-                }
-              },
-              "type": "value"
-            }
-          ],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "none"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 2,
-        "w": 3,
-        "x": 8,
-        "y": 24
-      },
-      "id": 17,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "horizontal",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "auto"
-      },
-      "pluginVersion": "9.0.7",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_DS_PROMETHUES}"
-          },
-          "expr": "sum(method_timed_seconds_count{foobar_service=\"foobar-customer\", method=\"postAddress\", exception!=\"none\"})",
-          "refId": "A"
-        }
-      ],
-      "title": "Total Failed Post Address",
-      "type": "stat"
     }
   ],
-  "refresh": false,
+  "refresh": "5s",
   "schemaVersion": 36,
   "style": "dark",
   "tags": [],
@@ -2206,13 +1577,13 @@
     "list": []
   },
   "time": {
-    "from": "now-3h",
+    "from": "now-5m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Foobar Customer",
   "uid": "mrQkL3WVk",
-  "version": 9,
+  "version": 19,
   "weekStart": ""
 }

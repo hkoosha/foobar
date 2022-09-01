@@ -84,7 +84,6 @@ foobar:
 management:
   metrics:
     tags:
-      foobar-metric: enabled
       foobar-service: foobar-marketplace
   endpoints:
     web:

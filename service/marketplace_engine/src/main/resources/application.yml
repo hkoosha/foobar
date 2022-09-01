@@ -57,7 +57,6 @@ foobar:
 management:
   metrics:
     tags:
-      foobar-metric: enabled
       foobar-service: foobar-marketplace-engine
   endpoints:
     web:

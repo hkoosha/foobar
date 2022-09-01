@@ -1,11 +1,8 @@
 package io.koosha.foobar.customer.api.ctl
 
-import io.koosha.foobar.common.TAG
-import io.koosha.foobar.common.TAG_VALUE
 import io.koosha.foobar.customer.api.model.AddressDO
 import io.koosha.foobar.customer.api.service.CustomerAddressCreateRequest
 import io.koosha.foobar.customer.api.service.CustomerService
-import io.micrometer.core.annotation.Timed
 import io.swagger.v3.oas.annotations.tags.Tag
 import io.swagger.v3.oas.annotations.tags.Tags
 import org.springframework.http.HttpHeaders
@@ -40,7 +37,6 @@ class AddressApiController(
 
     }
 
-    @Timed(extraTags = [TAG, TAG_VALUE])
     @GetMapping
     @ResponseBody
     fun getAddresses(
@@ -48,7 +44,6 @@ class AddressApiController(
         customerId: UUID,
     ): List<Address> = service.getAddressesOfCustomer(customerId).map(::Address)
 
-    @Timed(extraTags = [TAG, TAG_VALUE])
     @GetMapping("/{$URI__PART__ADDRESS_ID}")
     @ResponseBody
     fun getAddress(
@@ -58,7 +53,6 @@ class AddressApiController(
         addressId: Long,
     ): Address = Address(service.getAddress(customerId, addressId))
 
-    @Timed(extraTags = [TAG, TAG_VALUE])
     @PostMapping
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
@@ -90,7 +84,6 @@ class AddressApiController(
         return Address(entity)
     }
 
-    @Timed(extraTags = [TAG, TAG_VALUE])
     @DeleteMapping("/{$URI__PART__ADDRESS_ID}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteAddress(
