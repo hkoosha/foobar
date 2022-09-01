@@ -187,7 +187,7 @@ docker-image-marketplace-engine-unpush:
 		_FOOBAR_UNPUSH_TAG=$(FOOBAR_MARKETPLACE_ENGINE_IMAGE_TAG)
 
 .PHONY: docker-image-marketplace-engine
-docker-image-marketplace-engine: docker-image-marketplace-engine-unpush docker-image-marketplace-engine-push
+docker-image-marketplace-engine: docker-image-marketplace-engine-unpush docker-image-marketplace-engine-build
 
 
 

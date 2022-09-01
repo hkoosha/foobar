@@ -308,7 +308,7 @@ k8s-port-forward-foobar:
 		$(FOOBAR_SERVICE_PORT_MARKETPLACE_ENGINE):8080 &
 	kubectl port-forward --namespace $(FOOBAR_NAMESPACE) \
 		svc/foobar-shipping \
-		$(FOOBAR_SERVICE_PORT_SHIPPING):8080 &
+		$(FOOBAR_SERVICE_PORT_SHIPPING):8080
 
 
 .PHONY: open-actuator-customer

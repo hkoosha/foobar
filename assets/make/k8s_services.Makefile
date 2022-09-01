@@ -286,8 +286,8 @@ k8s-port-forward-grafana:
 k8s-port-forward-stop:
 	pkill -ef 'kubectl port-forward' || true
 
-.PHONY: k8s-port-forward
-k8s-port-forward:
+.PHONY: k8s-port-forward-services
+k8s-port-forward-services:
 	kubectl port-forward --namespace $(FOOBAR_NAMESPACE) \
 		svc/zipkin \
 		9411:9411 &
@@ -308,6 +308,8 @@ k8s-port-forward:
 		3000:3000 &
 
 
+.PHONY: k8s-port-forward
+k8s-port-forward: k8s-port-forward-services k8s-port-forward-foobar
 
 # ===============================================================================
 # ================================== CLI ========================================
