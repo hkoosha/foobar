@@ -1,5 +1,7 @@
 package io.koosha.foobar.marketplace.api.service
 
+import io.koosha.foobar.common.TAG
+import io.koosha.foobar.common.TAG_VALUE
 import io.koosha.foobar.common.cfg.KafkaConfig
 import io.koosha.foobar.common.toUUID
 import io.koosha.foobar.marketplace.SOURCE
@@ -40,7 +42,7 @@ class OrderRequestSellerProcessor(
     }
 
     // TODO switch to RX
-    @Timed
+    @Timed(extraTags = [TAG, TAG_VALUE])
     @KafkaListener(
         groupId = "${SOURCE}__order_request_seller",
         concurrency = "2",

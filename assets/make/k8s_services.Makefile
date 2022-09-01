@@ -284,30 +284,26 @@ k8s-port-forward-grafana:
 
 .PHONY: k8s-port-forward-stop
 k8s-port-forward-stop:
-	pkill kubectl || true
+	pkill -ef 'kubectl port-forward' || true
 
-# TODO can we replace these repeated targets with $(MAKE) k8s-port-forward-xxx?
 .PHONY: k8s-port-forward
-k8s-port-forward: k8s-port-forward-stop
-	kubectl port-forward \
-		--namespace $(FOOBAR_NAMESPACE) \
-		$(shell kubectl get pods --namespace foobar -l "zipkin=zipkin" -o jsonpath="{.items[0].metadata.name}") \
+k8s-port-forward:
+	kubectl port-forward --namespace $(FOOBAR_NAMESPACE) \
+		svc/zipkin \
 		9411:9411 &
-	kubectl port-forward \
-		--namespace $(FOOBAR_NAMESPACE) \
-		$(shell kubectl get pods --namespace foobar -l "app.kubernetes.io/instance=jaeger" -o jsonpath="{.items[0].metadata.name}") \
+	kubectl port-forward --namespace $(FOOBAR_NAMESPACE) \
+		svc/jaeger-query \
 		16686:16686 &
 	kubectl port-forward --namespace $(FOOBAR_NAMESPACE) \
 		svc/elasticsearch-kibana \
 		5601:5601 &
-	kubectl port-forward \
-		--namespace $(FOOBAR_NAMESPACE) \
-		svc/prometheus-kube-prometheus-prometheus 9090:9090 &
-	kubectl port-forward \
-		--namespace $(FOOBAR_NAMESPACE) \
-		svc/prometheus-kube-prometheus-alertmanager 9093:9093 &
-	kubectl port-forward \
-		--namespace $(FOOBAR_NAMESPACE) \
+	kubectl port-forward --namespace $(FOOBAR_NAMESPACE) \
+		svc/prometheus-kube-prometheus-prometheus \
+		9090:9090 &
+	kubectl port-forward --namespace $(FOOBAR_NAMESPACE) \
+		svc/prometheus-kube-prometheus-alertmanager \
+		9093:9093 &
+	kubectl port-forward --namespace $(FOOBAR_NAMESPACE) \
 		svc/grafana \
 		3000:3000 &
 
@@ -436,5 +432,5 @@ k8s-deploy-deps: \
 
 .PHONY: docker-registry
 docker-registry:
-	docker run -d -p 5000:5000 --restart=always --name foobar-registry registry:2
+	docker run -e REGISTRY_STORAGE_DELETE_ENABLED=true -d -p 5000:5000 --restart=always --name foobar-registry registry:2
 

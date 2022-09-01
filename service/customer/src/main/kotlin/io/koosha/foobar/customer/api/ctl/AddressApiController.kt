@@ -1,5 +1,7 @@
 package io.koosha.foobar.customer.api.ctl
 
+import io.koosha.foobar.common.TAG
+import io.koosha.foobar.common.TAG_VALUE
 import io.koosha.foobar.customer.api.model.AddressDO
 import io.koosha.foobar.customer.api.service.CustomerAddressCreateRequest
 import io.koosha.foobar.customer.api.service.CustomerService
@@ -38,7 +40,7 @@ class AddressApiController(
 
     }
 
-    @Timed
+    @Timed(extraTags = [TAG, TAG_VALUE])
     @GetMapping
     @ResponseBody
     fun getAddresses(
@@ -46,7 +48,7 @@ class AddressApiController(
         customerId: UUID,
     ): List<Address> = service.getAddressesOfCustomer(customerId).map(::Address)
 
-    @Timed
+    @Timed(extraTags = [TAG, TAG_VALUE])
     @GetMapping("/{$URI__PART__ADDRESS_ID}")
     @ResponseBody
     fun getAddress(
@@ -56,7 +58,7 @@ class AddressApiController(
         addressId: Long,
     ): Address = Address(service.getAddress(customerId, addressId))
 
-    @Timed
+    @Timed(extraTags = [TAG, TAG_VALUE])
     @PostMapping
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
@@ -88,7 +90,7 @@ class AddressApiController(
         return Address(entity)
     }
 
-    @Timed
+    @Timed(extraTags = [TAG, TAG_VALUE])
     @DeleteMapping("/{$URI__PART__ADDRESS_ID}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteAddress(

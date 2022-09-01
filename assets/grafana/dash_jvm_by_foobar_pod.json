@@ -3758,7 +3758,7 @@
         },
         "definition": "label_values(jvm_memory_used_bytes{service=~\"$foobar_service\"}, pod)",
         "hide": 0,
-        "includeAll": false,
+        "includeAll": true,
         "label": "Pod",
         "multi": false,
         "name": "pod",

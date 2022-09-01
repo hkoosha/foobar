@@ -93,7 +93,7 @@ management:
   metrics:
     tags:
       foobar-metric: enabled
-      foobar-service: foobar-customer
+      foobar-service: foobar-shipping
   endpoints:
     web:
       exposure:

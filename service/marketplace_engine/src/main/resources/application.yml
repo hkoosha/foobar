@@ -58,7 +58,7 @@ management:
   metrics:
     tags:
       foobar-metric: enabled
-      foobar-service: foobar-customer
+      foobar-service: foobar-marketplace-engine
   endpoints:
     web:
       exposure:

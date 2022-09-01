@@ -1,6 +1,8 @@
 package io.koosha.foobar.marketplaceengine.api.service
 
 
+import io.koosha.foobar.common.TAG
+import io.koosha.foobar.common.TAG_VALUE
 import io.koosha.foobar.common.cfg.KafkaConfig
 import io.koosha.foobar.common.toUUID
 import io.koosha.foobar.marketplaceengine.SOURCE
@@ -24,7 +26,7 @@ class AvailabilityProcessor(
 
     private val log = KotlinLogging.logger {}
 
-    @Timed
+    @Timed(extraTags = [TAG, TAG_VALUE])
     @KafkaListener(
         groupId = "${SOURCE}__availability",
         concurrency = "2",

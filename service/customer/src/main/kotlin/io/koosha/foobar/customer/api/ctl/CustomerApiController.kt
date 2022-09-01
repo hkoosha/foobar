@@ -1,5 +1,7 @@
 package io.koosha.foobar.customer.api.ctl
 
+import io.koosha.foobar.common.TAG
+import io.koosha.foobar.common.TAG_VALUE
 import io.koosha.foobar.customer.API_PATH_PREFIX
 import io.koosha.foobar.customer.api.model.CustomerDO
 import io.koosha.foobar.customer.api.model.CustomerState
@@ -43,12 +45,12 @@ class CustomerApiController(
 
     }
 
-    @Timed
+    @Timed(extraTags = [TAG, TAG_VALUE])
     @GetMapping
     @ResponseBody
     fun getCustomers(): List<Customer> = service.findAll().map(::Customer)
 
-    @Timed
+    @Timed(extraTags = [TAG, TAG_VALUE])
     @GetMapping("/{$URI__PART__CUSTOMER_ID}")
     @ResponseBody
     fun getCustomer(
@@ -56,7 +58,7 @@ class CustomerApiController(
         customerId: UUID,
     ): Customer = Customer(service.findByCustomerIdOrFail(customerId))
 
-    @Timed
+    @Timed(extraTags = [TAG, TAG_VALUE])
     @PatchMapping("/{$URI__PART__CUSTOMER_ID}")
     @ResponseBody
     fun patchCustomer(
@@ -66,7 +68,7 @@ class CustomerApiController(
         request: CustomerUpdateRequest,
     ): Customer = Customer(service.update(customerId, request))
 
-    @Timed
+    @Timed(extraTags = [TAG, TAG_VALUE])
     @PostMapping
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
@@ -94,7 +96,7 @@ class CustomerApiController(
         return Customer(entity)
     }
 
-    @Timed
+    @Timed(extraTags = [TAG, TAG_VALUE])
     @DeleteMapping("/{$URI__PART__CUSTOMER_ID}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteCustomer(

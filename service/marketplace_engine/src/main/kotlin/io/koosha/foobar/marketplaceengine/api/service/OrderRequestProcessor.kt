@@ -1,6 +1,8 @@
 package io.koosha.foobar.marketplaceengine.api.service
 
 import io.koosha.foobar.HeaderHelper
+import io.koosha.foobar.common.TAG
+import io.koosha.foobar.common.TAG_VALUE
 import io.koosha.foobar.common.cfg.KafkaConfig
 import io.koosha.foobar.common.toUUID
 import io.koosha.foobar.entity.DeadLetterErrorProto
@@ -48,7 +50,7 @@ class OrderRequestProcessor(
 
     private val log = KotlinLogging.logger {}
 
-    @Timed
+    @Timed(extraTags = [TAG, TAG_VALUE])
     @KafkaListener(
         groupId = "${SOURCE}__state_change",
         concurrency = "2",

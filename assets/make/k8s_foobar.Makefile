@@ -287,3 +287,50 @@ k8s-port-forward-loader:
       --namespace $(FOOBAR_NAMESPACE) \
       svc/foobar-loader \
 	  4046:8080
+
+
+.PHONY: k8s-port-forward-foobar
+k8s-port-forward-foobar:
+	kubectl port-forward --namespace $(FOOBAR_NAMESPACE) \
+		svc/foobar-customer \
+		$(FOOBAR_SERVICE_PORT_CUSTOMER):8080 &
+	kubectl port-forward --namespace $(FOOBAR_NAMESPACE) \
+		svc/foobar-seller \
+		$(FOOBAR_SERVICE_PORT_SELLER):8080 &
+	kubectl port-forward --namespace $(FOOBAR_NAMESPACE) \
+		svc/foobar-warehouse \
+		$(FOOBAR_SERVICE_PORT_WAREHOUSE):8080 &
+	kubectl port-forward --namespace $(FOOBAR_NAMESPACE) \
+		svc/foobar-marketplace \
+		$(FOOBAR_SERVICE_PORT_MARKETPLACE):8080 &
+	kubectl port-forward --namespace $(FOOBAR_NAMESPACE) \
+		svc/foobar-marketplace-engine \
+		$(FOOBAR_SERVICE_PORT_MARKETPLACE_ENGINE):8080 &
+	kubectl port-forward --namespace $(FOOBAR_NAMESPACE) \
+		svc/foobar-shipping \
+		$(FOOBAR_SERVICE_PORT_SHIPPING):8080 &
+
+
+.PHONY: open-actuator-customer
+open-actuator-customer:
+	xdg-open http://localhost:$(FOOBAR_SERVICE_PORT_CUSTOMER)/actuator
+
+.PHONY: open-actuator-seller
+open-actuator-seller:
+	xdg-open http://localhost:$(FOOBAR_SERVICE_PORT_SELLER)/actuator
+
+.PHONY: open-actuator-warehouse
+open-actuator-warehouse:
+	xdg-open http://localhost:$(FOOBAR_SERVICE_PORT_WAREHOUSE)/actuator
+
+.PHONY: open-actuator-marketplace
+open-actuator-marketplace:
+	xdg-open http://localhost:$(FOOBAR_SERVICE_PORT_MARKETPLACE)/actuator
+
+.PHONY: open-actuator-marketplace-engine
+open-actuator-marketplace-engine:
+	xdg-open http://localhost:$(FOOBAR_SERVICE_PORT_MARKETPLACE_ENGINE)/actuator
+
+.PHONY: open-actuator-shipping
+open-actuator-shipping:
+	xdg-open http://localhost:$(FOOBAR_SERVICE_PORT_SHIPPING)/actuator
