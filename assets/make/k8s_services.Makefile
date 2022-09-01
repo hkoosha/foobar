@@ -21,12 +21,22 @@ minikube-start:
 	kubectl apply -f assets/k8s/apps/metrics_server.yaml
 	sleep 1s
 	kubectl taint nodes minikube foobar-no-schedule=foobar-no-schedule:NoSchedule
-	@echo "Minikube cluster started. It is better to wait until all nodes in the cluster are ready."
-	@echo "You can check the status if nodes using the app k9s."
-	@echo "Your next step is probabaly running '$(MAKE) k8s-namespace kubectl-set-ns'."
 	if [[ "$(FOOBAR_FAST_DOCKER_REGISTRY)" == "true" ]]; then \
 		$(MAKE) docker-registry; \
 	fi
+	$(MAKE) _minikube-after-start
+
+.PHONY: _minikube-after-start
+_minikube-after-start:
+	@echo "======================================================================"
+	@echo "======================================================================"
+	@echo "======================================================================"
+	@echo "Minikube cluster started. It is better to wait until all nodes in the cluster are ready."
+	@echo "You can check the status of nodes using the app k9s."
+	@echo "Your next step is probabaly running '$(MAKE) k8s-namespace kubectl-set-ns'."
+	@echo "Importnat: when deploying dependencies (e.g, filebeat) some pods might fail "
+	@echo "with ImagePullFailed (you can check which pods using k9s), just delete the pod"
+	@echo "and it will be created again and image will be pulled properly."
 
 .PHONY: minikube-kill
 minikube-kill:
@@ -153,17 +163,6 @@ helm-uninstall-grafana:
 		-n $(FOOBAR_NAMESPACE) \
 		grafana
 
-# .PHONY: helm-install-jaeger
-# helm-install-jaeger:
-# 	helm install \
-# 		-n $(FOOBAR_NAMESPACE) \
-# 		jaeger jaegertracing/jaeger \
-# 		--set allInOne.enabled=true \
-# 		--set provisionDataStore.cassandra=false \
-# 		--set agent.enabled=false \
-# 		--set collector.enabled=false \
-# 		--set query.enabled=false
-
 .PHONY: helm-install-jaeger
 helm-install-jaeger:
 	helm install \
@@ -239,15 +238,17 @@ k8s-delete-zipkin:
 k8s-port-forward-zipkin:
 	kubectl port-forward \
 		--namespace $(FOOBAR_NAMESPACE) \
-		$(shell kubectl get pods --namespace foobar -l "zipkin=zipkin" -o jsonpath="{.items[0].metadata.name}") \
+		svc/zipkin \
 		9411:9411
+		# $(shell kubectl get pods --namespace foobar -l "zipkin=zipkin" -o jsonpath="{.items[0].metadata.name}") \
 
 .PHONY: k8s-port-forward-jaeger-ui
 k8s-port-forward-jaeger-ui:
 	kubectl port-forward \
 		--namespace $(FOOBAR_NAMESPACE) \
-		$(shell kubectl get pods --namespace foobar -l "app.kubernetes.io/instance=jaeger" -o jsonpath="{.items[0].metadata.name}") \
+		svc/jaeger-query \
 		16686:16686
+		# $(shell kubectl get pods --namespace foobar -l "app.kubernetes.io/instance=jaeger" -o jsonpath="{.items[0].metadata.name}") \
 
 .PHONY: k8s-port-forward-elasticsearch
 k8s-port-forward-elasticsearch:
@@ -256,21 +257,11 @@ k8s-port-forward-elasticsearch:
 		svc/elasticsearch \
 		9200:9200
 
-# .PHONY: k8s-port-forward-logstash
-# k8s-port-forward-logstash:
-# 	kubectl port-forward \
-# 		--namespace $(FOOBAR_NAMESPACE) \
-# 		svc/foobar-logstash \
-# 		$(shell kubectl get --namespace foobar -o jsonpath="{.spec.ports[0].port}" services foobar-logstash):$(shell kubectl get --namespace foobar -o jsonpath="{.spec.ports[0].port}" services foobar-logstash)
-
 .PHONY: k8s-port-forward-kibana
 k8s-port-forward-kibana:
-	kubectl port-forward --namespace $(FOOBAR_NAMESPACE) svc/elasticsearch-kibana 5601:5601
-# kubectl port-forward \
-# --namespace $(FOOBAR_NAMESPACE) \
-# $(shell kubectl get pods --namespace foobar -l "k8s-app=kibana-logging" -o jsonpath="{.items[0].metadata.name}") \
-# 5601:5601
-
+	kubectl port-forward --namespace $(FOOBAR_NAMESPACE) \
+		svc/elasticsearch-kibana \
+		5601:5601
 
 .PHONY: k8s-port-forward-prometheus
 k8s-port-forward-prometheus:
@@ -289,7 +280,38 @@ k8s-port-forward-grafana:
 	kubectl port-forward \
 		--namespace $(FOOBAR_NAMESPACE) \
 		svc/grafana \
-		8089:3000
+		3000:3000
+
+.PHONY: k8s-port-forward-stop
+k8s-port-forward-stop:
+	pkill kubectl || true
+
+# TODO can we replace these repeated targets with $(MAKE) k8s-port-forward-xxx?
+.PHONY: k8s-port-forward
+k8s-port-forward: k8s-port-forward-stop
+	kubectl port-forward \
+		--namespace $(FOOBAR_NAMESPACE) \
+		$(shell kubectl get pods --namespace foobar -l "zipkin=zipkin" -o jsonpath="{.items[0].metadata.name}") \
+		9411:9411 &
+	kubectl port-forward \
+		--namespace $(FOOBAR_NAMESPACE) \
+		$(shell kubectl get pods --namespace foobar -l "app.kubernetes.io/instance=jaeger" -o jsonpath="{.items[0].metadata.name}") \
+		16686:16686 &
+	kubectl port-forward --namespace $(FOOBAR_NAMESPACE) \
+		svc/elasticsearch-kibana \
+		5601:5601 &
+	kubectl port-forward \
+		--namespace $(FOOBAR_NAMESPACE) \
+		svc/prometheus-kube-prometheus-prometheus 9090:9090 &
+	kubectl port-forward \
+		--namespace $(FOOBAR_NAMESPACE) \
+		svc/prometheus-kube-prometheus-alertmanager 9093:9093 &
+	kubectl port-forward \
+		--namespace $(FOOBAR_NAMESPACE) \
+		svc/grafana \
+		3000:3000 &
+
+
 
 # ===============================================================================
 # ================================== CLI ========================================

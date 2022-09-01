@@ -1,3 +1,5 @@
+Consider defining `FOOBAR_FAST_DOCKER_REGISTRY=true` to make deployments faster.
+
 ```bash
 make minikube-start
 make k8s-namespace
