@@ -469,100 +469,6 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "smooth",
-            "lineStyle": {
-              "fill": "solid"
-            },
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": true,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 4,
-        "x": 4,
-        "y": 10
-      },
-      "id": 52,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "editorMode": "code",
-          "expr": "100 * sum(rate(seller_not_found_total{\n    foobar_service=\"foobar-marketplace\"\n}[$__rate_interval])) \n/ \n(\n    sum(rate(seller_found_total{\n        foobar_service=\"foobar-marketplace\"\n    }[$__rate_interval]))\n    +\n    sum(rate(seller_not_found_total{\n        foobar_service=\"foobar-marketplace\"\n    }[$__rate_interval])) \n)",
-          "hide": false,
-          "legendFormat": "NotFound%",
-          "range": true,
-          "refId": "NotFound%"
-        }
-      ],
-      "title": "Seller Result %",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -616,7 +522,7 @@
       "gridPos": {
         "h": 8,
         "w": 4,
-        "x": 9,
+        "x": 5,
         "y": 10
       },
       "id": 54,
@@ -718,7 +624,7 @@
       "gridPos": {
         "h": 8,
         "w": 4,
-        "x": 13,
+        "x": 9,
         "y": 10
       },
       "id": 55,
@@ -760,6 +666,100 @@
         }
       ],
       "title": "Post Order Request Rate",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "smooth",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 4,
+        "x": 0,
+        "y": 18
+      },
+      "id": 52,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "100 * sum(rate(seller_not_found_total{\n    foobar_service=\"foobar-marketplace\"\n}[$__rate_interval])) \n/ \n(\n    sum(rate(seller_found_total{\n        foobar_service=\"foobar-marketplace\"\n    }[$__rate_interval]))\n    +\n    sum(rate(seller_not_found_total{\n        foobar_service=\"foobar-marketplace\"\n    }[$__rate_interval])) \n)",
+          "hide": false,
+          "legendFormat": "NotFound%",
+          "range": true,
+          "refId": "NotFound%"
+        }
+      ],
+      "title": "Seller Result %",
       "type": "timeseries"
     },
     {
@@ -820,7 +820,7 @@
       "gridPos": {
         "h": 8,
         "w": 4,
-        "x": 9,
+        "x": 5,
         "y": 18
       },
       "id": 56,
@@ -922,7 +922,7 @@
       "gridPos": {
         "h": 8,
         "w": 4,
-        "x": 13,
+        "x": 9,
         "y": 18
       },
       "id": 57,
@@ -2383,8 +2383,8 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "Foobar Customer",
+  "title": "Foobar",
   "uid": "mrQkL3WVk",
-  "version": 26,
+  "version": 28,
   "weekStart": ""
 }
