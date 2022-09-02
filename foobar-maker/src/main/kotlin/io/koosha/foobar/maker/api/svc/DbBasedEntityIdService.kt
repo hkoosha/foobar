@@ -18,6 +18,19 @@ class DbBasedEntityIdService(
 
     private val log = KotlinLogging.logger {}
 
+    override fun putOrderRequestIntoLineItemWorkQueue(orderRequestId: UUID): Unit = TODO("Not yet implemented")
+
+    override fun getOrderRequestFromLineItemWorkQueue(): Optional<UUID> = TODO("Not yet implemented")
+
+    override fun putOrderRequestIntoUpdateWorkQueue(orderRequestId: UUID): Unit = TODO("Not yet implemented")
+
+    override fun getOrderRequestFromUpdateWorkQueue(): Optional<UUID> = TODO("Not yet implemented")
+
+    override fun getAvailableProduct(units: Long, excluding: Collection<UUID>): Optional<UUID> =
+        TODO("Not yet implemented")
+
+    override fun putAvailableProduct(units: Long, productId: UUID): Unit = TODO("Not yet implemented")
+
     override fun findUUID(
         entityType: String,
         givenId: String,

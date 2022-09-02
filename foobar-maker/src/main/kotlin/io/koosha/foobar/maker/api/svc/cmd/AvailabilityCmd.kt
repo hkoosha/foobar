@@ -82,6 +82,8 @@ class AvailabilityCmd(
             )
         )
 
+        this.entityIdService.putAvailableProduct(entity.unitsAvailable, productId)
+
         if (doLog)
             log.info { "posted availability:\n${response.headers}\n$entity" }
     }

@@ -2,13 +2,18 @@ package io.koosha.foobar.maker.api.svc.cmd
 
 import io.koosha.foobar.maker.api.Command
 import io.koosha.foobar.maker.api.matches
+import io.koosha.foobar.maker.api.svc.EntityIdService
 import mu.KotlinLogging
 import org.springframework.boot.ApplicationArguments
 import org.springframework.stereotype.Component
+import java.util.*
 
 
 @Component
+@Suppress("MagicNumber")
 class LoopCmd(
+    private val entityIdService: EntityIdService,
+
     private val customerCmd: CustomerCmd,
     private val addressCmd: AddressCmd,
     private val sellerCmd: SellerCmd,
@@ -20,6 +25,9 @@ class LoopCmd(
 
     companion object {
         private const val LOG_EVERY = 200
+        // TODO remove this, no seller will have all products. Only 1 works.
+        private const val PROD_COUNT = 1
+        private const val UNITS = 3L
     }
 
     private val log = KotlinLogging.logger {}
@@ -48,9 +56,7 @@ class LoopCmd(
                 matches("c:address", loop) -> threads += Thread {
                     while (true)
                         this.runMeasured(loop) {
-                            // Make sure new customers are kept being added so address list does not explode.
                             // TODO limit number of addresses allowed in customer-api.
-                            this.customerCmd.postCustomer(args, doLog = false)
                             this.addressCmd.postAddress(args, emptyList(), doLog = false)
                         }
                 }
@@ -84,12 +90,55 @@ class LoopCmd(
                 }
 
                 matches("c:line-item", loop) -> threads += Thread {
+
+                    // TODO limit number of line items allowed in warehouse-api.
                     while (true)
                         this.runMeasured(loop) {
-                            // Make sure new products are kept being added so line items list does not explode.
-                            // TODO limit number of line items allowed in warehouse-api.
-                            this.orderRequestCmd.postOrderRequest(emptyList(), doLog = false)
-                            this.lineItemCmd.postLineItem(args, emptyList(), doLog = false)
+                            val orderRequestId = this.entityIdService.getOrderRequestFromLineItemWorkQueue()
+
+                            if (orderRequestId.isPresent) {
+
+                                val productIds = mutableSetOf<UUID>()
+                                while (productIds.size < PROD_COUNT) {
+                                    val availableProduct = this.entityIdService.getAvailableProduct(UNITS, productIds)
+                                    if (availableProduct.isEmpty) {
+                                        log.warn(
+                                            "no available product to add to line item, so far have: {}",
+                                            productIds.size,
+                                        )
+                                        Thread.sleep(50)
+                                    }
+                                    else {
+                                        productIds += availableProduct.get()
+                                    }
+                                }
+
+                                for (productId in productIds)
+                                    this.lineItemCmd.postLineItem(orderRequestId.get(), productId, UNITS)
+
+                                this.entityIdService.putOrderRequestIntoUpdateWorkQueue(orderRequestId.get())
+                            }
+                            else {
+                                log.warn("no order request to add line items too")
+                                Thread.sleep(50)
+                            }
+                        }
+                }
+
+
+                // ====================================================== UPDATE
+
+                matches("u:order-request", loop) -> threads += Thread {
+                    while (true)
+                        this.runMeasured(loop) {
+                            val orderRequestId = this.entityIdService.getOrderRequestFromUpdateWorkQueue()
+                            if (orderRequestId.isPresent) {
+                                this.orderRequestCmd.patchOrderRequest(orderRequestId.get())
+                            }
+                            else {
+                                log.error("no order request to update")
+                                Thread.sleep(50)
+                            }
                         }
                 }
 

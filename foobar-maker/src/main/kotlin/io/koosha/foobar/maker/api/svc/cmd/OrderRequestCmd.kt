@@ -85,6 +85,8 @@ class OrderRequestCmd(
             )
         )
 
+        this.entityIdService.putOrderRequestIntoLineItemWorkQueue(entity.orderRequestId)
+
         if (doLog)
             log.info { "posted order-request:\n${response.headers}\ninternalId=$internalId\nentity:\n$entity" }
     }
@@ -110,7 +112,7 @@ class OrderRequestCmd(
         log.info { "patched order request:\n${response.headers}\n$entity" }
     }
 
-    fun patchOrderRequest2() {
+    fun patchOrderRequest() {
 
         val orderRequestId = this.entityIdService.findUUIDOrLast(OrderRequestApi.ENTITY_TYPE, null)
 
@@ -122,6 +124,15 @@ class OrderRequestCmd(
         assertStatusCode(response.statusCode)
         val entity = response.data
         log.info { "patched order request:\n${response.headers}\n$entity" }
+    }
+
+    fun patchOrderRequest(orderRequestId: UUID): OrderRequest? {
+
+        val req = OrderRequestUpdateRequest()
+        req.state = OrderRequestUpdateRequest.StateEnum.LIVE
+
+        val response = this.orderRequestApi.patchOrderRequestWithHttpInfo(orderRequestId, req)
+        return response.data
     }
 
     fun getOrderRequest(

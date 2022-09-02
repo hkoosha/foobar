@@ -19,6 +19,17 @@ spec:
             - name: zipkin
               containerPort: 9411
               protocol: TCP
+          env:
+            - name: STORAGE_TYPE
+              value: mysql
+            - name: MYSQL_HOST
+              value: mariadb.foobar.svc.cluster.local
+            - name: MYSQL_USER
+              value: root
+            - name: MYSQL_PASS
+              value: '.'
+            - name: JAVA_OPTS
+              value: '-verbose:gc -Xms512m -Xmx512m'
 
 ---
 

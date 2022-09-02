@@ -319,3 +319,11 @@ Microservices architecture:
 <br>
 
 ![kubernetes](assets/screenshots/architecture.png)
+
+<br>
+Grafana
+<br>
+
+![grafana](assets/screenshots/grafana0.png)
+<br>
+![grafana](assets/screenshots/grafana1.png)

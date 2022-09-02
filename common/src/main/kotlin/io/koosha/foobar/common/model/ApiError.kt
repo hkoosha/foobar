@@ -84,3 +84,17 @@ class EntityIllegalStateApiError(
     override val error = ERROR
 
 }
+
+// TODO remove extra info from here!
+class ServerError(
+    message: String,
+    val context: Throwable?,
+) : ApiError(message + " / " + context?.message + " / " + context?.stackTraceToString()) {
+
+    companion object {
+        const val ERROR = "Internal server error"
+    }
+
+    override val error = ERROR
+
+}

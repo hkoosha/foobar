@@ -122,6 +122,11 @@ dependencies {
     implementation("com.google.protobuf:protobuf-java:${Libraries.Proto.proto}")
     implementation("javax.annotation:javax.annotation-api:${Libraries.javaxAnnotation}")
 
+
+    // Current version pooled by spring has a db connection leak bug.
+    implementation("io.r2dbc:r2dbc-spi:1.0.0.RELEASE")
+    implementation("io.r2dbc:r2dbc-pool:1.0.0.RC1")
+
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")

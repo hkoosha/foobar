@@ -337,8 +337,61 @@ k8s-run-my-cli:
 # =================================== INIT ======================================
 # ===============================================================================
 
+.PHONY: k8s-init-zipkin-db
+k8s-init-zipkin-db:
+	kubectl exec mariadb-0 -it --namespace $(FOOBAR_NAMESPACE) -- bash -c \
+		  'mysql -D zipkin -h mariadb.foobar.svc.cluster.local -uroot \
+		  -p"$(shell kubectl get secret --namespace foobar mariadb -o jsonpath="{.data.mariadb-root-password}" | base64 -d)" \
+		  -e " \
+		  CREATE TABLE IF NOT EXISTS zipkin_spans ( \
+			trace_id BIGINT NOT NULL, \
+			id BIGINT NOT NULL, \
+			name VARCHAR(255) NOT NULL, \
+			parent_id BIGINT, \
+			debug BIT(1), \
+			start_ts BIGINT, \
+			duration BIGINT \
+		) ENGINE=InnoDB ROW_FORMAT=COMPRESSED; \
+		ALTER TABLE zipkin_spans ADD UNIQUE KEY(trace_id, id) ; \
+		ALTER TABLE zipkin_spans ADD INDEX(trace_id, id) ; \
+		ALTER TABLE zipkin_spans ADD INDEX(trace_id) ; \
+		ALTER TABLE zipkin_spans ADD INDEX(name) ; \
+		ALTER TABLE zipkin_spans ADD INDEX(start_ts) ; \
+		CREATE TABLE IF NOT EXISTS zipkin_annotations ( \
+			trace_id BIGINT NOT NULL , \
+			span_id BIGINT NOT NULL , \
+			a_key VARCHAR(255) NOT NULL , \
+			a_value BLOB, \
+			a_type INT NOT NULL, \
+			a_timestamp BIGINT, \
+			endpoint_ipv4 INT, \
+			endpoint_ipv6 BINARY(16), \
+			endpoint_port SMALLINT, \
+			endpoint_service_name VARCHAR(255)  \
+		) ENGINE=InnoDB ROW_FORMAT=COMPRESSED; \
+		ALTER TABLE zipkin_annotations ADD UNIQUE KEY(trace_id, span_id, a_key, a_timestamp) ; \
+		ALTER TABLE zipkin_annotations ADD INDEX(trace_id, span_id) ; \
+		ALTER TABLE zipkin_annotations ADD INDEX(trace_id) ; \
+		ALTER TABLE zipkin_annotations ADD INDEX(endpoint_service_name) ; \
+		ALTER TABLE zipkin_annotations ADD INDEX(a_type) ; \
+		ALTER TABLE zipkin_annotations ADD INDEX(a_key) ; \
+		CREATE TABLE IF NOT EXISTS zipkin_dependencies ( \
+			day DATE NOT NULL, \
+			parent VARCHAR(255) NOT NULL, \
+			child VARCHAR(255) NOT NULL, \
+			call_count BIGINT \
+		) ENGINE=InnoDB ROW_FORMAT=COMPRESSED; \
+		ALTER TABLE zipkin_spans ADD trace_id_high BIGINT NOT NULL DEFAULT 0; \
+		ALTER TABLE zipkin_annotations ADD trace_id_high BIGINT NOT NULL DEFAULT 0; \
+		ALTER TABLE zipkin_spans   DROP INDEX trace_id, ADD UNIQUE KEY(trace_id_high, trace_id, id); \
+		ALTER TABLE zipkin_annotations DROP INDEX trace_id, ADD UNIQUE KEY(trace_id_high, trace_id, span_id, a_key, a_timestamp); \
+		ALTER TABLE zipkin_dependencies ADD error_count BIGINT; \
+		ALTER TABLE zipkin_spans ADD remote_service_name VARCHAR(255); \
+		ALTER TABLE zipkin_spans ADD INDEX(remote_service_name); \
+		"'
+
 .PHONY: k8s-init-create-db
-k8s-init-create-db:
+k8s-init-create-db: k8s-init-zipkin-db
 	kubectl exec mariadb-0 -it --namespace $(FOOBAR_NAMESPACE) -- bash -c \
 		  'mysql -h mariadb.foobar.svc.cluster.local -uroot \
 		  -p"$(shell kubectl get secret --namespace foobar mariadb -o jsonpath="{.data.mariadb-root-password}" | base64 -d)" \
@@ -349,6 +402,7 @@ k8s-init-create-db:
 			  CREATE DATABASE foobar_shipping; \
 			  CREATE DATABASE foobar_warehouse; \
 			  CREATE DATABASE foobar_maker; \
+			  CREATE DATABASE zipkin; \
 			  SHOW DATABASES"'
 
 .PHONY: k8s-init-drop-db

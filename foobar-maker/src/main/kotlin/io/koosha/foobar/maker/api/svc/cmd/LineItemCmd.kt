@@ -6,13 +6,11 @@ import io.koosha.foobar.connect.marketplace.generated.api.LineItemRequest
 import io.koosha.foobar.connect.marketplace.generated.api.OrderRequestApi
 import io.koosha.foobar.connect.marketplace.generated.api.OrderRequestLineItem
 import io.koosha.foobar.connect.marketplace.generated.api.OrderRequestLineItemApi
-import io.koosha.foobar.connect.warehouse.generated.api.AvailabilityApi
 import io.koosha.foobar.connect.warehouse.generated.api.ProductApi
 import io.koosha.foobar.maker.api.Command
 import io.koosha.foobar.maker.api.assertStatusCode
 import io.koosha.foobar.maker.api.firstOrDef
 import io.koosha.foobar.maker.api.matches
-import io.koosha.foobar.maker.api.model.EntityId
 import io.koosha.foobar.maker.api.svc.EntityIdService
 import mu.KotlinLogging
 import org.springframework.boot.ApplicationArguments
@@ -64,7 +62,8 @@ class LineItemCmd(
 
         val orderRequestId: UUID =
             this.entityIdService.findUUIDOrLast(OrderRequestApi.ENTITY_TYPE, freeArgs.firstOrNull())
-        val productId: UUID = this.entityIdService.findUUIDOrLast(ProductApi.ENTITY_TYPE, freeArgs.getOrNull(1))
+        val productId: UUID =
+            this.entityIdService.findUUIDOrLast(ProductApi.ENTITY_TYPE, freeArgs.getOrNull(1))
 
         val req = LineItemRequest()
         req.productId = productId
@@ -75,18 +74,6 @@ class LineItemCmd(
         val response = this.lineItemApi.postLineItemWithHttpInfo(orderRequestId, req)
         assertStatusCode(response.statusCode)
         val entity = response.data
-
-        val internalId = this.entityIdService
-            .findMaxInternalIdByEntityType(AvailabilityApi.ENTITY_TYPE)
-            .map { it + 1 }
-            .orElse(0L)
-        this.entityIdService.save(
-            EntityId(
-                entityId = "$orderRequestId/$productId",
-                internalId = internalId,
-                entityType = AvailabilityApi.ENTITY_TYPE,
-            )
-        )
 
         if (doLog)
             log.info { "posted lineItem:\n${response.headers}\n$entity" }
@@ -118,4 +105,17 @@ class LineItemCmd(
         return entities
     }
 
+    fun postLineItem(
+        orderRequestId: UUID,
+        productId: UUID,
+        units: Long,
+    ): OrderRequestLineItem? {
+
+        val req = LineItemRequest()
+        req.productId = productId
+        req.units = units
+
+        val response = this.lineItemApi.postLineItemWithHttpInfo(orderRequestId, req)
+        return response.data
+    }
 }

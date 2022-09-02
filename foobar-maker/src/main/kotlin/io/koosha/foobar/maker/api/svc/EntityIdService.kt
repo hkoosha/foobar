@@ -6,6 +6,25 @@ import java.util.*
 
 interface EntityIdService {
 
+
+    fun putOrderRequestIntoLineItemWorkQueue(orderRequestId: UUID)
+
+    fun getOrderRequestFromLineItemWorkQueue(): Optional<UUID>
+
+    fun putOrderRequestIntoUpdateWorkQueue(orderRequestId: UUID)
+
+    fun getOrderRequestFromUpdateWorkQueue(): Optional<UUID>
+
+    fun getAvailableProduct(units: Long): Optional<UUID> = this.getAvailableProduct(units, emptySet())
+
+    fun getAvailableProduct(units: Long, excluding: Collection<UUID>): Optional<UUID>
+
+    fun putAvailableProduct(
+        units: Long,
+        productId: UUID,
+    )
+
+
     fun findUUID(
         entityType: String,
         givenId: String,
