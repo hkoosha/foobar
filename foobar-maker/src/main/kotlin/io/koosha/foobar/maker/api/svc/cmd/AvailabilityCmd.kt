@@ -10,7 +10,6 @@ import io.koosha.foobar.maker.api.assertStatusCode
 import io.koosha.foobar.maker.api.firstOrNull
 import io.koosha.foobar.maker.api.matches
 import io.koosha.foobar.maker.api.model.EntityId
-import io.koosha.foobar.maker.api.model.EntityIdRepository
 import io.koosha.foobar.maker.api.svc.EntityIdService
 import io.koosha.foobar.maker.api.svc.Rand
 import mu.KotlinLogging
@@ -24,7 +23,6 @@ class AvailabilityCmd(
     private val rand: Rand,
     private val availabilityApi: AvailabilityApi,
     private val entityIdService: EntityIdService,
-    private val repo: EntityIdRepository,
 ) : Command {
 
     private val log = KotlinLogging.logger {}
@@ -55,6 +53,7 @@ class AvailabilityCmd(
     fun postAvailability(
         args: ApplicationArguments,
         freeArgs: List<String>,
+        doLog: Boolean = true,
     ) {
 
         val sellerId: UUID = this.entityIdService.findUUIDOrLast(SellerApi.ENTITY_TYPE, freeArgs.firstOrNull())
@@ -65,16 +64,17 @@ class AvailabilityCmd(
         req.unitsAvailable = args.firstOrNull("unitsAvailable")?.toLong() ?: this.rand.long()
         req.pricePerUnit = args.firstOrNull("pricePerUnit")?.toLong() ?: this.rand.long(max = 100_000L, min = 10_000)
 
-        log.info { "request:\n$req" }
+        if (doLog)
+            log.info { "request:\n$req" }
         val response = this.availabilityApi.postAvailabilityWithHttpInfo(productId, req)
         assertStatusCode(response.statusCode)
         val entity = response.data
 
-        val internalId = this.repo
+        val internalId = this.entityIdService
             .findMaxInternalIdByEntityType(AvailabilityApi.ENTITY_TYPE)
             .map { it + 1 }
             .orElse(0L)
-        this.repo.save(
+        this.entityIdService.save(
             EntityId(
                 entityId = "$productId/$sellerId",
                 internalId = internalId,
@@ -82,7 +82,10 @@ class AvailabilityCmd(
             )
         )
 
-        log.info { "posted availability:\n${response.headers}\n$entity" }
+        this.entityIdService.putAvailableProduct(entity.unitsAvailable, productId)
+
+        if (doLog)
+            log.info { "posted availability:\n${response.headers}\n$entity" }
     }
 
     fun getAvailability(

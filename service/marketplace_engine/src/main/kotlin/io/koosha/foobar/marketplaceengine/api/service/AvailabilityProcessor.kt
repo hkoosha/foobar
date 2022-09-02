@@ -1,12 +1,15 @@
 package io.koosha.foobar.marketplaceengine.api.service
 
 
+import io.koosha.foobar.common.TAG
+import io.koosha.foobar.common.TAG_VALUE
 import io.koosha.foobar.common.cfg.KafkaConfig
 import io.koosha.foobar.common.toUUID
 import io.koosha.foobar.marketplaceengine.SOURCE
 import io.koosha.foobar.marketplaceengine.api.model.AvailabilityDO
 import io.koosha.foobar.marketplaceengine.api.model.AvailabilityRepository
 import io.koosha.foobar.product.AvailabilityProto
+import io.micrometer.core.annotation.Timed
 import mu.KotlinLogging
 import net.logstash.logback.argument.StructuredArguments.v
 import org.springframework.kafka.annotation.KafkaListener
@@ -23,6 +26,7 @@ class AvailabilityProcessor(
 
     private val log = KotlinLogging.logger {}
 
+    @Timed(extraTags = [TAG, TAG_VALUE])
     @KafkaListener(
         groupId = "${SOURCE}__availability",
         concurrency = "2",

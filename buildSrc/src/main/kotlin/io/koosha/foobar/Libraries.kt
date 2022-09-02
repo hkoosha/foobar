@@ -49,7 +49,7 @@ object Libraries {
     }
 
     object Jib {
-        const val gradlePlugin = "3.2.1"
+        const val gradlePlugin = "3.3.0"
     }
 
     object Log {

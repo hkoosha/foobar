@@ -1,0 +1,14 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: foobar-monitoring
+spec:
+  selector:
+    matchLabels:
+      foobarmonitoring: enabled
+  podMetricsEndpoints:
+  - port: server
+    path: /actuator/prometheus
+  namespaceSelector:
+    matchNames:
+      - foobar

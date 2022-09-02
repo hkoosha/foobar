@@ -1,3 +1,4 @@
+
 spring:
   application:
     name: FoobarCustomer
@@ -19,7 +20,7 @@ spring:
 
 
 server:
-  port: ${FOOBAR_PORT_CUSTOMER:8080}
+  port: ${FOOBAR_SERVICE_PORT_CUSTOMER:4040}
   error:
     include-message: always
     include-binding-errors: always
@@ -33,3 +34,14 @@ logging:
 foobar:
   rest:
     on-concurrency-error-retry-after: 1s
+
+management:
+  metrics:
+    tags:
+      foobar-service: foobar-customer
+  endpoints:
+    web:
+      exposure:
+        include:
+          - '*'
+

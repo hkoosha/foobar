@@ -20,11 +20,11 @@ logging:
 
 foobar:
   port:
-    marketplace: ${FOOBAR_PORT_MARKETPLACE:4040}
-    warehouse: ${FOOBAR_PORT_WAREHOUSE:4041}
-    shipping: ${FOOBAR_PORT_SHIPPING:4042}
-    customer: ${FOOBAR_PORT_CUSTOMER:4043}
-    seller: ${FOOBAR_PORT_SELLER:4045}
+    marketplace: ${FOOBAR_SERVICE_PORT_MARKETPLACE:4041}
+    warehouse: ${FOOBAR_SERVICE_PORT_WAREHOUSE:4046}
+    shipping: ${FOOBAR_SERVICE_PORT_SHIPPING:4044}
+    customer: ${FOOBAR_SERVICE_PORT_CUSTOMER:4040}
+    seller: ${FOOBAR_SERVICE_PORT_SELLER:4043}
   url:
     defaultUrl: ${FOOBAR_URL_DEFAULT:http://localhost}
     marketplace: ${FOOBAR_URL_MARKETPLACE:}
@@ -32,3 +32,10 @@ foobar:
     shipping: ${FOOBAR_URL_SHIPPING:}
     customer: ${FOOBAR_URL_CUSTOMER:}
     seller: ${FOOBAR_URL_SELLER:}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - '*'

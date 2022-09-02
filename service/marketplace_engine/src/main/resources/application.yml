@@ -18,7 +18,7 @@ spring:
     enabled: false
 
 server:
-  port: ${FOOBAR_PORT_MARKETPLACE_ENGINE:8080}
+  port: ${FOOBAR_SERVICE_PORT_MARKETPLACE_ENGINE:4042}
   error:
     include-message: always
     include-binding-errors: always
@@ -53,3 +53,13 @@ logging:
 foobar:
   rest:
     on-concurrency-error-retry-after: 10s
+
+management:
+  metrics:
+    tags:
+      foobar-service: foobar-marketplace-engine
+  endpoints:
+    web:
+      exposure:
+        include:
+          - '*'

@@ -41,15 +41,15 @@ object Foobar {
 
     object Port {
 
-        fun customer(project: Project?) = getEnv(project, "FOOBAR_PORT_CUSTOMER", "8080")
+        fun customer(project: Project?) = getEnv(project, "FOOBAR_SERVICE_PORT_CUSTOMER", "4040")
 
-        fun marketplace(project: Project?) = getEnv(project, "FOOBAR_PORT_MARKETPLACE", "8080")
+        fun marketplace(project: Project?) = getEnv(project, "FOOBAR_SERVICE_PORT_MARKETPLACE", "4041")
 
-        fun seller(project: Project?) = getEnv(project, "FOOBAR_PORT_SELLER", "8080")
+        fun seller(project: Project?) = getEnv(project, "FOOBAR_SERVICE_PORT_SELLER", "4043")
 
-        fun shipping(project: Project?) = getEnv(project, "FOOBAR_PORT_SHIPPING", "8080")
+        fun shipping(project: Project?) = getEnv(project, "FOOBAR_SERVICE_PORT_SHIPPING", "4044")
 
-        fun warehouse(project: Project?) = getEnv(project, "FOOBAR_PORT_WAREHOUSE", "8080")
+        fun warehouse(project: Project?) = getEnv(project, "FOOBAR_SERVICE_PORT_WAREHOUSE", "4046")
     }
 
 
@@ -65,7 +65,9 @@ object Foobar {
         fun jvmArgs(project: Project) = listOf(
             "-javaagent:${project.rootDir}/libs/opentelemetry-javaagent-1.17.0.jar",
             "-Dotel.service.name=${project.name}",
-            "-Dotel.traces.sampler=always_on" // parentbased_traceidratio && -Dotel.traces.sampler.arg=RATIO
+            // "-Dotel.traces.sampler=always_on",
+            "-Dotel.traces.sampler=parentbased_traceidratio",
+            "-Dotel.traces.sampler.arg=0.1",
         )
 
     }
@@ -79,7 +81,10 @@ object Foobar {
         fun jvmFlags(project: Project) = listOf(
             "-javaagent:/opentelemetry-javaagent-1.17.0.jar",
             "-Dotel.service.name=${project.name}",
-            "-Dotel.traces.sampler=always_on", // parentbased_traceidratio && -Dotel.traces.sampler.arg=RATIO
+            // "-Dotel.traces.sampler=always_on",
+            "-Dotel.traces.sampler=parentbased_traceidratio",
+            // TODO move ratio to env var
+            "-Dotel.traces.sampler.arg=0.1",
             "-Dotel.traces.exporter=jaeger",
         )
 
@@ -104,5 +109,16 @@ object Foobar {
         repositoryHandler.maven {
             setUrl("https://plugins.gradle.org/m2/")
         }
+    }
+
+    fun dockerRegistry(): String {
+
+        val registry = System.getenv("FOOBAR_DOCKER_REGISTRY")?.trim()
+        if (registry == null)
+            return ""
+
+        if (!registry.endsWith("/"))
+            throw GradleException("foobar docker registry (env var: FOOBAR_DOCKER_REGISTRY) must end with a slash, actual value: $registry")
+        return registry
     }
 }

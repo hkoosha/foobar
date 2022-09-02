@@ -6,6 +6,7 @@ import io.koosha.foobar.maker.api.svc.cmd.CustomerCmd
 import io.koosha.foobar.maker.api.svc.cmd.DumpCmd
 import io.koosha.foobar.maker.api.svc.cmd.InitCmd
 import io.koosha.foobar.maker.api.svc.cmd.LineItemCmd
+import io.koosha.foobar.maker.api.svc.cmd.LoopCmd
 import io.koosha.foobar.maker.api.svc.cmd.OrderRequestCmd
 import io.koosha.foobar.maker.api.svc.cmd.ProductCmd
 import io.koosha.foobar.maker.api.svc.cmd.SellerCmd
@@ -30,6 +31,7 @@ class CliRunner(
     private val initCommand: InitCmd,
     private val dumpCmd: DumpCmd,
     private val xCreateCmd: XCreateCmd,
+    private val loopCmd: LoopCmd,
 ) : ApplicationRunner {
 
     private val log = KotlinLogging.logger {}
@@ -99,6 +101,11 @@ class CliRunner(
         )
 
         matches(this.xCreateCmd.commandName, args.nonOptionArgs.first()) -> this.xCreateCmd.handle(
+            args,
+            args.nonOptionArgs.subList(1, args.nonOptionArgs.size),
+        )
+
+        matches(this.loopCmd.commandName, args.nonOptionArgs.first()) -> this.loopCmd.handle(
             args,
             args.nonOptionArgs.subList(1, args.nonOptionArgs.size),
         )

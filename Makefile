@@ -9,7 +9,7 @@ FOOBAR_MINIKUBE_MEMORY ?= 60g
 FOOBAR_MINIKUBE_NUM_CPU ?= 16
 FOOBAR_MINIKUBE_DRIVER ?= docker
 FOOBAR_MINIKUBE_NODES ?= 8
-FOOBAR_MINIKUBE_ADDONS ?= dashboard,storage-provisioner,ingress,registry
+FOOBAR_MINIKUBE_ADDONS ?= dashboard,storage-provisioner,registry
 #FOOBAR_MINIKUBE_ADDONS ?= dashboard,storage-provisioner,ingress,registry,default-storageclass,volumesnapshots,csi-hostpath-driver
 FOOBAR_DOCKER_IMAGE_VERSION ?= 0.0.1-SNAPSHOT
 
@@ -26,7 +26,16 @@ FOOBAR_LOADER_REPLICAS ?= ${FOOBAR_REPLICAS}
 # TODO add this too Foobar.kt in buildSrc/...
 FOOBAR_OTEL_TRACES_SAMPLER=always_on
 
-export
+FOOBAR_DOCKER_REGISTRY=localhost:5000/
+
+
+ifeq ($(FOOBAR_FAST_DOCKER_REGISTRY),true)
+	FOOBAR_DOCKER_IMAGE_BASE=host.minikube.internal:5000
+	FOOBAR_DOCKER_IMAGE_PULL_POLICY=Always
+else
+	FOOBAR_DOCKER_IMAGE_BASE=docker.io/library/
+	FOOBAR_DOCKER_IMAGE_PULL_POLICY=Never
+endif
 
 
 FOOBAR_NAMESPACE ?= foobar
@@ -36,22 +45,28 @@ GRADLE_RUNNER ?= ./gradlew --warning-mode all
 ENV ?= localhost
 
 
+include ./assets/env/_address.env
+ifneq (,$(wildcard ./assets/env/${ENV}.env))
+	include ./assets/env/${ENV}.env
+endif
+
+
 # include ./assets/legacy_maker/Makefile
+
 include ./assets/make/build.Makefile
 include ./assets/make/demo.Makefile
-include ./assets/make/foobar_docker.Makefile
+ifeq ($(FOOBAR_FAST_DOCKER_REGISTRY),true)
+	include ./assets/make/foobar_docker_fast.Makefile
+else
+	include ./assets/make/foobar_docker.Makefile
+endif
 include ./assets/make/k8s_foobar.Makefile
 include ./assets/make/k8s_services.Makefile
 include ./assets/make/local_services.Makefile
 include ./assets/make/local_foobar.Makefile
 
 
-
-
-ifneq (,$(wildcard ./assets/env/${ENV}.env))
-	include ./assets/env/${ENV}.env
-	export
-endif
+export
 
 
 
@@ -60,6 +75,12 @@ endif
 .PHONY: help
 help: # try to print make targets using gawk
 	@echo "Trying to print help... if this does not work, try '$(MAKE) help-alt'"
+	@echo ''
+	@echo 'If you want fast k8s deployments:'
+	@echo '1. Run $(MAKE) docker-registry'
+	@echo '2. Open port 5000 in your firewall'
+	@echo '3. Set the env var FOOBAR_FAST_DOCKER_REGISTRY=true'
+	@echo ''
 	@echo ''
 	@awk '{match($$0, /^([a-z0-9][a-zA-Z0-9\.\-\/]*):( *)([a-z0-9\-]* *)*(# .*)*$$/, m) } \
 		{ print m[0];}' ${MAKEFILE_LIST} \

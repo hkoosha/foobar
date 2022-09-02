@@ -51,7 +51,7 @@ class InitCmd(
         @Suppress("MagicNumber")
         Thread.sleep(500)
         if (args.containsOption("live"))
-            this.orderRequestCmd.patchOrderRequest2()
+            this.orderRequestCmd.patchOrderRequest()
 
         @Suppress("MagicNumber")
         Thread.sleep(500)

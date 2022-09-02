@@ -1,9 +1,12 @@
 package io.koosha.foobar.shipping.api.service
 
+import io.koosha.foobar.common.TAG
+import io.koosha.foobar.common.TAG_VALUE
 import io.koosha.foobar.common.cfg.KafkaConfig
 import io.koosha.foobar.common.toUUID
 import io.koosha.foobar.order_request.OrderRequestSellerFoundProto
 import io.koosha.foobar.shipping.SOURCE
+import io.micrometer.core.annotation.Timed
 import mu.KotlinLogging
 import net.logstash.logback.argument.StructuredArguments.v
 import org.springframework.kafka.annotation.KafkaListener
@@ -23,6 +26,7 @@ class OrderRequestSellerProcessor(
 
     private val log = KotlinLogging.logger {}
 
+    @Timed(extraTags = [TAG, TAG_VALUE])
     @KafkaListener(
         groupId = "${SOURCE}__order_request_seller",
         concurrency = "2",

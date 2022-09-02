@@ -1,5 +1,6 @@
 package io.koosha.foobar.maker.api.svc.cmd
 
+import io.koosha.foobar.connect.customer.generated.api.Customer
 import io.koosha.foobar.connect.customer.generated.api.CustomerApi
 import io.koosha.foobar.connect.customer.generated.api.CustomerCreateRequest
 import io.koosha.foobar.connect.customer.generated.api.CustomerCreateRequestName
@@ -12,7 +13,6 @@ import io.koosha.foobar.maker.api.firstOrNull
 import io.koosha.foobar.maker.api.firstOrRandom
 import io.koosha.foobar.maker.api.matches
 import io.koosha.foobar.maker.api.model.EntityId
-import io.koosha.foobar.maker.api.model.EntityIdRepository
 import io.koosha.foobar.maker.api.stringAll
 import io.koosha.foobar.maker.api.svc.EntityIdService
 import io.koosha.foobar.maker.api.svc.Rand
@@ -26,7 +26,6 @@ class CustomerCmd(
     private val rand: Rand,
     private val customerApi: CustomerApi,
     private val entityIdService: EntityIdService,
-    private val repo: EntityIdRepository,
 ) : Command {
 
     private val log = KotlinLogging.logger {}
@@ -54,11 +53,17 @@ class CustomerCmd(
             freeArgs.subList(1, freeArgs.size)
         )
 
+        matches("last", freeArgs[0]) -> {
+            this.getLastCustomer(true)
+            Unit
+        }
+
         else -> log.error { "unknown customer command: ${freeArgs[0]}" }
     }
 
     fun postCustomer(
         args: ApplicationArguments,
+        doLog: Boolean = true,
     ) {
 
         val req = CustomerCreateRequest()
@@ -71,16 +76,17 @@ class CustomerCmd(
             else
                 CustomerCreateRequestName.TitleEnum.valueOf(args.first("title"))
 
-        log.info { "request:\n$req" }
+        if (doLog)
+            log.info { "request:\n$req" }
         val response = this.customerApi.postCustomerWithHttpInfo(req)
         assertStatusCode(response.statusCode)
         val entity = response.data
 
-        val id = this.repo
+        val id = this.entityIdService
             .findMaxInternalIdByEntityType(CustomerApi.ENTITY_TYPE)
             .map { it + 1 }
             .orElse(0L)
-        this.repo.save(
+        this.entityIdService.save(
             EntityId(
                 entityId = entity.customerId.toString(),
                 internalId = id,
@@ -88,7 +94,8 @@ class CustomerCmd(
             )
         )
 
-        log.info { "posted customer:\n${response.headers}\nId=$id\nentity:\n$entity" }
+        if (doLog)
+            log.info { "posted customer:\n${response.headers}\nId=$id\nentity:\n$entity" }
     }
 
     fun patchCustomer(
@@ -123,7 +130,7 @@ class CustomerCmd(
             val response = this.customerApi.customersWithHttpInfo
             assertStatusCode(response.statusCode)
             val all = response.data
-            val s = stringAll(this.repo, CustomerApi.ENTITY_TYPE, all) { it.customerId.toString() }
+            val s = stringAll(this.entityIdService, CustomerApi.ENTITY_TYPE, all) { it.customerId.toString() }
             log.info { s }
 
         }
@@ -132,9 +139,19 @@ class CustomerCmd(
             val customerId = this.entityIdService.findUUID(CustomerApi.ENTITY_TYPE, freeArgs.first())
             val response = this.customerApi.getCustomerWithHttpInfo(customerId)
             assertStatusCode(response.statusCode)
-            val entity = response.data
+            val entity: Customer? = response.data
             log.info { "customer:\n${response.headers}\n$entity" }
 
         }
+
+    fun getLastCustomer(doLog: Boolean): Customer? {
+
+        val customerId = this.entityIdService.findUUIDOrLast(CustomerApi.ENTITY_TYPE, null)
+        val response = this.customerApi.getCustomerWithHttpInfo(customerId)
+        val entity: Customer? = response.data
+        if (doLog)
+            log.info { "customer:\n${response.headers}\n$entity" }
+        return entity
+    }
 
 }

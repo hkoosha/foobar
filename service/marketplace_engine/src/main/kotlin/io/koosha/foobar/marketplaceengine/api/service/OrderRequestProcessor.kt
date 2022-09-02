@@ -1,6 +1,8 @@
 package io.koosha.foobar.marketplaceengine.api.service
 
 import io.koosha.foobar.HeaderHelper
+import io.koosha.foobar.common.TAG
+import io.koosha.foobar.common.TAG_VALUE
 import io.koosha.foobar.common.cfg.KafkaConfig
 import io.koosha.foobar.common.toUUID
 import io.koosha.foobar.entity.DeadLetterErrorProto
@@ -11,6 +13,8 @@ import io.koosha.foobar.marketplaceengine.api.model.ProcessedOrderRequestDO
 import io.koosha.foobar.marketplaceengine.api.model.ProcessedOrderRequestRepository
 import io.koosha.foobar.order_request.OrderRequestSellerFoundProto
 import io.koosha.foobar.order_request.OrderRequestStateChangedProto
+import io.micrometer.core.instrument.MeterRegistry
+import io.micrometer.core.instrument.Timer
 import mu.KotlinLogging
 import net.logstash.logback.argument.StructuredArguments.v
 import org.apache.kafka.common.TopicPartition
@@ -33,8 +37,11 @@ import java.util.stream.Collectors
 @Component
 class OrderRequestProcessor(
     private val clock: Clock,
+    meterRegistry: MeterRegistry,
+
     private val availabilityRepo: AvailabilityRepository,
     private val processedRepo: ProcessedOrderRequestRepository,
+
     @Qualifier(KafkaConfig.TEMPLATE__ORDER_REQUEST__STATE_CHANGED__DEAD_LETTER)
     private val deadLetter: KafkaTemplate<UUID, DeadLetterErrorProto.DeadLetterError>,
     @Qualifier(KafkaConfig.TEMPLATE__ORDER_REQUEST__SELLER_FOUND)
@@ -46,6 +53,8 @@ class OrderRequestProcessor(
     }
 
     private val log = KotlinLogging.logger {}
+
+    private val timer: Timer = meterRegistry.timer("onEntityStateChanged", TAG, TAG_VALUE)
 
     @KafkaListener(
         groupId = "${SOURCE}__state_change",
@@ -62,7 +71,11 @@ class OrderRequestProcessor(
         ack: Acknowledgment,
     ) {
 
-        this.onEntityStateChanged0(key, stateChange)
+        if (stateChange.to == "LIVE")
+            timer.record {
+                this.onEntityStateChanged0(key, stateChange)
+            }
+
         ack.acknowledge()
     }
 
@@ -185,8 +198,7 @@ class OrderRequestProcessor(
         stateChange: OrderRequestStateChangedProto.OrderRequestStateChanged,
     ) {
 
-        if (stateChange.to != "LIVE")
-            return
+        check(stateChange.to == "LIVE")
 
         val already: Optional<ProcessedOrderRequestDO> = this.processedRepo.findById(orderRequestId)
         if (already.isPresent && already.get().processed == true) {

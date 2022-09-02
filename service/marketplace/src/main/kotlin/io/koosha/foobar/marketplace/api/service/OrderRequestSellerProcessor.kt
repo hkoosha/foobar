@@ -1,5 +1,7 @@
 package io.koosha.foobar.marketplace.api.service
 
+import io.koosha.foobar.common.TAG
+import io.koosha.foobar.common.TAG_VALUE
 import io.koosha.foobar.common.cfg.KafkaConfig
 import io.koosha.foobar.common.toUUID
 import io.koosha.foobar.marketplace.SOURCE
@@ -7,6 +9,8 @@ import io.koosha.foobar.marketplace.api.model.OrderRequestState
 import io.koosha.foobar.marketplace.api.model.ProcessedOrderRequestSellerDO
 import io.koosha.foobar.marketplace.api.model.ProcessedOrderRequestSellerRepository
 import io.koosha.foobar.order_request.OrderRequestSellerFoundProto
+import io.micrometer.core.instrument.Counter
+import io.micrometer.core.instrument.MeterRegistry
 import mu.KotlinLogging
 import net.logstash.logback.argument.StructuredArguments.v
 import org.apache.kafka.common.TopicPartition
@@ -24,12 +28,17 @@ import java.util.*
 
 @Component
 class OrderRequestSellerProcessor(
+    meterRegistry: MeterRegistry,
+
     private val processedRepo: ProcessedOrderRequestSellerRepository,
 
     private val orderRequestService: OrderRequestService,
 ) : ConsumerSeekAware {
 
     private val log = KotlinLogging.logger {}
+
+    private val sellerFound: Counter = meterRegistry.counter("seller_found", TAG, TAG_VALUE)
+    private val sellerNotFound: Counter = meterRegistry.counter("seller_not_found", TAG, TAG_VALUE)
 
     override fun onPartitionsAssigned(
         assignments: Map<TopicPartition, Long>,
@@ -50,8 +59,6 @@ class OrderRequestSellerProcessor(
         @Payload payload: OrderRequestSellerFoundProto.OrderRequestSellerFound,
         ack: Acknowledgment,
     ) {
-
-        log.trace("kafka payload=$payload", v("payload", payload))
 
         val isNewRecord = this.processedRepo
             .save(
@@ -86,6 +93,7 @@ class OrderRequestSellerProcessor(
         }
 
         if (payload.hasSellerId()) {
+            this.sellerFound.increment()
             this.orderRequestService
                 .update(
                     orderRequestId,
@@ -105,6 +113,7 @@ class OrderRequestSellerProcessor(
                 .block()
         }
         else {
+            this.sellerNotFound.increment()
             this.orderRequestService
                 .update(
                     orderRequestId,

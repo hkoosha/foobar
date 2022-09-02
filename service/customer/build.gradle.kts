@@ -61,6 +61,7 @@ dependencyManagement {
 dependencies {
     implementation(project(":common"))
     implementation(project(":common-jpa"))
+    implementation(project(":common-meter"))
 
     implementation(project(":service:common-service"))
     implementation(project(":service:common-web"))
@@ -82,6 +83,7 @@ dependencies {
     implementation("io.github.microutils:kotlin-logging-jvm:${Libraries.microutilsKotlinLoggingJvm}")
     implementation("net.logstash.logback:logstash-logback-encoder:${Libraries.Log.logstashLogbackEncoder}")
 
+    implementation("io.micrometer:micrometer-registry-prometheus")
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     // implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
@@ -136,6 +138,7 @@ tasks.withType<BootRun> {
 }
 
 jib {
+    setAllowInsecureRegistries(true)
     extraDirectories.setPaths(
         Foobar.Jib.extraDirs(project)
     )
@@ -144,7 +147,7 @@ jib {
         jvmFlags = Foobar.Jib.jvmFlags(project)
     }
     to {
-        image = "foobar-customer:${Foobar.appVersion}"
+        image = "${Foobar.dockerRegistry()}foobar-customer:${Foobar.appVersion}"
     }
 }
 

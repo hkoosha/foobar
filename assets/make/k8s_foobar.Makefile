@@ -1,5 +1,6 @@
 
 FOOBAR_SERVICES_YAML := assets/k8s/foobar
+FOOBAR_SERVICE_YAML_COMPILED := assets/k8s/compiled_foobar
 
 
 .PHONY: remake-k8s-foobar
@@ -7,18 +8,22 @@ remake-k8s-foobar:
 	$(EDITOR) assets/make/k8s_foobar.Makefile
 
 
+.PHONY: _prepare_foobar_yaml_compiled
+_prepare_foobar_yaml_compiled:
+	mkdir -p $(FOOBAR_SERVICE_YAML_COMPILED)
+
 
 .PHONY: _k8s-deploy-loader-compile
-_k8s-deploy-loader-compile:
-	cat $(FOOBAR_SERVICES_YAML)/loader.yaml | envsubst > $(FOOBAR_SERVICES_YAML)/compiled/loader.yaml
+_k8s-deploy-loader-compile: _prepare_foobar_yaml_compiled
+	cat $(FOOBAR_SERVICES_YAML)/loader.yaml | envsubst > $(FOOBAR_SERVICE_YAML_COMPILED)/loader.yaml
 
 .PHONY: k8s-deploy-loader
 k8s-deploy-loader: _k8s-deploy-loader-compile
-	kubectl -n $(FOOBAR_NAMESPACE) apply -f $(FOOBAR_SERVICES_YAML)/compiled/loader.yaml
+	kubectl -n $(FOOBAR_NAMESPACE) apply -f $(FOOBAR_SERVICE_YAML_COMPILED)/loader.yaml
 
 .PHONY: k8s-undeploy-loader
 k8s-undeploy-loader: _k8s-deploy-loader-compile
-	kubectl -n $(FOOBAR_NAMESPACE) delete -f $(FOOBAR_SERVICES_YAML)/compiled/loader.yaml || true
+	kubectl -n $(FOOBAR_NAMESPACE) delete -f $(FOOBAR_SERVICE_YAML_COMPILED)/loader.yaml || true
 
 .PHONY: k8s-redeploy-loader
 k8s-redeploy-loader: k8s-undeploy-loader k8s-deploy-loader
@@ -30,16 +35,16 @@ remake-yaml-loader:
 
 
 .PHONY: _k8s-deploy-maker-compile
-_k8s-deploy-maker-compile:
-	cat $(FOOBAR_SERVICES_YAML)/maker.yaml | envsubst > $(FOOBAR_SERVICES_YAML)/compiled/maker.yaml
+_k8s-deploy-maker-compile: _prepare_foobar_yaml_compiled
+	cat $(FOOBAR_SERVICES_YAML)/maker.yaml | envsubst > $(FOOBAR_SERVICE_YAML_COMPILED)/maker.yaml
 
 .PHONY: k8s-deploy-maker
 k8s-deploy-maker: _k8s-deploy-maker-compile
-	kubectl -n $(FOOBAR_NAMESPACE) apply -f $(FOOBAR_SERVICES_YAML)/compiled/maker.yaml
+	kubectl -n $(FOOBAR_NAMESPACE) apply -f $(FOOBAR_SERVICE_YAML_COMPILED)/maker.yaml
 
 .PHONY: k8s-undeploy-maker
 k8s-undeploy-maker: _k8s-deploy-maker-compile
-	kubectl -n $(FOOBAR_NAMESPACE) delete -f $(FOOBAR_SERVICES_YAML)/compiled/maker.yaml || true
+	kubectl -n $(FOOBAR_NAMESPACE) delete -f $(FOOBAR_SERVICE_YAML_COMPILED)/maker.yaml || true
 
 .PHONY: k8s-redeploy-maker
 k8s-redeploy-maker: k8s-undeploy-maker k8s-deploy-maker
@@ -51,16 +56,16 @@ remake-yaml-maker:
 
 
 .PHONY: _k8s-deploy-customer-compile
-_k8s-deploy-customer-compile:
-	cat $(FOOBAR_SERVICES_YAML)/customer.yaml | envsubst > $(FOOBAR_SERVICES_YAML)/compiled/customer.yaml
+_k8s-deploy-customer-compile: _prepare_foobar_yaml_compiled
+	cat $(FOOBAR_SERVICES_YAML)/customer.yaml | envsubst > $(FOOBAR_SERVICE_YAML_COMPILED)/customer.yaml
 
 .PHONY: k8s-deploy-customer
 k8s-deploy-customer: _k8s-deploy-customer-compile
-	kubectl -n $(FOOBAR_NAMESPACE) apply -f $(FOOBAR_SERVICES_YAML)/compiled/customer.yaml
+	kubectl -n $(FOOBAR_NAMESPACE) apply -f $(FOOBAR_SERVICE_YAML_COMPILED)/customer.yaml
 
 .PHONY: k8s-undeploy-customer
 k8s-undeploy-customer: _k8s-deploy-customer-compile
-	kubectl -n $(FOOBAR_NAMESPACE) delete -f $(FOOBAR_SERVICES_YAML)/compiled/customer.yaml || true
+	kubectl -n $(FOOBAR_NAMESPACE) delete -f $(FOOBAR_SERVICE_YAML_COMPILED)/customer.yaml || true
 
 .PHONY: k8s-redeploy-customer
 k8s-redeploy-customer: k8s-undeploy-customer k8s-deploy-customer
@@ -72,16 +77,16 @@ remake-yaml-customer:
 
 
 .PHONY: _k8s-deploy-seller-compile
-_k8s-deploy-seller-compile:
-	cat $(FOOBAR_SERVICES_YAML)/seller.yaml | envsubst > $(FOOBAR_SERVICES_YAML)/compiled/seller.yaml
+_k8s-deploy-seller-compile: _prepare_foobar_yaml_compiled
+	cat $(FOOBAR_SERVICES_YAML)/seller.yaml | envsubst > $(FOOBAR_SERVICE_YAML_COMPILED)/seller.yaml
 
 .PHONY: k8s-deploy-seller
 k8s-deploy-seller: _k8s-deploy-seller-compile
-	kubectl -n $(FOOBAR_NAMESPACE) apply -f $(FOOBAR_SERVICES_YAML)/compiled/seller.yaml
+	kubectl -n $(FOOBAR_NAMESPACE) apply -f $(FOOBAR_SERVICE_YAML_COMPILED)/seller.yaml
 
 .PHONY: k8s-undeploy-seller
 k8s-undeploy-seller: _k8s-deploy-seller-compile
-	kubectl -n $(FOOBAR_NAMESPACE) delete -f $(FOOBAR_SERVICES_YAML)/compiled/seller.yaml || true
+	kubectl -n $(FOOBAR_NAMESPACE) delete -f $(FOOBAR_SERVICE_YAML_COMPILED)/seller.yaml || true
 
 .PHONY: k8s-redeploy-seller
 k8s-redeploy-seller: k8s-undeploy-seller k8s-deploy-seller
@@ -93,16 +98,16 @@ remake-yaml-seller:
 
 
 .PHONY: _k8s-deploy-warehouse-compile
-_k8s-deploy-warehouse-compile:
-	cat $(FOOBAR_SERVICES_YAML)/warehouse.yaml | envsubst > $(FOOBAR_SERVICES_YAML)/compiled/warehouse.yaml
+_k8s-deploy-warehouse-compile: _prepare_foobar_yaml_compiled
+	cat $(FOOBAR_SERVICES_YAML)/warehouse.yaml | envsubst > $(FOOBAR_SERVICE_YAML_COMPILED)/warehouse.yaml
 
 .PHONY: k8s-deploy-warehouse
 k8s-deploy-warehouse: _k8s-deploy-warehouse-compile
-	kubectl -n $(FOOBAR_NAMESPACE) apply -f $(FOOBAR_SERVICES_YAML)/compiled/warehouse.yaml
+	kubectl -n $(FOOBAR_NAMESPACE) apply -f $(FOOBAR_SERVICE_YAML_COMPILED)/warehouse.yaml
 
 .PHONY: k8s-undeploy-warehouse
 k8s-undeploy-warehouse: _k8s-deploy-warehouse-compile
-	kubectl -n $(FOOBAR_NAMESPACE) delete -f $(FOOBAR_SERVICES_YAML)/compiled/warehouse.yaml || true
+	kubectl -n $(FOOBAR_NAMESPACE) delete -f $(FOOBAR_SERVICE_YAML_COMPILED)/warehouse.yaml || true
 
 .PHONY: k8s-redeploy-warehouse
 k8s-redeploy-warehouse: k8s-undeploy-warehouse k8s-deploy-warehouse
@@ -114,16 +119,16 @@ remake-yaml-warehouse:
 
 
 .PHONY: _k8s-deploy-shipping-compile
-_k8s-deploy-shipping-compile:
-	cat $(FOOBAR_SERVICES_YAML)/shipping.yaml | envsubst > $(FOOBAR_SERVICES_YAML)/compiled/shipping.yaml
+_k8s-deploy-shipping-compile: _prepare_foobar_yaml_compiled
+	cat $(FOOBAR_SERVICES_YAML)/shipping.yaml | envsubst > $(FOOBAR_SERVICE_YAML_COMPILED)/shipping.yaml
 
 .PHONY: k8s-deploy-shipping
 k8s-deploy-shipping: _k8s-deploy-shipping-compile
-	kubectl -n $(FOOBAR_NAMESPACE) apply -f $(FOOBAR_SERVICES_YAML)/compiled/shipping.yaml
+	kubectl -n $(FOOBAR_NAMESPACE) apply -f $(FOOBAR_SERVICE_YAML_COMPILED)/shipping.yaml
 
 .PHONY: k8s-undeploy-shipping
 k8s-undeploy-shipping: _k8s-deploy-shipping-compile
-	kubectl -n $(FOOBAR_NAMESPACE) delete -f $(FOOBAR_SERVICES_YAML)/compiled/shipping.yaml || true
+	kubectl -n $(FOOBAR_NAMESPACE) delete -f $(FOOBAR_SERVICE_YAML_COMPILED)/shipping.yaml || true
 
 .PHONY: k8s-redeploy-shipping
 k8s-redeploy-shipping: k8s-undeploy-shipping k8s-deploy-shipping
@@ -135,16 +140,16 @@ remake-yaml-shipping:
 
 
 .PHONY: _k8s-deploy-marketplace-compile
-_k8s-deploy-marketplace-compile:
-	cat $(FOOBAR_SERVICES_YAML)/marketplace.yaml | envsubst > $(FOOBAR_SERVICES_YAML)/compiled/marketplace.yaml
+_k8s-deploy-marketplace-compile: _prepare_foobar_yaml_compiled
+	cat $(FOOBAR_SERVICES_YAML)/marketplace.yaml | envsubst > $(FOOBAR_SERVICE_YAML_COMPILED)/marketplace.yaml
 
 .PHONY: k8s-deploy-marketplace
 k8s-deploy-marketplace: _k8s-deploy-marketplace-compile
-	kubectl -n $(FOOBAR_NAMESPACE) apply -f $(FOOBAR_SERVICES_YAML)/compiled/marketplace.yaml
+	kubectl -n $(FOOBAR_NAMESPACE) apply -f $(FOOBAR_SERVICE_YAML_COMPILED)/marketplace.yaml
 
 .PHONY: k8s-undeploy-marketplace
 k8s-undeploy-marketplace:_k8s-deploy-marketplace-compile
-	kubectl -n $(FOOBAR_NAMESPACE) delete -f $(FOOBAR_SERVICES_YAML)/compiled/marketplace.yaml || true
+	kubectl -n $(FOOBAR_NAMESPACE) delete -f $(FOOBAR_SERVICE_YAML_COMPILED)/marketplace.yaml || true
 
 .PHONY: k8s-redeploy-marketplace
 k8s-redeploy-marketplace: k8s-undeploy-marketplace k8s-deploy-marketplace
@@ -156,16 +161,16 @@ remake-yaml-marketplace:
 
 
 .PHONY: _k8s-deploy-marketplace-engine-compile
-_k8s-deploy-marketplace-engine-compile:
-	cat $(FOOBAR_SERVICES_YAML)/marketplace_engine.yaml | envsubst > $(FOOBAR_SERVICES_YAML)/compiled/marketplace_engine.yaml
+_k8s-deploy-marketplace-engine-compile: _prepare_foobar_yaml_compiled
+	cat $(FOOBAR_SERVICES_YAML)/marketplace_engine.yaml | envsubst > $(FOOBAR_SERVICE_YAML_COMPILED)/marketplace_engine.yaml
 
 .PHONY: k8s-deploy-marketplace-engine
 k8s-deploy-marketplace-engine: _k8s-deploy-marketplace-engine-compile
-	kubectl -n $(FOOBAR_NAMESPACE) apply -f $(FOOBAR_SERVICES_YAML)/compiled/marketplace_engine.yaml
+	kubectl -n $(FOOBAR_NAMESPACE) apply -f $(FOOBAR_SERVICE_YAML_COMPILED)/marketplace_engine.yaml
 
 .PHONY: k8s-undeploy-marketplace-engine
 k8s-undeploy-marketplace-engine: _k8s-deploy-marketplace-engine-compile
-	kubectl -n $(FOOBAR_NAMESPACE) delete -f $(FOOBAR_SERVICES_YAML)/compiled/marketplace_engine.yaml || true
+	kubectl -n $(FOOBAR_NAMESPACE) delete -f $(FOOBAR_SERVICE_YAML_COMPILED)/marketplace_engine.yaml || true
 
 .PHONY: k8s-redeploy-marketplace-engine
 k8s-redeploy-marketplace-engine: k8s-undeploy-marketplace-engine k8s-deploy-marketplace-engine
@@ -233,3 +238,99 @@ k8s-exec-maker-demo:
 k8s-delete-maker-cli:
 	kubectl delete pod foobar-maker --namespace $(FOOBAR_NAMESPACE)
 
+
+.PHONY: k8s-port-forward-customer
+k8s-port-forward-customer:
+	kubectl port-forward \
+      --namespace $(FOOBAR_NAMESPACE) \
+      svc/foobar-customer \
+	  $(FOOBAR_SERVICE_PORT_CUSTOMER):8080
+
+.PHONY: k8s-port-forward-seller
+k8s-port-forward-seller:
+	kubectl port-forward \
+      --namespace $(FOOBAR_NAMESPACE) \
+      svc/foobar-seller \
+	  $(FOOBAR_SERVICE_PORT_SELLER):8080
+
+.PHONY: k8s-port-forward-marketplace
+k8s-port-forward-marketplace:
+	kubectl port-forward \
+      --namespace $(FOOBAR_NAMESPACE) \
+      svc/foobar-marketplace \
+	  $(FOOBAR_SERVICE_PORT_MARKETPLACE):8080
+
+.PHONY: k8s-port-forward-marketplace-engine
+k8s-port-forward-marketplace-engine:
+	kubectl port-forward \
+      --namespace $(FOOBAR_NAMESPACE) \
+      svc/foobar-marketplace-engine \
+	  $(FOOBAR_SERVICE_PORT_MARKETPLACE_ENGINE):8080
+
+.PHONY: k8s-port-forward-shipping
+k8s-port-forward-shipping:
+	kubectl port-forward \
+      --namespace $(FOOBAR_NAMESPACE) \
+      svc/foobar-shipping \
+	  $(FOOBAR_SERVICE_PORT_SHIPPING):8080
+
+.PHONY: k8s-port-forward-warehouse
+k8s-port-forward-warehouse:
+	kubectl port-forward \
+      --namespace $(FOOBAR_NAMESPACE) \
+      svc/foobar-warehouse \
+	  $(FOOBAR_SERVICE_PORT_WAREHOUSE):8080
+
+.PHONY: k8s-port-forward-loader
+k8s-port-forward-loader:
+	kubectl port-forward \
+      --namespace $(FOOBAR_NAMESPACE) \
+      svc/foobar-loader \
+	  $(FOOBAR_SERVICE_PORT_LOADER):8080
+
+
+.PHONY: k8s-port-forward-foobar
+k8s-port-forward-foobar:
+	kubectl port-forward --namespace $(FOOBAR_NAMESPACE) \
+		svc/foobar-customer \
+		$(FOOBAR_SERVICE_PORT_CUSTOMER):8080 &
+	kubectl port-forward --namespace $(FOOBAR_NAMESPACE) \
+		svc/foobar-seller \
+		$(FOOBAR_SERVICE_PORT_SELLER):8080 &
+	kubectl port-forward --namespace $(FOOBAR_NAMESPACE) \
+		svc/foobar-warehouse \
+		$(FOOBAR_SERVICE_PORT_WAREHOUSE):8080 &
+	kubectl port-forward --namespace $(FOOBAR_NAMESPACE) \
+		svc/foobar-marketplace \
+		$(FOOBAR_SERVICE_PORT_MARKETPLACE):8080 &
+	kubectl port-forward --namespace $(FOOBAR_NAMESPACE) \
+		svc/foobar-marketplace-engine \
+		$(FOOBAR_SERVICE_PORT_MARKETPLACE_ENGINE):8080 &
+	kubectl port-forward --namespace $(FOOBAR_NAMESPACE) \
+		svc/foobar-shipping \
+		$(FOOBAR_SERVICE_PORT_SHIPPING):8080
+
+
+.PHONY: open-actuator-customer
+open-actuator-customer:
+	xdg-open http://localhost:$(FOOBAR_SERVICE_PORT_CUSTOMER)/actuator
+
+.PHONY: open-actuator-seller
+open-actuator-seller:
+	xdg-open http://localhost:$(FOOBAR_SERVICE_PORT_SELLER)/actuator
+
+.PHONY: open-actuator-warehouse
+open-actuator-warehouse:
+	xdg-open http://localhost:$(FOOBAR_SERVICE_PORT_WAREHOUSE)/actuator
+
+.PHONY: open-actuator-marketplace
+open-actuator-marketplace:
+	xdg-open http://localhost:$(FOOBAR_SERVICE_PORT_MARKETPLACE)/actuator
+
+.PHONY: open-actuator-marketplace-engine
+open-actuator-marketplace-engine:
+	xdg-open http://localhost:$(FOOBAR_SERVICE_PORT_MARKETPLACE_ENGINE)/actuator
+
+.PHONY: open-actuator-shipping
+open-actuator-shipping:
+	xdg-open http://localhost:$(FOOBAR_SERVICE_PORT_SHIPPING)/actuator

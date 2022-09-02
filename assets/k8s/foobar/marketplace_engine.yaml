@@ -4,6 +4,7 @@ metadata:
   name: foobar-marketplace-engine
   labels:
     foobar-service: marketplace-engine
+    foobarmonitoring: enabled
 spec:
   selector:
     matchLabels:
@@ -16,6 +17,7 @@ spec:
       labels:
         foobar-service: marketplace-engine
         foobar-json-log: enabled
+        foobarmonitoring: enabled
     spec:
       dnsPolicy: ClusterFirst
       terminationGracePeriodSeconds: 10
@@ -30,8 +32,8 @@ spec:
             - name: foobar-log
               mountPath: /foobar-log
         - name: foobar-marketplace-engine
-          image: 'docker.io/library/foobar-marketplace-engine:0.0.1-SNAPSHOT'
-          imagePullPolicy: Never
+          image: '${FOOBAR_DOCKER_IMAGE_BASE}/foobar-marketplace-engine:0.0.1-SNAPSHOT'
+          imagePullPolicy: ${FOOBAR_DOCKER_IMAGE_PULL_POLICY}
           terminationMessagePolicy: File
           ports:
             - name: server
@@ -44,7 +46,7 @@ spec:
               value: trace
             - name: FOOBAR_DDL_AUTO
               value: update
-            - name: FOOBAR_PORT_MARKETPLACE_ENGINE
+            - name: FOOBAR_SERVICE_PORT_MARKETPLACE_ENGINE
               value: '8080'
             - name: FOOBAR_MYSQL_HOST
               value: 'mariadb.foobar.svc.cluster.local:3306'
@@ -79,4 +81,23 @@ spec:
               path: /actuator/health/readiness
               port: 8080
               scheme: HTTP
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: foobar-marketplace-engine
+    foobarmonitoring: enabled
+  name: foobar-marketplace-engine
+spec:
+  ports:
+  - name: server
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    foobar-service: marketplace-engine
+  type: ClusterIP
 

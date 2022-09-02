@@ -72,6 +72,7 @@ dependencies {
     implementation(project(":definitions"))
 
     implementation(project(":common"))
+    implementation(project(":common-meter"))
 
     implementation(project(":service:common-kafka"))
 
@@ -121,6 +122,11 @@ dependencies {
     implementation("com.google.protobuf:protobuf-java:${Libraries.Proto.proto}")
     implementation("javax.annotation:javax.annotation-api:${Libraries.javaxAnnotation}")
 
+
+    // Current version pooled by spring has a db connection leak bug.
+    implementation("io.r2dbc:r2dbc-spi:1.0.0.RELEASE")
+    implementation("io.r2dbc:r2dbc-pool:1.0.0.RC1")
+
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
@@ -152,6 +158,7 @@ tasks.withType<BootRun> {
 }
 
 jib {
+    setAllowInsecureRegistries(true)
     extraDirectories.setPaths(
         Foobar.Jib.extraDirs(project)
     )
@@ -160,7 +167,7 @@ jib {
         jvmFlags = Foobar.Jib.jvmFlags(project)
     }
     to {
-        image = "foobar-marketplace:${Foobar.appVersion}"
+        image = "${Foobar.dockerRegistry()}foobar-marketplace:${Foobar.appVersion}"
     }
 }
 

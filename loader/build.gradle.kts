@@ -57,6 +57,7 @@ dependencyManagement {
 dependencies {
     implementation(project(":common"))
     // implementation(project(":common-jpa"))
+    implementation(project(":common-meter"))
 
     implementation(project(":connect:customer-api-build"))
     implementation(project(":connect:seller-api-build"))
@@ -65,7 +66,7 @@ dependencies {
 
     implementation("org.springframework.boot:spring-boot-starter")
     // implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    // implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
     implementation("org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j")
@@ -98,6 +99,7 @@ tasks.withType<BootRun> {
 }
 
 jib {
+    setAllowInsecureRegistries(true)
     extraDirectories.setPaths(
         Foobar.Jib.extraDirs(project)
     )
@@ -105,7 +107,7 @@ jib {
         jvmFlags = Foobar.Jib.jvmFlags(project)
     }
     to {
-        image = "foobar-loader:${Foobar.appVersion}"
+        image = "${Foobar.dockerRegistry()}foobar-loader:${Foobar.appVersion}"
     }
 }
 

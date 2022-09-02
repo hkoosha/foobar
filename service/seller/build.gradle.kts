@@ -61,6 +61,7 @@ dependencyManagement {
 dependencies {
     implementation(project(":common"))
     implementation(project(":common-jpa"))
+    implementation(project(":common-meter"))
 
     implementation(project(":service:common-service"))
     implementation(project(":service:common-web"))
@@ -136,6 +137,7 @@ tasks.withType<BootRun> {
 }
 
 jib {
+    setAllowInsecureRegistries(true)
     extraDirectories.setPaths(
         Foobar.Jib.extraDirs(project)
     )
@@ -144,7 +146,7 @@ jib {
         jvmFlags = Foobar.Jib.jvmFlags(project)
     }
     to {
-        image = "foobar-seller:${Foobar.appVersion}"
+        image = "${Foobar.dockerRegistry()}foobar-seller:${Foobar.appVersion}"
     }
 }
 

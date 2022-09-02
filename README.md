@@ -13,13 +13,8 @@ microservices, distributed tracing, monitoring, and ... using Spring Boot.
 
 - Kafka: is the broker that some of Foobar microservices communicate through.
 
-- Jaeger: collects tracing data. Runs as a JVM agent.
-
-- Zipkin: alternative to Jaeger. Spring Sleuth is used to communicate with a
-  zipkin server.
-
 - Open API (Swagger): to document the HTTP endpoints and automatically generate
-  Feign clients for them.<br>
+  Feign clients and reactive clients (WebClient) for them.<br>
   In order to add circuit breaker and retry capability to the generated clients
   more easily, a custom openapi-generator ( foobar-gen) is used.
 
@@ -35,8 +30,11 @@ microservices, distributed tracing, monitoring, and ... using Spring Boot.
   and finally filebeat DaemonSet scraps it and sends to elasticsearch. This way
   normal readable logs are available too alongside machine readable json logs.
 
-- Open API: is used to generate HTTP client for the endpoints. Both blocking
-  clients (Feign) and reactive/nonblocking (Spring's webclient).
+
+- Jaeger: collects tracing data. Runs as a JVM agent.
+
+- Zipkin: alternative to Jaeger. Spring Sleuth is used to communicate with a
+  zipkin server.
 
 - Spring Webflux / Project reactor: one of the subprojects (foobar-marketplace),
   is reactive and uses Spring Webflux. Fot the sake of simplicity other
@@ -169,6 +167,12 @@ make run-shipping
 ```
 
 ### Up and Running: Kubernetes
+
+**IMPORTANT!!** seriously consider defining the 
+`FOOBAR_FAST_DOCKER_REGISTRY=true` environment variable, it will make minikube
+read images from a local docker container running a docker registry, rather than
+than pushing images to minikube internal docker registry. It\s way faster! but
+requires opening port 5000 on your local host.
 
 Use the following sequence of commands to spawn a minikube cluster and deploy
 all foobar microservices to it:
@@ -315,3 +319,11 @@ Microservices architecture:
 <br>
 
 ![kubernetes](assets/screenshots/architecture.png)
+
+<br>
+Grafana
+<br>
+
+![grafana](assets/screenshots/grafana0.png)
+<br>
+![grafana](assets/screenshots/grafana1.png)
