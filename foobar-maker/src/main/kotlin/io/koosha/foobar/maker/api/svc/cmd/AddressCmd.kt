@@ -1,6 +1,8 @@
 package io.koosha.foobar.maker.api.svc.cmd
 
+import io.koosha.foobar.connect.customer.generated.api.Address
 import io.koosha.foobar.connect.customer.generated.api.AddressApi
+import io.koosha.foobar.connect.customer.generated.api.ApiResponse
 import io.koosha.foobar.connect.customer.generated.api.CustomerAddressCreateRequest
 import io.koosha.foobar.connect.customer.generated.api.CustomerApi
 import io.koosha.foobar.maker.api.CliException
@@ -10,7 +12,6 @@ import io.koosha.foobar.maker.api.firstOrRandom
 import io.koosha.foobar.maker.api.firstOrRandomUnPrefixed
 import io.koosha.foobar.maker.api.matches
 import io.koosha.foobar.maker.api.model.EntityId
-import io.koosha.foobar.maker.api.model.EntityIdRepository
 import io.koosha.foobar.maker.api.svc.EntityIdService
 import mu.KotlinLogging
 import org.springframework.boot.ApplicationArguments
@@ -22,7 +23,6 @@ import java.util.*
 class AddressCmd(
     private val addressApi: AddressApi,
     private val entityIdService: EntityIdService,
-    private val repo: EntityIdRepository,
 ) : Command {
 
     private val log = KotlinLogging.logger {}
@@ -47,12 +47,18 @@ class AddressCmd(
             freeArgs.subList(1, freeArgs.size)
         )
 
+        matches("last", freeArgs[0]) -> {
+            this.getLastCustomerAddresses(true)
+            Unit
+        }
+
         else -> log.error { "unknown address command: ${freeArgs[0]}" }
     }
 
     fun postAddress(
         args: ApplicationArguments,
         freeArgs: List<String>,
+        doLog: Boolean = true,
     ) {
 
         val customerId: UUID = this.entityIdService.findUUIDOrLast(CustomerApi.ENTITY_TYPE, freeArgs.firstOrNull())
@@ -64,16 +70,17 @@ class AddressCmd(
         req.zipcode = args.firstOrRandomUnPrefixed("zipcode")
         req.addressLine1 = args.firstOrRandom("addressLine1")
 
-        log.info { "request:\n$req" }
+        if (doLog)
+            log.info { "request:\n$req" }
         val response = this.addressApi.postAddressWithHttpInfo(customerId, req)
         assertStatusCode(response.statusCode)
         val entity = response.data
 
-        val id = this.repo
+        val id = this.entityIdService
             .findMaxInternalIdByEntityType(AddressApi.ENTITY_TYPE)
             .map { it + 1 }
             .orElse(0L)
-        this.repo.save(
+        this.entityIdService.save(
             EntityId(
                 entityId = "$customerId/${entity.addressId}",
                 internalId = id,
@@ -81,7 +88,8 @@ class AddressCmd(
             )
         )
 
-        log.info { "posted address:\n${response.headers}\n\n$entity" }
+        if (doLog)
+            log.info { "posted address:\n${response.headers}\n\n$entity" }
     }
 
     fun getAddress(
@@ -119,4 +127,15 @@ class AddressCmd(
 
         }
     }
+
+    fun getLastCustomerAddresses(doLog: Boolean): List<Address> {
+
+        val customerId: UUID = this.entityIdService.findUUIDOrLast(CustomerApi.ENTITY_TYPE, null)
+        val response: ApiResponse<MutableList<Address>> = this.addressApi.getAddressesWithHttpInfo(customerId)
+        val entities: List<Address> = response.data
+        if (doLog)
+            log.info { "addresses:\n${response.headers}\n$entities" }
+        return entities
+    }
+
 }

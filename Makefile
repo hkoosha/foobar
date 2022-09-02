@@ -62,7 +62,6 @@ else
 endif
 include ./assets/make/k8s_foobar.Makefile
 include ./assets/make/k8s_services.Makefile
-include ./assets/make/k8s_grafana.Makefile
 include ./assets/make/local_services.Makefile
 include ./assets/make/local_foobar.Makefile
 

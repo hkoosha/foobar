@@ -147,6 +147,7 @@ helm-uninstall-prometheus:
 .PHONY: helm-install-grafana
 helm-install-grafana:
 	kubectl create secret generic foobar-grafana-datasource --from-file=assets/grafana/datasource.yaml
+	kubectl create configmap foobar-grafana-dash-foobar --from-file=assets/grafana/dash_foobar.json
 	kubectl create configmap foobar-grafana-dash-foobar-jvm --from-file=assets/grafana/dash_jvm_by_foobar_pod.json
 	kubectl create configmap foobar-grafana-dash-prometheus --from-file=assets/grafana/dash_prometheus.json
 	helm install \
@@ -157,6 +158,7 @@ helm-install-grafana:
 .PHONY: helm-uninstall-grafana
 helm-uninstall-grafana:
 	kubectl delete secret foobar-grafana-datasource || true
+	kubectl delete configmap foobar-grafana-dash-foobar || true
 	kubectl delete configmap foobar-grafana-dash-foobar-jvm || true
 	kubectl delete configmap foobar-grafana-dash-prometheus || true
 	helm uninstall \

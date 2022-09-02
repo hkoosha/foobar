@@ -8,6 +8,8 @@ datasources:
   secretName: foobar-grafana-datasource
 
 dashboardsConfigMaps:
+  - configMapName: foobar-grafana-dash-foobar
+    fileName: dash_foobar.json
   - configMapName: foobar-grafana-dash-foobar-jvm
     fileName: dash_jvm_by_foobar_pod.json
   - configMapName: foobar-grafana-dash-prometheus

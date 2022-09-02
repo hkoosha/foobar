@@ -1,7 +1,7 @@
 package io.koosha.foobar.maker.api
 
 import io.koosha.foobar.maker.api.model.EntityId
-import io.koosha.foobar.maker.api.model.EntityIdRepository
+import io.koosha.foobar.maker.api.svc.EntityIdService
 import io.koosha.foobar.maker.api.svc.Rand
 import org.springframework.boot.ApplicationArguments
 
@@ -35,7 +35,7 @@ fun matches(
     }
 
 fun <T> stringAll(
-    repo: EntityIdRepository,
+    repo: EntityIdService,
     entityType: String,
     all: MutableList<T>,
     idExtractor: (T) -> String,

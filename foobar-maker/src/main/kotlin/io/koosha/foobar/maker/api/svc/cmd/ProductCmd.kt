@@ -1,5 +1,6 @@
 package io.koosha.foobar.maker.api.svc.cmd
 
+import io.koosha.foobar.connect.warehouse.generated.api.Product
 import io.koosha.foobar.connect.warehouse.generated.api.ProductApi
 import io.koosha.foobar.connect.warehouse.generated.api.ProductCreateRequest
 import io.koosha.foobar.connect.warehouse.generated.api.ProductUpdateRequest
@@ -11,7 +12,6 @@ import io.koosha.foobar.maker.api.firstOrRandom
 import io.koosha.foobar.maker.api.firstOrRandomUnPrefixed
 import io.koosha.foobar.maker.api.matches
 import io.koosha.foobar.maker.api.model.EntityId
-import io.koosha.foobar.maker.api.model.EntityIdRepository
 import io.koosha.foobar.maker.api.svc.EntityIdService
 import mu.KotlinLogging
 import org.springframework.boot.ApplicationArguments
@@ -22,7 +22,6 @@ import org.springframework.stereotype.Component
 class ProductCmd(
     private val productApi: ProductApi,
     private val entityIdService: EntityIdService,
-    private val repo: EntityIdRepository,
 ) : Command {
 
     private val log = KotlinLogging.logger {}
@@ -50,11 +49,17 @@ class ProductCmd(
             freeArgs.subList(1, freeArgs.size)
         )
 
+        matches("last", freeArgs[0]) -> {
+            this.getLastProduct(true)
+            Unit
+        }
+
         else -> log.error { "unknown product command: ${freeArgs[0]}" }
     }
 
     fun postProduct(
         args: ApplicationArguments,
+        doLog: Boolean = true,
     ) {
 
         val req = ProductCreateRequest()
@@ -63,16 +68,17 @@ class ProductCmd(
         req.unitSingle = args.firstOrRandomUnPrefixed("unitSingle")
         req.unitMultiple = args.firstOrRandomUnPrefixed("unitMultiple")
 
-        log.info { "request:\n$req" }
+        if (doLog)
+            log.info { "request:\n$req" }
         val response = this.productApi.postProductWithHttpInfo(req)
         assertStatusCode(response.statusCode)
         val entity = response.data
 
-        val internalId = this.repo
+        val internalId = this.entityIdService
             .findMaxInternalIdByEntityType(ProductApi.ENTITY_TYPE)
             .map { it + 1 }
             .orElse(0L)
-        this.repo.save(
+        this.entityIdService.save(
             EntityId(
                 entityId = entity.productId.toString(),
                 internalId = internalId,
@@ -80,7 +86,8 @@ class ProductCmd(
             )
         )
 
-        log.info { "posted product:\n${response.headers}\ninternalId=$internalId\nentity:\n$entity" }
+        if (doLog)
+            log.info { "posted product:\n${response.headers}\ninternalId=$internalId\nentity:\n$entity" }
     }
 
     fun patchProduct(
@@ -123,6 +130,16 @@ class ProductCmd(
 
         log.info { "product:\n${response.headers}\n$entity" }
 
+    }
+
+    fun getLastProduct(doLog: Boolean): Product? {
+
+        val productId = this.entityIdService.findUUIDOrLast(ProductApi.ENTITY_TYPE, null)
+        val response = this.productApi.getProductWithHttpInfo(productId)
+        val entity: Product? = response.data
+        if (doLog)
+            log.info { "product:\n${response.headers}\n$entity" }
+        return entity
     }
 
 }

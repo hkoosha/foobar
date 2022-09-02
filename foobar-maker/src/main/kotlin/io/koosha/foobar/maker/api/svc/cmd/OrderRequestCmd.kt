@@ -1,6 +1,7 @@
 package io.koosha.foobar.maker.api.svc.cmd
 
 import io.koosha.foobar.connect.customer.generated.api.CustomerApi
+import io.koosha.foobar.connect.marketplace.generated.api.OrderRequest
 import io.koosha.foobar.connect.marketplace.generated.api.OrderRequestApi
 import io.koosha.foobar.connect.marketplace.generated.api.OrderRequestCreateRequest
 import io.koosha.foobar.connect.marketplace.generated.api.OrderRequestUpdateRequest
@@ -10,7 +11,6 @@ import io.koosha.foobar.maker.api.first
 import io.koosha.foobar.maker.api.firstOrNull
 import io.koosha.foobar.maker.api.matches
 import io.koosha.foobar.maker.api.model.EntityId
-import io.koosha.foobar.maker.api.model.EntityIdRepository
 import io.koosha.foobar.maker.api.svc.EntityIdService
 import mu.KotlinLogging
 import org.springframework.boot.ApplicationArguments
@@ -22,7 +22,6 @@ import java.util.*
 class OrderRequestCmd(
     private val orderRequestApi: OrderRequestApi,
     private val entityIdService: EntityIdService,
-    private val repo: EntityIdRepository,
 ) : Command {
 
     private val log = KotlinLogging.logger {}
@@ -50,11 +49,17 @@ class OrderRequestCmd(
             freeArgs.subList(1, freeArgs.size)
         )
 
+        matches("last", freeArgs[0]) -> {
+            this.getLastOrderRequest(true)
+            Unit
+        }
+
         else -> log.error { "unknown orderRequest command: ${freeArgs[0]}" }
     }
 
     fun postOrderRequest(
         freeArgs: List<String>,
+        doLog: Boolean = true,
     ) {
 
         val customerId: UUID = this.entityIdService.findUUIDOrLast(CustomerApi.ENTITY_TYPE, freeArgs.firstOrNull())
@@ -62,16 +67,17 @@ class OrderRequestCmd(
         val req = OrderRequestCreateRequest()
         req.customerId = customerId
 
-        log.info { "request:\n$req" }
+        if (doLog)
+            log.info { "request:\n$req" }
         val response = this.orderRequestApi.postOrderRequestWithHttpInfo(req)
         assertStatusCode(response.statusCode)
         val entity = response.data
 
-        val internalId = this.repo
+        val internalId = this.entityIdService
             .findMaxInternalIdByEntityType(OrderRequestApi.ENTITY_TYPE)
             .map { it + 1 }
             .orElse(0L)
-        this.repo.save(
+        this.entityIdService.save(
             EntityId(
                 entityId = entity.orderRequestId.toString(),
                 internalId = internalId,
@@ -79,7 +85,8 @@ class OrderRequestCmd(
             )
         )
 
-        log.info { "posted order-request:\n${response.headers}\ninternalId=$internalId\nentity:\n$entity" }
+        if (doLog)
+            log.info { "posted order-request:\n${response.headers}\ninternalId=$internalId\nentity:\n$entity" }
     }
 
     fun patchOrderRequest(
@@ -147,6 +154,16 @@ class OrderRequestCmd(
 
         }
 
+    }
+
+    fun getLastOrderRequest(doLog: Boolean): OrderRequest? {
+
+        val orderRequestId = this.entityIdService.findUUIDOrLast(OrderRequestApi.ENTITY_TYPE, null)
+        val response = this.orderRequestApi.getOrderRequestWithHttpInfo(orderRequestId)
+        val entity: OrderRequest? = response.data
+        if (doLog)
+            log.info { "orderRequest:\n${response.headers}\n$entity" }
+        return entity
     }
 
 }

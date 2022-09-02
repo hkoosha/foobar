@@ -25,7 +25,7 @@ spec:
           terminationMessagePolicy: File
           env:
             - name: SPRING_PROFILES_ACTIVE
-              value: 'color,db-mysql,expose'
+              value: 'color,no-db,expose'
             - name: FOOBAR_LOG_LEVEL
               value: trace
             - name: FOOBAR_DDL_AUTO

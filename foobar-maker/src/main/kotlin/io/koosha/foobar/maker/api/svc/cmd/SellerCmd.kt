@@ -1,5 +1,6 @@
 package io.koosha.foobar.maker.api.svc.cmd
 
+import io.koosha.foobar.connect.seller.generated.api.Seller
 import io.koosha.foobar.connect.seller.generated.api.SellerApi
 import io.koosha.foobar.connect.seller.generated.api.SellerCreateRequest
 import io.koosha.foobar.connect.seller.generated.api.SellerCreateRequestAddress
@@ -12,7 +13,6 @@ import io.koosha.foobar.maker.api.firstOrRandom
 import io.koosha.foobar.maker.api.firstOrRandomUnPrefixed
 import io.koosha.foobar.maker.api.matches
 import io.koosha.foobar.maker.api.model.EntityId
-import io.koosha.foobar.maker.api.model.EntityIdRepository
 import io.koosha.foobar.maker.api.svc.EntityIdService
 import mu.KotlinLogging
 import org.springframework.boot.ApplicationArguments
@@ -23,7 +23,6 @@ import org.springframework.stereotype.Component
 class SellerCmd(
     private val sellerApi: SellerApi,
     private val entityIdService: EntityIdService,
-    private val repo: EntityIdRepository,
 ) : Command {
 
     private val log = KotlinLogging.logger {}
@@ -51,11 +50,17 @@ class SellerCmd(
             freeArgs.subList(1, freeArgs.size)
         )
 
+        matches("last", freeArgs[0]) -> {
+            this.getLastSeller(true)
+            Unit
+        }
+
         else -> log.error { "unknown seller command: ${freeArgs[0]}" }
     }
 
     fun postSeller(
         args: ApplicationArguments,
+        doLog: Boolean = true,
     ) {
 
         val req = SellerCreateRequest()
@@ -66,16 +71,17 @@ class SellerCmd(
         req.address.country = args.firstOrRandom("country")
         req.address.zipcode = args.firstOrRandomUnPrefixed("zipcode")
 
-        log.info { "request:\n$req" }
+        if (doLog)
+            log.info { "request:\n$req" }
         val response = this.sellerApi.postSellerWithHttpInfo(req)
         assertStatusCode(response.statusCode)
         val entity = response.data
 
-        val internalId = this.repo
+        val internalId = this.entityIdService
             .findMaxInternalIdByEntityType(SellerApi.ENTITY_TYPE)
             .map { it + 1 }
             .orElse(0L)
-        this.repo.save(
+        this.entityIdService.save(
             EntityId(
                 entityId = entity.sellerId.toString(),
                 internalId = internalId,
@@ -83,7 +89,8 @@ class SellerCmd(
             )
         )
 
-        log.info { "posted seller:\n${response.headers}\ninternalId=$internalId\nentity:\n$entity" }
+        if (doLog)
+            log.info { "posted seller:\n${response.headers}\ninternalId=$internalId\nentity:\n$entity" }
     }
 
     fun patchSeller(
@@ -128,6 +135,16 @@ class SellerCmd(
 
         log.info { "seller:\n${response.headers}\n$entity" }
 
+    }
+
+    fun getLastSeller(doLog: Boolean): Seller? {
+
+        val sellerId = this.entityIdService.findUUIDOrLast(SellerApi.ENTITY_TYPE, null)
+        val response = this.sellerApi.getSellerWithHttpInfo(sellerId)
+        val entity: Seller? = response.data
+        if (doLog)
+            log.info { "seller:\n${response.headers}\n$entity" }
+        return entity
     }
 
 }
