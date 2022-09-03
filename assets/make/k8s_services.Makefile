@@ -130,8 +130,8 @@ helm-install-prometheus:
 		-n $(FOOBAR_NAMESPACE) \
 		prometheus bitnami/kube-prometheus
 	kubectl apply -f assets/k8s/monitoring/podmonitor.yaml
-	kubectl apply -f assets/k8s/monitoring/servicemonitor.yaml
 	kubectl apply -f assets/k8s/monitoring/prometheus.yaml
+	# kubectl apply -f assets/k8s/monitoring/servicemonitor.yaml
 
 .PHONY: helm-uninstall-prometheus
 helm-uninstall-prometheus:

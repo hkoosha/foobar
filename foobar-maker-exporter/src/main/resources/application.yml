@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: FoobarMakerExporter
+  main:
+    banner-mode: off
+    log-startup-info: false
+
+server:
+  port: ${FOOBAR_SERVICE_PORT_MAKER_EXPORTER:4049}
+  error:
+    include-message: always
+    include-binding-errors: always

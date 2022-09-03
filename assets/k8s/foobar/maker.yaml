@@ -4,6 +4,7 @@ metadata:
   name: foobar-maker
   labels:
     foobar-tool: maker
+    foobarmonitoring: enabled
 spec:
   selector:
     matchLabels:
@@ -15,6 +16,7 @@ spec:
     metadata:
       labels:
         foobar-tool: maker
+        foobarmonitoring: enabled
     spec:
       dnsPolicy: ClusterFirst
       terminationGracePeriodSeconds: 10
@@ -36,6 +38,8 @@ spec:
               value: root
             - name: FOOBAR_MYSQL_PASS
               value: '.'
+            - name: FOOBAR_SERVICE_PORT_MAKER
+              value: '8080'
             - name: FOOBAR_SERVICE_PORT_MARKETPLACE
               value: '8080'
             - name: FOOBAR_SERVICE_PORT_WAREHOUSE
@@ -56,4 +60,23 @@ spec:
               value: 'http://foobar-customer'
             - name: FOOBAR_URL_SELLER
               value: 'http://foobar-seller'
+
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: foobar-maker
+  name: foobar-maker
+spec:
+  ports:
+  - name: server
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    foobar-tool: maker
+  type: ClusterIP
 

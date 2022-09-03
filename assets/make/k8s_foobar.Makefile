@@ -54,6 +54,25 @@ remake-yaml-maker:
 	$(EDITOR) $(FOOBAR_SERVICES_YAML)/maker.yaml
 
 
+.PHONY: _k8s-deploy-maker-exporter-compile
+_k8s-deploy-maker-exporter-compile: _prepare_foobar_yaml_compiled
+	cat $(FOOBAR_SERVICES_YAML)/maker_exporter.yaml | envsubst > $(FOOBAR_SERVICE_YAML_COMPILED)/maker_exporter.yaml
+
+.PHONY: k8s-deploy-maker-exporter
+k8s-deploy-maker-exporter: _k8s-deploy-maker-exporter-compile
+	kubectl -n $(FOOBAR_NAMESPACE) apply -f $(FOOBAR_SERVICE_YAML_COMPILED)/maker_exporter.yaml
+
+.PHONY: k8s-undeploy-maker-exporter
+k8s-undeploy-maker-exporter: _k8s-deploy-maker-exporter-compile
+	kubectl -n $(FOOBAR_NAMESPACE) delete -f $(FOOBAR_SERVICE_YAML_COMPILED)/maker_exporter.yaml || true
+
+.PHONY: k8s-redeploy-maker-exporter
+k8s-redeploy-maker-exporter: k8s-undeploy-maker-exporter k8s-deploy-maker-exporter
+
+.PHONY: remake-yaml-maker-exporter
+remake-yaml-maker-exporter:
+	$(EDITOR) $(FOOBAR_SERVICES_YAML)/maker_exporter.yaml
+
 
 .PHONY: _k8s-deploy-customer-compile
 _k8s-deploy-customer-compile: _prepare_foobar_yaml_compiled
@@ -193,7 +212,8 @@ k8s-deploy: \
 	k8s-deploy-marketplace \
 	k8s-deploy-marketplace-engine \
 	k8s-deploy-shipping \
-	k8s-deploy-maker
+	k8s-deploy-maker \
+	k8s-deploy-maker-exporter
 
 .PHONY: k8s-undeploy
 k8s-undeploy: \
@@ -204,6 +224,7 @@ k8s-undeploy: \
 	k8s-undeploy-marketplace-engine \
 	k8s-undeploy-shipping \
 	k8s-undeploy-maker \
+	k8s-undeploy-maker-exporter \
 	k8s-undeploy-loader
 
 .PHONY: k8s-redeploy
@@ -214,7 +235,8 @@ k8s-redeploy: \
 	k8s-redeploy-marketplace \
 	k8s-redeploy-marketplace-engine \
 	k8s-redeploy-shipping \
-	k8s-redeploy-maker
+	k8s-redeploy-maker \
+	k8s-redeploy-maker-exporter
 
 
 
@@ -308,29 +330,43 @@ k8s-port-forward-foobar:
 		$(FOOBAR_SERVICE_PORT_MARKETPLACE_ENGINE):8080 &
 	kubectl port-forward --namespace $(FOOBAR_NAMESPACE) \
 		svc/foobar-shipping \
-		$(FOOBAR_SERVICE_PORT_SHIPPING):8080
+		$(FOOBAR_SERVICE_PORT_SHIPPING):8080 &
+	kubectl port-forward --namespace $(FOOBAR_NAMESPACE) \
+		svc/foobar-maker \
+		$(FOOBAR_SERVICE_PORT_MAKER):8080 &
+	kubectl port-forward --namespace $(FOOBAR_NAMESPACE) \
+		svc/foobar-maker-exporter \
+		$(FOOBAR_SERVICE_PORT_MAKER_EXPORTER):8080
 
 
 .PHONY: open-actuator-customer
 open-actuator-customer:
-	xdg-open http://localhost:$(FOOBAR_SERVICE_PORT_CUSTOMER)/actuator
+	xdg-open http://localhost:$(FOOBAR_SERVICE_PORT_CUSTOMER)/actuator/prometheus
 
 .PHONY: open-actuator-seller
 open-actuator-seller:
-	xdg-open http://localhost:$(FOOBAR_SERVICE_PORT_SELLER)/actuator
+	xdg-open http://localhost:$(FOOBAR_SERVICE_PORT_SELLER)/actuator/prometheus
 
 .PHONY: open-actuator-warehouse
 open-actuator-warehouse:
-	xdg-open http://localhost:$(FOOBAR_SERVICE_PORT_WAREHOUSE)/actuator
+	xdg-open http://localhost:$(FOOBAR_SERVICE_PORT_WAREHOUSE)/actuator/prometheus
 
 .PHONY: open-actuator-marketplace
 open-actuator-marketplace:
-	xdg-open http://localhost:$(FOOBAR_SERVICE_PORT_MARKETPLACE)/actuator
+	xdg-open http://localhost:$(FOOBAR_SERVICE_PORT_MARKETPLACE)/actuator/prometheus
 
 .PHONY: open-actuator-marketplace-engine
 open-actuator-marketplace-engine:
-	xdg-open http://localhost:$(FOOBAR_SERVICE_PORT_MARKETPLACE_ENGINE)/actuator
+	xdg-open http://localhost:$(FOOBAR_SERVICE_PORT_MARKETPLACE_ENGINE)/actuator/prometheus
 
 .PHONY: open-actuator-shipping
 open-actuator-shipping:
-	xdg-open http://localhost:$(FOOBAR_SERVICE_PORT_SHIPPING)/actuator
+	xdg-open http://localhost:$(FOOBAR_SERVICE_PORT_SHIPPING)/actuator/prometheus
+
+.PHONY: open-actuator-maker
+open-actuator-maker:
+	xdg-open http://localhost:$(FOOBAR_SERVICE_PORT_MAKER)/actuator/prometheus
+
+.PHONY: open-actuator-maker-exporter
+open-actuator-maker-exporter:
+	xdg-open http://localhost:$(FOOBAR_SERVICE_PORT_MAKER_EXPORTER)/actuator/prometheus

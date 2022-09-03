@@ -70,20 +70,14 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-web")
-    // implementation("org.springframework.cloud:spring-cloud-starter-circuitbreaker-reactor-resilience4j")
     implementation("org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j")
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
     implementation("org.springframework.cloud:spring-cloud-starter-loadbalancer")
-    // implementation("org.springframework.cloud:spring-cloud-starter-gateway")
     implementation("org.springframework.cloud:spring-cloud-starter-sleuth")
     implementation("org.springframework.cloud:spring-cloud-sleuth-zipkin")
-    // implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
-    // implementation("org.springframework.boot:spring-boot-starter-security")
 
     implementation("io.github.microutils:kotlin-logging-jvm:${Libraries.microutilsKotlinLoggingJvm}")
     implementation("net.logstash.logback:logstash-logback-encoder:${Libraries.Log.logstashLogbackEncoder}")
-
-    implementation("io.micrometer:micrometer-registry-prometheus")
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     // implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
@@ -95,13 +89,12 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-ui:${Libraries.OpenApi.ui}")
     implementation("org.springdoc:springdoc-openapi-kotlin:${Libraries.OpenApi.kotlin}")
 
+    runtimeOnly("io.micrometer:micrometer-registry-prometheus")
     runtimeOnly("org.postgresql:postgresql:${Libraries.postgres}")
     runtimeOnly("org.mariadb.jdbc:mariadb-java-client:${Libraries.mariadb}")
     runtimeOnly("com.h2database:h2")
     // runtimeOnly("io.r2dbc:r2dbc-h2")
-    runtimeOnly("io.micrometer:micrometer-registry-prometheus")
     runtimeOnly("io.github.openfeign:feign-micrometer")
-    runtimeOnly("io.micrometer:micrometer-registry-jmx")
     runtimeOnly("io.github.openfeign:feign-okhttp")
     runtimeOnly("com.squareup.okhttp3:okhttp")
 

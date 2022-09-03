@@ -1,18 +1,22 @@
 package io.koosha.foobar.maker.api.svc.cmd
 
+import io.koosha.foobar.common.TAG
+import io.koosha.foobar.common.TAG_VALUE
 import io.koosha.foobar.maker.api.CliException
 import io.koosha.foobar.maker.api.Command
 import io.koosha.foobar.maker.api.matches
 import io.koosha.foobar.maker.api.svc.EntityIdService
+import io.micrometer.core.instrument.MeterRegistry
 import mu.KotlinLogging
 import org.springframework.boot.ApplicationArguments
 import org.springframework.stereotype.Component
 import java.util.*
 
-
 @Component
 @Suppress("MagicNumber")
 class LoopCmd(
+    private val meterRegistry: MeterRegistry,
+
     private val entityIdService: EntityIdService,
 
     private val customerCmd: CustomerCmd,
@@ -52,38 +56,38 @@ class LoopCmd(
                     // ====================================================== CREATE
 
                     matches("c:customer", loop) -> threads += Thread {
-                        this.runMeasured(loop) {
+                        this.runMeasured("c_customer") {
                             this.customerCmd.postCustomer(args, doLog = false)
                         }
                     }
 
                     matches("c:address", loop) -> threads += Thread {
-                        this.runMeasured(loop) {
+                        this.runMeasured("c_address") {
                             // TODO limit number of addresses allowed in customer-api.
                             this.addressCmd.postAddress(args, emptyList(), doLog = false)
                         }
                     }
 
                     matches("c:seller", loop) -> threads += Thread {
-                        this.runMeasured(loop) {
+                        this.runMeasured("c_seller") {
                             this.sellerCmd.postSeller(args, doLog = false)
                         }
                     }
 
                     matches("c:product", loop) -> threads += Thread {
-                        this.runMeasured(loop) {
+                        this.runMeasured("c_product") {
                             this.productCmd.postProduct(args, doLog = false)
                         }
                     }
 
                     matches("c:availability", loop) -> threads += Thread {
-                        this.runMeasured(loop) {
+                        this.runMeasured("c_availability") {
                             this.availabilityCmd.postAvailability(args, emptyList(), doLog = false)
                         }
                     }
 
                     matches("c:order-request", loop) -> threads += Thread {
-                        this.runMeasured(loop) {
+                        this.runMeasured("c_order_request") {
                             this.orderRequestCmd.postOrderRequest(emptyList(), doLog = false)
                         }
                     }
@@ -91,7 +95,7 @@ class LoopCmd(
                     matches("c:line-item", loop) -> threads += Thread {
 
                         // TODO limit number of line items allowed in warehouse-api.
-                        this.runMeasured(loop) {
+                        this.runMeasured("c_line_item") {
                             val orderRequestId = this.entityIdService.getOrderRequestFromLineItemWorkQueue()
 
                             if (orderRequestId.isPresent) {
@@ -128,7 +132,7 @@ class LoopCmd(
                     // ====================================================== UPDATE
 
                     matches("u:order-request", loop) -> threads += Thread {
-                        this.runMeasured(loop) {
+                        this.runMeasured("u_order_request") {
                             val orderRequestId = this.entityIdService.getOrderRequestFromUpdateWorkQueue()
                             if (orderRequestId.isPresent) {
                                 this.orderRequestCmd.patchOrderRequest(orderRequestId.get())
@@ -144,37 +148,37 @@ class LoopCmd(
                     // ======================================================== READ
 
                     matches("r:customer", loop) -> threads += Thread {
-                        this.runMeasured(loop) {
+                        this.runMeasured("r_customer") {
                             this.customerCmd.getLastCustomer(false)
                         }
                     }
 
                     matches("r:addresses", loop) -> threads += Thread {
-                        this.runMeasured(loop) {
+                        this.runMeasured("r_addresses") {
                             this.addressCmd.getLastCustomerAddresses(false)
                         }
                     }
 
                     matches("r:seller", loop) -> threads += Thread {
-                        this.runMeasured(loop) {
+                        this.runMeasured("r_seller") {
                             this.sellerCmd.getLastSeller(false)
                         }
                     }
 
                     matches("r:product", loop) -> threads += Thread {
-                        this.runMeasured(loop) {
+                        this.runMeasured("r_product") {
                             this.productCmd.getLastProduct(false)
                         }
                     }
 
                     matches("r:order-request", loop) -> threads += Thread {
-                        this.runMeasured(loop) {
+                        this.runMeasured("r_order_request") {
                             this.orderRequestCmd.getLastOrderRequest(false)
                         }
                     }
 
                     matches("r:line-items", loop) -> threads += Thread {
-                        this.runMeasured(loop) {
+                        this.runMeasured("r_line_item") {
                             this.lineItemCmd.getLastOrderRequestLineItems(false)
                         }
                     }
@@ -198,6 +202,11 @@ class LoopCmd(
         runnable: () -> Unit,
     ) {
 
+        // TODO remove custom timing, use micrometer.
+        val counter = this.meterRegistry.counter("maker_cnt_ok__$name", TAG, TAG_VALUE)
+        val error = this.meterRegistry.counter("maker_cnt_err__$name", TAG, TAG_VALUE)
+        val timer = this.meterRegistry.timer("maker_time__$name", TAG, TAG_VALUE)
+
         var count = 0
         var i = 0
         val avg = LongArray(LOG_EVERY)
@@ -208,9 +217,11 @@ class LoopCmd(
             val then = System.currentTimeMillis()
 
             try {
-                runnable()
+                counter.increment()
+                timer.record(runnable)
             }
             catch (e: Exception) {
+                error.increment()
                 log.trace("$name error: ${e.javaClass.name} -> ${e.message}")
             }
 
@@ -250,6 +261,5 @@ class LoopCmd(
             else -> (split[0] + ":" + split[1]) to split[2].toInt()
         }
     }
-
 
 }

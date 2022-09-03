@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: foobar-maker-exporter
+  labels:
+    foobar-service: maker-exporter
+    foobarmonitoring: enabled
+spec:
+  selector:
+    matchLabels:
+      foobar-service: maker-exporter
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        foobar-service: maker-exporter
+        foobarmonitoring: enabled
+    spec:
+      dnsPolicy: ClusterFirst
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: foobar-maker-exporter
+          image: '${FOOBAR_DOCKER_IMAGE_BASE}/foobar-maker-exporter:0.0.1-SNAPSHOT'
+          imagePullPolicy: ${FOOBAR_DOCKER_IMAGE_PULL_POLICY}
+          terminationMessagePolicy: File
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: 'color,no-db,expose'
+            - name: FOOBAR_LOG_LEVEL
+              value: trace
+            - name: FOOBAR_SERVICE_PORT_MAKER_EXPORTER
+              value: '8080'
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: foobar-maker-exporter
+  name: foobar-maker-exporter
+spec:
+  ports:
+  - name: server
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    foobar-service: maker-exporter
+  type: ClusterIP
+
