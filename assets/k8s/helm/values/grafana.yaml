@@ -4,8 +4,8 @@ admin:
 dashboardsProvider:
   enabled: true
 
-datasources:
-  secretName: foobar-grafana-datasource
+# datasources:
+# secretName: foobar-grafana-datasource
 
 dashboardsConfigMaps:
   - configMapName: foobar-grafana-dash-foobar

@@ -24,7 +24,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 4,
+  "id": 2,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -2385,6 +2385,6 @@
   "timezone": "",
   "title": "Foobar",
   "uid": "mrQkL3WVk",
-  "version": 28,
+  "version": 1,
   "weekStart": ""
 }

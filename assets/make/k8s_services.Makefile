@@ -84,10 +84,6 @@ kubectl-set-ns:
 helm-add-bitnami:
 	helm repo add bitnami https://charts.bitnami.com/bitnami
 
-# .PHONY: helm-add-jaeger
-# helm-add-jaeger:
-# 	helm repo add jaegertracing https://jaegertracing.github.io/helm-charts
-
 .PHONY: helm-install-redis
 helm-install-redis:
 	helm install \
@@ -165,12 +161,21 @@ helm-uninstall-grafana:
 		-n $(FOOBAR_NAMESPACE) \
 		grafana
 
+.PHONY: helm-add-jaeger
+helm-add-jaeger:
+	helm repo add jaegertracing https://jaegertracing.github.io/helm-charts
+
 .PHONY: helm-install-jaeger
 helm-install-jaeger:
 	helm install \
 		-n $(FOOBAR_NAMESPACE) \
 		jaeger ./assets/k8s/helm/github.com__jaegertracing__helm-charts/charts/jaeger/ \
 		-f ./assets/k8s/helm/values/jaeger.yaml
+# helm install \
+# 	-n $(FOOBAR_NAMESPACE) \
+# 	jaeger \
+# 	jaegertracing/jaeger \
+# 	-f ./assets/k8s/helm/values/jaeger.yaml
 
 .PHONY: helm-uninstall-jaeger
 helm-uninstall-jaeger:
@@ -391,7 +396,7 @@ k8s-init-zipkin-db:
 		"'
 
 .PHONY: k8s-init-create-db
-k8s-init-create-db: k8s-init-zipkin-db
+k8s-init-create-db: 
 	kubectl exec mariadb-0 -it --namespace $(FOOBAR_NAMESPACE) -- bash -c \
 		  'mysql -h mariadb.foobar.svc.cluster.local -uroot \
 		  -p"$(shell kubectl get secret --namespace foobar mariadb -o jsonpath="{.data.mariadb-root-password}" | base64 -d)" \
@@ -404,6 +409,7 @@ k8s-init-create-db: k8s-init-zipkin-db
 			  CREATE DATABASE foobar_maker; \
 			  CREATE DATABASE zipkin; \
 			  SHOW DATABASES"'
+	$(MAKE) k8s-init-zipkin-db
 
 .PHONY: k8s-init-drop-db
 k8s-init-drop-db:

@@ -29,6 +29,7 @@ import org.springframework.messaging.handler.annotation.Payload
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import java.time.Clock
+import java.time.Duration
 import java.util.*
 import java.util.concurrent.TimeUnit
 import java.util.stream.Collectors
@@ -66,17 +67,24 @@ class OrderRequestProcessor(
         rollbackForClassName = ["java.lang.Exception"]
     )
     fun onEntityStateChanged(
-        @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) key: UUID,
-        @Payload stateChange: OrderRequestStateChangedProto.OrderRequestStateChanged,
+        @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY)
+        key: UUID,
+        @Payload
+        stateChange: OrderRequestStateChangedProto.OrderRequestStateChanged,
         ack: Acknowledgment,
     ) {
 
         if (stateChange.to == "LIVE")
             timer.record {
-                this.onEntityStateChanged0(key, stateChange)
+                try {
+                    this.onEntityStateChanged0(key, stateChange)
+                    ack.acknowledge()
+                }
+                catch (e: Throwable) {
+                    log.error("failed to process entity state change -> ${e.javaClass} -> ${e.message}")
+                    ack.nack(Duration.ofMillis(KAFKA_TIMEOUT_MILLIS))
+                }
             }
-
-        ack.acknowledge()
     }
 
 

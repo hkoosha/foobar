@@ -1,5 +1,6 @@
 package io.koosha.foobar.maker.api.svc.cmd
 
+import io.koosha.foobar.maker.api.CliException
 import io.koosha.foobar.maker.api.Command
 import io.koosha.foobar.maker.api.matches
 import io.koosha.foobar.maker.api.svc.EntityIdService
@@ -25,6 +26,7 @@ class LoopCmd(
 
     companion object {
         private const val LOG_EVERY = 200
+
         // TODO remove this, no seller will have all products. Only 1 works.
         private const val PROD_COUNT = 1
         private const val UNITS = 3L
@@ -43,56 +45,52 @@ class LoopCmd(
 
         val threads = mutableListOf<Thread>()
 
-        for (loop in freeArgs) {
-            when {
-                // ====================================================== CREATE
+        for (looper in freeArgs) {
+            val (loop, count) = this.extractCount(looper)
+            for (i in 0 until count)
+                when {
+                    // ====================================================== CREATE
 
-                matches("c:customer", loop) -> threads += Thread {
-                    this.runMeasured(loop) {
-                        this.customerCmd.postCustomer(args, doLog = false)
+                    matches("c:customer", loop) -> threads += Thread {
+                        this.runMeasured(loop) {
+                            this.customerCmd.postCustomer(args, doLog = false)
+                        }
                     }
-                }
 
-                matches("c:address", loop) -> threads += Thread {
-                    while (true)
+                    matches("c:address", loop) -> threads += Thread {
                         this.runMeasured(loop) {
                             // TODO limit number of addresses allowed in customer-api.
                             this.addressCmd.postAddress(args, emptyList(), doLog = false)
                         }
-                }
+                    }
 
-                matches("c:seller", loop) -> threads += Thread {
-                    while (true)
+                    matches("c:seller", loop) -> threads += Thread {
                         this.runMeasured(loop) {
                             this.sellerCmd.postSeller(args, doLog = false)
                         }
-                }
+                    }
 
-                matches("c:product", loop) -> threads += Thread {
-                    while (true)
+                    matches("c:product", loop) -> threads += Thread {
                         this.runMeasured(loop) {
                             this.productCmd.postProduct(args, doLog = false)
                         }
-                }
+                    }
 
-                matches("c:availability", loop) -> threads += Thread {
-                    while (true)
+                    matches("c:availability", loop) -> threads += Thread {
                         this.runMeasured(loop) {
                             this.availabilityCmd.postAvailability(args, emptyList(), doLog = false)
                         }
-                }
+                    }
 
-                matches("c:order-request", loop) -> threads += Thread {
-                    while (true)
+                    matches("c:order-request", loop) -> threads += Thread {
                         this.runMeasured(loop) {
                             this.orderRequestCmd.postOrderRequest(emptyList(), doLog = false)
                         }
-                }
+                    }
 
-                matches("c:line-item", loop) -> threads += Thread {
+                    matches("c:line-item", loop) -> threads += Thread {
 
-                    // TODO limit number of line items allowed in warehouse-api.
-                    while (true)
+                        // TODO limit number of line items allowed in warehouse-api.
                         this.runMeasured(loop) {
                             val orderRequestId = this.entityIdService.getOrderRequestFromLineItemWorkQueue()
 
@@ -100,9 +98,10 @@ class LoopCmd(
 
                                 val productIds = mutableSetOf<UUID>()
                                 while (productIds.size < PROD_COUNT) {
-                                    val availableProduct = this.entityIdService.getAvailableProduct(UNITS, productIds)
+                                    val availableProduct =
+                                        this.entityIdService.getAvailableProduct(UNITS, productIds)
                                     if (availableProduct.isEmpty) {
-                                        log.warn(
+                                        log.trace(
                                             "no available product to add to line item, so far have: {}",
                                             productIds.size,
                                         )
@@ -119,79 +118,72 @@ class LoopCmd(
                                 this.entityIdService.putOrderRequestIntoUpdateWorkQueue(orderRequestId.get())
                             }
                             else {
-                                log.warn("no order request to add line items too")
+                                log.trace("no order request to add line items too")
                                 Thread.sleep(50)
                             }
                         }
-                }
+                    }
 
 
-                // ====================================================== UPDATE
+                    // ====================================================== UPDATE
 
-                matches("u:order-request", loop) -> threads += Thread {
-                    while (true)
+                    matches("u:order-request", loop) -> threads += Thread {
                         this.runMeasured(loop) {
                             val orderRequestId = this.entityIdService.getOrderRequestFromUpdateWorkQueue()
                             if (orderRequestId.isPresent) {
                                 this.orderRequestCmd.patchOrderRequest(orderRequestId.get())
                             }
                             else {
-                                log.error("no order request to update")
+                                log.trace("no order request to update")
                                 Thread.sleep(50)
                             }
                         }
-                }
+                    }
 
 
-                // ======================================================== READ
+                    // ======================================================== READ
 
-                matches("r:customer", loop) -> threads += Thread {
-                    while (true)
+                    matches("r:customer", loop) -> threads += Thread {
                         this.runMeasured(loop) {
                             this.customerCmd.getLastCustomer(false)
                         }
-                }
+                    }
 
-                matches("r:addresses", loop) -> threads += Thread {
-                    while (true)
+                    matches("r:addresses", loop) -> threads += Thread {
                         this.runMeasured(loop) {
                             this.addressCmd.getLastCustomerAddresses(false)
                         }
-                }
+                    }
 
-                matches("r:seller", loop) -> threads += Thread {
-                    while (true)
+                    matches("r:seller", loop) -> threads += Thread {
                         this.runMeasured(loop) {
                             this.sellerCmd.getLastSeller(false)
                         }
-                }
+                    }
 
-                matches("r:product", loop) -> threads += Thread {
-                    while (true)
+                    matches("r:product", loop) -> threads += Thread {
                         this.runMeasured(loop) {
                             this.productCmd.getLastProduct(false)
                         }
-                }
+                    }
 
-                matches("r:order-request", loop) -> threads += Thread {
-                    while (true)
+                    matches("r:order-request", loop) -> threads += Thread {
                         this.runMeasured(loop) {
                             this.orderRequestCmd.getLastOrderRequest(false)
                         }
-                }
+                    }
 
-                matches("r:line-items", loop) -> threads += Thread {
-                    while (true)
+                    matches("r:line-items", loop) -> threads += Thread {
                         this.runMeasured(loop) {
                             this.lineItemCmd.getLastOrderRequestLineItems(false)
                         }
+                    }
+
+
+                    // ======================================================= ERROR
+
+                    else -> throw CliException("unknown loop command ignored: $loop")
                 }
-
-
-                // ======================================================= ERROR
-
-                else -> log.warn("unknown loop command ignored: {}", loop)
-            }
         }
 
         for (thread in threads)
@@ -200,7 +192,6 @@ class LoopCmd(
         for (thread in threads)
             thread.join()
     }
-
 
     private fun runMeasured(
         name: String,
@@ -220,7 +211,7 @@ class LoopCmd(
                 runnable()
             }
             catch (e: Exception) {
-                log.error("$name error: ${e.javaClass.name} -> ${e.message}")
+                log.trace("$name error: ${e.javaClass.name} -> ${e.message}")
             }
 
             val now = System.currentTimeMillis()
@@ -250,5 +241,15 @@ class LoopCmd(
             }
         }
     }
+
+    private fun extractCount(command: String): Pair<String, Int> {
+        val split = command.split(":")
+        return when (split.size) {
+            1 -> command to 1
+            2 -> command to 1
+            else -> (split[0] + ":" + split[1]) to split[2].toInt()
+        }
+    }
+
 
 }

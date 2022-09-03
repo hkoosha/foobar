@@ -1,4 +1,5 @@
 # Helm chart automated files
-/charts/*/charts
-/charts/*/requirements.lock
-/charts/*/*.tgz
+
+# /charts/*/charts
+# /charts/*/requirements.lock
+# /charts/*/*.tgz
