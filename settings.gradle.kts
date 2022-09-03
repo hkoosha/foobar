@@ -36,6 +36,7 @@ include(
     "connect:rx-warehouse-api-build",
 
     "foobar-maker",
+    "foobar-maker-exporter",
     "evil",
     "loader",
 )

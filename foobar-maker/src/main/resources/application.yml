@@ -12,6 +12,11 @@ spring:
       hibernate:
         auto_quote_keyword: true
 
+server:
+  port: ${FOOBAR_SERVICE_PORT_MAKER:4048}
+  error:
+    include-message: always
+    include-binding-errors: always
 
 logging:
   pattern:
@@ -21,6 +26,15 @@ logging:
     org.springframework: error
     com.zaxxer: error
 
+management:
+  metrics:
+    tags:
+      foobar-service: foobar-maker
+  endpoints:
+    web:
+      exposure:
+        include:
+          - '*'
 
 foobar:
   port:

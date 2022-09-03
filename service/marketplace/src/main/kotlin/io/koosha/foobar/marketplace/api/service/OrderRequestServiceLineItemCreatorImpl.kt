@@ -31,6 +31,10 @@ class OrderRequestServiceLineItemCreatorImpl(
     private val lineItemFinder: OrderRequestServiceLineItemFinderImpl,
 ) {
 
+    companion object {
+        const val MAX_LINE_ITEMS = 100
+    }
+
     private val log = KotlinLogging.logger {}
 
 
@@ -112,6 +116,16 @@ class OrderRequestServiceLineItemCreatorImpl(
             .flatMap { existing ->
                 if (existing.isEmpty()) {
                     Mono.just("")
+                }
+                else if (existing.size > MAX_LINE_ITEMS) {
+                    log.trace("orderRequest already has too many line items: {}", existing.size)
+                    Mono.error(
+                        EntityBadValueException(
+                            entityType = OrderRequestDO.ENTITY_TYPE,
+                            entityId = orderRequestId,
+                            "orderRequest=$orderRequestId already has too many line items",
+                        )
+                    )
                 }
                 else {
                     val ids = existing.joinToString(", ")

@@ -56,10 +56,7 @@ dependencies {
 
     implementation("org.springframework.boot:spring-boot-starter")
 
-    implementation("io.micrometer:micrometer-registry-prometheus")
-
     implementation("io.github.microutils:kotlin-logging-jvm:${Libraries.microutilsKotlinLoggingJvm}")
-
 
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")

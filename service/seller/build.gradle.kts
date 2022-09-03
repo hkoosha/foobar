@@ -93,14 +93,13 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-ui:${Libraries.OpenApi.ui}")
     implementation("org.springdoc:springdoc-openapi-kotlin:${Libraries.OpenApi.kotlin}")
 
+    runtimeOnly("io.micrometer:micrometer-registry-prometheus")
     runtimeOnly("org.postgresql:postgresql:${Libraries.postgres}")
     runtimeOnly("org.mariadb.jdbc:mariadb-java-client:${Libraries.mariadb}")
     // runtimeOnly("mysql:mysql-connector-java")
     runtimeOnly("com.h2database:h2")
     // runtimeOnly("io.r2dbc:r2dbc-h2")
-    runtimeOnly("io.micrometer:micrometer-registry-prometheus")
     runtimeOnly("io.github.openfeign:feign-micrometer")
-    runtimeOnly("io.micrometer:micrometer-registry-jmx")
     runtimeOnly("io.github.openfeign:feign-okhttp")
     runtimeOnly("com.squareup.okhttp3:okhttp")
 

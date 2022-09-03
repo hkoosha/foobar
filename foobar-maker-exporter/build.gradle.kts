@@ -17,7 +17,6 @@ plugins {
     id("io.spring.dependency-management") version s.DependencyManagement
     kotlin("jvm") version k.jvm
     kotlin("plugin.spring") version k.spring
-    kotlin("plugin.jpa") version k.jpa
 }
 
 group = Foobar.group
@@ -56,21 +55,8 @@ dependencyManagement {
 
 dependencies {
     implementation(project(":common"))
-    implementation(project(":common-jpa"))
-    implementation(project(":common-meter"))
 
-    implementation(project(":connect:customer-api-build"))
-    implementation(project(":connect:seller-api-build"))
-    implementation(project(":connect:warehouse-api-build"))
-    implementation(project(":connect:marketplace-api-build"))
-
-    implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.springframework.boot:spring-boot-starter")
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.springframework.boot:spring-boot-starter-validation")
-    implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
-    implementation("org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j")
 
     implementation("io.github.microutils:kotlin-logging-jvm:${Libraries.microutilsKotlinLoggingJvm}")
 
@@ -80,13 +66,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
-    runtimeOnly("io.micrometer:micrometer-registry-prometheus")
-    runtimeOnly("io.github.openfeign:feign-micrometer")
-    runtimeOnly("io.github.openfeign:feign-okhttp")
-    runtimeOnly("com.squareup.okhttp3:okhttp")
-    runtimeOnly("org.postgresql:postgresql:${Libraries.postgres}")
-    runtimeOnly("org.mariadb.jdbc:mariadb-java-client:${Libraries.mariadb}")
-    runtimeOnly("com.h2database:h2")
+    implementation("com.squareup.okhttp3:okhttp")
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
@@ -94,20 +74,12 @@ dependencies {
 }
 
 jib {
-    val foobarCmd = "'/maker.sh loop c:customer c:addr c:seller c:prod c:avail c:ord c:line u:ord'"
     setAllowInsecureRegistries(true)
-    extraDirectories.setPaths(
-        "${project.projectDir}/extra",
-    )
     container {
-        entrypoint = listOf(
-            "bash",
-            "-c",
-            "chmod +x /maker.sh && echo alias maker=/maker.sh >> ~/.bashrc && echo alias foobar=\"$foobarCmd\" >> ~/.bashrc && sleep infinity",
-        )
+        ports = listOf("8080")
     }
     to {
-        image = "${Foobar.dockerRegistry()}foobar-maker:${Foobar.appVersion}"
+        image = "${Foobar.dockerRegistry()}foobar-maker-exporter:${Foobar.appVersion}"
     }
 }
 

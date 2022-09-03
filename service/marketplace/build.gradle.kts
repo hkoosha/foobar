@@ -109,13 +109,12 @@ dependencies {
 
     implementation("io.github.openfeign:feign-jackson:${Libraries.Feign.core}")
 
+    runtimeOnly("io.micrometer:micrometer-registry-prometheus")
     runtimeOnly("org.mariadb.jdbc:mariadb-java-client:${Libraries.mariadb}")
     runtimeOnly("org.postgresql:r2dbc-postgresql:${Libraries.r2dbcPostgres}")
     runtimeOnly("org.mariadb:r2dbc-mariadb:${Libraries.r2dbcMariadb}")
     runtimeOnly("io.r2dbc:r2dbc-h2")
-    runtimeOnly("io.micrometer:micrometer-registry-prometheus")
     runtimeOnly("io.github.openfeign:feign-micrometer")
-    runtimeOnly("io.micrometer:micrometer-registry-jmx")
     runtimeOnly("io.github.openfeign:feign-okhttp")
     runtimeOnly("com.squareup.okhttp3:okhttp")
 

@@ -1,8 +1,12 @@
 allInOne:
   enabled: true
 
+# storage:
+#  type: cassandra
+
 provisionDataStore:
   cassandra: false
+  elasticsearch: false
 
 agent:
   enabled: false

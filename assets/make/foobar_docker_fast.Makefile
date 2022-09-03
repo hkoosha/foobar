@@ -1,5 +1,6 @@
 FOOBAR_LOADER_IMAGE_TAG := 0.0.1-SNAPSHOT
 FOOBAR_MAKER_IMAGE_TAG := 0.0.1-SNAPSHOT
+FOOBAR_MAKER_EXPORTER_IMAGE_TAG := 0.0.1-SNAPSHOT
 FOOBAR_CUSTOMER_IMAGE_TAG := 0.0.1-SNAPSHOT
 FOOBAR_SELLER_IMAGE_TAG := 0.0.1-SNAPSHOT
 FOOBAR_WAREHOUSE_IMAGE_TAG := 0.0.1-SNAPSHOT
@@ -9,6 +10,7 @@ FOOBAR_MARKETPLACE_ENGINE_IMAGE_TAG := 0.0.1-SNAPSHOT
 
 FOOBAR_LOADER_IMAGE := foobar-loader
 FOOBAR_MAKER_IMAGE := foobar-maker
+FOOBAR_MAKER_EXPORTER_IMAGE := foobar-maker-exporter
 FOOBAR_CUSTOMER_IMAGE := foobar-customer
 FOOBAR_SELLER_IMAGE := foobar-seller
 FOOBAR_WAREHOUSE_IMAGE := foobar-warehouse
@@ -55,6 +57,25 @@ docker-image-maker-unpush:
 
 .PHONY: docker-image-maker
 docker-image-maker: docker-image-maker-unpush docker-image-maker-build
+
+
+
+.PHONY: docker-image-maker-exporter-build
+docker-image-maker-exporter-build:
+	$(GRADLE_RUNNER) :foobar-maker-exporter:jib
+
+.PHONY: docker-image-maker-exporter-push
+docker-image-maker-exporter-push:
+	echo "No need to run this target"
+
+.PHONY: docker-image-maker-exporter-unpush
+docker-image-maker-exporter-unpush:
+	$(MAKE) _docker-image-unpush \
+		_FOOBAR_UNPUSH_IMAGE=$(FOOBAR_MAKER_EXPORTER_IMAGE) \
+		_FOOBAR_UNPUSH_TAG=$(FOOBAR_MAKER_EXPORTER_IMAGE_TAG)
+
+.PHONY: docker-image-maker-exporter
+docker-image-maker-exporter: docker-image-maker-exporter-unpush docker-image-maker-exporter-build
 
 
 

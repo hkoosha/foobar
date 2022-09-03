@@ -8,9 +8,9 @@ import org.springframework.boot.runApplication
 
 @SpringBootApplication(scanBasePackages = [PACKAGE])
 @ConfigurationPropertiesScan
-class MakerApplication
+class MakerExporterApplication
 
 
 fun main(vararg args: String) {
-    runApplication<MakerApplication>(*args)
+    runApplication<MakerExporterApplication>(*args)
 }
