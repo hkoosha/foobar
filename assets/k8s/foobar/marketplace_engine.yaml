@@ -43,7 +43,7 @@ spec:
             - name: SPRING_PROFILES_ACTIVE
               value: 'kafka,db-mysql,json-logging,expose,zipkin'
             - name: FOOBAR_LOG_LEVEL
-              value: trace
+              value: ${FOOBAR_LOG_LEVEL}
             - name: FOOBAR_DDL_AUTO
               value: update
             - name: FOOBAR_SERVICE_PORT_MARKETPLACE_ENGINE
@@ -68,14 +68,14 @@ spec:
               value: 'http://zipkin:9411'
           livenessProbe:
             failureThreshold: 10
-            initialDelaySeconds: 30
+            initialDelaySeconds: 10
             timeoutSeconds: 10
             httpGet:
               path: /actuator/health/liveness
               port: 8080
               scheme: HTTP
           readinessProbe:
-            initialDelaySeconds: 30
+            initialDelaySeconds: 10
             timeoutSeconds: 10
             httpGet:
               path: /actuator/health/readiness

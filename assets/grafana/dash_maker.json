@@ -24,7 +24,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 4,
+  "id": 5,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -36,7 +36,770 @@
         "x": 0,
         "y": 0
       },
-      "id": 59,
+      "id": 2,
+      "panels": [],
+      "title": "Maker Exporter",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 0,
+        "y": 1
+      },
+      "id": 4,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^num_scraps$/",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.1.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "sum(maker_exporter__num_scraps{\n  foobar_tool=\"foobar-maker-exporter\", service=\"\"\n})",
+          "format": "time_series",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "num_scraps",
+          "range": false,
+          "refId": "NumScraps"
+        }
+      ],
+      "title": "Number of scraps",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "dateTimeAsIso"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 3,
+        "y": 1
+      },
+      "id": 5,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^num_scraps$/",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.1.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "maker_exporter__last_successful_read{service=\"\"}",
+          "format": "time_series",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "  ",
+          "range": false,
+          "refId": "NumScraps"
+        }
+      ],
+      "title": "Last Read",
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 5
+      },
+      "id": 7,
+      "panels": [],
+      "title": "Marketplace",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "smooth",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "tx/sec"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 0,
+        "y": 6
+      },
+      "id": 11,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.1.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "sum(maker__ga_err__c_order_request{\n    service=\"\"\n})",
+          "legendFormat": " Failed",
+          "range": true,
+          "refId": "Failed"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "sum(maker__ga_ok__c_order_request{\n    service=\"\"\n})",
+          "hide": false,
+          "legendFormat": " Ok",
+          "range": true,
+          "refId": "Successful"
+        }
+      ],
+      "title": "Create Line Order Request Rate",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "smooth",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "ms/tx"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 6,
+        "y": 6
+      },
+      "id": 12,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "maker__ga_timer__c_order_request{\n    service=\"\"\n}",
+          "legendFormat": " ",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Create Order Request Timing",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "smooth",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "tx/sec"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 12,
+        "y": 6
+      },
+      "id": 9,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.1.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "sum(maker__ga_err__c_line_item{\n    service=\"\"\n})",
+          "legendFormat": " Failed",
+          "range": true,
+          "refId": "Failed"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "sum(maker__ga_ok__c_line_item{\n    service=\"\"\n})",
+          "hide": false,
+          "legendFormat": " Ok",
+          "range": true,
+          "refId": "Successful"
+        }
+      ],
+      "title": "Create Line Items Rate",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "smooth",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "ms/tx"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 18,
+        "y": 6
+      },
+      "id": 10,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "maker__ga_timer__c_line_item{\n    service=\"\"\n}",
+          "legendFormat": " ",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Create Line Items Timing",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "smooth",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "tx/sec"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 0,
+        "y": 14
+      },
+      "id": 16,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "sum(maker__ga_ok__u_order_request{\n  service=\"\"\n})",
+          "legendFormat": "Successful",
+          "range": true,
+          "refId": "Successful"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "sum(maker__ga_err__u_order_request{\n  service=\"\"\n})",
+          "hide": false,
+          "legendFormat": "Failed",
+          "range": true,
+          "refId": "Failed"
+        }
+      ],
+      "title": "Order Request Updates Rate",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "smooth",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "ms/tx"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 6,
+        "y": 14
+      },
+      "id": 17,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "maker__ga_ok__u_order_request{\n  service=\"\"\n}",
+          "legendFormat": "Successful",
+          "range": true,
+          "refId": "Successful"
+        }
+      ],
+      "title": "Order Request Update Timing",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 22
+      },
+      "id": 14,
       "panels": [],
       "title": "Warehouse",
       "type": "row"
@@ -65,14 +828,14 @@
               "tooltip": false,
               "viz": false
             },
-            "lineInterpolation": "linear",
+            "lineInterpolation": "smooth",
             "lineWidth": 1,
             "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
             },
             "showPoints": "auto",
-            "spanNulls": false,
+            "spanNulls": true,
             "stacking": {
               "group": "A",
               "mode": "none"
@@ -94,17 +857,18 @@
                 "value": 80
               }
             ]
-          }
+          },
+          "unit": "tx/sec"
         },
         "overrides": []
       },
       "gridPos": {
         "h": 8,
-        "w": 4,
+        "w": 6,
         "x": 0,
-        "y": 1
+        "y": 23
       },
-      "id": 61,
+      "id": 20,
       "options": {
         "legend": {
           "calcs": [],
@@ -117,6 +881,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "9.1.2",
       "targets": [
         {
           "datasource": {
@@ -124,10 +889,10 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_requests_seconds_count{\n    foobar_service=\"foobar-warehouse\",method=\"GET\",status=\"200\",uri=\"/foobar/warehouse/v1/products/{productId}\", service=\"\"\n}[$__rate_interval]))\n",
-          "legendFormat": "Successful",
+          "expr": "sum(maker__ga_err__c_product{\n    service=\"\"\n})",
+          "legendFormat": " Failed",
           "range": true,
-          "refId": "Successful"
+          "refId": "Failed"
         },
         {
           "datasource": {
@@ -135,15 +900,14 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_requests_seconds_count{\n    foobar_service=\"foobar-warehouse\",method=\"GET\",status!=\"200\",uri=\"/foobar/warehouse/v1/products/{productId}\", service=\"\"\n}[$__rate_interval]))\n",
+          "expr": "sum(maker__ga_ok__c_product{\n    service=\"\"\n})",
           "hide": false,
-          "interval": "",
-          "legendFormat": "Failed",
+          "legendFormat": " Ok",
           "range": true,
-          "refId": "Failed"
+          "refId": "Successful"
         }
       ],
-      "title": "Get Product Rate",
+      "title": "Create Product Rate",
       "type": "timeseries"
     },
     {
@@ -170,14 +934,14 @@
               "tooltip": false,
               "viz": false
             },
-            "lineInterpolation": "linear",
+            "lineInterpolation": "smooth",
             "lineWidth": 1,
             "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
             },
             "showPoints": "auto",
-            "spanNulls": false,
+            "spanNulls": true,
             "stacking": {
               "group": "A",
               "mode": "none"
@@ -199,17 +963,18 @@
                 "value": 80
               }
             ]
-          }
+          },
+          "unit": "ms/tx"
         },
         "overrides": []
       },
       "gridPos": {
         "h": 8,
-        "w": 4,
-        "x": 4,
-        "y": 1
+        "w": 6,
+        "x": 6,
+        "y": 23
       },
-      "id": 62,
+      "id": 21,
       "options": {
         "legend": {
           "calcs": [],
@@ -229,26 +994,13 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_requests_seconds_count{\n    foobar_service=\"foobar-warehouse\",method=\"POST\",status=\"201\",uri=\"/foobar/warehouse/v1/products\", service=\"\"\n}[$__rate_interval]))\n",
-          "legendFormat": "Successful",
+          "expr": "maker__ga_timer__c_product{\n    service=\"\"\n}",
+          "legendFormat": " ",
           "range": true,
-          "refId": "Successful"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "editorMode": "code",
-          "expr": "sum(rate(http_server_requests_seconds_count{\n    foobar_service=\"foobar-warehouse\",method=\"POST\",status!=\"201\",uri=\"/foobar/warehouse/v1/products\", service=\"\"\n}[$__rate_interval]))\n",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "Failed",
-          "range": true,
-          "refId": "Failed"
+          "refId": "A"
         }
       ],
-      "title": "Post Product Rate",
+      "title": "Create Product Timing",
       "type": "timeseries"
     },
     {
@@ -275,14 +1027,14 @@
               "tooltip": false,
               "viz": false
             },
-            "lineInterpolation": "linear",
+            "lineInterpolation": "smooth",
             "lineWidth": 1,
             "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
             },
             "showPoints": "auto",
-            "spanNulls": false,
+            "spanNulls": true,
             "stacking": {
               "group": "A",
               "mode": "none"
@@ -304,17 +1056,124 @@
                 "value": 80
               }
             ]
-          }
+          },
+          "unit": "tx/sec"
         },
         "overrides": []
       },
       "gridPos": {
         "h": 8,
-        "w": 4,
-        "x": 8,
-        "y": 1
+        "w": 6,
+        "x": 12,
+        "y": 23
       },
-      "id": 64,
+      "id": 22,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.1.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "sum(maker__ga_err__c_availability{\n    service=\"\"\n})",
+          "legendFormat": " Failed",
+          "range": true,
+          "refId": "Failed"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "sum(maker__ga_ok__c_availability{\n    service=\"\"\n})",
+          "hide": false,
+          "legendFormat": " Ok",
+          "range": true,
+          "refId": "Successful"
+        }
+      ],
+      "title": "Create Availability Rate",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "smooth",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "ms/tx"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 18,
+        "y": 23
+      },
+      "id": 29,
       "options": {
         "legend": {
           "calcs": [],
@@ -334,26 +1193,13 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_requests_seconds_count{\n    foobar_service=\"foobar-warehouse\",method=\"POST\",status=\"201\",uri=\"/foobar/warehouse/v1/products/{productId}/availabilities\", service=\"\"\n}[$__rate_interval]))\n",
-          "legendFormat": "Successful",
+          "expr": "maker__ga_timer__c_availability{\n    service=\"\"\n}",
+          "legendFormat": " ",
           "range": true,
-          "refId": "Successful"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "editorMode": "code",
-          "expr": "sum(rate(http_server_requests_seconds_count{\n    foobar_service=\"foobar-warehouse\",method=\"POST\",status!=\"201\",uri=\"/foobar/warehouse/v1/products/{productId}/availabilities\", service=\"\"\n}[$__rate_interval]))\n",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "Failed",
-          "range": true,
-          "refId": "Failed"
+          "refId": "A"
         }
       ],
-      "title": "Post Availability Rate",
+      "title": "Create Availability Timing",
       "type": "timeseries"
     },
     {
@@ -362,857 +1208,9 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 9
+        "y": 31
       },
-      "id": 51,
-      "panels": [],
-      "title": "Marketplace",
-      "type": "row"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "smooth",
-            "lineStyle": {
-              "fill": "solid"
-            },
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": true,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 4,
-        "x": 0,
-        "y": 10
-      },
-      "id": 49,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "editorMode": "code",
-          "exemplar": false,
-          "expr": "sum(rate(seller_found_total{\n    foobar_service=\"foobar-marketplace\", service=\"\"\n}[$__rate_interval]))",
-          "legendFormat": "Found",
-          "range": true,
-          "refId": "Found"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "editorMode": "code",
-          "expr": "sum(rate(seller_not_found_total{\n    foobar_service=\"foobar-marketplace\", service=\"\"\n}[$__rate_interval]))",
-          "hide": false,
-          "legendFormat": "Not Found",
-          "range": true,
-          "refId": "NotFound"
-        }
-      ],
-      "title": "Seller Result Rate",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 4,
-        "x": 5,
-        "y": 10
-      },
-      "id": 54,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "editorMode": "code",
-          "expr": "sum(rate(http_server_requests_seconds_count{\n    foobar_service=\"foobar-marketplace\",method=\"PATCH\",status=\"200\",uri=\"/foobar/marketplace/v1/order-requests/{orderRequestId}\", service=\"\"\n}[$__rate_interval]))\n",
-          "legendFormat": "Successful",
-          "range": true,
-          "refId": "Successful"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "editorMode": "code",
-          "expr": "sum(rate(http_server_requests_seconds_count{\n    foobar_service=\"foobar-marketplace\",method=\"PATCH\",status!=\"200\",uri=\"/foobar/marketplace/v1/order-requests/{orderRequestId}\", service=\"\"\n}[$__rate_interval]))\n",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "Failed",
-          "range": true,
-          "refId": "Failed"
-        }
-      ],
-      "title": "Patch Order Request Rate",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 4,
-        "x": 9,
-        "y": 10
-      },
-      "id": 55,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "editorMode": "code",
-          "expr": "sum(rate(http_server_requests_seconds_count{\n    foobar_service=\"foobar-marketplace\",method=\"POST\",status=\"200\",uri=\"/foobar/marketplace/v1/order-requests\", service=\"\"\n}[$__rate_interval]))\n",
-          "legendFormat": "Successful",
-          "range": true,
-          "refId": "Successful"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "editorMode": "code",
-          "expr": "sum(rate(http_server_requests_seconds_count{\n    foobar_service=\"foobar-marketplace\",method=\"POST\",status!=\"200\",uri=\"/foobar/marketplace/v1/order-requests\", service=\"\"\n}[$__rate_interval]))\n",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "Failed",
-          "range": true,
-          "refId": "Failed"
-        }
-      ],
-      "title": "Post Order Request Rate",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "smooth",
-            "lineStyle": {
-              "fill": "solid"
-            },
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": true,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 4,
-        "x": 0,
-        "y": 18
-      },
-      "id": 52,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "editorMode": "code",
-          "expr": "100 * sum(rate(seller_not_found_total{\n    foobar_service=\"foobar-marketplace\", service=\"\"\n}[$__rate_interval])) \n/ \n(\n    sum(rate(seller_found_total{\n        foobar_service=\"foobar-marketplace\", service=\"\"\n    }[$__rate_interval]))\n    +\n    sum(rate(seller_not_found_total{\n        foobar_service=\"foobar-marketplace\", service=\"\"\n    }[$__rate_interval])) \n)",
-          "hide": false,
-          "legendFormat": "NotFound%",
-          "range": true,
-          "refId": "NotFound%"
-        }
-      ],
-      "title": "Seller Result %",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 4,
-        "x": 5,
-        "y": 18
-      },
-      "id": 56,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "editorMode": "code",
-          "expr": "sum(rate(http_server_requests_seconds_count{\n    foobar_service=\"foobar-marketplace\",method=\"POST\",status=\"200\",uri=\"/foobar/marketplace/v1/order-requests/{orderRequestId}/line-items\", service=\"\"\n}[$__rate_interval]))\n",
-          "legendFormat": "Successful",
-          "range": true,
-          "refId": "Successful"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "editorMode": "code",
-          "expr": "sum(rate(http_server_requests_seconds_count{\n    foobar_service=\"foobar-marketplace\",method=\"POST\",status!=\"200\",uri=\"/foobar/marketplace/v1/order-requests/{orderRequestId}/line-items\", service=\"\"\n}[$__rate_interval]))\n",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "Failed",
-          "range": true,
-          "refId": "Failed"
-        }
-      ],
-      "title": "Post Line Item Rate",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 4,
-        "x": 9,
-        "y": 18
-      },
-      "id": 57,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "editorMode": "code",
-          "expr": "sum(rate(http_server_requests_seconds_count{\n    foobar_service=\"foobar-marketplace\",method=\"GET\",status=\"200\",uri=\"/foobar/marketplace/v1/order-requests/{orderRequestId}/line-items\", service=\"\"\n}[$__rate_interval]))\n",
-          "legendFormat": "Successful",
-          "range": true,
-          "refId": "Successful"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "editorMode": "code",
-          "expr": "sum(rate(http_server_requests_seconds_count{\n    foobar_service=\"foobar-marketplace\",method=\"GET\",status!=\"200\",uri=\"/foobar/marketplace/v1/order-requests/{orderRequestId}/line-items\", service=\"\"\n}[$__rate_interval]))\n",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "Failed",
-          "range": true,
-          "refId": "Failed"
-        }
-      ],
-      "title": "Get Line Item Rate",
-      "type": "timeseries"
-    },
-    {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 26
-      },
-      "id": 42,
-      "panels": [],
-      "title": "Marketplace Engine",
-      "type": "row"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "smooth",
-            "lineStyle": {
-              "fill": "solid"
-            },
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": true,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 4,
-        "x": 0,
-        "y": 27
-      },
-      "id": 44,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "editorMode": "code",
-          "exemplar": false,
-          "expr": "sum(rate(onEntityStateChanged_seconds_count{\n    foobar_service=\"foobar-marketplace-engine\", service=\"\"\n}[$__rate_interval]))",
-          "interval": "",
-          "legendFormat": "RPS",
-          "range": true,
-          "refId": "ok"
-        }
-      ],
-      "title": "State Change Processed Rate",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "smooth",
-            "lineStyle": {
-              "fill": "solid"
-            },
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": true,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "ms"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 4,
-        "x": 4,
-        "y": 27
-      },
-      "id": 45,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "editorMode": "code",
-          "exemplar": false,
-          "expr": "sum(rate(onEntityStateChanged_seconds_sum{\n    foobar_service=\"foobar-marketplace-engine\", service=\"\"\n}[$__rate_interval]))\n/\nsum(rate(onEntityStateChanged_seconds_count{\n    foobar_service=\"foobar-marketplace-engine\", service=\"\"\n}[$__rate_interval]))",
-          "legendFormat": "Success",
-          "range": true,
-          "refId": "ok"
-        }
-      ],
-      "title": "State Change Processed Time",
-      "type": "timeseries"
-    },
-    {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 35
-      },
-      "id": 24,
+      "id": 31,
       "panels": [],
       "title": "Seller",
       "type": "row"
@@ -1222,7 +1220,6 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1243,9 +1240,6 @@
               "viz": false
             },
             "lineInterpolation": "smooth",
-            "lineStyle": {
-              "fill": "solid"
-            },
             "lineWidth": 1,
             "pointSize": 5,
             "scaleDistribution": {
@@ -1274,17 +1268,18 @@
                 "value": 80
               }
             ]
-          }
+          },
+          "unit": "tx/sec"
         },
         "overrides": []
       },
       "gridPos": {
         "h": 8,
-        "w": 4,
+        "w": 6,
         "x": 0,
-        "y": 36
+        "y": 32
       },
-      "id": 26,
+      "id": 32,
       "options": {
         "legend": {
           "calcs": [],
@@ -1297,6 +1292,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "9.1.2",
       "targets": [
         {
           "datasource": {
@@ -1304,234 +1300,25 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "exemplar": false,
-          "expr": "sum(rate(http_server_requests_seconds_count{\n    foobar_service=\"foobar-seller\",method=\"GET\",status=\"200\",uri=\"/foobar/seller/v1/sellers/{sellerId}\", service=\"\"\n}[$__rate_interval]))\n",
-          "legendFormat": "Success",
-          "range": true,
-          "refId": "ok"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "editorMode": "code",
-          "expr": "sum(rate(http_server_requests_seconds_count{\n    foobar_service=\"foobar-seller\",method=\"GET\",status!=\"200\",uri=\"/foobar/seller/v1/sellers/{sellerId}\", service=\"\"\n}[$__rate_interval]))\n",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "Failed",
-          "range": true,
-          "refId": "failed"
-        }
-      ],
-      "title": "Get Seller RPS",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "smooth",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": true,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 4,
-        "x": 4,
-        "y": 36
-      },
-      "id": 28,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "editorMode": "code",
-          "expr": "sum(rate(http_server_requests_seconds_count{\n    foobar_service=\"foobar-seller\",method=\"POST\",status=\"201\",uri=\"/foobar/seller/v1/sellers\", service=\"\"\n}[$__rate_interval]))\n",
-          "legendFormat": "Success",
-          "range": true,
-          "refId": "Success"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "editorMode": "code",
-          "expr": "sum(rate(http_server_requests_seconds_count{\n    foobar_service=\"foobar-seller\",method=\"POST\",status!=\"201\",uri=\"/foobar/seller/v1/sellers\", service=\"\"\n}[$__rate_interval]))\n",
-          "hide": false,
-          "legendFormat": "Failed",
+          "expr": "sum(maker__ga_err__c_seller{\n    service=\"\"\n})",
+          "legendFormat": " Failed",
           "range": true,
           "refId": "Failed"
-        }
-      ],
-      "title": "Post Seller RPS",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "smooth",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": true,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [
-            {
-              "options": {
-                "NaN": {
-                  "index": 0,
-                  "text": "0"
-                }
-              },
-              "type": "value"
-            }
-          ],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "ms"
         },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 5,
-        "x": 8,
-        "y": 36
-      },
-      "id": 38,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "targets": [
         {
           "datasource": {
             "type": "prometheus",
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_requests_seconds_sum{\n    foobar_service=\"foobar-seller\",method=\"GET\",status=\"200\",uri=\"/foobar/seller/v1/sellers/{sellerId}\", service=\"\"\n}[$__rate_interval]))\n/\nsum(rate(http_server_requests_seconds_count{\n    foobar_service=\"foobar-seller\",method=\"GET\",status=\"200\",uri=\"/foobar/seller/v1/sellers/{sellerId}\", service=\"\"\n}[$__rate_interval]))",
-          "legendFormat": "Successful",
+          "expr": "sum(maker__ga_ok__c_seller{\n    service=\"\"\n})",
+          "hide": false,
+          "legendFormat": " Ok",
           "range": true,
           "refId": "Successful"
         }
       ],
-      "title": "Get Seller Time Per Request",
+      "title": "Create Seller Rate",
       "type": "timeseries"
     },
     {
@@ -1588,17 +1375,17 @@
               }
             ]
           },
-          "unit": "ms"
+          "unit": "ms/tx"
         },
         "overrides": []
       },
       "gridPos": {
         "h": 8,
-        "w": 5,
-        "x": 13,
-        "y": 36
+        "w": 6,
+        "x": 6,
+        "y": 32
       },
-      "id": 40,
+      "id": 33,
       "options": {
         "legend": {
           "calcs": [],
@@ -1618,13 +1405,13 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_requests_seconds_sum{\n    foobar_service=\"foobar-seller\",method=\"POST\",status=\"201\",uri=\"/foobar/seller/v1/sellers\", service=\"\"\n}[$__rate_interval]))\n/\nsum(rate(http_server_requests_seconds_count{\n    foobar_service=\"foobar-seller\",method=\"POST\",status=\"201\",uri=\"/foobar/seller/v1/sellers\", service=\"\"\n}[$__rate_interval]))",
-          "legendFormat": "Successful",
+          "expr": "maker__ga_timer__c_seller{\n    service=\"\"\n}",
+          "legendFormat": " ",
           "range": true,
-          "refId": "Successful"
+          "refId": "A"
         }
       ],
-      "title": "Post Seller Time",
+      "title": "Create Seller Timing",
       "type": "timeseries"
     },
     {
@@ -1633,9 +1420,9 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 44
+        "y": 40
       },
-      "id": 2,
+      "id": 25,
       "panels": [],
       "title": "Customer",
       "type": "row"
@@ -1665,9 +1452,6 @@
               "viz": false
             },
             "lineInterpolation": "smooth",
-            "lineStyle": {
-              "fill": "solid"
-            },
             "lineWidth": 1,
             "pointSize": 5,
             "scaleDistribution": {
@@ -1696,17 +1480,18 @@
                 "value": 80
               }
             ]
-          }
+          },
+          "unit": "tx/sec"
         },
         "overrides": []
       },
       "gridPos": {
         "h": 8,
-        "w": 4,
+        "w": 6,
         "x": 0,
-        "y": 45
+        "y": 41
       },
-      "id": 6,
+      "id": 26,
       "options": {
         "legend": {
           "calcs": [],
@@ -1719,6 +1504,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "9.1.2",
       "targets": [
         {
           "datasource": {
@@ -1726,319 +1512,25 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "exemplar": false,
-          "expr": "sum(rate(http_server_requests_seconds_count{\n    foobar_service=\"foobar-customer\",method=\"GET\",status=\"200\",uri=\"/foobar/customer/v1/customers/{customerId}\", service=\"\"\n}[$__rate_interval]))\n",
-          "legendFormat": "Success",
-          "range": true,
-          "refId": "ok"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "editorMode": "code",
-          "expr": "sum(rate(http_server_requests_seconds_count{\n    foobar_service=\"foobar-customer\",method=\"GET\",status!=\"200\",uri=\"/foobar/customer/v1/customers/{customerId}\", service=\"\"\n}[$__rate_interval]))\n",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "Failed",
-          "range": true,
-          "refId": "failed"
-        }
-      ],
-      "title": "Get Customer RPS",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "smooth",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": true,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 4,
-        "x": 4,
-        "y": 45
-      },
-      "id": 4,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "editorMode": "code",
-          "expr": "sum(rate(http_server_requests_seconds_count{\n    foobar_service=\"foobar-customer\",method=\"POST\",status=\"201\",uri=\"/foobar/customer/v1/customers\",service=\"\"\n}[$__rate_interval]))",
-          "interval": "",
-          "legendFormat": "Successful",
-          "range": true,
-          "refId": "Success"
-        }
-      ],
-      "title": "Post Customer RPS",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "smooth",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": true,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "ms"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 5,
-        "x": 8,
-        "y": 45
-      },
-      "id": 19,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "editorMode": "code",
-          "expr": "sum(increase(http_server_requests_seconds_sum{\n    foobar_service=\"foobar-customer\", method=\"GET\", status=\"200\", uri=\"/foobar/customer/v1/customers/{customerId}\", service=\"\"\n}[$__rate_interval]))\n/\nsum(increase(http_server_requests_seconds_count{\n    foobar_service=\"foobar-customer\", method=\"GET\", status=\"200\", uri=\"/foobar/customer/v1/customers/{customerId}\", service=\"\"\n}[$__rate_interval]))",
-          "legendFormat": "Successful",
-          "range": true,
-          "refId": "Successful"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "editorMode": "code",
-          "expr": "sum(increase(http_server_requests_seconds_sum{\n    foobar_service=\"foobar-customer\", method=\"GET\", status!=\"200\", uri=\"/foobar/customer/v1/customers/{customerId}\", service=\"\"\n}[$__rate_interval]))\n/\nsum(increase(http_server_requests_seconds_count{\n    foobar_service=\"foobar-customer\", method=\"GET\", status!=\"200\", uri=\"/foobar/customer/v1/customers/{customerId}\", service=\"\"\n}[$__rate_interval]))",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "Failed",
+          "expr": "sum(maker__ga_err__c_customer{\n    service=\"\"\n})",
+          "legendFormat": " Failed",
           "range": true,
           "refId": "Failed"
-        }
-      ],
-      "title": "Get Customer Time Per Request",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "smooth",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": true,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "ms"
         },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 5,
-        "x": 13,
-        "y": 45
-      },
-      "id": 21,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "targets": [
         {
           "datasource": {
             "type": "prometheus",
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(increase(http_server_requests_seconds_sum{\n    foobar_service=\"foobar-customer\", method=\"POST\", status=\"201\", uri=\"/foobar/customer/v1/customers\", service=\"\"\n}[$__rate_interval]))\n/\nsum(increase(http_server_requests_seconds_count{\n    foobar_service=\"foobar-customer\", method=\"POST\", status=\"201\", uri=\"/foobar/customer/v1/customers\", service=\"\"\n}[$__rate_interval]))",
-          "legendFormat": "Successful",
+          "expr": "sum(maker__ga_ok__c_customer{\n    service=\"\"\n})",
+          "hide": false,
+          "legendFormat": " Ok",
           "range": true,
           "refId": "Successful"
         }
       ],
-      "title": "Post Customer Time Per Request",
+      "title": "Create Customer Rate",
       "type": "timeseries"
     },
     {
@@ -2094,17 +1586,18 @@
                 "value": 80
               }
             ]
-          }
+          },
+          "unit": "ms/tx"
         },
         "overrides": []
       },
       "gridPos": {
         "h": 8,
-        "w": 4,
-        "x": 0,
-        "y": 53
+        "w": 6,
+        "x": 6,
+        "y": 41
       },
-      "id": 7,
+      "id": 27,
       "options": {
         "legend": {
           "calcs": [],
@@ -2124,210 +1617,104 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "exemplar": false,
-          "expr": "sum(rate(http_server_requests_seconds_count{\n    foobar_service=\"foobar-customer\",method=\"GET\",status=\"200\",uri=\"/foobar/customer/v1/customers/{customerId}/addresses\", service=\"\"\n}[$__rate_interval]))\n",
-          "legendFormat": "Success",
+          "expr": "maker__ga_timer__c_customer{\n    service=\"\"\n}",
+          "legendFormat": " ",
           "range": true,
-          "refId": "Success"
+          "refId": "A"
+        }
+      ],
+      "title": "Create Customer Timing",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "smooth",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "tx/sec"
         },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 12,
+        "y": 41
+      },
+      "id": 28,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.1.2",
+      "targets": [
         {
           "datasource": {
             "type": "prometheus",
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "exemplar": false,
-          "expr": "sum(rate(http_server_requests_seconds_count{\n    foobar_service=\"foobar-customer\",method=\"GET\",status!=\"200\",uri=\"/foobar/customer/v1/customers/{customerId}/addresses\", service=\"\"\n}[$__rate_interval]))\n",
-          "hide": false,
-          "legendFormat": "Failed",
+          "expr": "sum(maker__ga_err__c_address{\n    service=\"\"\n})",
+          "legendFormat": " Failed",
           "range": true,
           "refId": "Failed"
-        }
-      ],
-      "title": "Get Addresses RPS",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "smooth",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": true,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 4,
-        "x": 4,
-        "y": 53
-      },
-      "id": 8,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "editorMode": "code",
-          "expr": "sum(rate(http_server_requests_seconds_count{\n    foobar_service=\"foobar-customer\",method=\"POST\",status=\"201\",uri=\"/foobar/customer/v1/customers/{customerId}/addresses\", service=\"\"\n}[$__rate_interval]))\n",
-          "legendFormat": "Success",
-          "range": true,
-          "refId": "Success"
-        }
-      ],
-      "title": "Post Address Rate",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "smooth",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": true,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "ms"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 5,
-        "x": 8,
-        "y": 53
-      },
-      "id": 20,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "editorMode": "code",
-          "expr": "sum(rate(http_server_requests_seconds_sum{\n    foobar_service=\"foobar-customer\",method=\"GET\",status=\"200\",uri=\"/foobar/customer/v1/customers/{customerId}/addresses\", service=\"\"\n}[$__rate_interval]))\n/\nsum(rate(http_server_requests_seconds_count{\n    foobar_service=\"foobar-customer\",method=\"GET\",status=\"200\",uri=\"/foobar/customer/v1/customers/{customerId}/addresses\", service=\"\"\n}[$__rate_interval]))\n",
-          "legendFormat": "Successful",
-          "range": true,
-          "refId": "Successful"
         },
         {
           "datasource": {
@@ -2335,15 +1722,14 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_requests_seconds_sum{\n    foobar_service=\"foobar-customer\",method=\"GET\",status!=\"200\",uri=\"/foobar/customer/v1/customers/{customerId}/addresses\", service=\"\"\n}[$__rate_interval]))\n/\nsum(rate(http_server_requests_seconds_count{\n    foobar_service=\"foobar-customer\",method=\"GET\",status!=\"200\",uri=\"/foobar/customer/v1/customers/{customerId}/addresses\", service=\"\"\n}[$__rate_interval]))\n",
+          "expr": "sum(maker__ga_ok__c_address{\n    service=\"\"\n})",
           "hide": false,
-          "interval": "",
-          "legendFormat": "Failed",
+          "legendFormat": " Ok",
           "range": true,
-          "refId": "Failed"
+          "refId": "Successful"
         }
       ],
-      "title": "Get Addresses Time",
+      "title": "Create Address Rate",
       "type": "timeseries"
     },
     {
@@ -2351,7 +1737,6 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -2401,17 +1786,17 @@
               }
             ]
           },
-          "unit": "ms"
+          "unit": "ms/tx"
         },
         "overrides": []
       },
       "gridPos": {
         "h": 8,
-        "w": 5,
-        "x": 13,
-        "y": 53
+        "w": 6,
+        "x": 18,
+        "y": 41
       },
-      "id": 22,
+      "id": 23,
       "options": {
         "legend": {
           "calcs": [],
@@ -2431,13 +1816,13 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_requests_seconds_sum{\n    foobar_service=\"foobar-customer\",method=\"POST\",status=\"201\",uri=\"/foobar/customer/v1/customers/{customerId}/addresses\", service=\"\"\n}[$__rate_interval]))\n/\nsum(rate(http_server_requests_seconds_count{\n    foobar_service=\"foobar-customer\",method=\"POST\",status=\"201\",uri=\"/foobar/customer/v1/customers/{customerId}/addresses\", service=\"\"\n}[$__rate_interval]))\n",
-          "legendFormat": "Successful",
+          "expr": "maker__ga_timer__c_address{\n    service=\"\"\n}",
+          "legendFormat": " ",
           "range": true,
-          "refId": "Successful"
+          "refId": "A"
         }
       ],
-      "title": "Post Address Time",
+      "title": "Create Address Timing",
       "type": "timeseries"
     }
   ],
@@ -2454,8 +1839,8 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "Foobar",
-  "uid": "mrQkL3WVk",
-  "version": 1,
+  "title": "Foobar Maker",
+  "uid": "c1Wd8VMVz",
+  "version": 7,
   "weekStart": ""
 }

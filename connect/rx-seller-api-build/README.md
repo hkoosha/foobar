@@ -88,7 +88,7 @@ public class SellerApiExample {
 
     public static void main(String[] args) {
         ApiClient defaultClient = Configuration.getDefaultApiClient();
-        defaultClient.setBasePath("http://localhost:4045");
+        defaultClient.setBasePath("http://localhost:4043");
         
         SellerApi apiInstance = new SellerApi(defaultClient);
         UUID sellerId = UUID.randomUUID(); // UUID | 
@@ -108,7 +108,7 @@ public class SellerApiExample {
 
 ## Documentation for API Endpoints
 
-All URIs are relative to *http://localhost:4045*
+All URIs are relative to *http://localhost:4043*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------

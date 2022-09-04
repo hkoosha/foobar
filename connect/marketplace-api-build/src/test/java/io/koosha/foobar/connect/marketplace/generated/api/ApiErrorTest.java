@@ -18,28 +18,23 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonValue;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import io.koosha.foobar.connect.marketplace.generated.api.EntityInfo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 
 /**
- * Model tests for EntityIllegalStateApiError
+ * Model tests for ApiError
  */
-class EntityIllegalStateApiErrorTest {
-    private final EntityIllegalStateApiError model = new EntityIllegalStateApiError();
+class ApiErrorTest {
+    private final ApiError model = new ApiError();
 
     /**
-     * Model tests for EntityIllegalStateApiError
+     * Model tests for ApiError
      */
     @Test
-    void testEntityIllegalStateApiError() {
-        // TODO: test EntityIllegalStateApiError
+    void testApiError() {
+        // TODO: test ApiError
     }
 
     /**
@@ -48,14 +43,6 @@ class EntityIllegalStateApiErrorTest {
     @Test
     void messageTest() {
         // TODO: test message
-    }
-
-    /**
-     * Test the property 'context'
-     */
-    @Test
-    void contextTest() {
-        // TODO: test context
     }
 
     /**

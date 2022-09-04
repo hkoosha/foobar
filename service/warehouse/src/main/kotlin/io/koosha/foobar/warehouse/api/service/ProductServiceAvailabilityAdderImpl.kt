@@ -7,6 +7,7 @@ import io.koosha.foobar.common.error.EntityBadValueException
 import io.koosha.foobar.common.error.EntityInIllegalStateException
 import io.koosha.foobar.common.error.EntityNotFoundException
 import io.koosha.foobar.common.error.ResourceCurrentlyUnavailableException
+import io.koosha.foobar.common.error.anyOfMessagesContains
 import io.koosha.foobar.common.model.EntityInfo
 import io.koosha.foobar.connect.seller.generated.api.SellerApi
 import io.koosha.foobar.product.AvailabilityProto
@@ -17,9 +18,10 @@ import io.koosha.foobar.warehouse.api.model.ProductDO
 import mu.KotlinLogging
 import net.logstash.logback.argument.StructuredArguments.v
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
+import org.springframework.transaction.support.TransactionTemplate
 import java.time.Clock
 import java.util.*
 import javax.validation.Validator
@@ -36,6 +38,7 @@ class ProductServiceAvailabilityAdderImpl(
 
     @Qualifier(KafkaConfig.TEMPLATE__AVAILABILITY)
     private val kafka: KafkaTemplate<UUID, AvailabilityProto.Availability>,
+    private val txTemplate: TransactionTemplate,
 
     private val finder: ProductServiceFinderImpl,
 ) {
@@ -60,7 +63,6 @@ class ProductServiceAvailabilityAdderImpl(
                 errors
             )
         }
-
     }
 
     private fun addAvailabilityFindProduct(
@@ -112,7 +114,6 @@ class ProductServiceAvailabilityAdderImpl(
             log.warn("failure while fetching seller", ex)
             throw ResourceCurrentlyUnavailableException(ex)
         }
-
     }
 
     private fun addAvailabilitySendKafka(
@@ -142,9 +143,36 @@ class ProductServiceAvailabilityAdderImpl(
             .join()
     }
 
-    @Transactional(
-        rollbackForClassName = ["java.lang.Exception"]
-    )
+    private fun saveAvailability(
+        productId: UUID,
+        request: AvailabilityCreateRequest,
+        availability: AvailabilityDO,
+    ) =
+        try {
+            this.txTemplate.execute {
+                this.availabilityRepo.save(availability)
+            }
+        }
+        catch (e: DataIntegrityViolationException) {
+            throw if (anyOfMessagesContains(e, "Duplicate entry"))
+                EntityBadValueException(
+                    context = setOf(
+                        EntityInfo(
+                            entityType = ProductDO.ENTITY_TYPE,
+                            entityId = productId,
+                        ),
+                        EntityInfo(
+                            entityType = SellerApi.ENTITY_TYPE,
+                            entityId = request.sellerId,
+                        ),
+                    ),
+                    msg = "duplicate entry for availability"
+                )
+            else {
+                e
+            }
+        }
+
     fun addAvailability(
         productId: UUID,
         request: AvailabilityCreateRequest,
@@ -162,34 +190,15 @@ class ProductServiceAvailabilityAdderImpl(
         availability.frozenUnits = 0
         availability.pricePerUnit = request.pricePerUnit
 
-        if (this.availabilityRepo.findById(availability.availabilityPk).isPresent) {
-            log.debug(
-                "refused to add duplicated availability, product={}, request={}",
-                v("product", product),
-                v("request", request),
-            )
-            throw EntityBadValueException(
-                context = setOf(
-                    EntityInfo(
-                        entityType = ProductDO.ENTITY_TYPE,
-                        entityId = productId,
-                    ),
-                    EntityInfo(
-                        entityType = SellerApi.ENTITY_TYPE,
-                        entityId = request.sellerId,
-                    ),
-                ),
-                msg = "duplicate entry for availability"
-            )
-        }
-
         log.info(
             "adding product availability, product={} sellerId={}, availability={}",
             v("product", product),
             v("sellerId", request.sellerId),
             v("availability", availability),
         )
-        this.availabilityRepo.save(availability)
+
+        this.saveAvailability(productId, request, availability)
+
         log.info(
             "product availability added, product={} sellerId={}, availability={}",
             v("product", product),

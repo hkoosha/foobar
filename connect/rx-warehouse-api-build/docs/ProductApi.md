@@ -1,6 +1,6 @@
 # ProductApi
 
-All URIs are relative to *http://localhost:4041*
+All URIs are relative to *http://localhost:4046*
 
 | Method | HTTP request | Description |
 |------------- | ------------- | -------------|
@@ -31,7 +31,7 @@ import io.koosha.foobar.connect.warehouse.rx.generated.api.ProductApi;
 public class Example {
     public static void main(String[] args) {
         ApiClient defaultClient = Configuration.getDefaultApiClient();
-        defaultClient.setBasePath("http://localhost:4041");
+        defaultClient.setBasePath("http://localhost:4046");
 
         ProductApi apiInstance = new ProductApi(defaultClient);
         UUID productId = UUID.randomUUID(); // UUID | 
@@ -98,7 +98,7 @@ import io.koosha.foobar.connect.warehouse.rx.generated.api.ProductApi;
 public class Example {
     public static void main(String[] args) {
         ApiClient defaultClient = Configuration.getDefaultApiClient();
-        defaultClient.setBasePath("http://localhost:4041");
+        defaultClient.setBasePath("http://localhost:4046");
 
         ProductApi apiInstance = new ProductApi(defaultClient);
         UUID productId = UUID.randomUUID(); // UUID | 
@@ -166,7 +166,7 @@ import io.koosha.foobar.connect.warehouse.rx.generated.api.ProductApi;
 public class Example {
     public static void main(String[] args) {
         ApiClient defaultClient = Configuration.getDefaultApiClient();
-        defaultClient.setBasePath("http://localhost:4041");
+        defaultClient.setBasePath("http://localhost:4046");
 
         ProductApi apiInstance = new ProductApi(defaultClient);
         try {
@@ -230,7 +230,7 @@ import io.koosha.foobar.connect.warehouse.rx.generated.api.ProductApi;
 public class Example {
     public static void main(String[] args) {
         ApiClient defaultClient = Configuration.getDefaultApiClient();
-        defaultClient.setBasePath("http://localhost:4041");
+        defaultClient.setBasePath("http://localhost:4046");
 
         ProductApi apiInstance = new ProductApi(defaultClient);
         UUID productId = UUID.randomUUID(); // UUID | 
@@ -300,7 +300,7 @@ import io.koosha.foobar.connect.warehouse.rx.generated.api.ProductApi;
 public class Example {
     public static void main(String[] args) {
         ApiClient defaultClient = Configuration.getDefaultApiClient();
-        defaultClient.setBasePath("http://localhost:4041");
+        defaultClient.setBasePath("http://localhost:4046");
 
         ProductApi apiInstance = new ProductApi(defaultClient);
         ProductCreateRequest productCreateRequest = new ProductCreateRequest(); // ProductCreateRequest | 

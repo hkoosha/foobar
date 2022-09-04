@@ -3,7 +3,7 @@ info:
   title: OpenAPI definition
   version: v0
 servers:
-- url: http://localhost:4043
+- url: http://localhost:4040
   description: Generated server url
 paths:
   /foobar/customer/v1/customers:

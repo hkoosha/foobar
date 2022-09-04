@@ -15,7 +15,6 @@ object Libraries {
     object Spring {
         const val DependencyManagement = "1.0.13.RELEASE"
         const val springCloudVersion = "2021.0.3"
-        const val springCloudSleuthOtelVersion = "1.1.0-M7"
         const val springBoot2 = "2.7.3"
         const val retry = "1.3.3"
     }
@@ -34,7 +33,7 @@ object Libraries {
         const val kotlin = ui
         const val rest = ui
         const val webMvcCore = ui
-        const val gradlePlugin = "1.3.4"
+        const val gradlePlugin = "1.4.0"
         const val generatorPlugin = "6.0.1"
         const val jacksonNullable = "0.2.3"
         const val swaggerAnnotations = "1.6.6"
@@ -65,7 +64,7 @@ object Libraries {
     const val mariadb = "3.0.7"
     const val postgres = "42.5.0"
     const val r2dbcMariadb = "1.1.2"
-    const val r2dbcPostgres = "0.9.1.RELEASE"
+    const val r2dbcPostgres = "0.9.2.RELEASE"
     const val flyway = "8.2.0"
 
     const val jakartaAnnotationApi = "1.3.5"

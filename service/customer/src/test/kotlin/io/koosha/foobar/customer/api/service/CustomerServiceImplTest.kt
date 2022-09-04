@@ -25,6 +25,7 @@ import org.assertj.core.api.Assertions.catchThrowableOfType
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.mockito.Mockito
 import org.mockito.Mockito.any
 import org.mockito.Mockito.clearInvocations
 import org.mockito.Mockito.doNothing
@@ -38,6 +39,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.ActiveProfiles
+import org.springframework.transaction.TransactionStatus
+import org.springframework.transaction.support.TransactionCallback
+import org.springframework.transaction.support.TransactionTemplate
 import java.util.*
 import javax.validation.Validator
 
@@ -58,6 +62,9 @@ class CustomerServiceImplTest {
     @MockBean
     lateinit var addressRepo: AddressRepository
 
+    @MockBean
+    lateinit var txTemplate: TransactionTemplate
+
     @BeforeEach
     fun setup() {
 
@@ -66,12 +73,14 @@ class CustomerServiceImplTest {
 
         reset(this.customerRepo)
         reset(this.addressRepo)
+        reset(this.txTemplate)
 
         this.subject = CustomerServiceImpl(
+            this.validator,
+            DefaultRandomUUIDProvider(),
             this.customerRepo,
             this.addressRepo,
-            this.validator,
-            DefaultRandomUUIDProvider()
+            this.txTemplate,
         )
 
         `when`(customerRepo.findById(customer0().customerId!!))
@@ -401,6 +410,49 @@ class CustomerServiceImplTest {
 
             `when`(addressRepo.save(any()))
                 .thenReturn(addressDO0())
+
+            `when`(txTemplate.execute(Mockito.any<TransactionCallback<*>>()))
+                .then {
+                    it.getArgument<TransactionCallback<*>>(0).doInTransaction(object : TransactionStatus {
+                        override fun isNewTransaction(): Boolean {
+                            TODO("Not yet implemented")
+                        }
+
+                        override fun setRollbackOnly() {
+                            TODO("Not yet implemented")
+                        }
+
+                        override fun isRollbackOnly(): Boolean {
+                            TODO("Not yet implemented")
+                        }
+
+                        override fun isCompleted(): Boolean {
+                            TODO("Not yet implemented")
+                        }
+
+                        override fun createSavepoint(): Any {
+                            TODO("Not yet implemented")
+                        }
+
+                        override fun rollbackToSavepoint(savepoint: Any) {
+                            TODO("Not yet implemented")
+                        }
+
+                        override fun releaseSavepoint(savepoint: Any) {
+                            TODO("Not yet implemented")
+                        }
+
+                        override fun flush() {
+                            TODO("Not yet implemented")
+                        }
+
+                        override fun hasSavepoint(): Boolean {
+                            TODO("Not yet implemented")
+                        }
+
+                    })
+                    addressDO0()
+                }
 
             subject.addAddress(customer0().customerId!!, addressReq0())
 

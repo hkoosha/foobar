@@ -137,11 +137,12 @@ class SellerCmd(
 
     }
 
-    fun getLastSeller(doLog: Boolean): Seller? {
+    fun getLastSeller(doLog: Boolean): Seller {
 
         val sellerId = this.entityIdService.findUUIDOrLast(SellerApi.ENTITY_TYPE, null)
         val response = this.sellerApi.getSellerWithHttpInfo(sellerId)
-        val entity: Seller? = response.data
+        assertStatusCode(response.statusCode)
+        val entity: Seller = response.data
         if (doLog)
             log.info { "seller:\n${response.headers}\n$entity" }
         return entity

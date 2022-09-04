@@ -70,9 +70,6 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j")
-    implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
-    implementation("org.springframework.cloud:spring-cloud-starter-loadbalancer")
     implementation("org.springframework.cloud:spring-cloud-starter-sleuth")
     implementation("org.springframework.cloud:spring-cloud-sleuth-zipkin")
 
@@ -80,11 +77,9 @@ dependencies {
     implementation("net.logstash.logback:logstash-logback-encoder:${Libraries.Log.logstashLogbackEncoder}")
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-    // implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
 
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    // implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
 
     implementation("org.springdoc:springdoc-openapi-ui:${Libraries.OpenApi.ui}")
     implementation("org.springdoc:springdoc-openapi-kotlin:${Libraries.OpenApi.kotlin}")
@@ -93,18 +88,10 @@ dependencies {
     runtimeOnly("org.postgresql:postgresql:${Libraries.postgres}")
     runtimeOnly("org.mariadb.jdbc:mariadb-java-client:${Libraries.mariadb}")
     runtimeOnly("com.h2database:h2")
-    // runtimeOnly("io.r2dbc:r2dbc-h2")
-    runtimeOnly("io.github.openfeign:feign-micrometer")
-    runtimeOnly("io.github.openfeign:feign-okhttp")
-    runtimeOnly("com.squareup.okhttp3:okhttp")
-
-    // implementation("javax.persistence:javax.persistence-api:2.2")
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    // testImplementation("io.projectreactor:reactor-test")
-    // testImplementation("org.springframework.security:spring-security-test")
 }
 
 openApi {

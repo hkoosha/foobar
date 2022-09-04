@@ -132,11 +132,12 @@ class ProductCmd(
 
     }
 
-    fun getLastProduct(doLog: Boolean): Product? {
+    fun getLastProduct(doLog: Boolean): Product {
 
         val productId = this.entityIdService.findUUIDOrLast(ProductApi.ENTITY_TYPE, null)
         val response = this.productApi.getProductWithHttpInfo(productId)
-        val entity: Product? = response.data
+        assertStatusCode(response.statusCode)
+        val entity: Product = response.data
         if (doLog)
             log.info { "product:\n${response.headers}\n$entity" }
         return entity

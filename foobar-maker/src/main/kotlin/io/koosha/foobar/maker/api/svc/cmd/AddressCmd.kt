@@ -92,9 +92,7 @@ class AddressCmd(
             log.info { "posted address:\n${response.headers}\n\n$entity" }
     }
 
-    fun getAddress(
-        freeArgs: List<String>,
-    ) {
+    fun getAddress(freeArgs: List<String>) {
 
         val customerId: UUID = this.entityIdService.findUUIDOrLast(CustomerApi.ENTITY_TYPE, freeArgs.firstOrNull())
         val addressId: Long? =
@@ -132,6 +130,7 @@ class AddressCmd(
 
         val customerId: UUID = this.entityIdService.findUUIDOrLast(CustomerApi.ENTITY_TYPE, null)
         val response: ApiResponse<MutableList<Address>> = this.addressApi.getAddressesWithHttpInfo(customerId)
+        assertStatusCode(response.statusCode)
         val entities: List<Address> = response.data
         if (doLog)
             log.info { "addresses:\n${response.headers}\n$entities" }

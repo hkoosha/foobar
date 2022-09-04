@@ -4,9 +4,7 @@ import io.koosha.foobar.connect.marketplace.generated.ApiClient;
 import io.koosha.foobar.connect.marketplace.generated.EncodingUtils;
 import io.koosha.foobar.connect.marketplace.generated.api.ApiResponse;
 
-import io.koosha.foobar.connect.marketplace.generated.api.EntityBadValueApiError;
-import io.koosha.foobar.connect.marketplace.generated.api.EntityIllegalStateApiError;
-import io.koosha.foobar.connect.marketplace.generated.api.EntityNotFoundApiError;
+import io.koosha.foobar.connect.marketplace.generated.api.ApiError;
 import io.koosha.foobar.connect.marketplace.generated.api.OrderRequest;
 import io.koosha.foobar.connect.marketplace.generated.api.OrderRequestCreateRequest;
 import io.koosha.foobar.connect.marketplace.generated.api.OrderRequestUpdateRequest;

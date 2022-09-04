@@ -15,11 +15,8 @@ src/main/java/io/koosha/foobar/connect/marketplace/generated/EncodingUtils.java
 src/main/java/io/koosha/foobar/connect/marketplace/generated/ParamExpander.java
 src/main/java/io/koosha/foobar/connect/marketplace/generated/RFC3339DateFormat.java
 src/main/java/io/koosha/foobar/connect/marketplace/generated/StringUtil.java
+src/main/java/io/koosha/foobar/connect/marketplace/generated/api/ApiError.java
 src/main/java/io/koosha/foobar/connect/marketplace/generated/api/ApiResponse.java
-src/main/java/io/koosha/foobar/connect/marketplace/generated/api/EntityBadValueApiError.java
-src/main/java/io/koosha/foobar/connect/marketplace/generated/api/EntityIllegalStateApiError.java
-src/main/java/io/koosha/foobar/connect/marketplace/generated/api/EntityInfo.java
-src/main/java/io/koosha/foobar/connect/marketplace/generated/api/EntityNotFoundApiError.java
 src/main/java/io/koosha/foobar/connect/marketplace/generated/api/LineItemRequest.java
 src/main/java/io/koosha/foobar/connect/marketplace/generated/api/LineItemUpdateRequest.java
 src/main/java/io/koosha/foobar/connect/marketplace/generated/api/OrderRequest.java
@@ -32,10 +29,7 @@ src/main/java/io/koosha/foobar/connect/marketplace/generated/auth/ApiKeyAuth.jav
 src/main/java/io/koosha/foobar/connect/marketplace/generated/auth/DefaultApi20Impl.java
 src/main/java/io/koosha/foobar/connect/marketplace/generated/auth/HttpBasicAuth.java
 src/main/java/io/koosha/foobar/connect/marketplace/generated/auth/HttpBearerAuth.java
-src/test/java/io/koosha/foobar/connect/marketplace/generated/api/EntityBadValueApiErrorTest.java
-src/test/java/io/koosha/foobar/connect/marketplace/generated/api/EntityIllegalStateApiErrorTest.java
-src/test/java/io/koosha/foobar/connect/marketplace/generated/api/EntityInfoTest.java
-src/test/java/io/koosha/foobar/connect/marketplace/generated/api/EntityNotFoundApiErrorTest.java
+src/test/java/io/koosha/foobar/connect/marketplace/generated/api/ApiErrorTest.java
 src/test/java/io/koosha/foobar/connect/marketplace/generated/api/LineItemRequestTest.java
 src/test/java/io/koosha/foobar/connect/marketplace/generated/api/LineItemUpdateRequestTest.java
 src/test/java/io/koosha/foobar/connect/marketplace/generated/api/OrderRequestApiTest.java

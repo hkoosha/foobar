@@ -7,10 +7,13 @@ import io.koosha.foobar.maker.api.Command
 import io.koosha.foobar.maker.api.matches
 import io.koosha.foobar.maker.api.svc.EntityIdService
 import io.micrometer.core.instrument.MeterRegistry
+import io.micrometer.core.instrument.Tag
 import mu.KotlinLogging
 import org.springframework.boot.ApplicationArguments
 import org.springframework.stereotype.Component
 import java.util.*
+import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.atomic.AtomicReference
 
 @Component
 @Suppress("MagicNumber")
@@ -29,8 +32,6 @@ class LoopCmd(
 ) : Command {
 
     companion object {
-        private const val LOG_EVERY = 200
-
         // TODO remove this, no seller will have all products. Only 1 works.
         private const val PROD_COUNT = 1
         private const val UNITS = 3L
@@ -51,7 +52,7 @@ class LoopCmd(
 
         for (looper in freeArgs) {
             val (loop, count) = this.extractCount(looper)
-            for (i in 0 until count)
+            repeat(count) {
                 when {
                     // ====================================================== CREATE
 
@@ -188,6 +189,8 @@ class LoopCmd(
 
                     else -> throw CliException("unknown loop command ignored: $loop")
                 }
+            }
+
         }
 
         for (thread in threads)
@@ -203,52 +206,62 @@ class LoopCmd(
     ) {
 
         // TODO remove custom timing, use micrometer.
-        val counter = this.meterRegistry.counter("maker_cnt_ok__$name", TAG, TAG_VALUE)
-        val error = this.meterRegistry.counter("maker_cnt_err__$name", TAG, TAG_VALUE)
-        val timer = this.meterRegistry.timer("maker_time__$name", TAG, TAG_VALUE)
-
-        var count = 0
-        var i = 0
-        val avg = LongArray(LOG_EVERY)
+        var errCount = 0
+        var okCount = 0
+        val avg = mutableListOf<Long>()
         var lastReport = System.currentTimeMillis()
-        var tx = 0
+
+        val makerGaOk = AtomicInteger(0)
+        val makerGaErr = AtomicInteger(0)
+        val makerGaTimer = AtomicReference(0.0)
+
+        // FIXME metric names to conform with Prometheus conventions.
+        this.meterRegistry.gauge("maker__ga_ok__$name", listOf(Tag.of(TAG, TAG_VALUE)), makerGaOk) {
+            it.get().toDouble()
+        }
+        this.meterRegistry.gauge("maker__ga_err__$name", listOf(Tag.of(TAG, TAG_VALUE)), makerGaErr) {
+            it.get().toDouble()
+        }
+        this.meterRegistry.gauge("maker__ga_timer__$name", listOf(Tag.of(TAG, TAG_VALUE)), makerGaTimer) {
+            it.get()
+        }
+
         while (true) {
 
             val then = System.currentTimeMillis()
 
             try {
-                counter.increment()
-                timer.record(runnable)
+                runnable()
+                okCount++
             }
             catch (e: Exception) {
-                error.increment()
                 log.trace("$name error: ${e.javaClass.name} -> ${e.message}")
+                errCount++
             }
 
             val now = System.currentTimeMillis()
 
-            avg[i] = now - then
-
-            i++
-            count++
-            tx++
-
-            // TODO fix we're skipping one measurement
-            if (count > 0 && count % LOG_EVERY == 0) {
-                i = 0
-                log.info(
-                    "{} total={}, time/req={}",
-                    name,
-                    count,
-                    avg.sum() / LOG_EVERY,
-                )
-            }
+            avg += now - then
 
             val nextReport = lastReport + 1000
             if (nextReport < now) {
-                log.info("{} tx/second: {}", name, tx)
                 lastReport = now
-                tx = 0
+                val sum = avg.sum()
+
+                log.info(
+                    "{} time/req={} tx/sec={}",
+                    name,
+                    sum / avg.size,
+                    okCount + errCount
+                )
+
+                makerGaOk.set(okCount)
+                makerGaErr.set(errCount)
+                makerGaTimer.set(sum.toDouble() / avg.size)
+                errCount = 0
+                okCount = 0
+
+                avg.clear()
             }
         }
     }

@@ -217,6 +217,7 @@ docker-image-marketplace-engine: docker-image-marketplace-engine-unpush docker-i
 docker-image-build: \
 	build-only \
 	docker-image-maker-build \
+	docker-image-maker-exporter-build \
 	docker-image-loader-build \
 	docker-image-customer-build \
 	docker-image-seller-build \
@@ -228,6 +229,7 @@ docker-image-build: \
 .PHONY: docker-image-push
 docker-image-push: \
 	docker-image-maker-push \
+	docker-image-maker-exporter-push \
 	docker-image-loader-push \
 	docker-image-customer-push \
 	docker-image-seller-push \
@@ -239,6 +241,7 @@ docker-image-push: \
 .PHONY: docker-image-unpush
 docker-image-unpush: \
 	docker-image-maker-unpush \
+	docker-image-maker-exporter-unpush \
 	docker-image-loader-unpush \
 	docker-image-customer-unpush \
 	docker-image-seller-unpush \
