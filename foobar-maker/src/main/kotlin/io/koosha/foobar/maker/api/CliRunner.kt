@@ -50,6 +50,8 @@ class CliRunner(
             log.error { ex.message }
             exitProcess(1)
         }
+
+        exitProcess(0)
     }
 
     private fun tryRun(args: ApplicationArguments) = when {

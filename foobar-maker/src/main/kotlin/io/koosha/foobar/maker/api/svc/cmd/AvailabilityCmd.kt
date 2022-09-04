@@ -1,5 +1,6 @@
 package io.koosha.foobar.maker.api.svc.cmd
 
+import io.koosha.foobar.common.toUUID
 import io.koosha.foobar.connect.customer.generated.api.AddressApi
 import io.koosha.foobar.connect.seller.generated.api.SellerApi
 import io.koosha.foobar.connect.warehouse.generated.api.AvailabilityApi
@@ -56,8 +57,10 @@ class AvailabilityCmd(
         doLog: Boolean = true,
     ) {
 
-        val sellerId: UUID = this.entityIdService.findUUIDOrLast(SellerApi.ENTITY_TYPE, freeArgs.firstOrNull())
-        val productId: UUID = this.entityIdService.findUUIDOrLast(ProductApi.ENTITY_TYPE, freeArgs.firstOrNull())
+        val sellerId: UUID = args.firstOrNull("seller-id")?.toUUID()
+            ?: this.entityIdService.findUUIDOrLast(SellerApi.ENTITY_TYPE, freeArgs.firstOrNull())
+        val productId: UUID = args.firstOrNull("product-id")?.toUUID()
+            ?: this.entityIdService.findUUIDOrLast(ProductApi.ENTITY_TYPE, freeArgs.firstOrNull())
 
         val req = AvailabilityCreateRequest()
         req.sellerId = sellerId

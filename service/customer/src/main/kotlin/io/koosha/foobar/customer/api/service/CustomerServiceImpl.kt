@@ -13,6 +13,7 @@ import io.koosha.foobar.customer.api.model.CustomerRepository
 import io.koosha.foobar.customer.api.model.CustomerState
 import mu.KotlinLogging
 import net.logstash.logback.argument.StructuredArguments.v
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.transaction.support.TransactionTemplate
@@ -271,7 +272,7 @@ class CustomerServiceImpl(
                 this.addressRepo.save(address)
             }
         }
-        catch (e: RuntimeException) {
+        catch (e: DataIntegrityViolationException) {
             if (anyOfMessagesContains(e, "Duplicate entry"))
                 throw EntityBadValueException(
                     context = setOf(

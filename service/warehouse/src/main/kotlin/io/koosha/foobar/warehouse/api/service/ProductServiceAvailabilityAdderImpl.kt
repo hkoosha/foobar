@@ -63,7 +63,6 @@ class ProductServiceAvailabilityAdderImpl(
                 errors
             )
         }
-
     }
 
     private fun addAvailabilityFindProduct(
@@ -115,7 +114,6 @@ class ProductServiceAvailabilityAdderImpl(
             log.warn("failure while fetching seller", ex)
             throw ResourceCurrentlyUnavailableException(ex)
         }
-
     }
 
     private fun addAvailabilitySendKafka(
@@ -149,26 +147,15 @@ class ProductServiceAvailabilityAdderImpl(
         productId: UUID,
         request: AvailabilityCreateRequest,
         availability: AvailabilityDO,
-    ) {
-
+    ) =
         try {
             this.txTemplate.execute {
-                try {
-                    this.availabilityRepo.save(availability)
-                }
-                catch (e: Exception) {
-                    log.error(
-                        "WTF2 ===========> ${e.javaClass} " +
-                                "============> ${e.message} ==========>" +
-                                " ${e.cause?.javaClass} ================> ${e.cause?.message}"
-                    )
-                    throw e
-                }
+                this.availabilityRepo.save(availability)
             }
         }
         catch (e: DataIntegrityViolationException) {
-            if (anyOfMessagesContains(e, "Duplicate entry"))
-                throw EntityBadValueException(
+            throw if (anyOfMessagesContains(e, "Duplicate entry"))
+                EntityBadValueException(
                     context = setOf(
                         EntityInfo(
                             entityType = ProductDO.ENTITY_TYPE,
@@ -182,23 +169,9 @@ class ProductServiceAvailabilityAdderImpl(
                     msg = "duplicate entry for availability"
                 )
             else {
-                log.error(
-                    "WTF0 ===========> ${e.javaClass} " +
-                            "============> ${e.message} ==========>" +
-                            " ${e.cause?.javaClass} ================> ${e.cause?.message}"
-                )
-                throw e
+                e
             }
         }
-        catch (e: Exception) {
-            log.error(
-                "WTF1 ===========> ${e.javaClass} " +
-                        "============> ${e.message} ==========>" +
-                        " ${e.cause?.javaClass} ================> ${e.cause?.message}"
-            )
-            throw e
-        }
-    }
 
     fun addAvailability(
         productId: UUID,
@@ -225,7 +198,7 @@ class ProductServiceAvailabilityAdderImpl(
         )
 
         this.saveAvailability(productId, request, availability)
-        
+
         log.info(
             "product availability added, product={} sellerId={}, availability={}",
             v("product", product),

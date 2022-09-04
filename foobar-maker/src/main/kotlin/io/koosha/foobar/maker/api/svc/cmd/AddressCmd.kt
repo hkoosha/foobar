@@ -92,9 +92,7 @@ class AddressCmd(
             log.info { "posted address:\n${response.headers}\n\n$entity" }
     }
 
-    fun getAddress(
-        freeArgs: List<String>,
-    ) {
+    fun getAddress(freeArgs: List<String>) {
 
         val customerId: UUID = this.entityIdService.findUUIDOrLast(CustomerApi.ENTITY_TYPE, freeArgs.firstOrNull())
         val addressId: Long? =

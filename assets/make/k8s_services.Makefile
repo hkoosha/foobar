@@ -494,6 +494,7 @@ k8s-deploy-deps: \
 	helm-install-grafana \
 	k8s-apply-filebeat \
 	k8s-apply-zipkin
+	kubectl wait --for=condition=Ready --all=true --all-namespaces pods
 	# helm-install-redis \
 	# helm-install-logstash \
 
