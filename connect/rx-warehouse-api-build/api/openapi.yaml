@@ -4,7 +4,7 @@ info:
   version: v0
 servers:
 - description: Generated server url
-  url: http://localhost:4041
+  url: http://localhost:4046
 paths:
   /foobar/warehouse/v1/products:
     get:

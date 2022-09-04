@@ -89,7 +89,7 @@ public class ApiClient extends JavaTimeFormatter {
     private HttpHeaders defaultHeaders = new HttpHeaders();
     private MultiValueMap<String, String> defaultCookies = new LinkedMultiValueMap<String, String>();
 
-    private String basePath = "http://localhost:4041";
+    private String basePath = "http://localhost:4046";
 
     private final WebClient webClient;
     private final DateFormat dateFormat;

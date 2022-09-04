@@ -1,6 +1,6 @@
 # AddressApi
 
-All URIs are relative to *http://localhost:4043*
+All URIs are relative to *http://localhost:4040*
 
 | Method | HTTP request | Description |
 |------------- | ------------- | -------------|
@@ -30,7 +30,7 @@ import io.koosha.foobar.connect.customer.rx.generated.api.AddressApi;
 public class Example {
     public static void main(String[] args) {
         ApiClient defaultClient = Configuration.getDefaultApiClient();
-        defaultClient.setBasePath("http://localhost:4043");
+        defaultClient.setBasePath("http://localhost:4040");
 
         AddressApi apiInstance = new AddressApi(defaultClient);
         UUID customerId = UUID.randomUUID(); // UUID | 
@@ -99,7 +99,7 @@ import io.koosha.foobar.connect.customer.rx.generated.api.AddressApi;
 public class Example {
     public static void main(String[] args) {
         ApiClient defaultClient = Configuration.getDefaultApiClient();
-        defaultClient.setBasePath("http://localhost:4043");
+        defaultClient.setBasePath("http://localhost:4040");
 
         AddressApi apiInstance = new AddressApi(defaultClient);
         UUID customerId = UUID.randomUUID(); // UUID | 
@@ -169,7 +169,7 @@ import io.koosha.foobar.connect.customer.rx.generated.api.AddressApi;
 public class Example {
     public static void main(String[] args) {
         ApiClient defaultClient = Configuration.getDefaultApiClient();
-        defaultClient.setBasePath("http://localhost:4043");
+        defaultClient.setBasePath("http://localhost:4040");
 
         AddressApi apiInstance = new AddressApi(defaultClient);
         UUID customerId = UUID.randomUUID(); // UUID | 
@@ -237,7 +237,7 @@ import io.koosha.foobar.connect.customer.rx.generated.api.AddressApi;
 public class Example {
     public static void main(String[] args) {
         ApiClient defaultClient = Configuration.getDefaultApiClient();
-        defaultClient.setBasePath("http://localhost:4043");
+        defaultClient.setBasePath("http://localhost:4040");
 
         AddressApi apiInstance = new AddressApi(defaultClient);
         UUID customerId = UUID.randomUUID(); // UUID | 

@@ -1,6 +1,6 @@
 # SellerApi
 
-All URIs are relative to *http://localhost:4045*
+All URIs are relative to *http://localhost:4043*
 
 | Method | HTTP request | Description |
 |------------- | ------------- | -------------|
@@ -31,7 +31,7 @@ import io.koosha.foobar.connect.seller.rx.generated.api.SellerApi;
 public class Example {
     public static void main(String[] args) {
         ApiClient defaultClient = Configuration.getDefaultApiClient();
-        defaultClient.setBasePath("http://localhost:4045");
+        defaultClient.setBasePath("http://localhost:4043");
 
         SellerApi apiInstance = new SellerApi(defaultClient);
         UUID sellerId = UUID.randomUUID(); // UUID | 
@@ -98,7 +98,7 @@ import io.koosha.foobar.connect.seller.rx.generated.api.SellerApi;
 public class Example {
     public static void main(String[] args) {
         ApiClient defaultClient = Configuration.getDefaultApiClient();
-        defaultClient.setBasePath("http://localhost:4045");
+        defaultClient.setBasePath("http://localhost:4043");
 
         SellerApi apiInstance = new SellerApi(defaultClient);
         UUID sellerId = UUID.randomUUID(); // UUID | 
@@ -166,7 +166,7 @@ import io.koosha.foobar.connect.seller.rx.generated.api.SellerApi;
 public class Example {
     public static void main(String[] args) {
         ApiClient defaultClient = Configuration.getDefaultApiClient();
-        defaultClient.setBasePath("http://localhost:4045");
+        defaultClient.setBasePath("http://localhost:4043");
 
         SellerApi apiInstance = new SellerApi(defaultClient);
         try {
@@ -230,7 +230,7 @@ import io.koosha.foobar.connect.seller.rx.generated.api.SellerApi;
 public class Example {
     public static void main(String[] args) {
         ApiClient defaultClient = Configuration.getDefaultApiClient();
-        defaultClient.setBasePath("http://localhost:4045");
+        defaultClient.setBasePath("http://localhost:4043");
 
         SellerApi apiInstance = new SellerApi(defaultClient);
         UUID sellerId = UUID.randomUUID(); // UUID | 
@@ -300,7 +300,7 @@ import io.koosha.foobar.connect.seller.rx.generated.api.SellerApi;
 public class Example {
     public static void main(String[] args) {
         ApiClient defaultClient = Configuration.getDefaultApiClient();
-        defaultClient.setBasePath("http://localhost:4045");
+        defaultClient.setBasePath("http://localhost:4043");
 
         SellerApi apiInstance = new SellerApi(defaultClient);
         SellerCreateRequest sellerCreateRequest = new SellerCreateRequest(); // SellerCreateRequest | 

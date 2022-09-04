@@ -88,7 +88,7 @@ public class AvailabilityApiExample {
 
     public static void main(String[] args) {
         ApiClient defaultClient = Configuration.getDefaultApiClient();
-        defaultClient.setBasePath("http://localhost:4041");
+        defaultClient.setBasePath("http://localhost:4046");
         
         AvailabilityApi apiInstance = new AvailabilityApi(defaultClient);
         UUID productId = UUID.randomUUID(); // UUID | 
@@ -109,7 +109,7 @@ public class AvailabilityApiExample {
 
 ## Documentation for API Endpoints
 
-All URIs are relative to *http://localhost:4041*
+All URIs are relative to *http://localhost:4046*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------

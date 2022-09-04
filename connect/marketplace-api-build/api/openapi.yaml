@@ -4,7 +4,7 @@ info:
   version: v0
 servers:
 - description: Generated server url
-  url: http://localhost:4040
+  url: http://localhost:4041
 paths:
   /foobar/marketplace/v1/order-requests:
     get:
@@ -19,24 +19,12 @@ paths:
           type: string
         style: form
       responses:
-        "404":
+        "500":
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/EntityNotFoundApiError'
-          description: Not Found
-        "400":
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/EntityBadValueApiError'
-          description: Bad Request
-        "403":
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/EntityIllegalStateApiError'
-          description: Forbidden
+                $ref: '#/components/schemas/ApiError'
+          description: Internal Server Error
         "503":
           description: Service Unavailable
         "200":
@@ -59,24 +47,12 @@ paths:
               $ref: '#/components/schemas/OrderRequestCreateRequest'
         required: true
       responses:
-        "404":
+        "500":
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/EntityNotFoundApiError'
-          description: Not Found
-        "400":
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/EntityBadValueApiError'
-          description: Bad Request
-        "403":
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/EntityIllegalStateApiError'
-          description: Forbidden
+                $ref: '#/components/schemas/ApiError'
+          description: Internal Server Error
         "503":
           description: Service Unavailable
         "201":
@@ -102,24 +78,12 @@ paths:
           type: string
         style: simple
       responses:
-        "404":
+        "500":
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/EntityNotFoundApiError'
-          description: Not Found
-        "400":
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/EntityBadValueApiError'
-          description: Bad Request
-        "403":
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/EntityIllegalStateApiError'
-          description: Forbidden
+                $ref: '#/components/schemas/ApiError'
+          description: Internal Server Error
         "503":
           description: Service Unavailable
         "200":
@@ -151,24 +115,12 @@ paths:
               $ref: '#/components/schemas/LineItemRequest'
         required: true
       responses:
-        "404":
+        "500":
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/EntityNotFoundApiError'
-          description: Not Found
-        "400":
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/EntityBadValueApiError'
-          description: Bad Request
-        "403":
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/EntityIllegalStateApiError'
-          description: Forbidden
+                $ref: '#/components/schemas/ApiError'
+          description: Internal Server Error
         "503":
           description: Service Unavailable
         "200":
@@ -194,24 +146,12 @@ paths:
           type: string
         style: simple
       responses:
-        "404":
+        "500":
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/EntityNotFoundApiError'
-          description: Not Found
-        "400":
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/EntityBadValueApiError'
-          description: Bad Request
-        "403":
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/EntityIllegalStateApiError'
-          description: Forbidden
+                $ref: '#/components/schemas/ApiError'
+          description: Internal Server Error
         "503":
           description: Service Unavailable
         "204":
@@ -231,24 +171,12 @@ paths:
           type: string
         style: simple
       responses:
-        "404":
+        "500":
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/EntityNotFoundApiError'
-          description: Not Found
-        "400":
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/EntityBadValueApiError'
-          description: Bad Request
-        "403":
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/EntityIllegalStateApiError'
-          description: Forbidden
+                $ref: '#/components/schemas/ApiError'
+          description: Internal Server Error
         "503":
           description: Service Unavailable
         "200":
@@ -278,24 +206,12 @@ paths:
               $ref: '#/components/schemas/OrderRequestUpdateRequest'
         required: true
       responses:
-        "404":
+        "500":
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/EntityNotFoundApiError'
-          description: Not Found
-        "400":
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/EntityBadValueApiError'
-          description: Bad Request
-        "403":
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/EntityIllegalStateApiError'
-          description: Forbidden
+                $ref: '#/components/schemas/ApiError'
+          description: Internal Server Error
         "503":
           description: Service Unavailable
         "200":
@@ -329,24 +245,12 @@ paths:
           type: integer
         style: simple
       responses:
-        "404":
+        "500":
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/EntityNotFoundApiError'
-          description: Not Found
-        "400":
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/EntityBadValueApiError'
-          description: Bad Request
-        "403":
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/EntityIllegalStateApiError'
-          description: Forbidden
+                $ref: '#/components/schemas/ApiError'
+          description: Internal Server Error
         "503":
           description: Service Unavailable
         "200":
@@ -374,24 +278,12 @@ paths:
           type: integer
         style: simple
       responses:
-        "404":
+        "500":
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/EntityNotFoundApiError'
-          description: Not Found
-        "400":
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/EntityBadValueApiError'
-          description: Bad Request
-        "403":
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/EntityIllegalStateApiError'
-          description: Forbidden
+                $ref: '#/components/schemas/ApiError'
+          description: Internal Server Error
         "503":
           description: Service Unavailable
         "200":
@@ -429,24 +321,12 @@ paths:
               $ref: '#/components/schemas/LineItemUpdateRequest'
         required: true
       responses:
-        "404":
+        "500":
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/EntityNotFoundApiError'
-          description: Not Found
-        "400":
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/EntityBadValueApiError'
-          description: Bad Request
-        "403":
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/EntityIllegalStateApiError'
-          description: Forbidden
+                $ref: '#/components/schemas/ApiError'
+          description: Internal Server Error
         "503":
           description: Service Unavailable
         "200":
@@ -461,61 +341,13 @@ paths:
       x-accepts: '*/*'
 components:
   schemas:
-    EntityInfo:
-      properties:
-        entityType:
-          type: string
-        entityId:
-          type: object
-      required:
-      - entityType
-      type: object
-    EntityNotFoundApiError:
+    ApiError:
       properties:
         message:
           type: string
-        context:
-          items:
-            $ref: '#/components/schemas/EntityInfo'
-          type: array
-          uniqueItems: true
         error:
           type: string
       required:
-      - context
-      - error
-      - message
-      type: object
-    EntityBadValueApiError:
-      properties:
-        message:
-          type: string
-        context:
-          additionalProperties:
-            items:
-              type: string
-            type: array
-          type: object
-        error:
-          type: string
-      required:
-      - context
-      - error
-      - message
-      type: object
-    EntityIllegalStateApiError:
-      properties:
-        message:
-          type: string
-        context:
-          items:
-            $ref: '#/components/schemas/EntityInfo'
-          type: array
-          uniqueItems: true
-        error:
-          type: string
-      required:
-      - context
       - error
       - message
       type: object

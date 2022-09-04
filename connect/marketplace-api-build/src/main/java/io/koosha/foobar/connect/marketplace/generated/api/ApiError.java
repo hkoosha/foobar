@@ -22,39 +22,30 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonValue;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import io.koosha.foobar.connect.marketplace.generated.api.EntityInfo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 
 /**
- * EntityNotFoundApiError
+ * ApiError
  */
 @JsonPropertyOrder({
-  EntityNotFoundApiError.JSON_PROPERTY_MESSAGE,
-  EntityNotFoundApiError.JSON_PROPERTY_CONTEXT,
-  EntityNotFoundApiError.JSON_PROPERTY_ERROR
+  ApiError.JSON_PROPERTY_MESSAGE,
+  ApiError.JSON_PROPERTY_ERROR
 })
 
-public class EntityNotFoundApiError {
+public class ApiError {
   public static final String JSON_PROPERTY_MESSAGE = "message";
   private String message;
-
-  public static final String JSON_PROPERTY_CONTEXT = "context";
-  private Set<EntityInfo> context = new LinkedHashSet<>();
 
   public static final String JSON_PROPERTY_ERROR = "error";
   private String error;
 
-  public EntityNotFoundApiError() {
+  public ApiError() {
   }
 
-  public EntityNotFoundApiError message(String message) {
+  public ApiError message(String message) {
     
     this.message = message;
     return this;
@@ -81,40 +72,7 @@ public class EntityNotFoundApiError {
   }
 
 
-  public EntityNotFoundApiError context(Set<EntityInfo> context) {
-    
-    this.context = context;
-    return this;
-  }
-
-  public EntityNotFoundApiError addContextItem(EntityInfo contextItem) {
-    this.context.add(contextItem);
-    return this;
-  }
-
-   /**
-   * Get context
-   * @return context
-  **/
-  @javax.annotation.Nonnull
-  @ApiModelProperty(required = true, value = "")
-  @JsonProperty(JSON_PROPERTY_CONTEXT)
-  @JsonInclude(value = JsonInclude.Include.ALWAYS)
-
-  public Set<EntityInfo> getContext() {
-    return context;
-  }
-
-
-  @JsonDeserialize(as = LinkedHashSet.class)
-  @JsonProperty(JSON_PROPERTY_CONTEXT)
-  @JsonInclude(value = JsonInclude.Include.ALWAYS)
-  public void setContext(Set<EntityInfo> context) {
-    this.context = context;
-  }
-
-
-  public EntityNotFoundApiError error(String error) {
+  public ApiError error(String error) {
     
     this.error = error;
     return this;
@@ -149,23 +107,21 @@ public class EntityNotFoundApiError {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    EntityNotFoundApiError entityNotFoundApiError = (EntityNotFoundApiError) o;
-    return Objects.equals(this.message, entityNotFoundApiError.message) &&
-        Objects.equals(this.context, entityNotFoundApiError.context) &&
-        Objects.equals(this.error, entityNotFoundApiError.error);
+    ApiError apiError = (ApiError) o;
+    return Objects.equals(this.message, apiError.message) &&
+        Objects.equals(this.error, apiError.error);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(message, context, error);
+    return Objects.hash(message, error);
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class EntityNotFoundApiError {\n");
+    sb.append("class ApiError {\n");
     sb.append("    message: ").append(toIndentedString(message)).append("\n");
-    sb.append("    context: ").append(toIndentedString(context)).append("\n");
     sb.append("    error: ").append(toIndentedString(error)).append("\n");
     sb.append("}");
     return sb.toString();
