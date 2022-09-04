@@ -43,7 +43,7 @@
   "fiscalYearStartMonth": 0,
   "gnetId": 4701,
   "graphTooltip": 1,
-  "id": 3,
+  "id": 2,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -104,7 +104,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "9.0.7",
+      "pluginVersion": "9.1.2",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -118,11 +118,13 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "sum(jvm_memory_used_bytes{foobar_service=~\".*\"})",
+          "editorMode": "code",
+          "expr": "sum(jvm_memory_used_bytes{foobar_service=~\".*\", service=\"\"})",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "used",
           "metric": "",
+          "range": true,
           "refId": "A",
           "step": 2400
         },
@@ -131,10 +133,12 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "sum(jvm_memory_committed_bytes{foobar_service=~\".*\"})",
+          "editorMode": "code",
+          "expr": "sum(jvm_memory_committed_bytes{foobar_service=~\".*\", service=\"\"})",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "committed",
+          "range": true,
           "refId": "B",
           "step": 2400
         }
@@ -221,7 +225,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "9.0.7",
+      "pluginVersion": "9.1.2",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -235,11 +239,13 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "sum(jvm_memory_used_bytes{foobar_service=~\"$foobar_service\"})",
+          "editorMode": "code",
+          "expr": "sum(jvm_memory_used_bytes{foobar_service=~\"$foobar_service\", service=\"\"})",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "used",
           "metric": "",
+          "range": true,
           "refId": "A",
           "step": 2400
         },
@@ -248,10 +254,12 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "sum(jvm_memory_committed_bytes{foobar_service=~\"$foobar_service\"})",
+          "editorMode": "code",
+          "expr": "sum(jvm_memory_committed_bytes{foobar_service=~\"$foobar_service\", service=\"\"})",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "committed",
+          "range": true,
           "refId": "B",
           "step": 2400
         }
@@ -383,7 +391,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.0.7",
+      "pluginVersion": "9.1.2",
       "targets": [
         {
           "datasource": {
@@ -392,7 +400,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "process_uptime_seconds{foobar_service=~\"$foobar_service\",pod=~\"$pod\"}",
+          "expr": "process_uptime_seconds{foobar_service=~\"$foobar_service\",pod=~\"$pod\", service=\"\"}",
           "format": "time_series",
           "instant": false,
           "intervalFactor": 2,
@@ -467,7 +475,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.0.7",
+      "pluginVersion": "9.1.2",
       "targets": [
         {
           "datasource": {
@@ -475,7 +483,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "process_start_time_seconds{foobar_service=~\"$foobar_service\", pod=\"$pod\"}*1000",
+          "expr": "process_start_time_seconds{foobar_service=~\"$foobar_service\", pod=\"$pod\", service=\"\"}*1000",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": " ",
@@ -554,17 +562,19 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.0.7",
+      "pluginVersion": "9.1.2",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "sum(jvm_memory_used_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\", area=\"heap\"})*100/sum(jvm_memory_max_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\", area=\"heap\"})",
+          "editorMode": "code",
+          "expr": "sum(jvm_memory_used_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\", area=\"heap\", service=\"\"})*100\n/\nsum(jvm_memory_max_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\", area=\"heap\", service=\"\"})",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "",
+          "range": true,
           "refId": "A",
           "step": 14400
         }
@@ -648,17 +658,19 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.0.7",
+      "pluginVersion": "9.1.2",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "sum(jvm_memory_used_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\", area=\"nonheap\"})*100/sum(jvm_memory_max_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\", area=\"nonheap\"})",
+          "editorMode": "code",
+          "expr": "sum(jvm_memory_used_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\", area=\"nonheap\", service=\"\"})*100\n/\nsum(jvm_memory_max_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\", area=\"nonheap\", service=\"\"})",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "",
+          "range": true,
           "refId": "A",
           "step": 14400
         }
@@ -728,7 +740,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "9.0.7",
+      "pluginVersion": "9.1.2",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -742,10 +754,12 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "sum(rate(http_server_requests_seconds_count{foobar_service=~\"$foobar_service\", pod=~\"$pod\"}[1m]))",
+          "editorMode": "code",
+          "expr": "sum(rate(http_server_requests_seconds_count{foobar_service=~\"$foobar_service\", pod=~\"$pod\", service=\"\"}[1m]))",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "HTTP",
+          "range": true,
           "refId": "A"
         }
       ],
@@ -819,7 +833,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "9.0.7",
+      "pluginVersion": "9.1.2",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -833,10 +847,12 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "sum(rate(http_server_requests_seconds_count{foobar_service=~\"$foobar_service\", pod=~\"$pod\", status=~\"5..\"}[1m]))",
+          "editorMode": "code",
+          "expr": "sum(rate(http_server_requests_seconds_count{foobar_service=~\"$foobar_service\", pod=~\"$pod\", status=~\"5..\", service=\"\"}[1m]))",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "HTTP - 5xx",
+          "range": true,
           "refId": "A"
         }
       ],
@@ -907,7 +923,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "9.0.7",
+      "pluginVersion": "9.1.2",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -921,11 +937,13 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "sum(rate(http_server_requests_seconds_sum{foobar_service=~\"$foobar_service\", pod=~\"$pod\", status!~\"5..\"}[1m]))\n/\nsum(rate(http_server_requests_seconds_count{foobar_service=~\"$foobar_service\", pod=~\"$pod\", status!~\"5..\"}[1m]))",
+          "editorMode": "code",
+          "expr": "sum(rate(http_server_requests_seconds_sum{foobar_service=~\"$foobar_service\", pod=~\"$pod\", status!~\"5..\", service=\"\"}[1m]))\n/\nsum(rate(http_server_requests_seconds_count{foobar_service=~\"$foobar_service\", pod=~\"$pod\", status!~\"5..\", service=\"\"}[1m]))",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 1,
           "legendFormat": "HTTP - AVG",
+          "range": true,
           "refId": "A"
         },
         {
@@ -933,11 +951,13 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "max(http_server_requests_seconds_max{foobar_service=~\"$foobar_service\", pod=~\"$pod\", status!~\"5..\"})",
+          "editorMode": "code",
+          "expr": "max(http_server_requests_seconds_max{foobar_service=~\"$foobar_service\", pod=~\"$pod\", status!~\"5..\", service=\"\"})",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 1,
           "legendFormat": "HTTP - MAX",
+          "range": true,
           "refId": "B"
         }
       ],
@@ -1010,7 +1030,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "9.0.7",
+      "pluginVersion": "9.1.2",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -1024,11 +1044,13 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "tomcat_threads_busy_threads{foobar_service=~\"$foobar_service\", pod=~\"$pod\"}",
+          "editorMode": "code",
+          "expr": "tomcat_threads_busy_threads{foobar_service=~\"$foobar_service\", pod=~\"$pod\", service=\"\"}",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 2,
           "legendFormat": "TOMCAT - BSY",
+          "range": true,
           "refId": "A"
         },
         {
@@ -1036,11 +1058,13 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "tomcat_threads_current_threads{foobar_service=~\"$foobar_service\", pod=~\"$pod\"}",
+          "editorMode": "code",
+          "expr": "tomcat_threads_current_threads{foobar_service=~\"$foobar_service\", pod=~\"$pod\", service=\"\"}",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 2,
           "legendFormat": "TOMCAT - CUR",
+          "range": true,
           "refId": "B"
         },
         {
@@ -1048,11 +1072,13 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "tomcat_threads_config_max_threads{foobar_service=~\"$foobar_service\", pod=~\"$pod\"}",
+          "editorMode": "code",
+          "expr": "tomcat_threads_config_max_threads{foobar_service=~\"$foobar_service\", pod=~\"$pod\", service=\"\"}",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 2,
           "legendFormat": "TOMCAT - MAX",
+          "range": true,
           "refId": "C"
         },
         {
@@ -1060,11 +1086,13 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "jetty_threads_busy{service=~\"$foobar_service\", pod=~\"$pod\"}",
+          "editorMode": "code",
+          "expr": "jetty_threads_busy{service=~\"$foobar_service\", pod=~\"$pod\", service=\"\"}",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 2,
           "legendFormat": "JETTY - BSY",
+          "range": true,
           "refId": "D"
         },
         {
@@ -1072,11 +1100,13 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "jetty_threads_current{service=~\"$foobar_service\", pod=~\"$pod\"}",
+          "editorMode": "code",
+          "expr": "jetty_threads_current{service=~\"$foobar_service\", pod=~\"$pod\", service=\"\"}",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 2,
           "legendFormat": "JETTY - CUR",
+          "range": true,
           "refId": "E"
         },
         {
@@ -1084,11 +1114,13 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "jetty_threads_config_max{service=~\"$foobar_service\", pod=~\"$pod\"}",
+          "editorMode": "code",
+          "expr": "jetty_threads_config_max{service=~\"$foobar_service\", pod=~\"$pod\", service=\"\"}",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 2,
           "legendFormat": "JETTY - MAX",
+          "range": true,
           "refId": "F"
         }
       ],
@@ -1191,7 +1223,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "9.0.7",
+      "pluginVersion": "9.1.2",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -1205,11 +1237,13 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "sum(jvm_memory_used_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\", area=\"heap\"})",
+          "editorMode": "code",
+          "expr": "sum(jvm_memory_used_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\", area=\"heap\", service=\"\"})",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "used",
           "metric": "",
+          "range": true,
           "refId": "A",
           "step": 2400
         },
@@ -1218,10 +1252,12 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "sum(jvm_memory_committed_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\", area=\"heap\"})",
+          "editorMode": "code",
+          "expr": "sum(jvm_memory_committed_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\", area=\"heap\", service=\"\"})",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "committed",
+          "range": true,
           "refId": "B",
           "step": 2400
         },
@@ -1230,10 +1266,12 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "sum(jvm_memory_max_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\", area=\"heap\"})",
+          "editorMode": "code",
+          "expr": "sum(jvm_memory_max_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\", area=\"heap\", service=\"\"})",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "max",
+          "range": true,
           "refId": "C",
           "step": 2400
         }
@@ -1318,7 +1356,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "9.0.7",
+      "pluginVersion": "9.1.2",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -1332,12 +1370,14 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "sum(jvm_memory_used_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\", area=\"nonheap\"})",
+          "editorMode": "code",
+          "expr": "sum(jvm_memory_used_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\", area=\"nonheap\", service=\"\"})",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "used",
           "metric": "",
+          "range": true,
           "refId": "A",
           "step": 2400
         },
@@ -1346,10 +1386,12 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "sum(jvm_memory_committed_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\", area=\"nonheap\"})",
+          "editorMode": "code",
+          "expr": "sum(jvm_memory_committed_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\", area=\"nonheap\", service=\"\"})",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "committed",
+          "range": true,
           "refId": "B",
           "step": 2400
         },
@@ -1358,10 +1400,12 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "sum(jvm_memory_max_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\", area=\"nonheap\"})",
+          "editorMode": "code",
+          "expr": "sum(jvm_memory_max_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\", area=\"nonheap\", service=\"\"})",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "max",
+          "range": true,
           "refId": "C",
           "step": 2400
         }
@@ -1447,7 +1491,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "9.0.7",
+      "pluginVersion": "9.1.2",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -1461,11 +1505,13 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "sum(jvm_memory_used_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\"})",
+          "editorMode": "code",
+          "expr": "sum(jvm_memory_used_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\", service=\"\", service=\"\"})",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "used",
           "metric": "",
+          "range": true,
           "refId": "A",
           "step": 2400
         },
@@ -1474,10 +1520,12 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "sum(jvm_memory_committed_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\"})",
+          "editorMode": "code",
+          "expr": "sum(jvm_memory_committed_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\", service=\"\", service=\"\"})",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "committed",
+          "range": true,
           "refId": "B",
           "step": 2400
         },
@@ -1486,10 +1534,12 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "sum(jvm_memory_max_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\"})",
+          "editorMode": "code",
+          "expr": "sum(jvm_memory_max_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\", service=\"\", service=\"\"})",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "max",
+          "range": true,
           "refId": "C",
           "step": 2400
         }
@@ -1575,7 +1625,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "9.0.7",
+      "pluginVersion": "9.1.2",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -1589,12 +1639,14 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "process_memory_vss_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\"}",
+          "editorMode": "code",
+          "expr": "process_memory_vss_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\", service=\"\"}",
           "format": "time_series",
           "hide": true,
           "intervalFactor": 2,
           "legendFormat": "vss",
           "metric": "",
+          "range": true,
           "refId": "A",
           "step": 2400
         },
@@ -1603,10 +1655,12 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "process_memory_rss_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\"}",
+          "editorMode": "code",
+          "expr": "process_memory_rss_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\", service=\"\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "rss",
+          "range": true,
           "refId": "B"
         },
         {
@@ -1614,10 +1668,12 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "process_memory_swap_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\"}",
+          "editorMode": "code",
+          "expr": "process_memory_swap_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\", service=\"\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "swap",
+          "range": true,
           "refId": "C"
         },
         {
@@ -1625,10 +1681,12 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "process_memory_rss_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\"} + process_memory_swap_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\"}",
+          "editorMode": "code",
+          "expr": "process_memory_rss_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\", service=\"\"} \n+ \nprocess_memory_swap_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\", service=\"\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "total",
+          "range": true,
           "refId": "D"
         }
       ],
@@ -1739,7 +1797,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "9.0.7",
+      "pluginVersion": "9.1.2",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -1753,12 +1811,14 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "system_cpu_usage{foobar_service=~\"$foobar_service\", pod=~\"$pod\"}",
+          "editorMode": "code",
+          "expr": "system_cpu_usage{foobar_service=~\"$foobar_service\", pod=~\"$pod\", service=\"\"}",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 1,
           "legendFormat": "system",
           "metric": "",
+          "range": true,
           "refId": "A",
           "step": 2400
         },
@@ -1767,11 +1827,13 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "process_cpu_usage{foobar_service=~\"$foobar_service\", pod=~\"$pod\"}",
+          "editorMode": "code",
+          "expr": "process_cpu_usage{foobar_service=~\"$foobar_service\", pod=~\"$pod\", service=\"\"}",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 1,
           "legendFormat": "process",
+          "range": true,
           "refId": "B"
         },
         {
@@ -1779,11 +1841,13 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "avg_over_time(process_cpu_usage{foobar_service=~\"$foobar_service\", pod=~\"$pod\"}[1h])",
+          "editorMode": "code",
+          "expr": "avg_over_time(process_cpu_usage{foobar_service=~\"$foobar_service\", pod=~\"$pod\", service=\"\"}[1h])",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 1,
           "legendFormat": "process-1h",
+          "range": true,
           "refId": "C"
         }
       ],
@@ -1870,7 +1934,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "9.0.7",
+      "pluginVersion": "9.1.2",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -1884,11 +1948,13 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "system_load_average_1m{foobar_service=~\"$foobar_service\", pod=~\"$pod\"}",
+          "editorMode": "code",
+          "expr": "system_load_average_1m{foobar_service=~\"$foobar_service\", pod=~\"$pod\", service=\"\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "system-1m",
           "metric": "",
+          "range": true,
           "refId": "A",
           "step": 2400
         },
@@ -1897,10 +1963,12 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "rate(system_cpu_count{foobar_service=~\"$foobar_service\", pod=~\"$pod\"}[$__rate_interval])",
+          "editorMode": "code",
+          "expr": "rate(system_cpu_count{foobar_service=~\"$foobar_service\", pod=~\"$pod\", service=\"\"}[$__rate_interval])",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "cpus",
+          "range": true,
           "refId": "B"
         }
       ],
@@ -1986,7 +2054,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "9.0.7",
+      "pluginVersion": "9.1.2",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -2000,11 +2068,13 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "jvm_threads_live_threads{foobar_service=~\"$foobar_service\", pod=~\"$pod\"}",
+          "editorMode": "code",
+          "expr": "jvm_threads_live_threads{foobar_service=~\"$foobar_service\", pod=~\"$pod\", service=\"\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "live",
           "metric": "",
+          "range": true,
           "refId": "A",
           "step": 2400
         },
@@ -2013,11 +2083,13 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "jvm_threads_daemon_threads{foobar_service=~\"$foobar_service\", pod=~\"$pod\"}",
+          "editorMode": "code",
+          "expr": "jvm_threads_daemon_threads{foobar_service=~\"$foobar_service\", pod=~\"$pod\", service=\"\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "daemon",
           "metric": "",
+          "range": true,
           "refId": "B",
           "step": 2400
         },
@@ -2026,10 +2098,12 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "jvm_threads_peak_threads{foobar_service=~\"$foobar_service\", pod=~\"$pod\"}",
+          "editorMode": "code",
+          "expr": "jvm_threads_peak_threads{foobar_service=~\"$foobar_service\", pod=~\"$pod\", service=\"\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "peak",
+          "range": true,
           "refId": "C",
           "step": 2400
         },
@@ -2038,11 +2112,13 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "process_threads{service=~\"$foobar_service\", pod=~\"$pod\"}",
+          "editorMode": "code",
+          "expr": "process_threads{service=~\"$foobar_service\", pod=~\"$pod\", service=\"\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "process",
+          "range": true,
           "refId": "D",
           "step": 2400
         }
@@ -2131,7 +2207,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "9.0.7",
+      "pluginVersion": "9.1.2",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -2145,10 +2221,12 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "jvm_threads_states_threads{foobar_service=~\"$foobar_service\", pod=~\"$pod\"}",
+          "editorMode": "code",
+          "expr": "jvm_threads_states_threads{foobar_service=~\"$foobar_service\", pod=~\"$pod\", service=\"\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{state}}",
+          "range": true,
           "refId": "A"
         }
       ],
@@ -2235,7 +2313,7 @@
         "alertThreshold": true
       },
       "percentage": true,
-      "pluginVersion": "9.0.7",
+      "pluginVersion": "9.1.2",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -2258,12 +2336,14 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "increase(logback_events_total{foobar_service=~\"$foobar_service\", pod=~\"$pod\"}[1m])",
+          "editorMode": "code",
+          "expr": "increase(logback_events_total{foobar_service=~\"$foobar_service\", pod=~\"$pod\", service=\"\"}[1m])",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "{{level}}",
           "metric": "",
+          "range": true,
           "refId": "A",
           "step": 1200
         }
@@ -2349,7 +2429,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "9.0.7",
+      "pluginVersion": "9.1.2",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -2363,12 +2443,14 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "process_files_open_files{foobar_service=~\"$foobar_service\", pod=~\"$pod\"}",
+          "editorMode": "code",
+          "expr": "process_files_open_files{foobar_service=~\"$foobar_service\", pod=~\"$pod\", service=\"\"}",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 2,
           "legendFormat": "open",
           "metric": "",
+          "range": true,
           "refId": "A",
           "step": 2400
         },
@@ -2377,12 +2459,14 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "process_files_max_files{foobar_service=~\"$foobar_service\", pod=~\"$pod\"}",
+          "editorMode": "code",
+          "expr": "process_files_max_files{foobar_service=~\"$foobar_service\", pod=~\"$pod\", service=\"\"}",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 2,
           "legendFormat": "max",
           "metric": "",
+          "range": true,
           "refId": "B",
           "step": 2400
         }
@@ -2498,7 +2582,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "9.0.7",
+      "pluginVersion": "9.1.2",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -2513,13 +2597,15 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "jvm_memory_used_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\", id=~\"$jvm_memory_pool_heap\"}",
+          "editorMode": "code",
+          "expr": "jvm_memory_used_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\", id=~\"$jvm_memory_pool_heap\", service=\"\"}",
           "format": "time_series",
           "hide": false,
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "used",
           "metric": "",
+          "range": true,
           "refId": "A",
           "step": 1800
         },
@@ -2528,13 +2614,15 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "jvm_memory_committed_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\", id=~\"$jvm_memory_pool_heap\"}",
+          "editorMode": "code",
+          "expr": "jvm_memory_committed_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\", id=~\"$jvm_memory_pool_heap\", service=\"\"}",
           "format": "time_series",
           "hide": false,
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "commited",
           "metric": "",
+          "range": true,
           "refId": "B",
           "step": 1800
         },
@@ -2543,13 +2631,15 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "jvm_memory_max_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\", id=~\"$jvm_memory_pool_heap\"}",
+          "editorMode": "code",
+          "expr": "jvm_memory_max_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\", id=~\"$jvm_memory_pool_heap\", service=\"\"}",
           "format": "time_series",
           "hide": false,
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "max",
           "metric": "",
+          "range": true,
           "refId": "C",
           "step": 1800
         }
@@ -2663,7 +2753,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "9.0.7",
+      "pluginVersion": "9.1.2",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -2678,13 +2768,15 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "jvm_memory_used_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\", id=~\"$jvm_memory_pool_nonheap\"}",
+          "editorMode": "code",
+          "expr": "jvm_memory_used_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\", id=~\"$jvm_memory_pool_nonheap\", service=\"\"}",
           "format": "time_series",
           "hide": false,
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "used",
           "metric": "",
+          "range": true,
           "refId": "A",
           "step": 1800
         },
@@ -2693,13 +2785,15 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "jvm_memory_committed_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\", id=~\"$jvm_memory_pool_nonheap\"}",
+          "editorMode": "code",
+          "expr": "jvm_memory_committed_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\", id=~\"$jvm_memory_pool_nonheap\", service=\"\"}",
           "format": "time_series",
           "hide": false,
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "commited",
           "metric": "",
+          "range": true,
           "refId": "B",
           "step": 1800
         },
@@ -2708,13 +2802,15 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "jvm_memory_max_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\", id=~\"$jvm_memory_pool_nonheap\"}",
+          "editorMode": "code",
+          "expr": "jvm_memory_max_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\", id=~\"$jvm_memory_pool_nonheap\", service=\"\"}",
           "format": "time_series",
           "hide": false,
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "max",
           "metric": "",
+          "range": true,
           "refId": "C",
           "step": 1800
         }
@@ -2819,7 +2915,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "9.0.7",
+      "pluginVersion": "9.1.2",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -2833,11 +2929,13 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "rate(jvm_gc_pause_seconds_count{foobar_service=~\"$foobar_service\", pod=~\"$pod\"}[1m])",
+          "editorMode": "code",
+          "expr": "rate(jvm_gc_pause_seconds_count{foobar_service=~\"$foobar_service\", pod=~\"$pod\", service=\"\"}[1m])",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 1,
           "legendFormat": "{{action}} ({{cause}})",
+          "range": true,
           "refId": "A"
         }
       ],
@@ -2909,7 +3007,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "9.0.7",
+      "pluginVersion": "9.1.2",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -2923,7 +3021,8 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "rate(jvm_gc_pause_seconds_sum{foobar_service=~\"$foobar_service\", pod=~\"$pod\"}[1m])/rate(jvm_gc_pause_seconds_count{foobar_service=~\"$foobar_service\", pod=~\"$pod\"}[1m])",
+          "editorMode": "code",
+          "expr": "rate(jvm_gc_pause_seconds_sum{foobar_service=~\"$foobar_service\", pod=~\"$pod\", service=\"\"}[1m])\n/\nrate(jvm_gc_pause_seconds_count{foobar_service=~\"$foobar_service\", pod=~\"$pod\", service=\"\"}[1m])",
           "format": "time_series",
           "hide": false,
           "instant": false,
@@ -2936,7 +3035,8 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "jvm_gc_pause_seconds_max{foobar_service=~\"$foobar_service\", pod=~\"$pod\"}",
+          "editorMode": "code",
+          "expr": "jvm_gc_pause_seconds_max{foobar_service=~\"$foobar_service\", pod=~\"$pod\", service=\"\"}",
           "format": "time_series",
           "hide": false,
           "instant": false,
@@ -3013,7 +3113,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "9.0.7",
+      "pluginVersion": "9.1.2",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -3027,11 +3127,13 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "rate(jvm_gc_memory_allocated_bytes_total{foobar_service=~\"$foobar_service\", pod=~\"$pod\"}[1m])",
+          "editorMode": "code",
+          "expr": "rate(jvm_gc_memory_allocated_bytes_total{foobar_service=~\"$foobar_service\", pod=~\"$pod\", service=\"\"}[1m])",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
           "legendFormat": "allocated",
+          "range": true,
           "refId": "A"
         },
         {
@@ -3039,11 +3141,13 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "rate(jvm_gc_memory_promoted_bytes_total{foobar_service=~\"$foobar_service\", pod=~\"$pod\"}[1m])",
+          "editorMode": "code",
+          "expr": "rate(jvm_gc_memory_promoted_bytes_total{foobar_service=~\"$foobar_service\", pod=~\"$pod\", service=\"\"}[1m])",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
           "legendFormat": "promoted",
+          "range": true,
           "refId": "B"
         }
       ],
@@ -3146,7 +3250,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "9.0.7",
+      "pluginVersion": "9.1.2",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -3160,11 +3264,13 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "jvm_classes_loaded_classes{foobar_service=~\"$foobar_service\", pod=~\"$pod\"}",
+          "editorMode": "code",
+          "expr": "jvm_classes_loaded_classes{foobar_service=~\"$foobar_service\", pod=~\"$pod\", service=\"\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "loaded",
           "metric": "",
+          "range": true,
           "refId": "A",
           "step": 1200
         }
@@ -3249,7 +3355,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "9.0.7",
+      "pluginVersion": "9.1.2",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -3263,13 +3369,15 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "delta(jvm_classes_loaded_classes{foobar_service=~\"$foobar_service\", pod=~\"$pod\"}[1m])",
+          "editorMode": "code",
+          "expr": "delta(jvm_classes_loaded_classes{foobar_service=~\"$foobar_service\", pod=~\"$pod\", service=\"\"}[1m])",
           "format": "time_series",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
           "legendFormat": "delta-1m",
           "metric": "",
+          "range": true,
           "refId": "A",
           "step": 1200
         }
@@ -3380,7 +3488,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "9.0.7",
+      "pluginVersion": "9.1.2",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -3394,11 +3502,13 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "jvm_buffer_memory_used_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\", id=\"direct\"}",
+          "editorMode": "code",
+          "expr": "jvm_buffer_memory_used_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\", id=\"direct\", service=\"\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "used",
           "metric": "",
+          "range": true,
           "refId": "A",
           "step": 2400
         },
@@ -3407,11 +3517,13 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "jvm_buffer_total_capacity_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\", id=\"direct\"}",
+          "editorMode": "code",
+          "expr": "jvm_buffer_total_capacity_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\", id=\"direct\", service=\"\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "capacity",
           "metric": "",
+          "range": true,
           "refId": "B",
           "step": 2400
         }
@@ -3496,7 +3608,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "9.0.7",
+      "pluginVersion": "9.1.2",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -3510,11 +3622,13 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "jvm_buffer_count_buffers{foobar_service=~\"$foobar_service\", pod=~\"$pod\", id=\"direct\"}",
+          "editorMode": "code",
+          "expr": "jvm_buffer_count_buffers{foobar_service=~\"$foobar_service\", pod=~\"$pod\", id=\"direct\", service=\"\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "count",
           "metric": "",
+          "range": true,
           "refId": "A",
           "step": 2400
         }
@@ -3600,7 +3714,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "9.0.7",
+      "pluginVersion": "9.1.2",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -3614,11 +3728,13 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "jvm_buffer_memory_used_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\", id=\"mapped\"}",
+          "editorMode": "code",
+          "expr": "jvm_buffer_memory_used_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\", id=\"mapped\", service=\"\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "used",
           "metric": "",
+          "range": true,
           "refId": "A",
           "step": 2400
         },
@@ -3627,11 +3743,13 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "jvm_buffer_total_capacity_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\", id=\"mapped\"}",
+          "editorMode": "code",
+          "expr": "jvm_buffer_total_capacity_bytes{foobar_service=~\"$foobar_service\", pod=~\"$pod\", id=\"mapped\", service=\"\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "capacity",
           "metric": "",
+          "range": true,
           "refId": "B",
           "step": 2400
         }
@@ -3716,7 +3834,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "9.0.7",
+      "pluginVersion": "9.1.2",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -3730,11 +3848,13 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "jvm_buffer_count_buffers{foobar_service=~\"$foobar_service\", pod=~\"$pod\", id=\"mapped\"}",
+          "editorMode": "code",
+          "expr": "jvm_buffer_count_buffers{foobar_service=~\"$foobar_service\", pod=~\"$pod\", id=\"mapped\", service=\"\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "count",
           "metric": "",
+          "range": true,
           "refId": "A",
           "step": 2400
         }
@@ -3780,7 +3900,7 @@
     }
   ],
   "refresh": "30s",
-  "schemaVersion": 36,
+  "schemaVersion": 37,
   "style": "dark",
   "tags": [
     "foobar"
@@ -3961,6 +4081,6 @@
   "timezone": "browser",
   "title": "Foobar JVM",
   "uid": "tu5_GrWVk",
-  "version": 2,
+  "version": 1,
   "weekStart": ""
 }

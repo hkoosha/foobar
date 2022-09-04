@@ -132,6 +132,7 @@ class AddressCmd(
 
         val customerId: UUID = this.entityIdService.findUUIDOrLast(CustomerApi.ENTITY_TYPE, null)
         val response: ApiResponse<MutableList<Address>> = this.addressApi.getAddressesWithHttpInfo(customerId)
+        assertStatusCode(response.statusCode)
         val entities: List<Address> = response.data
         if (doLog)
             log.info { "addresses:\n${response.headers}\n$entities" }

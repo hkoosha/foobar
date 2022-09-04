@@ -144,11 +144,12 @@ class CustomerCmd(
 
         }
 
-    fun getLastCustomer(doLog: Boolean): Customer? {
+    fun getLastCustomer(doLog: Boolean): Customer {
 
         val customerId = this.entityIdService.findUUIDOrLast(CustomerApi.ENTITY_TYPE, null)
         val response = this.customerApi.getCustomerWithHttpInfo(customerId)
-        val entity: Customer? = response.data
+        assertStatusCode(response.statusCode)
+        val entity: Customer = response.data
         if (doLog)
             log.info { "customer:\n${response.headers}\n$entity" }
         return entity

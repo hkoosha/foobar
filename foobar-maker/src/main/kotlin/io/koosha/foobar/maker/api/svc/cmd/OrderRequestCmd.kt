@@ -126,12 +126,13 @@ class OrderRequestCmd(
         log.info { "patched order request:\n${response.headers}\n$entity" }
     }
 
-    fun patchOrderRequest(orderRequestId: UUID): OrderRequest? {
+    fun patchOrderRequest(orderRequestId: UUID): OrderRequest {
 
         val req = OrderRequestUpdateRequest()
         req.state = OrderRequestUpdateRequest.StateEnum.LIVE
 
         val response = this.orderRequestApi.patchOrderRequestWithHttpInfo(orderRequestId, req)
+        assertStatusCode(response.statusCode)
         return response.data
     }
 
@@ -167,11 +168,12 @@ class OrderRequestCmd(
 
     }
 
-    fun getLastOrderRequest(doLog: Boolean): OrderRequest? {
+    fun getLastOrderRequest(doLog: Boolean): OrderRequest {
 
         val orderRequestId = this.entityIdService.findUUIDOrLast(OrderRequestApi.ENTITY_TYPE, null)
         val response = this.orderRequestApi.getOrderRequestWithHttpInfo(orderRequestId)
-        val entity: OrderRequest? = response.data
+        assertStatusCode(response.statusCode)
+        val entity: OrderRequest = response.data
         if (doLog)
             log.info { "orderRequest:\n${response.headers}\n$entity" }
         return entity

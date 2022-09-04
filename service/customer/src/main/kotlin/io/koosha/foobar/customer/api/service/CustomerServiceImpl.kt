@@ -4,6 +4,7 @@ import io.koosha.foobar.common.RandomUUIDProvider
 import io.koosha.foobar.common.error.EntityBadValueException
 import io.koosha.foobar.common.error.EntityInIllegalStateException
 import io.koosha.foobar.common.error.EntityNotFoundException
+import io.koosha.foobar.common.error.anyOfMessagesContains
 import io.koosha.foobar.common.model.EntityInfo
 import io.koosha.foobar.customer.api.model.AddressDO
 import io.koosha.foobar.customer.api.model.AddressRepository
@@ -14,16 +15,20 @@ import mu.KotlinLogging
 import net.logstash.logback.argument.StructuredArguments.v
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.transaction.support.TransactionTemplate
 import java.util.*
 import javax.validation.Validator
 
 
 @Service
 class CustomerServiceImpl(
-    private val customerRepo: CustomerRepository,
-    private val addressRepo: AddressRepository,
     private val validator: Validator,
     private val randomUUIDProvider: RandomUUIDProvider,
+
+    private val customerRepo: CustomerRepository,
+    private val addressRepo: AddressRepository,
+
+    private val txTemplate: TransactionTemplate,
 ) : CustomerService {
 
     private val log = KotlinLogging.logger {}
@@ -189,13 +194,11 @@ class CustomerServiceImpl(
         this.customerRepo.delete(customer)
     }
 
-    @Transactional(
-        rollbackForClassName = ["java.lang.Exception"]
-    )
-    override fun addAddress(
+
+    private fun addAddressValidate(
         customerId: UUID,
         request: CustomerAddressCreateRequest,
-    ): AddressDO {
+    ) {
 
         val errors = this.validator.validate(request)
         if (errors.isNotEmpty()) {
@@ -211,6 +214,12 @@ class CustomerServiceImpl(
                 errors = errors,
             )
         }
+    }
+
+    private fun addAddressGetCustomer(
+        customerId: UUID,
+        request: CustomerAddressCreateRequest,
+    ): CustomerDO {
 
         val customer: CustomerDO = this.findByCustomerIdOrFail(customerId)
         if (customer.state != CustomerState.ACTIVE) {
@@ -225,6 +234,18 @@ class CustomerServiceImpl(
                 msg = "customer is not active, can not add address"
             )
         }
+
+        return customer
+    }
+
+    override fun addAddress(
+        customerId: UUID,
+        request: CustomerAddressCreateRequest,
+    ): AddressDO {
+
+        this.addAddressValidate(customerId, request)
+
+        val customer: CustomerDO = this.addAddressGetCustomer(customerId, request)
 
         val addressId: Long = customer.addressIdPool!! + 1
         customer.addressIdPool = addressId
@@ -243,15 +264,39 @@ class CustomerServiceImpl(
             v("customer", customer),
             v("address", address)
         )
-        this.customerRepo.save(customer)
-        val saved = this.addressRepo.save(address)
+
+        val saved = try {
+            this.txTemplate.execute {
+                this.customerRepo.save(customer)
+                this.addressRepo.save(address)
+            }
+        }
+        catch (e: RuntimeException) {
+            if (anyOfMessagesContains(e, "Duplicate entry"))
+                throw EntityBadValueException(
+                    context = setOf(
+                        EntityInfo(
+                            entityType = CustomerDO.ENTITY_TYPE,
+                            entityId = customerId,
+                        ),
+                        EntityInfo(
+                            entityType = AddressDO.ENTITY_TYPE,
+                            entityId = addressId,
+                        ),
+                    ),
+                    msg = "duplicate entry for availability"
+                )
+            else
+                throw e
+        }
+
         log.info(
             "new customer address saved, customer={} address={}",
             v("customer", customer),
             v("address", address)
         )
 
-        return saved
+        return saved!!
     }
 
     @Transactional(

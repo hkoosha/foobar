@@ -24,9 +24,9 @@ FOOBAR_LOADER_REPLICAS ?= ${FOOBAR_REPLICAS}
 
 # Bad idea for production! but good for us on a demo app.
 # TODO add this too Foobar.kt in buildSrc/...
-FOOBAR_OTEL_TRACES_SAMPLER=always_on
+FOOBAR_OTEL_TRACES_SAMPLER ?= always_on
 
-FOOBAR_DOCKER_REGISTRY=localhost:5000/
+FOOBAR_DOCKER_REGISTRY ?= localhost:5000/
 
 
 ifeq ($(FOOBAR_FAST_DOCKER_REGISTRY),true)

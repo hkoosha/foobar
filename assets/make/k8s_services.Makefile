@@ -17,7 +17,8 @@ minikube-start:
 		--cpus=$(FOOBAR_MINIKUBE_NUM_CPU) \
 		--memory=$(FOOBAR_MINIKUBE_MEMORY) \
 		--driver=$(FOOBAR_MINIKUBE_DRIVER) \
-		--nodes=$(FOOBAR_MINIKUBE_NODES)
+		--nodes=$(FOOBAR_MINIKUBE_NODES) \
+		--wait=all
 	kubectl apply -f assets/k8s/apps/metrics_server.yaml
 	sleep 1s
 	kubectl taint nodes minikube foobar-no-schedule=foobar-no-schedule:NoSchedule
@@ -37,6 +38,9 @@ _minikube-after-start:
 	@echo "Importnat: when deploying dependencies (e.g, filebeat) some pods might fail "
 	@echo "with ImagePullFailed (you can check which pods using k9s), just delete the pod"
 	@echo "and it will be created again and image will be pulled properly."
+	@echo ""
+	@echo "waiting for all pods..."
+	kubectl wait --for=condition=Ready --all=true --all-namespaces pods
 
 .PHONY: minikube-kill
 minikube-kill:
@@ -74,6 +78,9 @@ kubectl-set-ns:
 	kubectl config set-context --current --namespace=$(FOOBAR_NAMESPACE)
 
 
+.PHONY: kubectl-wait-all
+kubectl-wait-all:
+	kubectl wait --namespace=$(FOOBAR_NAMESPACE) --for=condition=Ready --all=true pods
 
 
 # ===============================================================================
@@ -131,7 +138,7 @@ helm-install-prometheus:
 		prometheus bitnami/kube-prometheus
 	kubectl apply -f assets/k8s/monitoring/podmonitor.yaml
 	kubectl apply -f assets/k8s/monitoring/prometheus.yaml
-	# kubectl apply -f assets/k8s/monitoring/servicemonitor.yaml
+	kubectl apply -f assets/k8s/monitoring/servicemonitor.yaml
 
 .PHONY: helm-uninstall-prometheus
 helm-uninstall-prometheus:
@@ -144,6 +151,7 @@ helm-uninstall-prometheus:
 helm-install-grafana:
 	kubectl create secret generic foobar-grafana-datasource --from-file=assets/grafana/datasource.yaml
 	kubectl create configmap foobar-grafana-dash-foobar --from-file=assets/grafana/dash_foobar.json
+	kubectl create configmap foobar-grafana-dash-maker --from-file=assets/grafana/dash_maker.json
 	kubectl create configmap foobar-grafana-dash-foobar-jvm --from-file=assets/grafana/dash_jvm_by_foobar_pod.json
 	kubectl create configmap foobar-grafana-dash-prometheus --from-file=assets/grafana/dash_prometheus.json
 	helm install \
@@ -496,5 +504,5 @@ k8s-deploy-deps: \
 
 .PHONY: docker-registry
 docker-registry:
-	docker run -e REGISTRY_STORAGE_DELETE_ENABLED=true -d -p 5000:5000 --restart=always --name foobar-registry registry:2
+	docker run -e REGISTRY_STORAGE_DELETE_ENABLED=true -d -p 5000:5000 --name foobar-registry registry:2
 

@@ -4,8 +4,8 @@ admin:
 dashboardsProvider:
   enabled: true
 
-# datasources:
-# secretName: foobar-grafana-datasource
+datasources:
+  secretName: foobar-grafana-datasource
 
 dashboardsConfigMaps:
   - configMapName: foobar-grafana-dash-foobar
@@ -14,6 +14,8 @@ dashboardsConfigMaps:
     fileName: dash_jvm_by_foobar_pod.json
   - configMapName: foobar-grafana-dash-prometheus
     fileName: dash_prometheus.json
+  - configMapName: foobar-grafana-dash-maker
+    fileName: dash_maker.json
 
 grafana:
   containerSecurityContext:

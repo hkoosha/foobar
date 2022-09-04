@@ -46,7 +46,7 @@ spec:
             - name: SPRING_PROFILES_ACTIVE
               value: 'json-logging,zipkin'
             - name: FOOBAR_LOG_LEVEL
-              value: trace
+              value: ${FOOBAR_LOG_LEVEL}
             - name: OTEL_EXPORTER_JAEGER_ENDPOINT
               value: 'http://jaeger-collector.foobar.svc.cluster.local:14250'
             - name: OTEL_METRICS_EXPORTER

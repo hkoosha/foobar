@@ -99,6 +99,7 @@ class LineItemCmd(
         val productId: UUID = this.entityIdService.findUUIDOrLast(ProductApi.ENTITY_TYPE, null)
         val response: ApiResponse<MutableList<OrderRequestLineItem>> =
             this.lineItemApi.getLineItemsWithHttpInfo(productId)
+        assertStatusCode(response.statusCode)
         val entities: List<OrderRequestLineItem> = response.data
         if (doLog)
             log.info { "line items:\n${response.headers}\n$entities" }
@@ -109,13 +110,14 @@ class LineItemCmd(
         orderRequestId: UUID,
         productId: UUID,
         units: Long,
-    ): OrderRequestLineItem? {
+    ): OrderRequestLineItem {
 
         val req = LineItemRequest()
         req.productId = productId
         req.units = units
 
         val response = this.lineItemApi.postLineItemWithHttpInfo(orderRequestId, req)
-        return response.data
+        assertStatusCode(response.statusCode)
+        return response.data!!
     }
 }
