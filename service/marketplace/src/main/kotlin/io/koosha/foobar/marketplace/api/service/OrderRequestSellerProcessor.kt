@@ -12,7 +12,6 @@ import io.koosha.foobar.order_request.OrderRequestSellerFoundProto
 import io.micrometer.core.instrument.Counter
 import io.micrometer.core.instrument.MeterRegistry
 import mu.KotlinLogging
-import net.logstash.logback.argument.StructuredArguments.v
 import org.apache.kafka.common.TopicPartition
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.kafka.annotation.KafkaListener
@@ -69,20 +68,7 @@ class OrderRequestSellerProcessor(
                     updated = null,
                 )
             )
-            .onErrorResume({
-                if (it is DataIntegrityViolationException
-                    && it.cause?.message?.contains("Duplicate entry") == true
-                ) {
-                    log.trace(
-                        "record already processed, skipping, orderRequestId={}",
-                        v("orderRequestId", orderRequestId),
-                    )
-                    true
-                }
-                else {
-                    false
-                }
-            }) {
+            .onErrorResume(this::isDuplicateEntry) {
                 Mono.empty()
             }
             .block()
@@ -92,39 +78,48 @@ class OrderRequestSellerProcessor(
             return
         }
 
-        if (payload.hasSellerId()) {
-            this.sellerFound.increment()
-            this.orderRequestService
-                .update(
-                    orderRequestId,
-                    OrderRequestUpdateRequest(
-                        sellerId = payload.sellerId.toUUID(),
-                        subTotal = payload.subTotal,
-                    )
-                )
-                .flatMap {
-                    this.orderRequestService.update(
-                        orderRequestId,
-                        OrderRequestUpdateRequest(
-                            state = OrderRequestState.FULFILLED,
-                        )
-                    )
-                }
-                .block()
+        val update0 = if (payload.hasSellerId()) {
+            sellerFound.increment()
+            OrderRequestUpdateRequest(
+                sellerId = payload.sellerId.toUUID(),
+                subTotal = payload.subTotal,
+            )
         }
         else {
-            this.sellerNotFound.increment()
-            this.orderRequestService
-                .update(
-                    orderRequestId,
-                    OrderRequestUpdateRequest(
-                        state = OrderRequestState.NO_SELLER_FOUND,
-                    )
-                )
-                .block()
+            sellerNotFound.increment()
+            OrderRequestUpdateRequest(state = OrderRequestState.NO_SELLER_FOUND)
         }
 
+        val update1 = if (payload.hasSellerId()) {
+            OrderRequestUpdateRequest(state = OrderRequestState.FULFILLED)
+        }
+        else {
+            null
+        }
+
+        this.orderRequestService
+            .update(orderRequestId, update0)
+            .flatMap {
+                if (update1 != null)
+                    this.orderRequestService.update(
+                        orderRequestId,
+                        update1,
+                    )
+                else
+                    Mono.empty<Void>()
+            }
+            .block()
+
         ack.acknowledge()
+    }
+
+    private fun isDuplicateEntry(it: Throwable): Boolean {
+
+        if (it !is DataIntegrityViolationException)
+            return false
+
+        return it.cause?.message?.contains("Duplicate entry") == true ||
+                it.message?.contains("Duplicate entry") == true
     }
 
 }
