@@ -10,10 +10,6 @@ spring:
     properties:
       hibernate:
         auto_quote_keyword: true
-  cloud:
-    loadbalancer:
-      cache:
-        enabled: false
   zipkin:
     enabled: false
 
@@ -58,6 +54,8 @@ logging:
   level:
     org.apache.kafka: error
     io.koosha.foobar: ${FOOBAR_LOG_LEVEL:info}
+    org.mariadb.jdbc.message.server.ErrorPacket: error
+    org.hibernate.engine.jdbc.spi.SqlExceptionHelper: error
 
 
 foobar:

@@ -666,7 +666,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_requests_seconds_count{\n    foobar_service=\"foobar-marketplace\",method=\"POST\",status=\"200\",uri=\"/foobar/marketplace/v1/order-requests\", service=\"\"\n}[$__rate_interval]))\n",
+          "expr": "sum(rate(http_server_requests_seconds_count{\n    foobar_service=\"foobar-marketplace\",method=\"POST\",status=\"201\",uri=\"/foobar/marketplace/v1/order-requests\", service=\"\"\n}[$__rate_interval]))\n",
           "legendFormat": "Successful",
           "range": true,
           "refId": "Successful"
@@ -677,7 +677,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_requests_seconds_count{\n    foobar_service=\"foobar-marketplace\",method=\"POST\",status!=\"200\",uri=\"/foobar/marketplace/v1/order-requests\", service=\"\"\n}[$__rate_interval]))\n",
+          "expr": "sum(rate(http_server_requests_seconds_count{\n    foobar_service=\"foobar-marketplace\",method=\"POST\",status!=\"201\",uri=\"/foobar/marketplace/v1/order-requests\", service=\"\"\n}[$__rate_interval]))\n",
           "hide": false,
           "interval": "",
           "legendFormat": "Failed",

@@ -36,7 +36,7 @@ interface AvailabilityRepository : JpaRepository<AvailabilityDO, AvailabilityDO.
                 "WHERE a.availabilityPk.productId = :productId " +
                 "AND a.availabilityPk.sellerId = :sellerId"
     )
-    fun findAllByproductIdAndSellerId(
+    fun findByproductIdAndSellerId(
         productId: UUID,
         sellerId: UUID?,
     ): Optional<AvailabilityDO>

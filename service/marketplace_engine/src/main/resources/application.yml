@@ -10,10 +10,6 @@ spring:
     properties:
       hibernate:
         auto_quote_keyword: true
-  cloud:
-    loadbalancer:
-      cache:
-        enabled: false
   zipkin:
     enabled: false
 
@@ -23,26 +19,6 @@ server:
     include-message: always
     include-binding-errors: always
 
-
-feign:
-  circuitbreaker:
-    enabled: true
-  okhttp:
-    enabled: true
-#  client:
-#    config:
-#      default:
-#        connectTimeout: 5000
-#        readTimeout: 5000
-
-
-resilience4j:
-  circuitbreaker:
-    instances:
-      seller-service:
-        failure-rate-threshold: 30
-        wait-duration-in-open-state: 5000
-        permitted-number-of-calls-in-half-open-state: 10
 
 logging:
   level:

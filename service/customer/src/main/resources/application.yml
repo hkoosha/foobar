@@ -11,10 +11,6 @@ spring:
     properties:
       hibernate:
         auto_quote_keyword: true
-  cloud:
-    loadbalancer:
-      cache:
-        enabled: false
   zipkin:
     enabled: false
 
