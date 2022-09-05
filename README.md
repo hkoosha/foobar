@@ -37,7 +37,7 @@ microservices, distributed tracing, monitoring, and ... using Spring Boot.
   zipkin server.
 
 - Spring Webflux / Project reactor: one of the subprojects (foobar-marketplace),
-  is reactive and uses Spring Webflux. Fot the sake of simplicity other
+  is reactive and uses Spring Webflux. For the sake of simplicity other
   subprojects of foobar are blocking.
 
 - R2dbc: it replaces Hibernate in the reactive subproject.
@@ -135,9 +135,9 @@ all foobar microservices locally on host:
 make clean \
   libs/opentelemetry-javaagent-1.17.0.jar \
   build-proto \
-  build-api-generator \
-  build-api \
-  build
+  build-api-generator
+ENV=no_db make build-api
+Make build
   
 # Run the services foobar depends on.
 make local-run-dependencies
@@ -171,8 +171,8 @@ make run-shipping
 **IMPORTANT!!** seriously consider defining the 
 `FOOBAR_FAST_DOCKER_REGISTRY=true` environment variable, it will make minikube
 read images from a local docker container running a docker registry, rather than
-than pushing images to minikube internal docker registry. It\s way faster! but
-requires opening port 5000 on your local host.
+than pushing images to minikube internal docker registry. It's way faster! but
+requires opening port 5000 on your local host's firewall.
 
 Use the following sequence of commands to spawn a minikube cluster and deploy
 all foobar microservices to it:
