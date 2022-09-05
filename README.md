@@ -137,7 +137,7 @@ make clean \
   build-proto \
   build-api-generator
 ENV=no_db make build-api
-Make build
+make build
   
 # Run the services foobar depends on.
 make local-run-dependencies
