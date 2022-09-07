@@ -8,7 +8,7 @@ abstract class EntityException : RuntimeException {
 
     val context: Set<EntityInfo>
 
-    constructor(entityType: String, entityId: Any?) {
+    constructor(entityType: String, entityId: Any?) : super("$entityType => $entityId") {
         this.context = setOf(
             EntityInfo(
                 entityType = entityType,
@@ -26,7 +26,10 @@ abstract class EntityException : RuntimeException {
         )
     }
 
-    constructor(entityType: String, entityId: Any?, throwable: Throwable) : super(throwable) {
+    constructor(entityType: String, entityId: Any?, throwable: Throwable) : super(
+        "$entityType => $entityId",
+        throwable
+    ) {
         this.context = setOf(
             EntityInfo(
                 entityType = entityType,
@@ -44,7 +47,7 @@ abstract class EntityException : RuntimeException {
         )
     }
 
-    constructor(context: Set<EntityInfo>) {
+    constructor(context: Set<EntityInfo>) : super(context.joinToString { "${it.entityType} => ${it.entityId}" }) {
         this.context = LinkedHashSet(context)
     }
 
@@ -52,7 +55,10 @@ abstract class EntityException : RuntimeException {
         this.context = LinkedHashSet(context)
     }
 
-    constructor(context: Set<EntityInfo>, throwable: Throwable) : super(throwable) {
+    constructor(
+        context: Set<EntityInfo>,
+        throwable: Throwable,
+    ) : super(context.joinToString { "${it.entityType} => ${it.entityId}" }, throwable) {
         this.context = LinkedHashSet(context)
     }
 

@@ -1,6 +1,7 @@
 package io.koosha.foobar.common.cfg
 
 import io.koosha.foobar.common.error.ResourceCurrentlyUnavailableException
+import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication
 import org.springframework.dao.ConcurrencyFailureException
@@ -20,6 +21,8 @@ class RetryableErrorAdvice(
     onCurrencyErrorRetryAfter: Duration,
 ) {
 
+    val log = KotlinLogging.logger {}
+
     private val onCurrencyErrorRetryAfter = onCurrencyErrorRetryAfter.toMillis().toString()
 
     @ExceptionHandler(
@@ -27,7 +30,9 @@ class RetryableErrorAdvice(
         ResourceCurrentlyUnavailableException::class,
     )
     @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
-    fun onRetryableError(response: HttpServletResponse) =
+    fun onRetryableError(response: HttpServletResponse, ex: Throwable) {
+        log.warn("transient error: {} => {}", ex.javaClass, ex.message)
         response.setHeader(HttpHeaders.RETRY_AFTER, this.onCurrencyErrorRetryAfter)
+    }
 
 }

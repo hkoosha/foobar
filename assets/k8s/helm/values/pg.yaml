@@ -1,0 +1,17 @@
+auth:
+  postgresPassword: '.'
+  username: root
+  password: '.'
+
+primary:
+  containerSecurityContext:
+    enabled: true
+    runAsUser: 0
+    runAsNonRoot: false
+
+volumePermissions:
+  containerSecurityContext:
+    enabled: true
+    runAsUser: 0
+    runAsNonRoot: false
+

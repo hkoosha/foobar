@@ -9,5 +9,7 @@ fun isDuplicateEntry(it: Throwable): Boolean {
         return false
 
     return it.cause?.message?.contains("Duplicate entry") == true ||
-            it.message?.contains("Duplicate entry") == true
+            it.message?.contains("Duplicate entry") == true ||
+            it.cause?.message?.contains("duplicate key value violates unique constraint") == true ||
+            it.message?.contains("duplicate key value violates unique constraint") == true
 }

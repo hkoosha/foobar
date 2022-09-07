@@ -1,0 +1,21 @@
+spring:
+  config:
+    activate:
+      on-profile:
+        - db-postgres
+  r2dbc:
+    url: 'r2dbc:postgresql://${FOOBAR_POSTGRES_HOST:localhost:5432}/foobar_marketplace'
+    username: ${FOOBAR_POSTGRES_USER:root}
+    password: ${FOOBAR_POSTGRES_PASS:.}
+    pool:
+      enabled: true
+      initial-size: 1280
+      max-size: 10240
+  flyway:
+    create-schemas: false
+    fail-on-missing-locations: true
+    baseline-on-migrate: true
+    user: ${FOOBAR_POSTGRES_USER:root}
+    password: ${FOOBAR_POSTGRES_PASS:.}
+    url: 'jdbc:postgresql://${FOOBAR_POSTGRES_HOST:localhost:5432}/foobar_marketplace'
+    locations: 'classpath:db/migration/pg'

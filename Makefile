@@ -4,11 +4,16 @@ SHELL := /bin/bash
 
 MYSQL_PASSWORD ?= .
 MYSQL_USER ?= root
+POSTGRES_PASSWORD ?= .
+POSTGRES_USER ?= root
+
+FOOBAR_K8S_SPRING_PROFILES ?= db-postgres,json-logging,expose,zipkin
+FOOBAR_K8S_SPRING_PROFILES_KAFKA ?= db-postgres,json-logging,expose,zipkin,kafka
 
 FOOBAR_MINIKUBE_MEMORY ?= 60g
 FOOBAR_MINIKUBE_NUM_CPU ?= 16
 FOOBAR_MINIKUBE_DRIVER ?= docker
-FOOBAR_MINIKUBE_NODES ?= 8
+FOOBAR_MINIKUBE_NODES ?= 4
 FOOBAR_MINIKUBE_ADDONS ?= dashboard,storage-provisioner,registry
 #FOOBAR_MINIKUBE_ADDONS ?= dashboard,storage-provisioner,ingress,registry,default-storageclass,volumesnapshots,csi-hostpath-driver
 FOOBAR_DOCKER_IMAGE_VERSION ?= 0.0.1-SNAPSHOT

@@ -44,7 +44,7 @@ spec:
               protocol: TCP
           env:
             - name: SPRING_PROFILES_ACTIVE
-              value: 'kafka,db-mysql,json-logging,expose,zipkin'
+              value: ${FOOBAR_K8S_SPRING_PROFILES_KAFKA}
             - name: FOOBAR_KAFKA_BOOTSTRAP_SERVER
               value: 'kafka-0.kafka-headless.foobar.svc.cluster.local:9092'
             - name: FOOBAR_LOG_LEVEL
@@ -58,6 +58,12 @@ spec:
             - name: FOOBAR_MYSQL_USER
               value: root
             - name: FOOBAR_MYSQL_PASS
+              value: '.'
+            - name: FOOBAR_POSTGRES_HOST
+              value: 'pg-postgresql:5432'
+            - name: FOOBAR_POSTGRES_USER
+              value: root
+            - name: FOOBAR_POSTGRES_PASS
               value: '.'
             - name: OTEL_EXPORTER_JAEGER_ENDPOINT
               value: 'http://jaeger-collector.foobar.svc.cluster.local:14250'

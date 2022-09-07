@@ -9,6 +9,7 @@ spec:
   podMetricsEndpoints:
   - port: server
     path: /actuator/prometheus
+    interval: 5s
   namespaceSelector:
     matchNames:
       - foobar

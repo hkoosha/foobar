@@ -4,7 +4,7 @@ import io.koosha.foobar.common.RandomUUIDProvider
 import io.koosha.foobar.common.error.EntityBadValueException
 import io.koosha.foobar.common.error.EntityInIllegalStateException
 import io.koosha.foobar.common.error.EntityNotFoundException
-import io.koosha.foobar.common.error.anyOfMessagesContains
+import io.koosha.foobar.common.isDuplicateEntry
 import io.koosha.foobar.common.model.EntityInfo
 import io.koosha.foobar.customer.api.model.AddressDO
 import io.koosha.foobar.customer.api.model.AddressRepository
@@ -273,7 +273,7 @@ class CustomerServiceImpl(
             }
         }
         catch (e: DataIntegrityViolationException) {
-            if (anyOfMessagesContains(e, "Duplicate entry"))
+            if (isDuplicateEntry(e))
                 throw EntityBadValueException(
                     context = setOf(
                         EntityInfo(

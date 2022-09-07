@@ -5,21 +5,6 @@ spring:
     banner-mode: off
   zipkin:
     enabled: false
-  r2dbc:
-    url: 'r2dbc:mariadb://${FOOBAR_MYSQL_HOST:localhost:3306}/foobar_marketplace'
-    username: ${FOOBAR_MYSQL_USER:root}
-    password: ${FOOBAR_MYSQL_PASS:.}
-    pool:
-      enabled: true
-      initial-size: 1280
-      max-size: 10240
-  flyway:
-    create-schemas: false
-    fail-on-missing-locations: true
-    baseline-on-migrate: true
-    user: ${FOOBAR_MYSQL_USER:root}
-    password: ${FOOBAR_MYSQL_PASS:.}
-    url: 'jdbc:mariadb://${FOOBAR_MYSQL_HOST:localhost:3306}/foobar_marketplace'
 
 server:
   port: ${FOOBAR_SERVICE_PORT_MARKETPLACE:4041}

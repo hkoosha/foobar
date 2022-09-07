@@ -7,7 +7,7 @@ import io.koosha.foobar.common.error.EntityBadValueException
 import io.koosha.foobar.common.error.EntityInIllegalStateException
 import io.koosha.foobar.common.error.EntityNotFoundException
 import io.koosha.foobar.common.error.ResourceCurrentlyUnavailableException
-import io.koosha.foobar.common.error.anyOfMessagesContains
+import io.koosha.foobar.common.isDuplicateEntry
 import io.koosha.foobar.common.model.EntityInfo
 import io.koosha.foobar.connect.seller.generated.api.SellerApi
 import io.koosha.foobar.product.AvailabilityProto
@@ -154,7 +154,7 @@ class ProductServiceAvailabilityAdderImpl(
             }
         }
         catch (e: DataIntegrityViolationException) {
-            throw if (anyOfMessagesContains(e, "Duplicate entry"))
+            throw if (isDuplicateEntry(e))
                 EntityBadValueException(
                     context = setOf(
                         EntityInfo(

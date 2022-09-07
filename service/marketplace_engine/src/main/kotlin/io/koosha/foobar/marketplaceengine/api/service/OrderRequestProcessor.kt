@@ -85,10 +85,10 @@ class OrderRequestProcessor(
                     }
                     ack.acknowledge()
                 }
-                catch (e: SkipProcessing) {
+                catch (@Suppress("SwallowedException") e: SkipProcessing) {
                     ack.acknowledge()
                 }
-                catch (e: ObjectOptimisticLockingFailureException) {
+                catch (@Suppress("SwallowedException") e: ObjectOptimisticLockingFailureException) {
                     ack.acknowledge()
                 }
                 catch (e: Throwable) {
