@@ -41,7 +41,7 @@ public class SellerCreateRequest {
   public static final String JSON_PROPERTY_ADDRESS = "address";
   private SellerCreateRequestAddress address;
 
-  public SellerCreateRequest() { 
+  public SellerCreateRequest() {
   }
 
   public SellerCreateRequest name(String name) {

@@ -89,70 +89,6 @@ public final class OrderRequestSellerFoundProto {
     getUnknownFields() {
       return this.unknownFields;
     }
-    private OrderRequestSellerFound(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
-      if (extensionRegistry == null) {
-        throw new java.lang.NullPointerException();
-      }
-      int mutable_bitField0_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            case 10: {
-              io.koosha.foobar.HeaderProto.Header.Builder subBuilder = null;
-              if (header_ != null) {
-                subBuilder = header_.toBuilder();
-              }
-              header_ = input.readMessage(io.koosha.foobar.HeaderProto.Header.parser(), extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(header_);
-                header_ = subBuilder.buildPartial();
-              }
-
-              break;
-            }
-            case 18: {
-              java.lang.String s = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000001;
-              sellerId_ = s;
-              break;
-            }
-            case 24: {
-              bitField0_ |= 0x00000002;
-              subTotal_ = input.readUInt64();
-              break;
-            }
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
-          }
-        }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
-      } catch (com.google.protobuf.UninitializedMessageException e) {
-        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(this);
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
-      } finally {
-        this.unknownFields = unknownFields.build();
-        makeExtensionsImmutable();
-      }
-    }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
       return io.koosha.foobar.order_request.OrderRequestSellerFoundProto.internal_static_io_koosha_foobar_order_request_OrderRequestSellerFound_descriptor;
@@ -190,11 +126,12 @@ public final class OrderRequestSellerFoundProto {
      */
     @java.lang.Override
     public io.koosha.foobar.HeaderProto.HeaderOrBuilder getHeaderOrBuilder() {
-      return getHeader();
+      return header_ == null ? io.koosha.foobar.HeaderProto.Header.getDefaultInstance() : header_;
     }
 
     public static final int SELLER_ID_FIELD_NUMBER = 2;
-    private volatile java.lang.Object sellerId_;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object sellerId_ = "";
     /**
      * <code>optional string seller_id = 2;</code>
      * @return Whether the sellerId field is set.
@@ -240,7 +177,7 @@ public final class OrderRequestSellerFoundProto {
     }
 
     public static final int SUB_TOTAL_FIELD_NUMBER = 3;
-    private long subTotal_;
+    private long subTotal_ = 0L;
     /**
      * <code>optional uint64 sub_total = 3;</code>
      * @return Whether the subTotal field is set.
@@ -281,7 +218,7 @@ public final class OrderRequestSellerFoundProto {
       if (((bitField0_ & 0x00000002) != 0)) {
         output.writeUInt64(3, subTotal_);
       }
-      unknownFields.writeTo(output);
+      getUnknownFields().writeTo(output);
     }
 
     @java.lang.Override
@@ -301,7 +238,7 @@ public final class OrderRequestSellerFoundProto {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt64Size(3, subTotal_);
       }
-      size += unknownFields.getSerializedSize();
+      size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
       return size;
     }
@@ -331,7 +268,7 @@ public final class OrderRequestSellerFoundProto {
         if (getSubTotal()
             != other.getSubTotal()) return false;
       }
-      if (!unknownFields.equals(other.unknownFields)) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
 
@@ -355,7 +292,7 @@ public final class OrderRequestSellerFoundProto {
         hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
             getSubTotal());
       }
-      hash = (29 * hash) + unknownFields.hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
     }
@@ -472,32 +409,25 @@ public final class OrderRequestSellerFoundProto {
 
       // Construct using io.koosha.foobar.order_request.OrderRequestSellerFoundProto.OrderRequestSellerFound.newBuilder()
       private Builder() {
-        maybeForceBuilderInitialization();
+
       }
 
       private Builder(
           com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
-        }
+
       }
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        if (headerBuilder_ == null) {
-          header_ = null;
-        } else {
-          header_ = null;
+        bitField0_ = 0;
+        header_ = null;
+        if (headerBuilder_ != null) {
+          headerBuilder_.dispose();
           headerBuilder_ = null;
         }
         sellerId_ = "";
-        bitField0_ = (bitField0_ & ~0x00000001);
         subTotal_ = 0L;
-        bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
 
@@ -524,24 +454,28 @@ public final class OrderRequestSellerFoundProto {
       @java.lang.Override
       public io.koosha.foobar.order_request.OrderRequestSellerFoundProto.OrderRequestSellerFound buildPartial() {
         io.koosha.foobar.order_request.OrderRequestSellerFoundProto.OrderRequestSellerFound result = new io.koosha.foobar.order_request.OrderRequestSellerFoundProto.OrderRequestSellerFound(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(io.koosha.foobar.order_request.OrderRequestSellerFoundProto.OrderRequestSellerFound result) {
         int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        if (headerBuilder_ == null) {
-          result.header_ = header_;
-        } else {
-          result.header_ = headerBuilder_.build();
-        }
         if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.header_ = headerBuilder_ == null
+              ? header_
+              : headerBuilder_.build();
+        }
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.sellerId_ = sellerId_;
           to_bitField0_ |= 0x00000001;
         }
-        result.sellerId_ = sellerId_;
-        if (((from_bitField0_ & 0x00000002) != 0)) {
+        if (((from_bitField0_ & 0x00000004) != 0)) {
           result.subTotal_ = subTotal_;
           to_bitField0_ |= 0x00000002;
         }
-        result.bitField0_ = to_bitField0_;
-        onBuilt();
-        return result;
+        result.bitField0_ |= to_bitField0_;
       }
 
       @java.lang.Override
@@ -592,14 +526,14 @@ public final class OrderRequestSellerFoundProto {
           mergeHeader(other.getHeader());
         }
         if (other.hasSellerId()) {
-          bitField0_ |= 0x00000001;
           sellerId_ = other.sellerId_;
+          bitField0_ |= 0x00000002;
           onChanged();
         }
         if (other.hasSubTotal()) {
           setSubTotal(other.getSubTotal());
         }
-        this.mergeUnknownFields(other.unknownFields);
+        this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
       }
@@ -614,17 +548,47 @@ public final class OrderRequestSellerFoundProto {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        io.koosha.foobar.order_request.OrderRequestSellerFoundProto.OrderRequestSellerFound parsedMessage = null;
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
         try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                input.readMessage(
+                    getHeaderFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 18: {
+                sellerId_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              case 24: {
+                subTotal_ = input.readUInt64();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 24
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (io.koosha.foobar.order_request.OrderRequestSellerFoundProto.OrderRequestSellerFound) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
+          onChanged();
+        } // finally
         return this;
       }
       private int bitField0_;
@@ -637,7 +601,7 @@ public final class OrderRequestSellerFoundProto {
        * @return Whether the header field is set.
        */
       public boolean hasHeader() {
-        return headerBuilder_ != null || header_ != null;
+        return ((bitField0_ & 0x00000001) != 0);
       }
       /**
        * <code>.io.koosha.foobar.Header header = 1;</code>
@@ -659,11 +623,11 @@ public final class OrderRequestSellerFoundProto {
             throw new NullPointerException();
           }
           header_ = value;
-          onChanged();
         } else {
           headerBuilder_.setMessage(value);
         }
-
+        bitField0_ |= 0x00000001;
+        onChanged();
         return this;
       }
       /**
@@ -673,11 +637,11 @@ public final class OrderRequestSellerFoundProto {
           io.koosha.foobar.HeaderProto.Header.Builder builderForValue) {
         if (headerBuilder_ == null) {
           header_ = builderForValue.build();
-          onChanged();
         } else {
           headerBuilder_.setMessage(builderForValue.build());
         }
-
+        bitField0_ |= 0x00000001;
+        onChanged();
         return this;
       }
       /**
@@ -685,38 +649,38 @@ public final class OrderRequestSellerFoundProto {
        */
       public Builder mergeHeader(io.koosha.foobar.HeaderProto.Header value) {
         if (headerBuilder_ == null) {
-          if (header_ != null) {
-            header_ =
-              io.koosha.foobar.HeaderProto.Header.newBuilder(header_).mergeFrom(value).buildPartial();
+          if (((bitField0_ & 0x00000001) != 0) &&
+            header_ != null &&
+            header_ != io.koosha.foobar.HeaderProto.Header.getDefaultInstance()) {
+            getHeaderBuilder().mergeFrom(value);
           } else {
             header_ = value;
           }
-          onChanged();
         } else {
           headerBuilder_.mergeFrom(value);
         }
-
+        bitField0_ |= 0x00000001;
+        onChanged();
         return this;
       }
       /**
        * <code>.io.koosha.foobar.Header header = 1;</code>
        */
       public Builder clearHeader() {
-        if (headerBuilder_ == null) {
-          header_ = null;
-          onChanged();
-        } else {
-          header_ = null;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        header_ = null;
+        if (headerBuilder_ != null) {
+          headerBuilder_.dispose();
           headerBuilder_ = null;
         }
-
+        onChanged();
         return this;
       }
       /**
        * <code>.io.koosha.foobar.Header header = 1;</code>
        */
       public io.koosha.foobar.HeaderProto.Header.Builder getHeaderBuilder() {
-        
+        bitField0_ |= 0x00000001;
         onChanged();
         return getHeaderFieldBuilder().getBuilder();
       }
@@ -754,7 +718,7 @@ public final class OrderRequestSellerFoundProto {
        * @return Whether the sellerId field is set.
        */
       public boolean hasSellerId() {
-        return ((bitField0_ & 0x00000001) != 0);
+        return ((bitField0_ & 0x00000002) != 0);
       }
       /**
        * <code>optional string seller_id = 2;</code>
@@ -796,11 +760,9 @@ public final class OrderRequestSellerFoundProto {
        */
       public Builder setSellerId(
           java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000001;
+        if (value == null) { throw new NullPointerException(); }
         sellerId_ = value;
+        bitField0_ |= 0x00000002;
         onChanged();
         return this;
       }
@@ -809,8 +771,8 @@ public final class OrderRequestSellerFoundProto {
        * @return This builder for chaining.
        */
       public Builder clearSellerId() {
-        bitField0_ = (bitField0_ & ~0x00000001);
         sellerId_ = getDefaultInstance().getSellerId();
+        bitField0_ = (bitField0_ & ~0x00000002);
         onChanged();
         return this;
       }
@@ -821,12 +783,10 @@ public final class OrderRequestSellerFoundProto {
        */
       public Builder setSellerIdBytes(
           com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        bitField0_ |= 0x00000001;
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
         sellerId_ = value;
+        bitField0_ |= 0x00000002;
         onChanged();
         return this;
       }
@@ -838,7 +798,7 @@ public final class OrderRequestSellerFoundProto {
        */
       @java.lang.Override
       public boolean hasSubTotal() {
-        return ((bitField0_ & 0x00000002) != 0);
+        return ((bitField0_ & 0x00000004) != 0);
       }
       /**
        * <code>optional uint64 sub_total = 3;</code>
@@ -854,8 +814,9 @@ public final class OrderRequestSellerFoundProto {
        * @return This builder for chaining.
        */
       public Builder setSubTotal(long value) {
-        bitField0_ |= 0x00000002;
+        
         subTotal_ = value;
+        bitField0_ |= 0x00000004;
         onChanged();
         return this;
       }
@@ -864,7 +825,7 @@ public final class OrderRequestSellerFoundProto {
        * @return This builder for chaining.
        */
       public Builder clearSubTotal() {
-        bitField0_ = (bitField0_ & ~0x00000002);
+        bitField0_ = (bitField0_ & ~0x00000004);
         subTotal_ = 0L;
         onChanged();
         return this;
@@ -902,7 +863,18 @@ public final class OrderRequestSellerFoundProto {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return new OrderRequestSellerFound(input, extensionRegistry);
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
       }
     };
 

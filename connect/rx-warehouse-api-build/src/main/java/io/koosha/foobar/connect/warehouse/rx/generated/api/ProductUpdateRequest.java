@@ -48,7 +48,7 @@ public class ProductUpdateRequest {
   public static final String JSON_PROPERTY_UNIT_MULTIPLE = "unitMultiple";
   private String unitMultiple;
 
-  public ProductUpdateRequest() { 
+  public ProductUpdateRequest() {
   }
 
   public ProductUpdateRequest active(Boolean active) {

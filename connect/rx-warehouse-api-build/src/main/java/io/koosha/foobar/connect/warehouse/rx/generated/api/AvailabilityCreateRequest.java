@@ -45,7 +45,7 @@ public class AvailabilityCreateRequest {
   public static final String JSON_PROPERTY_PRICE_PER_UNIT = "pricePerUnit";
   private Long pricePerUnit;
 
-  public AvailabilityCreateRequest() { 
+  public AvailabilityCreateRequest() {
   }
 
   public AvailabilityCreateRequest sellerId(UUID sellerId) {

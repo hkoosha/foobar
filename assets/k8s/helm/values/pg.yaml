@@ -4,6 +4,8 @@ auth:
   password: '.'
 
 primary:
+  extendedConfiguration: |
+        max_connections = 2048 
   containerSecurityContext:
     enabled: true
     runAsUser: 0

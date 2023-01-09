@@ -135,7 +135,6 @@ helm-uninstall-pg:
 		-n $(FOOBAR_NAMESPACE) \
 		pg
 
-
 .PHONY: helm-install-kafka
 helm-install-kafka:
 	helm install \
@@ -446,6 +445,15 @@ k8s-init-create-db:
 		  PGPASSWORD="$(POSTGRES_PASSWORD)" createdb -e -U root foobar_shipping; \
 		  PGPASSWORD="$(POSTGRES_PASSWORD)" createdb -e -U root foobar_warehouse; \
 		  PGPASSWORD="$(POSTGRES_PASSWORD)" createdb -e -U root foobar_maker;'
+	kubectl exec pg-postgresql-0 -it --namespace $(FOOBAR_NAMESPACE) -- bash -c ' \
+		  PGPASSWORD="$(POSTGRES_PASSWORD)" psql -U postgres foobar_customer -c "ALTER USER root WITH SUPERUSER"; \
+		  '
+	kubectl exec pg-postgresql-0 -it --namespace $(FOOBAR_NAMESPACE) -- bash -c ' \
+		  PGPASSWORD="$(POSTGRES_PASSWORD)" psql -U postgres foobar_customer -c "ALTER USER root WITH LOGIN"; \
+		  '
+	kubectl exec pg-postgresql-0 -it --namespace $(FOOBAR_NAMESPACE) -- bash -c ' \
+		  PGPASSWORD="$(POSTGRES_PASSWORD)" psql -U postgres foobar_customer -c "ALTER USER root WITH REPLICATION"; \
+		  '
 	kubectl exec mariadb-0 -it --namespace $(FOOBAR_NAMESPACE) -- bash -c \
 		  'mysql -h mariadb.foobar.svc.cluster.local -uroot \
 		  -p"$(shell kubectl get secret --namespace foobar mariadb -o jsonpath="{.data.mariadb-root-password}" | base64 -d)" \

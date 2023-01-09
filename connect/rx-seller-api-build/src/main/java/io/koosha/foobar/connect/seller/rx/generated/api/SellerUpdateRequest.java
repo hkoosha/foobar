@@ -41,7 +41,7 @@ public class SellerUpdateRequest {
   public static final String JSON_PROPERTY_ADDRESS = "address";
   private SellerUpdateRequestAddress address;
 
-  public SellerUpdateRequest() { 
+  public SellerUpdateRequest() {
   }
 
   public SellerUpdateRequest name(String name) {

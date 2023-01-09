@@ -115,9 +115,38 @@ public class AvailabilityApi {
         return deleteAvailabilityRequestCreation(productId, sellerId).bodyToMono(localVarReturnType);
     }
 
+    /**
+     * 
+     * 
+     * <p><b>404</b> - Not Found
+     * <p><b>400</b> - Bad Request
+     * <p><b>403</b> - Forbidden
+     * <p><b>503</b> - Service Unavailable
+     * <p><b>204</b> - No Content
+     * @param productId The productId parameter
+     * @param sellerId The sellerId parameter
+     * @throws WebClientResponseException if an error occurs while attempting to invoke the API
+     */
     public Mono<ResponseEntity<Void>> deleteAvailabilityWithHttpInfo(UUID productId, UUID sellerId) throws WebClientResponseException {
         ParameterizedTypeReference<Void> localVarReturnType = new ParameterizedTypeReference<Void>() {};
         return deleteAvailabilityRequestCreation(productId, sellerId).toEntity(localVarReturnType);
+    }
+
+    /**
+     * 
+     * 
+     * <p><b>404</b> - Not Found
+     * <p><b>400</b> - Bad Request
+     * <p><b>403</b> - Forbidden
+     * <p><b>503</b> - Service Unavailable
+     * <p><b>204</b> - No Content
+     * @param productId The productId parameter
+     * @param sellerId The sellerId parameter
+     * @return ResponseSpec
+     * @throws WebClientResponseException if an error occurs while attempting to invoke the API
+     */
+    public ResponseSpec deleteAvailabilityWithResponseSpec(UUID productId, UUID sellerId) throws WebClientResponseException {
+        return deleteAvailabilityRequestCreation(productId, sellerId);
     }
     /**
      * 
@@ -177,9 +206,37 @@ public class AvailabilityApi {
         return getAvailabilitiesRequestCreation(productId).bodyToFlux(localVarReturnType);
     }
 
+    /**
+     * 
+     * 
+     * <p><b>404</b> - Not Found
+     * <p><b>400</b> - Bad Request
+     * <p><b>403</b> - Forbidden
+     * <p><b>503</b> - Service Unavailable
+     * <p><b>200</b> - OK
+     * @param productId The productId parameter
+     * @return ResponseEntity&lt;List&lt;Availability&gt;&gt;
+     * @throws WebClientResponseException if an error occurs while attempting to invoke the API
+     */
     public Mono<ResponseEntity<List<Availability>>> getAvailabilitiesWithHttpInfo(UUID productId) throws WebClientResponseException {
         ParameterizedTypeReference<Availability> localVarReturnType = new ParameterizedTypeReference<Availability>() {};
         return getAvailabilitiesRequestCreation(productId).toEntityList(localVarReturnType);
+    }
+
+    /**
+     * 
+     * 
+     * <p><b>404</b> - Not Found
+     * <p><b>400</b> - Bad Request
+     * <p><b>403</b> - Forbidden
+     * <p><b>503</b> - Service Unavailable
+     * <p><b>200</b> - OK
+     * @param productId The productId parameter
+     * @return ResponseSpec
+     * @throws WebClientResponseException if an error occurs while attempting to invoke the API
+     */
+    public ResponseSpec getAvailabilitiesWithResponseSpec(UUID productId) throws WebClientResponseException {
+        return getAvailabilitiesRequestCreation(productId);
     }
     /**
      * 
@@ -246,9 +303,39 @@ public class AvailabilityApi {
         return getAvailabilityRequestCreation(productId, sellerId).bodyToMono(localVarReturnType);
     }
 
+    /**
+     * 
+     * 
+     * <p><b>404</b> - Not Found
+     * <p><b>400</b> - Bad Request
+     * <p><b>403</b> - Forbidden
+     * <p><b>503</b> - Service Unavailable
+     * <p><b>200</b> - OK
+     * @param productId The productId parameter
+     * @param sellerId The sellerId parameter
+     * @return ResponseEntity&lt;Availability&gt;
+     * @throws WebClientResponseException if an error occurs while attempting to invoke the API
+     */
     public Mono<ResponseEntity<Availability>> getAvailabilityWithHttpInfo(UUID productId, UUID sellerId) throws WebClientResponseException {
         ParameterizedTypeReference<Availability> localVarReturnType = new ParameterizedTypeReference<Availability>() {};
         return getAvailabilityRequestCreation(productId, sellerId).toEntity(localVarReturnType);
+    }
+
+    /**
+     * 
+     * 
+     * <p><b>404</b> - Not Found
+     * <p><b>400</b> - Bad Request
+     * <p><b>403</b> - Forbidden
+     * <p><b>503</b> - Service Unavailable
+     * <p><b>200</b> - OK
+     * @param productId The productId parameter
+     * @param sellerId The sellerId parameter
+     * @return ResponseSpec
+     * @throws WebClientResponseException if an error occurs while attempting to invoke the API
+     */
+    public ResponseSpec getAvailabilityWithResponseSpec(UUID productId, UUID sellerId) throws WebClientResponseException {
+        return getAvailabilityRequestCreation(productId, sellerId);
     }
     /**
      * 
@@ -323,9 +410,41 @@ public class AvailabilityApi {
         return patchAvailabilityRequestCreation(productId, sellerId, availabilityUpdateRequest).bodyToMono(localVarReturnType);
     }
 
+    /**
+     * 
+     * 
+     * <p><b>404</b> - Not Found
+     * <p><b>400</b> - Bad Request
+     * <p><b>403</b> - Forbidden
+     * <p><b>503</b> - Service Unavailable
+     * <p><b>200</b> - OK
+     * @param productId The productId parameter
+     * @param sellerId The sellerId parameter
+     * @param availabilityUpdateRequest The availabilityUpdateRequest parameter
+     * @return ResponseEntity&lt;Availability&gt;
+     * @throws WebClientResponseException if an error occurs while attempting to invoke the API
+     */
     public Mono<ResponseEntity<Availability>> patchAvailabilityWithHttpInfo(UUID productId, UUID sellerId, AvailabilityUpdateRequest availabilityUpdateRequest) throws WebClientResponseException {
         ParameterizedTypeReference<Availability> localVarReturnType = new ParameterizedTypeReference<Availability>() {};
         return patchAvailabilityRequestCreation(productId, sellerId, availabilityUpdateRequest).toEntity(localVarReturnType);
+    }
+
+    /**
+     * 
+     * 
+     * <p><b>404</b> - Not Found
+     * <p><b>400</b> - Bad Request
+     * <p><b>403</b> - Forbidden
+     * <p><b>503</b> - Service Unavailable
+     * <p><b>200</b> - OK
+     * @param productId The productId parameter
+     * @param sellerId The sellerId parameter
+     * @param availabilityUpdateRequest The availabilityUpdateRequest parameter
+     * @return ResponseSpec
+     * @throws WebClientResponseException if an error occurs while attempting to invoke the API
+     */
+    public ResponseSpec patchAvailabilityWithResponseSpec(UUID productId, UUID sellerId, AvailabilityUpdateRequest availabilityUpdateRequest) throws WebClientResponseException {
+        return patchAvailabilityRequestCreation(productId, sellerId, availabilityUpdateRequest);
     }
     /**
      * 
@@ -393,8 +512,38 @@ public class AvailabilityApi {
         return postAvailabilityRequestCreation(productId, availabilityCreateRequest).bodyToMono(localVarReturnType);
     }
 
+    /**
+     * 
+     * 
+     * <p><b>404</b> - Not Found
+     * <p><b>400</b> - Bad Request
+     * <p><b>403</b> - Forbidden
+     * <p><b>503</b> - Service Unavailable
+     * <p><b>201</b> - Created
+     * @param productId The productId parameter
+     * @param availabilityCreateRequest The availabilityCreateRequest parameter
+     * @return ResponseEntity&lt;Availability&gt;
+     * @throws WebClientResponseException if an error occurs while attempting to invoke the API
+     */
     public Mono<ResponseEntity<Availability>> postAvailabilityWithHttpInfo(UUID productId, AvailabilityCreateRequest availabilityCreateRequest) throws WebClientResponseException {
         ParameterizedTypeReference<Availability> localVarReturnType = new ParameterizedTypeReference<Availability>() {};
         return postAvailabilityRequestCreation(productId, availabilityCreateRequest).toEntity(localVarReturnType);
+    }
+
+    /**
+     * 
+     * 
+     * <p><b>404</b> - Not Found
+     * <p><b>400</b> - Bad Request
+     * <p><b>403</b> - Forbidden
+     * <p><b>503</b> - Service Unavailable
+     * <p><b>201</b> - Created
+     * @param productId The productId parameter
+     * @param availabilityCreateRequest The availabilityCreateRequest parameter
+     * @return ResponseSpec
+     * @throws WebClientResponseException if an error occurs while attempting to invoke the API
+     */
+    public ResponseSpec postAvailabilityWithResponseSpec(UUID productId, AvailabilityCreateRequest availabilityCreateRequest) throws WebClientResponseException {
+        return postAvailabilityRequestCreation(productId, availabilityCreateRequest);
     }
 }

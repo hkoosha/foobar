@@ -83,7 +83,7 @@ public class Name {
   public static final String JSON_PROPERTY_LAST_NAME = "lastName";
   private String lastName;
 
-  public Name() { 
+  public Name() {
   }
 
   public Name title(TitleEnum title) {

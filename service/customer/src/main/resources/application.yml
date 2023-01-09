@@ -13,6 +13,9 @@ spring:
         auto_quote_keyword: true
   zipkin:
     enabled: false
+  datasource:
+    hikari:
+      maximum-pool-size: 64
 
 
 server:

@@ -285,7 +285,7 @@ class CustomerServiceImpl(
                             entityId = addressId,
                         ),
                     ),
-                    msg = "duplicate entry for availability"
+                    msg = "duplicate entry for address"
                 )
             else
                 throw e

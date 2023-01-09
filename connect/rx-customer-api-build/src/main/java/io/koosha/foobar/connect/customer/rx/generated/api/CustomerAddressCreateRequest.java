@@ -52,7 +52,7 @@ public class CustomerAddressCreateRequest {
   public static final String JSON_PROPERTY_NAME = "name";
   private String name;
 
-  public CustomerAddressCreateRequest() { 
+  public CustomerAddressCreateRequest() {
   }
 
   public CustomerAddressCreateRequest zipcode(String zipcode) {

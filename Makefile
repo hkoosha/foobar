@@ -9,12 +9,13 @@ POSTGRES_USER ?= root
 
 FOOBAR_K8S_SPRING_PROFILES ?= db-postgres,json-logging,expose,zipkin
 FOOBAR_K8S_SPRING_PROFILES_KAFKA ?= db-postgres,json-logging,expose,zipkin,kafka
+FOOBAR_K8S_SPRING_PROFILES_CUSTOMER ?= db-mysql,json-logging,expose,zipkin
 
-FOOBAR_MINIKUBE_MEMORY ?= 60g
+FOOBAR_MINIKUBE_MEMORY ?= 80g
 FOOBAR_MINIKUBE_NUM_CPU ?= 16
 FOOBAR_MINIKUBE_DRIVER ?= docker
-FOOBAR_MINIKUBE_NODES ?= 4
-FOOBAR_MINIKUBE_ADDONS ?= dashboard,storage-provisioner,registry
+FOOBAR_MINIKUBE_NODES ?= 6
+FOOBAR_MINIKUBE_ADDONS ?= dashboard,storage-provisioner,registry,metrics-server
 #FOOBAR_MINIKUBE_ADDONS ?= dashboard,storage-provisioner,ingress,registry,default-storageclass,volumesnapshots,csi-hostpath-driver
 FOOBAR_DOCKER_IMAGE_VERSION ?= 0.0.1-SNAPSHOT
 

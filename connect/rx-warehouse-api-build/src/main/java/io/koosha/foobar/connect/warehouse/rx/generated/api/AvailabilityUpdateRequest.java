@@ -44,7 +44,7 @@ public class AvailabilityUpdateRequest {
   public static final String JSON_PROPERTY_PRICE_PER_UNIT = "pricePerUnit";
   private Long pricePerUnit;
 
-  public AvailabilityUpdateRequest() { 
+  public AvailabilityUpdateRequest() {
   }
 
   public AvailabilityUpdateRequest unitsAvailable(Long unitsAvailable) {

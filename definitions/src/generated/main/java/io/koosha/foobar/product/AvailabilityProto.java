@@ -132,92 +132,6 @@ public final class AvailabilityProto {
     getUnknownFields() {
       return this.unknownFields;
     }
-    private Availability(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
-      if (extensionRegistry == null) {
-        throw new java.lang.NullPointerException();
-      }
-      int mutable_bitField0_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            case 10: {
-              io.koosha.foobar.HeaderProto.Header.Builder subBuilder = null;
-              if (header_ != null) {
-                subBuilder = header_.toBuilder();
-              }
-              header_ = input.readMessage(io.koosha.foobar.HeaderProto.Header.parser(), extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(header_);
-                header_ = subBuilder.buildPartial();
-              }
-
-              break;
-            }
-            case 18: {
-              java.lang.String s = input.readStringRequireUtf8();
-
-              action_ = s;
-              break;
-            }
-            case 26: {
-              java.lang.String s = input.readStringRequireUtf8();
-
-              sellerId_ = s;
-              break;
-            }
-            case 34: {
-              java.lang.String s = input.readStringRequireUtf8();
-
-              productId_ = s;
-              break;
-            }
-            case 40: {
-              bitField0_ |= 0x00000001;
-              frozenUnits_ = input.readUInt64();
-              break;
-            }
-            case 48: {
-              bitField0_ |= 0x00000002;
-              unitsAvailable_ = input.readUInt64();
-              break;
-            }
-            case 56: {
-              bitField0_ |= 0x00000004;
-              pricePerUnit_ = input.readUInt64();
-              break;
-            }
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
-          }
-        }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
-      } catch (com.google.protobuf.UninitializedMessageException e) {
-        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(this);
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
-      } finally {
-        this.unknownFields = unknownFields.build();
-        makeExtensionsImmutable();
-      }
-    }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
       return io.koosha.foobar.product.AvailabilityProto.internal_static_io_koosha_foobar_product_Availability_descriptor;
@@ -255,11 +169,12 @@ public final class AvailabilityProto {
      */
     @java.lang.Override
     public io.koosha.foobar.HeaderProto.HeaderOrBuilder getHeaderOrBuilder() {
-      return getHeader();
+      return header_ == null ? io.koosha.foobar.HeaderProto.Header.getDefaultInstance() : header_;
     }
 
     public static final int ACTION_FIELD_NUMBER = 2;
-    private volatile java.lang.Object action_;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object action_ = "";
     /**
      * <code>string action = 2;</code>
      * @return The action.
@@ -297,7 +212,8 @@ public final class AvailabilityProto {
     }
 
     public static final int SELLER_ID_FIELD_NUMBER = 3;
-    private volatile java.lang.Object sellerId_;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object sellerId_ = "";
     /**
      * <code>string seller_id = 3;</code>
      * @return The sellerId.
@@ -335,7 +251,8 @@ public final class AvailabilityProto {
     }
 
     public static final int PRODUCT_ID_FIELD_NUMBER = 4;
-    private volatile java.lang.Object productId_;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object productId_ = "";
     /**
      * <code>string product_id = 4;</code>
      * @return The productId.
@@ -373,7 +290,7 @@ public final class AvailabilityProto {
     }
 
     public static final int FROZEN_UNITS_FIELD_NUMBER = 5;
-    private long frozenUnits_;
+    private long frozenUnits_ = 0L;
     /**
      * <code>optional uint64 frozen_units = 5;</code>
      * @return Whether the frozenUnits field is set.
@@ -392,7 +309,7 @@ public final class AvailabilityProto {
     }
 
     public static final int UNITS_AVAILABLE_FIELD_NUMBER = 6;
-    private long unitsAvailable_;
+    private long unitsAvailable_ = 0L;
     /**
      * <code>optional uint64 units_available = 6;</code>
      * @return Whether the unitsAvailable field is set.
@@ -411,7 +328,7 @@ public final class AvailabilityProto {
     }
 
     public static final int PRICE_PER_UNIT_FIELD_NUMBER = 7;
-    private long pricePerUnit_;
+    private long pricePerUnit_ = 0L;
     /**
      * <code>optional uint64 price_per_unit = 7;</code>
      * @return Whether the pricePerUnit field is set.
@@ -464,7 +381,7 @@ public final class AvailabilityProto {
       if (((bitField0_ & 0x00000004) != 0)) {
         output.writeUInt64(7, pricePerUnit_);
       }
-      unknownFields.writeTo(output);
+      getUnknownFields().writeTo(output);
     }
 
     @java.lang.Override
@@ -498,7 +415,7 @@ public final class AvailabilityProto {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt64Size(7, pricePerUnit_);
       }
-      size += unknownFields.getSerializedSize();
+      size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
       return size;
     }
@@ -539,7 +456,7 @@ public final class AvailabilityProto {
         if (getPricePerUnit()
             != other.getPricePerUnit()) return false;
       }
-      if (!unknownFields.equals(other.unknownFields)) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
 
@@ -575,7 +492,7 @@ public final class AvailabilityProto {
         hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
             getPricePerUnit());
       }
-      hash = (29 * hash) + unknownFields.hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
     }
@@ -692,40 +609,29 @@ public final class AvailabilityProto {
 
       // Construct using io.koosha.foobar.product.AvailabilityProto.Availability.newBuilder()
       private Builder() {
-        maybeForceBuilderInitialization();
+
       }
 
       private Builder(
           com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
-        }
+
       }
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        if (headerBuilder_ == null) {
-          header_ = null;
-        } else {
-          header_ = null;
+        bitField0_ = 0;
+        header_ = null;
+        if (headerBuilder_ != null) {
+          headerBuilder_.dispose();
           headerBuilder_ = null;
         }
         action_ = "";
-
         sellerId_ = "";
-
         productId_ = "";
-
         frozenUnits_ = 0L;
-        bitField0_ = (bitField0_ & ~0x00000001);
         unitsAvailable_ = 0L;
-        bitField0_ = (bitField0_ & ~0x00000002);
         pricePerUnit_ = 0L;
-        bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
 
@@ -752,31 +658,41 @@ public final class AvailabilityProto {
       @java.lang.Override
       public io.koosha.foobar.product.AvailabilityProto.Availability buildPartial() {
         io.koosha.foobar.product.AvailabilityProto.Availability result = new io.koosha.foobar.product.AvailabilityProto.Availability(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(io.koosha.foobar.product.AvailabilityProto.Availability result) {
         int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        if (headerBuilder_ == null) {
-          result.header_ = header_;
-        } else {
-          result.header_ = headerBuilder_.build();
-        }
-        result.action_ = action_;
-        result.sellerId_ = sellerId_;
-        result.productId_ = productId_;
         if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.header_ = headerBuilder_ == null
+              ? header_
+              : headerBuilder_.build();
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.action_ = action_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.sellerId_ = sellerId_;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.productId_ = productId_;
+        }
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000010) != 0)) {
           result.frozenUnits_ = frozenUnits_;
           to_bitField0_ |= 0x00000001;
         }
-        if (((from_bitField0_ & 0x00000002) != 0)) {
+        if (((from_bitField0_ & 0x00000020) != 0)) {
           result.unitsAvailable_ = unitsAvailable_;
           to_bitField0_ |= 0x00000002;
         }
-        if (((from_bitField0_ & 0x00000004) != 0)) {
+        if (((from_bitField0_ & 0x00000040) != 0)) {
           result.pricePerUnit_ = pricePerUnit_;
           to_bitField0_ |= 0x00000004;
         }
-        result.bitField0_ = to_bitField0_;
-        onBuilt();
-        return result;
+        result.bitField0_ |= to_bitField0_;
       }
 
       @java.lang.Override
@@ -828,14 +744,17 @@ public final class AvailabilityProto {
         }
         if (!other.getAction().isEmpty()) {
           action_ = other.action_;
+          bitField0_ |= 0x00000002;
           onChanged();
         }
         if (!other.getSellerId().isEmpty()) {
           sellerId_ = other.sellerId_;
+          bitField0_ |= 0x00000004;
           onChanged();
         }
         if (!other.getProductId().isEmpty()) {
           productId_ = other.productId_;
+          bitField0_ |= 0x00000008;
           onChanged();
         }
         if (other.hasFrozenUnits()) {
@@ -847,7 +766,7 @@ public final class AvailabilityProto {
         if (other.hasPricePerUnit()) {
           setPricePerUnit(other.getPricePerUnit());
         }
-        this.mergeUnknownFields(other.unknownFields);
+        this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
       }
@@ -862,17 +781,67 @@ public final class AvailabilityProto {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        io.koosha.foobar.product.AvailabilityProto.Availability parsedMessage = null;
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
         try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                input.readMessage(
+                    getHeaderFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 18: {
+                action_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              case 26: {
+                sellerId_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 26
+              case 34: {
+                productId_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 34
+              case 40: {
+                frozenUnits_ = input.readUInt64();
+                bitField0_ |= 0x00000010;
+                break;
+              } // case 40
+              case 48: {
+                unitsAvailable_ = input.readUInt64();
+                bitField0_ |= 0x00000020;
+                break;
+              } // case 48
+              case 56: {
+                pricePerUnit_ = input.readUInt64();
+                bitField0_ |= 0x00000040;
+                break;
+              } // case 56
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (io.koosha.foobar.product.AvailabilityProto.Availability) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
+          onChanged();
+        } // finally
         return this;
       }
       private int bitField0_;
@@ -885,7 +854,7 @@ public final class AvailabilityProto {
        * @return Whether the header field is set.
        */
       public boolean hasHeader() {
-        return headerBuilder_ != null || header_ != null;
+        return ((bitField0_ & 0x00000001) != 0);
       }
       /**
        * <code>.io.koosha.foobar.Header header = 1;</code>
@@ -907,11 +876,11 @@ public final class AvailabilityProto {
             throw new NullPointerException();
           }
           header_ = value;
-          onChanged();
         } else {
           headerBuilder_.setMessage(value);
         }
-
+        bitField0_ |= 0x00000001;
+        onChanged();
         return this;
       }
       /**
@@ -921,11 +890,11 @@ public final class AvailabilityProto {
           io.koosha.foobar.HeaderProto.Header.Builder builderForValue) {
         if (headerBuilder_ == null) {
           header_ = builderForValue.build();
-          onChanged();
         } else {
           headerBuilder_.setMessage(builderForValue.build());
         }
-
+        bitField0_ |= 0x00000001;
+        onChanged();
         return this;
       }
       /**
@@ -933,38 +902,38 @@ public final class AvailabilityProto {
        */
       public Builder mergeHeader(io.koosha.foobar.HeaderProto.Header value) {
         if (headerBuilder_ == null) {
-          if (header_ != null) {
-            header_ =
-              io.koosha.foobar.HeaderProto.Header.newBuilder(header_).mergeFrom(value).buildPartial();
+          if (((bitField0_ & 0x00000001) != 0) &&
+            header_ != null &&
+            header_ != io.koosha.foobar.HeaderProto.Header.getDefaultInstance()) {
+            getHeaderBuilder().mergeFrom(value);
           } else {
             header_ = value;
           }
-          onChanged();
         } else {
           headerBuilder_.mergeFrom(value);
         }
-
+        bitField0_ |= 0x00000001;
+        onChanged();
         return this;
       }
       /**
        * <code>.io.koosha.foobar.Header header = 1;</code>
        */
       public Builder clearHeader() {
-        if (headerBuilder_ == null) {
-          header_ = null;
-          onChanged();
-        } else {
-          header_ = null;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        header_ = null;
+        if (headerBuilder_ != null) {
+          headerBuilder_.dispose();
           headerBuilder_ = null;
         }
-
+        onChanged();
         return this;
       }
       /**
        * <code>.io.koosha.foobar.Header header = 1;</code>
        */
       public io.koosha.foobar.HeaderProto.Header.Builder getHeaderBuilder() {
-        
+        bitField0_ |= 0x00000001;
         onChanged();
         return getHeaderFieldBuilder().getBuilder();
       }
@@ -1037,11 +1006,9 @@ public final class AvailabilityProto {
        */
       public Builder setAction(
           java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
+        if (value == null) { throw new NullPointerException(); }
         action_ = value;
+        bitField0_ |= 0x00000002;
         onChanged();
         return this;
       }
@@ -1050,8 +1017,8 @@ public final class AvailabilityProto {
        * @return This builder for chaining.
        */
       public Builder clearAction() {
-        
         action_ = getDefaultInstance().getAction();
+        bitField0_ = (bitField0_ & ~0x00000002);
         onChanged();
         return this;
       }
@@ -1062,12 +1029,10 @@ public final class AvailabilityProto {
        */
       public Builder setActionBytes(
           com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
         action_ = value;
+        bitField0_ |= 0x00000002;
         onChanged();
         return this;
       }
@@ -1113,11 +1078,9 @@ public final class AvailabilityProto {
        */
       public Builder setSellerId(
           java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
+        if (value == null) { throw new NullPointerException(); }
         sellerId_ = value;
+        bitField0_ |= 0x00000004;
         onChanged();
         return this;
       }
@@ -1126,8 +1089,8 @@ public final class AvailabilityProto {
        * @return This builder for chaining.
        */
       public Builder clearSellerId() {
-        
         sellerId_ = getDefaultInstance().getSellerId();
+        bitField0_ = (bitField0_ & ~0x00000004);
         onChanged();
         return this;
       }
@@ -1138,12 +1101,10 @@ public final class AvailabilityProto {
        */
       public Builder setSellerIdBytes(
           com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
         sellerId_ = value;
+        bitField0_ |= 0x00000004;
         onChanged();
         return this;
       }
@@ -1189,11 +1150,9 @@ public final class AvailabilityProto {
        */
       public Builder setProductId(
           java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
+        if (value == null) { throw new NullPointerException(); }
         productId_ = value;
+        bitField0_ |= 0x00000008;
         onChanged();
         return this;
       }
@@ -1202,8 +1161,8 @@ public final class AvailabilityProto {
        * @return This builder for chaining.
        */
       public Builder clearProductId() {
-        
         productId_ = getDefaultInstance().getProductId();
+        bitField0_ = (bitField0_ & ~0x00000008);
         onChanged();
         return this;
       }
@@ -1214,12 +1173,10 @@ public final class AvailabilityProto {
        */
       public Builder setProductIdBytes(
           com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
         productId_ = value;
+        bitField0_ |= 0x00000008;
         onChanged();
         return this;
       }
@@ -1231,7 +1188,7 @@ public final class AvailabilityProto {
        */
       @java.lang.Override
       public boolean hasFrozenUnits() {
-        return ((bitField0_ & 0x00000001) != 0);
+        return ((bitField0_ & 0x00000010) != 0);
       }
       /**
        * <code>optional uint64 frozen_units = 5;</code>
@@ -1247,8 +1204,9 @@ public final class AvailabilityProto {
        * @return This builder for chaining.
        */
       public Builder setFrozenUnits(long value) {
-        bitField0_ |= 0x00000001;
+        
         frozenUnits_ = value;
+        bitField0_ |= 0x00000010;
         onChanged();
         return this;
       }
@@ -1257,7 +1215,7 @@ public final class AvailabilityProto {
        * @return This builder for chaining.
        */
       public Builder clearFrozenUnits() {
-        bitField0_ = (bitField0_ & ~0x00000001);
+        bitField0_ = (bitField0_ & ~0x00000010);
         frozenUnits_ = 0L;
         onChanged();
         return this;
@@ -1270,7 +1228,7 @@ public final class AvailabilityProto {
        */
       @java.lang.Override
       public boolean hasUnitsAvailable() {
-        return ((bitField0_ & 0x00000002) != 0);
+        return ((bitField0_ & 0x00000020) != 0);
       }
       /**
        * <code>optional uint64 units_available = 6;</code>
@@ -1286,8 +1244,9 @@ public final class AvailabilityProto {
        * @return This builder for chaining.
        */
       public Builder setUnitsAvailable(long value) {
-        bitField0_ |= 0x00000002;
+        
         unitsAvailable_ = value;
+        bitField0_ |= 0x00000020;
         onChanged();
         return this;
       }
@@ -1296,7 +1255,7 @@ public final class AvailabilityProto {
        * @return This builder for chaining.
        */
       public Builder clearUnitsAvailable() {
-        bitField0_ = (bitField0_ & ~0x00000002);
+        bitField0_ = (bitField0_ & ~0x00000020);
         unitsAvailable_ = 0L;
         onChanged();
         return this;
@@ -1309,7 +1268,7 @@ public final class AvailabilityProto {
        */
       @java.lang.Override
       public boolean hasPricePerUnit() {
-        return ((bitField0_ & 0x00000004) != 0);
+        return ((bitField0_ & 0x00000040) != 0);
       }
       /**
        * <code>optional uint64 price_per_unit = 7;</code>
@@ -1325,8 +1284,9 @@ public final class AvailabilityProto {
        * @return This builder for chaining.
        */
       public Builder setPricePerUnit(long value) {
-        bitField0_ |= 0x00000004;
+        
         pricePerUnit_ = value;
+        bitField0_ |= 0x00000040;
         onChanged();
         return this;
       }
@@ -1335,7 +1295,7 @@ public final class AvailabilityProto {
        * @return This builder for chaining.
        */
       public Builder clearPricePerUnit() {
-        bitField0_ = (bitField0_ & ~0x00000004);
+        bitField0_ = (bitField0_ & ~0x00000040);
         pricePerUnit_ = 0L;
         onChanged();
         return this;
@@ -1373,7 +1333,18 @@ public final class AvailabilityProto {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return new Availability(input, extensionRegistry);
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
       }
     };
 

@@ -53,7 +53,7 @@ public class Product {
   public static final String JSON_PROPERTY_UNIT_SINGLE = "unitSingle";
   private String unitSingle;
 
-  public Product() { 
+  public Product() {
   }
 
   public Product productId(UUID productId) {

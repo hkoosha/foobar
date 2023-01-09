@@ -37,7 +37,7 @@ public class CustomerUpdateRequest {
   public static final String JSON_PROPERTY_NAME = "name";
   private CustomerUpdateRequestName name;
 
-  public CustomerUpdateRequest() { 
+  public CustomerUpdateRequest() {
   }
 
   public CustomerUpdateRequest name(CustomerUpdateRequestName name) {

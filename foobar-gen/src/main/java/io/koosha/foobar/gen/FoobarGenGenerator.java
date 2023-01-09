@@ -13,6 +13,7 @@ import org.openapitools.codegen.model.ModelMap;
 import org.openapitools.codegen.model.ModelsMap;
 import org.openapitools.codegen.model.OperationMap;
 import org.openapitools.codegen.model.OperationsMap;
+import org.openapitools.codegen.utils.CamelizeOption;
 import org.openapitools.codegen.utils.ProcessUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -319,7 +320,7 @@ public class FoobarGenGenerator extends AbstractJavaCodegen
             for (int i = 0; i < items.length; ++i) {
                 if (items[i].matches("^\\{(.*)}$")) { // wrap in {}
                     // camelize path variable
-                    items[i] = "{" + camelize(items[i].substring(1, items[i].length() - 1), true) + "}";
+                    items[i] = "{" + camelize(items[i].substring(1, items[i].length() - 1), CamelizeOption.LOWERCASE_FIRST_CHAR) + "}";
                 }
             }
             op.path = StringUtils.join(items, "/");

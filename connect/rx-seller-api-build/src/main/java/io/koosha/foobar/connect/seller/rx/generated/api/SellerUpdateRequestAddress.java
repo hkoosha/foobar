@@ -48,7 +48,7 @@ public class SellerUpdateRequestAddress {
   public static final String JSON_PROPERTY_CITY = "city";
   private String city;
 
-  public SellerUpdateRequestAddress() { 
+  public SellerUpdateRequestAddress() {
   }
 
   public SellerUpdateRequestAddress zipcode(String zipcode) {

@@ -108,9 +108,36 @@ public class CustomerApi {
         return deleteCustomerRequestCreation(customerId).bodyToMono(localVarReturnType);
     }
 
+    /**
+     * 
+     * 
+     * <p><b>404</b> - Not Found
+     * <p><b>400</b> - Bad Request
+     * <p><b>403</b> - Forbidden
+     * <p><b>503</b> - Service Unavailable
+     * <p><b>204</b> - No Content
+     * @param customerId The customerId parameter
+     * @throws WebClientResponseException if an error occurs while attempting to invoke the API
+     */
     public Mono<ResponseEntity<Void>> deleteCustomerWithHttpInfo(UUID customerId) throws WebClientResponseException {
         ParameterizedTypeReference<Void> localVarReturnType = new ParameterizedTypeReference<Void>() {};
         return deleteCustomerRequestCreation(customerId).toEntity(localVarReturnType);
+    }
+
+    /**
+     * 
+     * 
+     * <p><b>404</b> - Not Found
+     * <p><b>400</b> - Bad Request
+     * <p><b>403</b> - Forbidden
+     * <p><b>503</b> - Service Unavailable
+     * <p><b>204</b> - No Content
+     * @param customerId The customerId parameter
+     * @return ResponseSpec
+     * @throws WebClientResponseException if an error occurs while attempting to invoke the API
+     */
+    public ResponseSpec deleteCustomerWithResponseSpec(UUID customerId) throws WebClientResponseException {
+        return deleteCustomerRequestCreation(customerId);
     }
     /**
      * 
@@ -170,9 +197,37 @@ public class CustomerApi {
         return getCustomerRequestCreation(customerId).bodyToMono(localVarReturnType);
     }
 
+    /**
+     * 
+     * 
+     * <p><b>404</b> - Not Found
+     * <p><b>400</b> - Bad Request
+     * <p><b>403</b> - Forbidden
+     * <p><b>503</b> - Service Unavailable
+     * <p><b>200</b> - OK
+     * @param customerId The customerId parameter
+     * @return ResponseEntity&lt;Customer&gt;
+     * @throws WebClientResponseException if an error occurs while attempting to invoke the API
+     */
     public Mono<ResponseEntity<Customer>> getCustomerWithHttpInfo(UUID customerId) throws WebClientResponseException {
         ParameterizedTypeReference<Customer> localVarReturnType = new ParameterizedTypeReference<Customer>() {};
         return getCustomerRequestCreation(customerId).toEntity(localVarReturnType);
+    }
+
+    /**
+     * 
+     * 
+     * <p><b>404</b> - Not Found
+     * <p><b>400</b> - Bad Request
+     * <p><b>403</b> - Forbidden
+     * <p><b>503</b> - Service Unavailable
+     * <p><b>200</b> - OK
+     * @param customerId The customerId parameter
+     * @return ResponseSpec
+     * @throws WebClientResponseException if an error occurs while attempting to invoke the API
+     */
+    public ResponseSpec getCustomerWithResponseSpec(UUID customerId) throws WebClientResponseException {
+        return getCustomerRequestCreation(customerId);
     }
     /**
      * 
@@ -224,9 +279,35 @@ public class CustomerApi {
         return getCustomersRequestCreation().bodyToFlux(localVarReturnType);
     }
 
+    /**
+     * 
+     * 
+     * <p><b>404</b> - Not Found
+     * <p><b>400</b> - Bad Request
+     * <p><b>403</b> - Forbidden
+     * <p><b>503</b> - Service Unavailable
+     * <p><b>200</b> - OK
+     * @return ResponseEntity&lt;List&lt;Customer&gt;&gt;
+     * @throws WebClientResponseException if an error occurs while attempting to invoke the API
+     */
     public Mono<ResponseEntity<List<Customer>>> getCustomersWithHttpInfo() throws WebClientResponseException {
         ParameterizedTypeReference<Customer> localVarReturnType = new ParameterizedTypeReference<Customer>() {};
         return getCustomersRequestCreation().toEntityList(localVarReturnType);
+    }
+
+    /**
+     * 
+     * 
+     * <p><b>404</b> - Not Found
+     * <p><b>400</b> - Bad Request
+     * <p><b>403</b> - Forbidden
+     * <p><b>503</b> - Service Unavailable
+     * <p><b>200</b> - OK
+     * @return ResponseSpec
+     * @throws WebClientResponseException if an error occurs while attempting to invoke the API
+     */
+    public ResponseSpec getCustomersWithResponseSpec() throws WebClientResponseException {
+        return getCustomersRequestCreation();
     }
     /**
      * 
@@ -294,9 +375,39 @@ public class CustomerApi {
         return patchCustomerRequestCreation(customerId, customerUpdateRequest).bodyToMono(localVarReturnType);
     }
 
+    /**
+     * 
+     * 
+     * <p><b>404</b> - Not Found
+     * <p><b>400</b> - Bad Request
+     * <p><b>403</b> - Forbidden
+     * <p><b>503</b> - Service Unavailable
+     * <p><b>200</b> - OK
+     * @param customerId The customerId parameter
+     * @param customerUpdateRequest The customerUpdateRequest parameter
+     * @return ResponseEntity&lt;Customer&gt;
+     * @throws WebClientResponseException if an error occurs while attempting to invoke the API
+     */
     public Mono<ResponseEntity<Customer>> patchCustomerWithHttpInfo(UUID customerId, CustomerUpdateRequest customerUpdateRequest) throws WebClientResponseException {
         ParameterizedTypeReference<Customer> localVarReturnType = new ParameterizedTypeReference<Customer>() {};
         return patchCustomerRequestCreation(customerId, customerUpdateRequest).toEntity(localVarReturnType);
+    }
+
+    /**
+     * 
+     * 
+     * <p><b>404</b> - Not Found
+     * <p><b>400</b> - Bad Request
+     * <p><b>403</b> - Forbidden
+     * <p><b>503</b> - Service Unavailable
+     * <p><b>200</b> - OK
+     * @param customerId The customerId parameter
+     * @param customerUpdateRequest The customerUpdateRequest parameter
+     * @return ResponseSpec
+     * @throws WebClientResponseException if an error occurs while attempting to invoke the API
+     */
+    public ResponseSpec patchCustomerWithResponseSpec(UUID customerId, CustomerUpdateRequest customerUpdateRequest) throws WebClientResponseException {
+        return patchCustomerRequestCreation(customerId, customerUpdateRequest);
     }
     /**
      * 
@@ -356,8 +467,36 @@ public class CustomerApi {
         return postCustomerRequestCreation(customerCreateRequest).bodyToMono(localVarReturnType);
     }
 
+    /**
+     * 
+     * 
+     * <p><b>404</b> - Not Found
+     * <p><b>400</b> - Bad Request
+     * <p><b>403</b> - Forbidden
+     * <p><b>503</b> - Service Unavailable
+     * <p><b>201</b> - Created
+     * @param customerCreateRequest The customerCreateRequest parameter
+     * @return ResponseEntity&lt;Customer&gt;
+     * @throws WebClientResponseException if an error occurs while attempting to invoke the API
+     */
     public Mono<ResponseEntity<Customer>> postCustomerWithHttpInfo(CustomerCreateRequest customerCreateRequest) throws WebClientResponseException {
         ParameterizedTypeReference<Customer> localVarReturnType = new ParameterizedTypeReference<Customer>() {};
         return postCustomerRequestCreation(customerCreateRequest).toEntity(localVarReturnType);
+    }
+
+    /**
+     * 
+     * 
+     * <p><b>404</b> - Not Found
+     * <p><b>400</b> - Bad Request
+     * <p><b>403</b> - Forbidden
+     * <p><b>503</b> - Service Unavailable
+     * <p><b>201</b> - Created
+     * @param customerCreateRequest The customerCreateRequest parameter
+     * @return ResponseSpec
+     * @throws WebClientResponseException if an error occurs while attempting to invoke the API
+     */
+    public ResponseSpec postCustomerWithResponseSpec(CustomerCreateRequest customerCreateRequest) throws WebClientResponseException {
+        return postCustomerRequestCreation(customerCreateRequest);
     }
 }

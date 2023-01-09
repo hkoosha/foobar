@@ -46,7 +46,7 @@ public class Customer {
   public static final String JSON_PROPERTY_IS_ACTIVE = "isActive";
   private Boolean isActive;
 
-  public Customer() { 
+  public Customer() {
   }
 
   public Customer customerId(UUID customerId) {

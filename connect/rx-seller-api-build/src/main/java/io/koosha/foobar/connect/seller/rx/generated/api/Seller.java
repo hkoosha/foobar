@@ -50,7 +50,7 @@ public class Seller {
   public static final String JSON_PROPERTY_IS_ACTIVE = "isActive";
   private Boolean isActive;
 
-  public Seller() { 
+  public Seller() {
   }
 
   public Seller sellerId(UUID sellerId) {

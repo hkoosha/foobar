@@ -47,7 +47,7 @@ public class EntityBadValueApiError {
   public static final String JSON_PROPERTY_ERROR = "error";
   private String error;
 
-  public EntityBadValueApiError() { 
+  public EntityBadValueApiError() {
   }
 
   public EntityBadValueApiError message(String message) {

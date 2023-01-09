@@ -37,7 +37,7 @@ public class CustomerCreateRequest {
   public static final String JSON_PROPERTY_NAME = "name";
   private CustomerCreateRequestName name;
 
-  public CustomerCreateRequest() { 
+  public CustomerCreateRequest() {
   }
 
   public CustomerCreateRequest name(CustomerCreateRequestName name) {

@@ -56,7 +56,7 @@ public class Address {
   public static final String JSON_PROPERTY_CITY = "city";
   private String city;
 
-  public Address() { 
+  public Address() {
   }
 
   public Address addressId(Long addressId) {

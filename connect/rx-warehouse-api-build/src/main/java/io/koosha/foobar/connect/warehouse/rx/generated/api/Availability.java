@@ -49,7 +49,7 @@ public class Availability {
   public static final String JSON_PROPERTY_PRICE_PER_UNIT = "pricePerUnit";
   private Long pricePerUnit;
 
-  public Availability() { 
+  public Availability() {
   }
 
   public Availability sellerId(UUID sellerId) {

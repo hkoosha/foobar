@@ -83,7 +83,7 @@ public class CustomerCreateRequestName {
   public static final String JSON_PROPERTY_LAST_NAME = "lastName";
   private String lastName;
 
-  public CustomerCreateRequestName() { 
+  public CustomerCreateRequestName() {
   }
 
   public CustomerCreateRequestName title(TitleEnum title) {

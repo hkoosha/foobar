@@ -48,7 +48,7 @@ public class ProductCreateRequest {
   public static final String JSON_PROPERTY_UNIT_MULTIPLE = "unitMultiple";
   private String unitMultiple;
 
-  public ProductCreateRequest() { 
+  public ProductCreateRequest() {
   }
 
   public ProductCreateRequest active(Boolean active) {

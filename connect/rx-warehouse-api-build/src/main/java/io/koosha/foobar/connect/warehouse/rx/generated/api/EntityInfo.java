@@ -40,7 +40,7 @@ public class EntityInfo {
   public static final String JSON_PROPERTY_ENTITY_ID = "entityId";
   private Object entityId;
 
-  public EntityInfo() { 
+  public EntityInfo() {
   }
 
   public EntityInfo entityType(String entityType) {

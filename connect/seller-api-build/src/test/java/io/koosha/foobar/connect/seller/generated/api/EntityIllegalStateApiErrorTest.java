@@ -23,7 +23,6 @@ import io.koosha.foobar.connect.seller.generated.api.EntityInfo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
 
