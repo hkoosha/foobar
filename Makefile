@@ -111,6 +111,10 @@ about:
 sos:
 	@cat ./README_STEPS_K8S.md
 
+.PHONY: sos-local
+sos-local:
+	@cat ./README_STEPS_LOCAL.md
+
 
 
 libs/opentelemetry-javaagent-1.17.0.jar: # get the OpenTelemetry library injected in docker containers as java agent

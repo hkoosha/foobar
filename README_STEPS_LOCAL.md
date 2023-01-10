@@ -8,7 +8,8 @@ ENV=no_db make build-api
 make build
   
 make local-run-dependencies
-make local-init-create-db
+local-init-my-create-db
+local-init-pg-create-db
 make local-init-create-topics
 
 make run-customer
