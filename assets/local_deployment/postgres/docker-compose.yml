@@ -10,6 +10,7 @@ services:
     environment:
       - POSTGRESQL_USERNAME=root
       - POSTGRESQL_PASSWORD=.
+      - POSTGRESQL_EXTRA_FLAGS=--max_connections=2048
 
 volumes:
   postgres_data:

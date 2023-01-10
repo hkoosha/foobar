@@ -14,6 +14,7 @@ services:
     environment:
       - POSTGRESQL_USERNAME=root
       - POSTGRESQL_PASSWORD=.
+      - POSTGRESQL_EXTRA_FLAGS=--max_connections=2048
   mariadb:
     image: docker.io/bitnami/mariadb:latest
     ports:
@@ -29,6 +30,7 @@ services:
       - MARIADB_SKIP_TEST_DB=yes
       - ALLOW_EMPTY_PASSWORD=yes
       - MARIADB_ROOT_PASSWORD=.
+      - MARIADB_EXTRA_FLAGS=--max_connections=2048
   zookeeper:
     image: docker.io/bitnami/zookeeper:latest
     ports:

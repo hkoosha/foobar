@@ -110,8 +110,6 @@ dependencies {
     implementation("io.github.openfeign:feign-jackson:${Libraries.Feign.core}")
 
     runtimeOnly("io.micrometer:micrometer-registry-prometheus")
-    runtimeOnly("org.postgresql:r2dbc-postgresql:${Libraries.r2dbcPostgres}")
-    runtimeOnly("org.mariadb:r2dbc-mariadb:${Libraries.r2dbcMariadb}")
     runtimeOnly("io.r2dbc:r2dbc-h2")
     runtimeOnly("io.github.openfeign:feign-micrometer")
     runtimeOnly("io.github.openfeign:feign-okhttp")
@@ -124,9 +122,10 @@ dependencies {
     runtimeOnly("org.mariadb.jdbc:mariadb-java-client:${Libraries.mariadb}")
     runtimeOnly("org.postgresql:postgresql:${Libraries.postgres}")
 
-    // Current version pooled by spring has a db connection leak bug.
-    implementation("io.r2dbc:r2dbc-spi:1.0.0.RELEASE")
-    implementation("io.r2dbc:r2dbc-pool:1.0.0.RC1")
+    implementation("io.r2dbc:r2dbc-spi")
+    implementation("io.r2dbc:r2dbc-pool")
+    runtimeOnly("org.postgresql:r2dbc-postgresql")
+    runtimeOnly("org.mariadb:r2dbc-mariadb")
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
