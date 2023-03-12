@@ -7,7 +7,7 @@ import io.koosha.foobar.common.error.EntityBadValueException
 import io.koosha.foobar.common.error.EntityInIllegalStateException
 import io.koosha.foobar.common.error.EntityNotFoundException
 import io.koosha.foobar.common.error.ResourceCurrentlyUnavailableException
-import io.koosha.foobar.common.error.anyOfMessagesContains
+import io.koosha.foobar.common.isDuplicateEntry
 import io.koosha.foobar.common.model.EntityInfo
 import io.koosha.foobar.connect.seller.generated.api.SellerApi
 import io.koosha.foobar.product.AvailabilityProto
@@ -15,6 +15,7 @@ import io.koosha.foobar.warehouse.SOURCE
 import io.koosha.foobar.warehouse.api.model.AvailabilityDO
 import io.koosha.foobar.warehouse.api.model.AvailabilityRepository
 import io.koosha.foobar.warehouse.api.model.ProductDO
+import jakarta.validation.Validator
 import mu.KotlinLogging
 import net.logstash.logback.argument.StructuredArguments.v
 import org.springframework.beans.factory.annotation.Qualifier
@@ -24,7 +25,6 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.support.TransactionTemplate
 import java.time.Clock
 import java.util.*
-import javax.validation.Validator
 
 
 @Service
@@ -139,7 +139,6 @@ class ProductServiceAvailabilityAdderImpl(
             .setPricePerUnit(availability.pricePerUnit!!)
         this.kafka
             .sendDefault(send.build())
-            .completable()
             .join()
     }
 
@@ -154,7 +153,7 @@ class ProductServiceAvailabilityAdderImpl(
             }
         }
         catch (e: DataIntegrityViolationException) {
-            throw if (anyOfMessagesContains(e, "Duplicate entry"))
+            throw if (isDuplicateEntry(e))
                 EntityBadValueException(
                     context = setOf(
                         EntityInfo(

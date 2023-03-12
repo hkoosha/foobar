@@ -22,6 +22,7 @@ import org.springframework.messaging.handler.annotation.Header
 import org.springframework.messaging.handler.annotation.Payload
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
+import java.time.Duration
 import java.util.*
 
 
@@ -54,8 +55,22 @@ class OrderRequestSellerProcessor(
         containerFactory = KafkaConfig.LISTENER_CONTAINER_FACTORY__ORDER_REQUEST__SELLER_FOUND,
     )
     fun onOrderRequestSeller(
-        @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) orderRequestId: UUID,
-        @Payload payload: OrderRequestSellerFoundProto.OrderRequestSellerFound,
+        @Header(KafkaHeaders.KEY)
+        orderRequestId: UUID,
+        @Payload
+        payload: OrderRequestSellerFoundProto.OrderRequestSellerFound,
+        ack: Acknowledgment,
+    ) = try {
+        this.onOrderRequestSeller0(orderRequestId, payload, ack)
+    }
+    catch (e: Exception) {
+        log.error("WTF??? ============> ", e)
+        ack.nack(Duration.ofSeconds(3))
+    }
+
+    fun onOrderRequestSeller0(
+        orderRequestId: UUID,
+        payload: OrderRequestSellerFoundProto.OrderRequestSellerFound,
         ack: Acknowledgment,
     ) {
 
@@ -113,13 +128,15 @@ class OrderRequestSellerProcessor(
         ack.acknowledge()
     }
 
-    private fun isDuplicateEntry(it: Throwable): Boolean {
 
+    private fun isDuplicateEntry(it: Throwable): Boolean {
         if (it !is DataIntegrityViolationException)
             return false
 
         return it.cause?.message?.contains("Duplicate entry") == true ||
-                it.message?.contains("Duplicate entry") == true
+                it.message?.contains("Duplicate entry") == true ||
+                it.cause?.message?.contains("duplicate key value violates unique constraint") == true ||
+                it.message?.contains("duplicate key value violates unique constraint") == true
     }
 
 }

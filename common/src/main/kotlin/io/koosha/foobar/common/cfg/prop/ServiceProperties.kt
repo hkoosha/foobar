@@ -1,11 +1,11 @@
 package io.koosha.foobar.common.cfg.prop
 
 import io.koosha.foobar.common.conv.PortlessUrl
+import jakarta.validation.constraints.Max
+import jakarta.validation.constraints.Min
+import jakarta.validation.constraints.NotNull
 import org.springframework.validation.annotation.Validated
 import java.net.URI
-import javax.validation.constraints.Max
-import javax.validation.constraints.Min
-import javax.validation.constraints.NotNull
 
 
 @Validated

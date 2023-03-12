@@ -31,7 +31,7 @@ import org.springframework.http.ResponseEntity;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.Flux;
 
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen")
+@jakarta.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen")
 public class ProductApi {
     private ApiClient apiClient;
 
@@ -108,9 +108,36 @@ public class ProductApi {
         return deleteProductRequestCreation(productId).bodyToMono(localVarReturnType);
     }
 
+    /**
+     * 
+     * 
+     * <p><b>404</b> - Not Found
+     * <p><b>400</b> - Bad Request
+     * <p><b>403</b> - Forbidden
+     * <p><b>503</b> - Service Unavailable
+     * <p><b>204</b> - No Content
+     * @param productId The productId parameter
+     * @throws WebClientResponseException if an error occurs while attempting to invoke the API
+     */
     public Mono<ResponseEntity<Void>> deleteProductWithHttpInfo(UUID productId) throws WebClientResponseException {
         ParameterizedTypeReference<Void> localVarReturnType = new ParameterizedTypeReference<Void>() {};
         return deleteProductRequestCreation(productId).toEntity(localVarReturnType);
+    }
+
+    /**
+     * 
+     * 
+     * <p><b>404</b> - Not Found
+     * <p><b>400</b> - Bad Request
+     * <p><b>403</b> - Forbidden
+     * <p><b>503</b> - Service Unavailable
+     * <p><b>204</b> - No Content
+     * @param productId The productId parameter
+     * @return ResponseSpec
+     * @throws WebClientResponseException if an error occurs while attempting to invoke the API
+     */
+    public ResponseSpec deleteProductWithResponseSpec(UUID productId) throws WebClientResponseException {
+        return deleteProductRequestCreation(productId);
     }
     /**
      * 
@@ -170,9 +197,37 @@ public class ProductApi {
         return getProductRequestCreation(productId).bodyToMono(localVarReturnType);
     }
 
+    /**
+     * 
+     * 
+     * <p><b>404</b> - Not Found
+     * <p><b>400</b> - Bad Request
+     * <p><b>403</b> - Forbidden
+     * <p><b>503</b> - Service Unavailable
+     * <p><b>200</b> - OK
+     * @param productId The productId parameter
+     * @return ResponseEntity&lt;Product&gt;
+     * @throws WebClientResponseException if an error occurs while attempting to invoke the API
+     */
     public Mono<ResponseEntity<Product>> getProductWithHttpInfo(UUID productId) throws WebClientResponseException {
         ParameterizedTypeReference<Product> localVarReturnType = new ParameterizedTypeReference<Product>() {};
         return getProductRequestCreation(productId).toEntity(localVarReturnType);
+    }
+
+    /**
+     * 
+     * 
+     * <p><b>404</b> - Not Found
+     * <p><b>400</b> - Bad Request
+     * <p><b>403</b> - Forbidden
+     * <p><b>503</b> - Service Unavailable
+     * <p><b>200</b> - OK
+     * @param productId The productId parameter
+     * @return ResponseSpec
+     * @throws WebClientResponseException if an error occurs while attempting to invoke the API
+     */
+    public ResponseSpec getProductWithResponseSpec(UUID productId) throws WebClientResponseException {
+        return getProductRequestCreation(productId);
     }
     /**
      * 
@@ -224,9 +279,35 @@ public class ProductApi {
         return getProductsRequestCreation().bodyToFlux(localVarReturnType);
     }
 
+    /**
+     * 
+     * 
+     * <p><b>404</b> - Not Found
+     * <p><b>400</b> - Bad Request
+     * <p><b>403</b> - Forbidden
+     * <p><b>503</b> - Service Unavailable
+     * <p><b>200</b> - OK
+     * @return ResponseEntity&lt;List&lt;Product&gt;&gt;
+     * @throws WebClientResponseException if an error occurs while attempting to invoke the API
+     */
     public Mono<ResponseEntity<List<Product>>> getProductsWithHttpInfo() throws WebClientResponseException {
         ParameterizedTypeReference<Product> localVarReturnType = new ParameterizedTypeReference<Product>() {};
         return getProductsRequestCreation().toEntityList(localVarReturnType);
+    }
+
+    /**
+     * 
+     * 
+     * <p><b>404</b> - Not Found
+     * <p><b>400</b> - Bad Request
+     * <p><b>403</b> - Forbidden
+     * <p><b>503</b> - Service Unavailable
+     * <p><b>200</b> - OK
+     * @return ResponseSpec
+     * @throws WebClientResponseException if an error occurs while attempting to invoke the API
+     */
+    public ResponseSpec getProductsWithResponseSpec() throws WebClientResponseException {
+        return getProductsRequestCreation();
     }
     /**
      * 
@@ -294,9 +375,39 @@ public class ProductApi {
         return patchProductRequestCreation(productId, productUpdateRequest).bodyToMono(localVarReturnType);
     }
 
+    /**
+     * 
+     * 
+     * <p><b>404</b> - Not Found
+     * <p><b>400</b> - Bad Request
+     * <p><b>403</b> - Forbidden
+     * <p><b>503</b> - Service Unavailable
+     * <p><b>200</b> - OK
+     * @param productId The productId parameter
+     * @param productUpdateRequest The productUpdateRequest parameter
+     * @return ResponseEntity&lt;Product&gt;
+     * @throws WebClientResponseException if an error occurs while attempting to invoke the API
+     */
     public Mono<ResponseEntity<Product>> patchProductWithHttpInfo(UUID productId, ProductUpdateRequest productUpdateRequest) throws WebClientResponseException {
         ParameterizedTypeReference<Product> localVarReturnType = new ParameterizedTypeReference<Product>() {};
         return patchProductRequestCreation(productId, productUpdateRequest).toEntity(localVarReturnType);
+    }
+
+    /**
+     * 
+     * 
+     * <p><b>404</b> - Not Found
+     * <p><b>400</b> - Bad Request
+     * <p><b>403</b> - Forbidden
+     * <p><b>503</b> - Service Unavailable
+     * <p><b>200</b> - OK
+     * @param productId The productId parameter
+     * @param productUpdateRequest The productUpdateRequest parameter
+     * @return ResponseSpec
+     * @throws WebClientResponseException if an error occurs while attempting to invoke the API
+     */
+    public ResponseSpec patchProductWithResponseSpec(UUID productId, ProductUpdateRequest productUpdateRequest) throws WebClientResponseException {
+        return patchProductRequestCreation(productId, productUpdateRequest);
     }
     /**
      * 
@@ -356,8 +467,36 @@ public class ProductApi {
         return postProductRequestCreation(productCreateRequest).bodyToMono(localVarReturnType);
     }
 
+    /**
+     * 
+     * 
+     * <p><b>404</b> - Not Found
+     * <p><b>400</b> - Bad Request
+     * <p><b>403</b> - Forbidden
+     * <p><b>503</b> - Service Unavailable
+     * <p><b>201</b> - Created
+     * @param productCreateRequest The productCreateRequest parameter
+     * @return ResponseEntity&lt;Product&gt;
+     * @throws WebClientResponseException if an error occurs while attempting to invoke the API
+     */
     public Mono<ResponseEntity<Product>> postProductWithHttpInfo(ProductCreateRequest productCreateRequest) throws WebClientResponseException {
         ParameterizedTypeReference<Product> localVarReturnType = new ParameterizedTypeReference<Product>() {};
         return postProductRequestCreation(productCreateRequest).toEntity(localVarReturnType);
+    }
+
+    /**
+     * 
+     * 
+     * <p><b>404</b> - Not Found
+     * <p><b>400</b> - Bad Request
+     * <p><b>403</b> - Forbidden
+     * <p><b>503</b> - Service Unavailable
+     * <p><b>201</b> - Created
+     * @param productCreateRequest The productCreateRequest parameter
+     * @return ResponseSpec
+     * @throws WebClientResponseException if an error occurs while attempting to invoke the API
+     */
+    public ResponseSpec postProductWithResponseSpec(ProductCreateRequest productCreateRequest) throws WebClientResponseException {
+        return postProductRequestCreation(productCreateRequest);
     }
 }

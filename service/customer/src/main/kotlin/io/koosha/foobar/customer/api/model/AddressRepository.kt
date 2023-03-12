@@ -1,9 +1,9 @@
 package io.koosha.foobar.customer.api.model
 
+import jakarta.persistence.LockModeType
 import org.springframework.data.jpa.repository.Lock
 import org.springframework.data.repository.CrudRepository
 import java.util.*
-import javax.persistence.LockModeType
 
 
 @Suppress("FunctionName")

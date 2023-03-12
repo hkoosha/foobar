@@ -12,7 +12,7 @@ make k8s-init-create-db
 make k8s-init-create-topics
 
 make clean \
-  libs/opentelemetry-javaagent-1.17.0.jar \
+  libs/opentelemetry-javaagent-1.23.0.jar \
   build-proto \
   build-api-generator
 ENV=no_db make build-api
@@ -22,7 +22,8 @@ make docker-image
 make k8s-deploy 
 
 make k8s-exec-maker-cli
-k8s-port-forward-kibana
+make k8s-port-forward-kibana
+make k8s-port-forward-grafana # User: admin pass: .
 
 # FOOBAR_REPLICAS=4 make k8s-deploy-loader
 ```

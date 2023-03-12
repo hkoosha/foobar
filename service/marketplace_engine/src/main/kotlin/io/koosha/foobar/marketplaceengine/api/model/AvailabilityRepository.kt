@@ -1,10 +1,10 @@
 package io.koosha.foobar.marketplaceengine.api.model
 
+import jakarta.persistence.LockModeType
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Lock
 import org.springframework.data.jpa.repository.Query
 import java.util.*
-import javax.persistence.LockModeType
 
 
 interface AvailabilityRepository : JpaRepository<AvailabilityDO, AvailabilityDO.Pk> {

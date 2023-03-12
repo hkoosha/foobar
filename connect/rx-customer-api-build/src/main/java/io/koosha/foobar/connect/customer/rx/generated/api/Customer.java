@@ -21,8 +21,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.koosha.foobar.connect.customer.rx.generated.api.Name;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonTypeName;
@@ -35,7 +33,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
   Customer.JSON_PROPERTY_NAME,
   Customer.JSON_PROPERTY_IS_ACTIVE
 })
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen")
+@jakarta.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen")
 public class Customer {
   public static final String JSON_PROPERTY_CUSTOMER_ID = "customerId";
   private UUID customerId;
@@ -46,7 +44,7 @@ public class Customer {
   public static final String JSON_PROPERTY_IS_ACTIVE = "isActive";
   private Boolean isActive;
 
-  public Customer() { 
+  public Customer() {
   }
 
   public Customer customerId(UUID customerId) {
@@ -59,8 +57,7 @@ public class Customer {
    * Get customerId
    * @return customerId
   **/
-  @javax.annotation.Nonnull
-  @ApiModelProperty(required = true, value = "")
+  @jakarta.annotation.Nonnull
   @JsonProperty(JSON_PROPERTY_CUSTOMER_ID)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
 
@@ -86,8 +83,7 @@ public class Customer {
    * Get name
    * @return name
   **/
-  @javax.annotation.Nonnull
-  @ApiModelProperty(required = true, value = "")
+  @jakarta.annotation.Nonnull
   @JsonProperty(JSON_PROPERTY_NAME)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
 
@@ -113,8 +109,7 @@ public class Customer {
    * Get isActive
    * @return isActive
   **/
-  @javax.annotation.Nonnull
-  @ApiModelProperty(required = true, value = "")
+  @jakarta.annotation.Nonnull
   @JsonProperty(JSON_PROPERTY_IS_ACTIVE)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
 

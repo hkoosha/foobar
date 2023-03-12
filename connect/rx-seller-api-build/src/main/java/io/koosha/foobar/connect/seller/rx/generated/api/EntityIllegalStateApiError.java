@@ -22,10 +22,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.koosha.foobar.connect.seller.rx.generated.api.EntityInfo;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonTypeName;
@@ -38,7 +35,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
   EntityIllegalStateApiError.JSON_PROPERTY_CONTEXT,
   EntityIllegalStateApiError.JSON_PROPERTY_ERROR
 })
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen")
+@jakarta.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen")
 public class EntityIllegalStateApiError {
   public static final String JSON_PROPERTY_MESSAGE = "message";
   private String message;
@@ -49,7 +46,7 @@ public class EntityIllegalStateApiError {
   public static final String JSON_PROPERTY_ERROR = "error";
   private String error;
 
-  public EntityIllegalStateApiError() { 
+  public EntityIllegalStateApiError() {
   }
 
   public EntityIllegalStateApiError message(String message) {
@@ -62,8 +59,7 @@ public class EntityIllegalStateApiError {
    * Get message
    * @return message
   **/
-  @javax.annotation.Nonnull
-  @ApiModelProperty(required = true, value = "")
+  @jakarta.annotation.Nonnull
   @JsonProperty(JSON_PROPERTY_MESSAGE)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
 
@@ -94,8 +90,7 @@ public class EntityIllegalStateApiError {
    * Get context
    * @return context
   **/
-  @javax.annotation.Nonnull
-  @ApiModelProperty(required = true, value = "")
+  @jakarta.annotation.Nonnull
   @JsonProperty(JSON_PROPERTY_CONTEXT)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
 
@@ -122,8 +117,7 @@ public class EntityIllegalStateApiError {
    * Get error
    * @return error
   **/
-  @javax.annotation.Nonnull
-  @ApiModelProperty(required = true, value = "")
+  @jakarta.annotation.Nonnull
   @JsonProperty(JSON_PROPERTY_ERROR)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
 

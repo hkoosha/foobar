@@ -1,9 +1,9 @@
 package io.koosha.foobar.common.conv
 
+import jakarta.validation.ConstraintValidator
+import jakarta.validation.ConstraintValidatorContext
 import java.net.MalformedURLException
 import java.net.URL
-import javax.validation.ConstraintValidator
-import javax.validation.ConstraintValidatorContext
 
 
 class PortlessUrlConstraintValidator : ConstraintValidator<PortlessUrl, String> {

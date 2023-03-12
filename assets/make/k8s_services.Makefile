@@ -46,8 +46,14 @@ _minikube-after-start:
 minikube-kill:
 	minikube stop
 	minikube delete
-	docker kill foobar-registry
-	docker rm foobar-registry
+	docker kill foobar-registry || true
+	docker rm foobar-registry || true
+
+.PHONY: minikube-purge
+minikube-purge:
+	minikube delete --purge
+	docker kill foobar-registry || true
+	docker rm foobar-registry || true
 
 .PHONY: minikube-check
 minikube-check:
@@ -116,6 +122,18 @@ helm-uninstall-mariadb:
 		-n $(FOOBAR_NAMESPACE) \
 		mariadb
 
+.PHONY: helm-install-pg
+helm-install-pg:
+	helm install \
+		-n $(FOOBAR_NAMESPACE) \
+		pg bitnami/postgresql \
+		-f ./assets/k8s/helm/values/pg.yaml
+
+.PHONY: helm-uninstall-pg
+helm-uninstall-pg:
+	helm uninstall \
+		-n $(FOOBAR_NAMESPACE) \
+		pg
 
 .PHONY: helm-install-kafka
 helm-install-kafka:
@@ -136,9 +154,9 @@ helm-install-prometheus:
 	helm install \
 		-n $(FOOBAR_NAMESPACE) \
 		prometheus bitnami/kube-prometheus
-	kubectl apply -f assets/k8s/monitoring/podmonitor.yaml
-	kubectl apply -f assets/k8s/monitoring/prometheus.yaml
-	kubectl apply -f assets/k8s/monitoring/servicemonitor.yaml
+	kubectl -n $(FOOBAR_NAMESPACE) apply -f assets/k8s/monitoring/podmonitor.yaml
+	kubectl -n $(FOOBAR_NAMESPACE) apply -f assets/k8s/monitoring/prometheus.yaml
+	kubectl -n $(FOOBAR_NAMESPACE) apply -f assets/k8s/monitoring/servicemonitor.yaml
 
 .PHONY: helm-uninstall-prometheus
 helm-uninstall-prometheus:
@@ -149,11 +167,16 @@ helm-uninstall-prometheus:
 
 .PHONY: helm-install-grafana
 helm-install-grafana:
-	kubectl create secret generic foobar-grafana-datasource --from-file=assets/grafana/datasource.yaml
-	kubectl create configmap foobar-grafana-dash-foobar --from-file=assets/grafana/dash_foobar.json
-	kubectl create configmap foobar-grafana-dash-maker --from-file=assets/grafana/dash_maker.json
-	kubectl create configmap foobar-grafana-dash-foobar-jvm --from-file=assets/grafana/dash_jvm_by_foobar_pod.json
-	kubectl create configmap foobar-grafana-dash-prometheus --from-file=assets/grafana/dash_prometheus.json
+	kubectl -n $(FOOBAR_NAMESPACE) \
+		create secret generic foobar-grafana-datasource --from-file=assets/grafana/datasource.yaml
+	kubectl -n $(FOOBAR_NAMESPACE) \
+		create configmap foobar-grafana-dash-foobar --from-file=assets/grafana/dash_foobar.json
+	kubectl -n $(FOOBAR_NAMESPACE) \
+		create configmap foobar-grafana-dash-maker --from-file=assets/grafana/dash_maker.json
+	kubectl -n $(FOOBAR_NAMESPACE) \
+		create configmap foobar-grafana-dash-foobar-jvm --from-file=assets/grafana/dash_jvm_by_foobar_pod.json
+	kubectl -n $(FOOBAR_NAMESPACE) \
+		create configmap foobar-grafana-dash-prometheus --from-file=assets/grafana/dash_prometheus.json
 	helm install \
 		-n $(FOOBAR_NAMESPACE) \
 		grafana bitnami/grafana \
@@ -161,10 +184,11 @@ helm-install-grafana:
 
 .PHONY: helm-uninstall-grafana
 helm-uninstall-grafana:
-	kubectl delete secret foobar-grafana-datasource || true
-	kubectl delete configmap foobar-grafana-dash-foobar || true
-	kubectl delete configmap foobar-grafana-dash-foobar-jvm || true
-	kubectl delete configmap foobar-grafana-dash-prometheus || true
+	kubectl -n $(FOOBAR_NAMESPACE) delete secret foobar-grafana-datasource || true
+	kubectl -n $(FOOBAR_NAMESPACE) delete configmap foobar-grafana-dash-maker || true
+	kubectl -n $(FOOBAR_NAMESPACE) delete configmap foobar-grafana-dash-foobar || true
+	kubectl -n $(FOOBAR_NAMESPACE) delete configmap foobar-grafana-dash-foobar-jvm || true
+	kubectl -n $(FOOBAR_NAMESPACE) delete configmap foobar-grafana-dash-prometheus || true
 	helm uninstall \
 		-n $(FOOBAR_NAMESPACE) \
 		grafana
@@ -345,6 +369,14 @@ k8s-run-my-cli:
 		-- bash -c \
 		'mysql -h mariadb.foobar.svc.cluster.local -uroot -p"$(shell kubectl get secret --namespace foobar mariadb -o jsonpath="{.data.mariadb-root-password}" | base64 -d)"'
 
+.PHONY: k8s-run-pg-cli
+k8s-run-pg-cli:
+	kubectl exec pg-postgresql-0 \
+		-it \
+		--namespace $(FOOBAR_NAMESPACE) \
+		-- bash -c \
+		'PGPASSWORD="." -U root psql'
+
 
 # ===============================================================================
 # =================================== INIT ======================================
@@ -405,6 +437,23 @@ k8s-init-zipkin-db:
 
 .PHONY: k8s-init-create-db
 k8s-init-create-db: 
+	kubectl exec pg-postgresql-0 -it --namespace $(FOOBAR_NAMESPACE) -- bash -c ' \
+		  PGPASSWORD="$(POSTGRES_PASSWORD)" createdb -e -U root foobar_customer; \
+		  PGPASSWORD="$(POSTGRES_PASSWORD)" createdb -e -U root foobar_seller; \
+		  PGPASSWORD="$(POSTGRES_PASSWORD)" createdb -e -U root foobar_marketplace; \
+		  PGPASSWORD="$(POSTGRES_PASSWORD)" createdb -e -U root foobar_marketplace_engine; \
+		  PGPASSWORD="$(POSTGRES_PASSWORD)" createdb -e -U root foobar_shipping; \
+		  PGPASSWORD="$(POSTGRES_PASSWORD)" createdb -e -U root foobar_warehouse; \
+		  PGPASSWORD="$(POSTGRES_PASSWORD)" createdb -e -U root foobar_maker;'
+	kubectl exec pg-postgresql-0 -it --namespace $(FOOBAR_NAMESPACE) -- bash -c ' \
+		  PGPASSWORD="$(POSTGRES_PASSWORD)" psql -U postgres foobar_customer -c "ALTER USER root WITH SUPERUSER"; \
+		  '
+	kubectl exec pg-postgresql-0 -it --namespace $(FOOBAR_NAMESPACE) -- bash -c ' \
+		  PGPASSWORD="$(POSTGRES_PASSWORD)" psql -U postgres foobar_customer -c "ALTER USER root WITH LOGIN"; \
+		  '
+	kubectl exec pg-postgresql-0 -it --namespace $(FOOBAR_NAMESPACE) -- bash -c ' \
+		  PGPASSWORD="$(POSTGRES_PASSWORD)" psql -U postgres foobar_customer -c "ALTER USER root WITH REPLICATION"; \
+		  '
 	kubectl exec mariadb-0 -it --namespace $(FOOBAR_NAMESPACE) -- bash -c \
 		  'mysql -h mariadb.foobar.svc.cluster.local -uroot \
 		  -p"$(shell kubectl get secret --namespace foobar mariadb -o jsonpath="{.data.mariadb-root-password}" | base64 -d)" \
@@ -433,12 +482,13 @@ k8s-init-drop-db:
 			  DROP DATABASE foobar_maker; \
 			  SHOW DATABASES"'
 
-_FOOBAR_K8S_MARIADB_PASSWORD ?= $(shell kubectl get secret --namespace foobar mariadb -o jsonpath="{.data.mariadb-root-password}" 2>/dev/null | base64 -d 2>/dev/null)
+# TODO make this call lazy
+# _FOOBAR_K8S_MARIADB_PASSWORD ?= $(shell kubectl get secret --namespace foobar mariadb -o jsonpath="{.data.mariadb-root-password}" 2>/dev/null | base64 -d 2>/dev/null)
 
 define _k8s_init_my_exec
 	kubectl exec mariadb-0 -it --namespace $(FOOBAR_NAMESPACE) -- bash -c \
 		  'mysql -h mariadb.foobar.svc.cluster.local -uroot -D $2 \
-		  -p"$(_FOOBAR_K8S_MARIADB_PASSWORD)" \
+		  -p"." \
 		  -e $1'
 endef
 
@@ -487,6 +537,7 @@ k8s-init: k8s-init-create-db k8s-init-create-topics
 k8s-deploy-deps: \
 	helm-add-bitnami \
 	helm-install-mariadb \
+	helm-install-pg \
 	helm-install-kafka \
 	helm-install-jaeger \
 	helm-install-elasticsearch \
@@ -494,7 +545,7 @@ k8s-deploy-deps: \
 	helm-install-grafana \
 	k8s-apply-filebeat \
 	k8s-apply-zipkin
-	kubectl wait --for=condition=Ready --all=true --all-namespaces pods
+	kubectl wait --for=condition=Ready --all=true --all-namespaces pods --timeout=300s
 	# helm-install-redis \
 	# helm-install-logstash \
 

@@ -20,8 +20,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonValue;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +34,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
   EntityBadValueApiError.JSON_PROPERTY_CONTEXT,
   EntityBadValueApiError.JSON_PROPERTY_ERROR
 })
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen")
+@jakarta.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen")
 public class EntityBadValueApiError {
   public static final String JSON_PROPERTY_MESSAGE = "message";
   private String message;
@@ -47,7 +45,7 @@ public class EntityBadValueApiError {
   public static final String JSON_PROPERTY_ERROR = "error";
   private String error;
 
-  public EntityBadValueApiError() { 
+  public EntityBadValueApiError() {
   }
 
   public EntityBadValueApiError message(String message) {
@@ -60,8 +58,7 @@ public class EntityBadValueApiError {
    * Get message
    * @return message
   **/
-  @javax.annotation.Nonnull
-  @ApiModelProperty(required = true, value = "")
+  @jakarta.annotation.Nonnull
   @JsonProperty(JSON_PROPERTY_MESSAGE)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
 
@@ -92,8 +89,7 @@ public class EntityBadValueApiError {
    * Get context
    * @return context
   **/
-  @javax.annotation.Nonnull
-  @ApiModelProperty(required = true, value = "")
+  @jakarta.annotation.Nonnull
   @JsonProperty(JSON_PROPERTY_CONTEXT)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
 
@@ -119,8 +115,7 @@ public class EntityBadValueApiError {
    * Get error
    * @return error
   **/
-  @javax.annotation.Nonnull
-  @ApiModelProperty(required = true, value = "")
+  @jakarta.annotation.Nonnull
   @JsonProperty(JSON_PROPERTY_ERROR)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
 

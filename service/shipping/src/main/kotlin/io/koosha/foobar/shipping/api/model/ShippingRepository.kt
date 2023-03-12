@@ -3,7 +3,7 @@ package io.koosha.foobar.shipping.api.model
 import org.springframework.data.jpa.repository.Lock
 import org.springframework.data.repository.CrudRepository
 import java.util.*
-import javax.persistence.LockModeType
+import jakarta.persistence.LockModeType
 
 
 interface ShippingRepository : CrudRepository<ShippingDO, UUID> {

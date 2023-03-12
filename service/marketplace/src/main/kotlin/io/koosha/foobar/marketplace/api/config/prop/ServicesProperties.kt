@@ -1,17 +1,16 @@
 package io.koosha.foobar.marketplace.api.config.prop
 
 import io.koosha.foobar.common.cfg.prop.ServiceProperties
+import jakarta.validation.Valid
 import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.boot.context.properties.ConstructorBinding
+import org.springframework.boot.context.properties.bind.ConstructorBinding
 import org.springframework.validation.annotation.Validated
 import javax.annotation.PostConstruct
-import javax.validation.Valid
 
 
 @ConfigurationProperties("foobar.service")
-@ConstructorBinding
 @Validated
-data class ServicesProperties(
+data class ServicesProperties @ConstructorBinding constructor(
     @field:Valid
     private val services: Map<String, ServiceProperties>,
 ) {

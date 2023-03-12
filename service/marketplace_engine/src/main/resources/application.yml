@@ -12,6 +12,9 @@ spring:
         auto_quote_keyword: true
   zipkin:
     enabled: false
+  datasource:
+    hikari:
+      maximum-pool-size: 64
 
 server:
   port: ${FOOBAR_SERVICE_PORT_MARKETPLACE_ENGINE:4042}

@@ -1,9 +1,9 @@
 package io.koosha.foobar.warehouse.api.service
 
 import java.util.*
-import javax.validation.constraints.Min
-import javax.validation.constraints.NotNull
-import javax.validation.constraints.Size
+import jakarta.validation.constraints.Min
+import jakarta.validation.constraints.NotNull
+import jakarta.validation.constraints.Size
 
 
 const val PRODUCT_NAME_MAX_LEN = 127

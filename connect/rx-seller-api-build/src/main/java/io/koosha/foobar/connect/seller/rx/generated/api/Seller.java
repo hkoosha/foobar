@@ -21,8 +21,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.koosha.foobar.connect.seller.rx.generated.api.Address;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonTypeName;
@@ -36,7 +34,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
   Seller.JSON_PROPERTY_ADDRESS,
   Seller.JSON_PROPERTY_IS_ACTIVE
 })
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen")
+@jakarta.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen")
 public class Seller {
   public static final String JSON_PROPERTY_SELLER_ID = "sellerId";
   private UUID sellerId;
@@ -50,7 +48,7 @@ public class Seller {
   public static final String JSON_PROPERTY_IS_ACTIVE = "isActive";
   private Boolean isActive;
 
-  public Seller() { 
+  public Seller() {
   }
 
   public Seller sellerId(UUID sellerId) {
@@ -63,8 +61,7 @@ public class Seller {
    * Get sellerId
    * @return sellerId
   **/
-  @javax.annotation.Nonnull
-  @ApiModelProperty(required = true, value = "")
+  @jakarta.annotation.Nonnull
   @JsonProperty(JSON_PROPERTY_SELLER_ID)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
 
@@ -90,8 +87,7 @@ public class Seller {
    * Get name
    * @return name
   **/
-  @javax.annotation.Nonnull
-  @ApiModelProperty(required = true, value = "")
+  @jakarta.annotation.Nonnull
   @JsonProperty(JSON_PROPERTY_NAME)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
 
@@ -117,8 +113,7 @@ public class Seller {
    * Get address
    * @return address
   **/
-  @javax.annotation.Nonnull
-  @ApiModelProperty(required = true, value = "")
+  @jakarta.annotation.Nonnull
   @JsonProperty(JSON_PROPERTY_ADDRESS)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
 
@@ -144,8 +139,7 @@ public class Seller {
    * Get isActive
    * @return isActive
   **/
-  @javax.annotation.Nonnull
-  @ApiModelProperty(required = true, value = "")
+  @jakarta.annotation.Nonnull
   @JsonProperty(JSON_PROPERTY_IS_ACTIVE)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
 

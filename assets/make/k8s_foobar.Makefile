@@ -76,6 +76,7 @@ remake-yaml-maker-exporter:
 
 .PHONY: _k8s-deploy-customer-compile
 _k8s-deploy-customer-compile: _prepare_foobar_yaml_compiled
+	set -e ;\
 	cat $(FOOBAR_SERVICES_YAML)/customer.yaml | envsubst > $(FOOBAR_SERVICE_YAML_COMPILED)/customer.yaml
 
 .PHONY: k8s-deploy-customer

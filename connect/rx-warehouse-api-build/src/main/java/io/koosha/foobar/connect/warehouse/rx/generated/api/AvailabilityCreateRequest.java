@@ -20,8 +20,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonValue;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonTypeName;
@@ -34,7 +32,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
   AvailabilityCreateRequest.JSON_PROPERTY_UNITS_AVAILABLE,
   AvailabilityCreateRequest.JSON_PROPERTY_PRICE_PER_UNIT
 })
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen")
+@jakarta.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen")
 public class AvailabilityCreateRequest {
   public static final String JSON_PROPERTY_SELLER_ID = "sellerId";
   private UUID sellerId;
@@ -45,7 +43,7 @@ public class AvailabilityCreateRequest {
   public static final String JSON_PROPERTY_PRICE_PER_UNIT = "pricePerUnit";
   private Long pricePerUnit;
 
-  public AvailabilityCreateRequest() { 
+  public AvailabilityCreateRequest() {
   }
 
   public AvailabilityCreateRequest sellerId(UUID sellerId) {
@@ -58,8 +56,7 @@ public class AvailabilityCreateRequest {
    * Get sellerId
    * @return sellerId
   **/
-  @javax.annotation.Nonnull
-  @ApiModelProperty(required = true, value = "")
+  @jakarta.annotation.Nonnull
   @JsonProperty(JSON_PROPERTY_SELLER_ID)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
 
@@ -86,8 +83,7 @@ public class AvailabilityCreateRequest {
    * minimum: 0
    * @return unitsAvailable
   **/
-  @javax.annotation.Nonnull
-  @ApiModelProperty(required = true, value = "")
+  @jakarta.annotation.Nonnull
   @JsonProperty(JSON_PROPERTY_UNITS_AVAILABLE)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
 
@@ -114,8 +110,7 @@ public class AvailabilityCreateRequest {
    * minimum: 0
    * @return pricePerUnit
   **/
-  @javax.annotation.Nonnull
-  @ApiModelProperty(required = true, value = "")
+  @jakarta.annotation.Nonnull
   @JsonProperty(JSON_PROPERTY_PRICE_PER_UNIT)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
 

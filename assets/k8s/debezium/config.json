@@ -1,0 +1,19 @@
+{
+  "name": "customer-address-connector3",  
+  "config": {  
+    "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+    "tasks.max": "1",
+    "database.hostname": "pg-wal-postgresql",  
+    "database.port": "5432",
+    "database.user": "root",
+    "database.password": ".",
+    "database.server.id": "184054",  
+    "database.server.name": "dbserver1", 
+    "database.dbname": "foobar_customer",
+    "database.include.list": "customer__address",  
+    "database.history.kafka.bootstrap.servers": "kafka:9092",  
+    "database.history.kafka.topic": "schema_changes__customer_address",
+    "plugin.name": "pgoutput"
+  }
+}
+

@@ -14,7 +14,7 @@ plugins {
 
     id("io.gitlab.arturbosch.detekt") version k.detekt
     id("com.google.cloud.tools.jib") version j.gradlePlugin
-    id("org.springframework.boot") version s.springBoot2
+    id("org.springframework.boot") version s.boot
     id("io.spring.dependency-management") version s.DependencyManagement
     kotlin("jvm") version k.jvm
     kotlin("plugin.spring") version k.spring
@@ -69,8 +69,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-validation")
-    implementation("org.springframework.cloud:spring-cloud-starter-sleuth")
-    implementation("org.springframework.cloud:spring-cloud-sleuth-zipkin")
+    // implementation("org.springframework.cloud:spring-cloud-starter-sleuth")
+    // implementation("org.springframework.cloud:spring-cloud-sleuth-zipkin")
     implementation("org.springframework.kafka:spring-kafka")
 
     implementation("io.github.microutils:kotlin-logging-jvm:${Libraries.microutilsKotlinLoggingJvm}")

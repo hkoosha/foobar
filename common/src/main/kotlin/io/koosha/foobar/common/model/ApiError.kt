@@ -88,7 +88,7 @@ class EntityIllegalStateApiError(
 // TODO remove extra info from here!
 class ServerError(
     message: String,
-    val context: Throwable?,
+    context: Throwable?,
 ) : ApiError(message + " / " + context?.message + " / " + context?.stackTraceToString()) {
 
     companion object {

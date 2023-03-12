@@ -21,8 +21,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.koosha.foobar.connect.seller.rx.generated.api.SellerCreateRequestAddress;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
@@ -33,7 +31,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
   SellerCreateRequest.JSON_PROPERTY_NAME,
   SellerCreateRequest.JSON_PROPERTY_ADDRESS
 })
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen")
+@jakarta.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen")
 public class SellerCreateRequest {
   public static final String JSON_PROPERTY_NAME = "name";
   private String name;
@@ -41,7 +39,7 @@ public class SellerCreateRequest {
   public static final String JSON_PROPERTY_ADDRESS = "address";
   private SellerCreateRequestAddress address;
 
-  public SellerCreateRequest() { 
+  public SellerCreateRequest() {
   }
 
   public SellerCreateRequest name(String name) {
@@ -54,8 +52,7 @@ public class SellerCreateRequest {
    * Get name
    * @return name
   **/
-  @javax.annotation.Nonnull
-  @ApiModelProperty(required = true, value = "")
+  @jakarta.annotation.Nonnull
   @JsonProperty(JSON_PROPERTY_NAME)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
 
@@ -81,8 +78,7 @@ public class SellerCreateRequest {
    * Get address
    * @return address
   **/
-  @javax.annotation.Nonnull
-  @ApiModelProperty(required = true, value = "")
+  @jakarta.annotation.Nonnull
   @JsonProperty(JSON_PROPERTY_ADDRESS)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
 

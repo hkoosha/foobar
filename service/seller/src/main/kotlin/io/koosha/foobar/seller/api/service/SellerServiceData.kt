@@ -1,8 +1,8 @@
 package io.koosha.foobar.seller.api.service
 
-import javax.validation.Valid
-import javax.validation.constraints.NotNull
-import javax.validation.constraints.Size
+import jakarta.validation.Valid
+import jakarta.validation.constraints.NotNull
+import jakarta.validation.constraints.Size
 
 
 internal const val NAME_MAX_LEN = 127

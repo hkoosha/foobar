@@ -3,7 +3,7 @@ package io.koosha.foobar.maker.api.cfg.prop
 import io.koosha.foobar.common.conv.UrlOrEmpty
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.validation.annotation.Validated
-import javax.validation.constraints.NotNull
+import jakarta.validation.constraints.NotNull
 
 
 @Deprecated("use ServiceProperties.kt")

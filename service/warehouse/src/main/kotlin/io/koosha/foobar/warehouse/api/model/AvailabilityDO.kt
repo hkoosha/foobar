@@ -9,14 +9,14 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.io.Serializable
 import java.time.LocalDateTime
 import java.util.*
-import javax.persistence.Column
-import javax.persistence.Embeddable
-import javax.persistence.EmbeddedId
-import javax.persistence.Entity
-import javax.persistence.EntityListeners
-import javax.persistence.ManyToOne
-import javax.persistence.Table
-import javax.persistence.Version
+import jakarta.persistence.Column
+import jakarta.persistence.Embeddable
+import jakarta.persistence.EmbeddedId
+import jakarta.persistence.Entity
+import jakarta.persistence.EntityListeners
+import jakarta.persistence.ManyToOne
+import jakarta.persistence.Table
+import jakarta.persistence.Version
 
 
 @Entity
@@ -99,7 +99,7 @@ open class AvailabilityDO(
             nullable = false,
             length = 36,
         )
-        @org.hibernate.annotations.Type(type = "uuid-char")
+        // @org.hibernate.annotations.Type(type = "uuid-char")
         open var sellerId: UUID? = null,
 
         @ManyToOne(optional = false)

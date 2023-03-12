@@ -4,13 +4,14 @@ import io.koosha.foobar.common.RandomUUIDProvider
 import io.koosha.foobar.common.error.EntityBadValueException
 import io.koosha.foobar.common.error.EntityInIllegalStateException
 import io.koosha.foobar.common.error.EntityNotFoundException
-import io.koosha.foobar.common.error.anyOfMessagesContains
+import io.koosha.foobar.common.isDuplicateEntry
 import io.koosha.foobar.common.model.EntityInfo
 import io.koosha.foobar.customer.api.model.AddressDO
 import io.koosha.foobar.customer.api.model.AddressRepository
 import io.koosha.foobar.customer.api.model.CustomerDO
 import io.koosha.foobar.customer.api.model.CustomerRepository
 import io.koosha.foobar.customer.api.model.CustomerState
+import jakarta.validation.Validator
 import mu.KotlinLogging
 import net.logstash.logback.argument.StructuredArguments.v
 import org.springframework.dao.DataIntegrityViolationException
@@ -18,7 +19,6 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.transaction.support.TransactionTemplate
 import java.util.*
-import javax.validation.Validator
 
 
 @Service
@@ -273,7 +273,7 @@ class CustomerServiceImpl(
             }
         }
         catch (e: DataIntegrityViolationException) {
-            if (anyOfMessagesContains(e, "Duplicate entry"))
+            if (isDuplicateEntry(e))
                 throw EntityBadValueException(
                     context = setOf(
                         EntityInfo(
@@ -285,7 +285,7 @@ class CustomerServiceImpl(
                             entityId = addressId,
                         ),
                     ),
-                    msg = "duplicate entry for availability"
+                    msg = "duplicate entry for address"
                 )
             else
                 throw e

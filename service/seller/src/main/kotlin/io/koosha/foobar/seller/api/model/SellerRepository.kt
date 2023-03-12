@@ -3,7 +3,7 @@ package io.koosha.foobar.seller.api.model
 import org.springframework.data.jpa.repository.Lock
 import org.springframework.data.repository.CrudRepository
 import java.util.*
-import javax.persistence.LockModeType
+import jakarta.persistence.LockModeType
 
 
 interface SellerRepository : CrudRepository<SellerDO, UUID> {

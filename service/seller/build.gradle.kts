@@ -17,7 +17,7 @@ plugins {
     id("io.gitlab.arturbosch.detekt") version k.detekt
     id("com.google.cloud.tools.jib") version j.gradlePlugin
     id("org.springdoc.openapi-gradle-plugin") version d.gradlePlugin
-    id("org.springframework.boot") version s.springBoot2
+    id("org.springframework.boot") version s.boot
     id("io.spring.dependency-management") version s.DependencyManagement
     kotlin("jvm") version k.jvm
     kotlin("plugin.spring") version k.spring
@@ -72,8 +72,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j")
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
-    implementation("org.springframework.cloud:spring-cloud-starter-sleuth")
-    implementation("org.springframework.cloud:spring-cloud-sleuth-zipkin")
+    // implementation("org.springframework.cloud:spring-cloud-starter-sleuth")
+    // implementation("org.springframework.cloud:spring-cloud-sleuth-zipkin")
 
     implementation("io.github.microutils:kotlin-logging-jvm:${Libraries.microutilsKotlinLoggingJvm}")
     implementation("net.logstash.logback:logstash-logback-encoder:${Libraries.Log.logstashLogbackEncoder}")
@@ -83,8 +83,8 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
-    implementation("org.springdoc:springdoc-openapi-ui:${Libraries.OpenApi.ui}")
-    implementation("org.springdoc:springdoc-openapi-kotlin:${Libraries.OpenApi.kotlin}")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:${Libraries.OpenApi.ui}")
+    // implementation("org.springdoc:springdoc-openapi-kotlin:${Libraries.OpenApi.kotlin}")
 
     runtimeOnly("io.micrometer:micrometer-registry-prometheus")
     runtimeOnly("org.postgresql:postgresql:${Libraries.postgres}")
@@ -142,4 +142,9 @@ tasks.withType<Detekt>().configureEach {
 
 tasks.withType<DetektCreateBaselineTask>().configureEach {
     jvmTarget = Foobar.kotlinJvmTarget
+}
+
+tasks.withType<com.github.psxpaul.task.JavaExecFork> {
+    dependsOn(tasks.named("jar"))
+    dependsOn(tasks.named("inspectClassesForKotlinIC"))
 }

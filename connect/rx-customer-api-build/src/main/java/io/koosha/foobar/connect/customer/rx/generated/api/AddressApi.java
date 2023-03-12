@@ -30,7 +30,7 @@ import org.springframework.http.ResponseEntity;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.Flux;
 
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen")
+@jakarta.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen")
 public class AddressApi {
     private ApiClient apiClient;
 
@@ -114,9 +114,38 @@ public class AddressApi {
         return deleteAddressRequestCreation(customerId, addressId).bodyToMono(localVarReturnType);
     }
 
+    /**
+     * 
+     * 
+     * <p><b>404</b> - Not Found
+     * <p><b>400</b> - Bad Request
+     * <p><b>403</b> - Forbidden
+     * <p><b>503</b> - Service Unavailable
+     * <p><b>204</b> - No Content
+     * @param customerId The customerId parameter
+     * @param addressId The addressId parameter
+     * @throws WebClientResponseException if an error occurs while attempting to invoke the API
+     */
     public Mono<ResponseEntity<Void>> deleteAddressWithHttpInfo(UUID customerId, Long addressId) throws WebClientResponseException {
         ParameterizedTypeReference<Void> localVarReturnType = new ParameterizedTypeReference<Void>() {};
         return deleteAddressRequestCreation(customerId, addressId).toEntity(localVarReturnType);
+    }
+
+    /**
+     * 
+     * 
+     * <p><b>404</b> - Not Found
+     * <p><b>400</b> - Bad Request
+     * <p><b>403</b> - Forbidden
+     * <p><b>503</b> - Service Unavailable
+     * <p><b>204</b> - No Content
+     * @param customerId The customerId parameter
+     * @param addressId The addressId parameter
+     * @return ResponseSpec
+     * @throws WebClientResponseException if an error occurs while attempting to invoke the API
+     */
+    public ResponseSpec deleteAddressWithResponseSpec(UUID customerId, Long addressId) throws WebClientResponseException {
+        return deleteAddressRequestCreation(customerId, addressId);
     }
     /**
      * 
@@ -183,9 +212,39 @@ public class AddressApi {
         return getAddressRequestCreation(customerId, addressId).bodyToMono(localVarReturnType);
     }
 
+    /**
+     * 
+     * 
+     * <p><b>404</b> - Not Found
+     * <p><b>400</b> - Bad Request
+     * <p><b>403</b> - Forbidden
+     * <p><b>503</b> - Service Unavailable
+     * <p><b>200</b> - OK
+     * @param customerId The customerId parameter
+     * @param addressId The addressId parameter
+     * @return ResponseEntity&lt;Address&gt;
+     * @throws WebClientResponseException if an error occurs while attempting to invoke the API
+     */
     public Mono<ResponseEntity<Address>> getAddressWithHttpInfo(UUID customerId, Long addressId) throws WebClientResponseException {
         ParameterizedTypeReference<Address> localVarReturnType = new ParameterizedTypeReference<Address>() {};
         return getAddressRequestCreation(customerId, addressId).toEntity(localVarReturnType);
+    }
+
+    /**
+     * 
+     * 
+     * <p><b>404</b> - Not Found
+     * <p><b>400</b> - Bad Request
+     * <p><b>403</b> - Forbidden
+     * <p><b>503</b> - Service Unavailable
+     * <p><b>200</b> - OK
+     * @param customerId The customerId parameter
+     * @param addressId The addressId parameter
+     * @return ResponseSpec
+     * @throws WebClientResponseException if an error occurs while attempting to invoke the API
+     */
+    public ResponseSpec getAddressWithResponseSpec(UUID customerId, Long addressId) throws WebClientResponseException {
+        return getAddressRequestCreation(customerId, addressId);
     }
     /**
      * 
@@ -245,9 +304,37 @@ public class AddressApi {
         return getAddressesRequestCreation(customerId).bodyToFlux(localVarReturnType);
     }
 
+    /**
+     * 
+     * 
+     * <p><b>404</b> - Not Found
+     * <p><b>400</b> - Bad Request
+     * <p><b>403</b> - Forbidden
+     * <p><b>503</b> - Service Unavailable
+     * <p><b>200</b> - OK
+     * @param customerId The customerId parameter
+     * @return ResponseEntity&lt;List&lt;Address&gt;&gt;
+     * @throws WebClientResponseException if an error occurs while attempting to invoke the API
+     */
     public Mono<ResponseEntity<List<Address>>> getAddressesWithHttpInfo(UUID customerId) throws WebClientResponseException {
         ParameterizedTypeReference<Address> localVarReturnType = new ParameterizedTypeReference<Address>() {};
         return getAddressesRequestCreation(customerId).toEntityList(localVarReturnType);
+    }
+
+    /**
+     * 
+     * 
+     * <p><b>404</b> - Not Found
+     * <p><b>400</b> - Bad Request
+     * <p><b>403</b> - Forbidden
+     * <p><b>503</b> - Service Unavailable
+     * <p><b>200</b> - OK
+     * @param customerId The customerId parameter
+     * @return ResponseSpec
+     * @throws WebClientResponseException if an error occurs while attempting to invoke the API
+     */
+    public ResponseSpec getAddressesWithResponseSpec(UUID customerId) throws WebClientResponseException {
+        return getAddressesRequestCreation(customerId);
     }
     /**
      * 
@@ -315,8 +402,38 @@ public class AddressApi {
         return postAddressRequestCreation(customerId, customerAddressCreateRequest).bodyToMono(localVarReturnType);
     }
 
+    /**
+     * 
+     * 
+     * <p><b>404</b> - Not Found
+     * <p><b>400</b> - Bad Request
+     * <p><b>403</b> - Forbidden
+     * <p><b>503</b> - Service Unavailable
+     * <p><b>201</b> - Created
+     * @param customerId The customerId parameter
+     * @param customerAddressCreateRequest The customerAddressCreateRequest parameter
+     * @return ResponseEntity&lt;Address&gt;
+     * @throws WebClientResponseException if an error occurs while attempting to invoke the API
+     */
     public Mono<ResponseEntity<Address>> postAddressWithHttpInfo(UUID customerId, CustomerAddressCreateRequest customerAddressCreateRequest) throws WebClientResponseException {
         ParameterizedTypeReference<Address> localVarReturnType = new ParameterizedTypeReference<Address>() {};
         return postAddressRequestCreation(customerId, customerAddressCreateRequest).toEntity(localVarReturnType);
+    }
+
+    /**
+     * 
+     * 
+     * <p><b>404</b> - Not Found
+     * <p><b>400</b> - Bad Request
+     * <p><b>403</b> - Forbidden
+     * <p><b>503</b> - Service Unavailable
+     * <p><b>201</b> - Created
+     * @param customerId The customerId parameter
+     * @param customerAddressCreateRequest The customerAddressCreateRequest parameter
+     * @return ResponseSpec
+     * @throws WebClientResponseException if an error occurs while attempting to invoke the API
+     */
+    public ResponseSpec postAddressWithResponseSpec(UUID customerId, CustomerAddressCreateRequest customerAddressCreateRequest) throws WebClientResponseException {
+        return postAddressRequestCreation(customerId, customerAddressCreateRequest);
     }
 }

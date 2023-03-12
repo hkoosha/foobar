@@ -31,7 +31,7 @@ import org.springframework.http.ResponseEntity;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.Flux;
 
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen")
+@jakarta.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen")
 public class SellerApi {
     private ApiClient apiClient;
 
@@ -108,9 +108,36 @@ public class SellerApi {
         return deleteSellerRequestCreation(sellerId).bodyToMono(localVarReturnType);
     }
 
+    /**
+     * 
+     * 
+     * <p><b>404</b> - Not Found
+     * <p><b>400</b> - Bad Request
+     * <p><b>403</b> - Forbidden
+     * <p><b>503</b> - Service Unavailable
+     * <p><b>204</b> - No Content
+     * @param sellerId The sellerId parameter
+     * @throws WebClientResponseException if an error occurs while attempting to invoke the API
+     */
     public Mono<ResponseEntity<Void>> deleteSellerWithHttpInfo(UUID sellerId) throws WebClientResponseException {
         ParameterizedTypeReference<Void> localVarReturnType = new ParameterizedTypeReference<Void>() {};
         return deleteSellerRequestCreation(sellerId).toEntity(localVarReturnType);
+    }
+
+    /**
+     * 
+     * 
+     * <p><b>404</b> - Not Found
+     * <p><b>400</b> - Bad Request
+     * <p><b>403</b> - Forbidden
+     * <p><b>503</b> - Service Unavailable
+     * <p><b>204</b> - No Content
+     * @param sellerId The sellerId parameter
+     * @return ResponseSpec
+     * @throws WebClientResponseException if an error occurs while attempting to invoke the API
+     */
+    public ResponseSpec deleteSellerWithResponseSpec(UUID sellerId) throws WebClientResponseException {
+        return deleteSellerRequestCreation(sellerId);
     }
     /**
      * 
@@ -170,9 +197,37 @@ public class SellerApi {
         return getSellerRequestCreation(sellerId).bodyToMono(localVarReturnType);
     }
 
+    /**
+     * 
+     * 
+     * <p><b>404</b> - Not Found
+     * <p><b>400</b> - Bad Request
+     * <p><b>403</b> - Forbidden
+     * <p><b>503</b> - Service Unavailable
+     * <p><b>200</b> - OK
+     * @param sellerId The sellerId parameter
+     * @return ResponseEntity&lt;Seller&gt;
+     * @throws WebClientResponseException if an error occurs while attempting to invoke the API
+     */
     public Mono<ResponseEntity<Seller>> getSellerWithHttpInfo(UUID sellerId) throws WebClientResponseException {
         ParameterizedTypeReference<Seller> localVarReturnType = new ParameterizedTypeReference<Seller>() {};
         return getSellerRequestCreation(sellerId).toEntity(localVarReturnType);
+    }
+
+    /**
+     * 
+     * 
+     * <p><b>404</b> - Not Found
+     * <p><b>400</b> - Bad Request
+     * <p><b>403</b> - Forbidden
+     * <p><b>503</b> - Service Unavailable
+     * <p><b>200</b> - OK
+     * @param sellerId The sellerId parameter
+     * @return ResponseSpec
+     * @throws WebClientResponseException if an error occurs while attempting to invoke the API
+     */
+    public ResponseSpec getSellerWithResponseSpec(UUID sellerId) throws WebClientResponseException {
+        return getSellerRequestCreation(sellerId);
     }
     /**
      * 
@@ -224,9 +279,35 @@ public class SellerApi {
         return getSellersRequestCreation().bodyToFlux(localVarReturnType);
     }
 
+    /**
+     * 
+     * 
+     * <p><b>404</b> - Not Found
+     * <p><b>400</b> - Bad Request
+     * <p><b>403</b> - Forbidden
+     * <p><b>503</b> - Service Unavailable
+     * <p><b>200</b> - OK
+     * @return ResponseEntity&lt;List&lt;Seller&gt;&gt;
+     * @throws WebClientResponseException if an error occurs while attempting to invoke the API
+     */
     public Mono<ResponseEntity<List<Seller>>> getSellersWithHttpInfo() throws WebClientResponseException {
         ParameterizedTypeReference<Seller> localVarReturnType = new ParameterizedTypeReference<Seller>() {};
         return getSellersRequestCreation().toEntityList(localVarReturnType);
+    }
+
+    /**
+     * 
+     * 
+     * <p><b>404</b> - Not Found
+     * <p><b>400</b> - Bad Request
+     * <p><b>403</b> - Forbidden
+     * <p><b>503</b> - Service Unavailable
+     * <p><b>200</b> - OK
+     * @return ResponseSpec
+     * @throws WebClientResponseException if an error occurs while attempting to invoke the API
+     */
+    public ResponseSpec getSellersWithResponseSpec() throws WebClientResponseException {
+        return getSellersRequestCreation();
     }
     /**
      * 
@@ -294,9 +375,39 @@ public class SellerApi {
         return patchSellerRequestCreation(sellerId, sellerUpdateRequest).bodyToMono(localVarReturnType);
     }
 
+    /**
+     * 
+     * 
+     * <p><b>404</b> - Not Found
+     * <p><b>400</b> - Bad Request
+     * <p><b>403</b> - Forbidden
+     * <p><b>503</b> - Service Unavailable
+     * <p><b>200</b> - OK
+     * @param sellerId The sellerId parameter
+     * @param sellerUpdateRequest The sellerUpdateRequest parameter
+     * @return ResponseEntity&lt;Seller&gt;
+     * @throws WebClientResponseException if an error occurs while attempting to invoke the API
+     */
     public Mono<ResponseEntity<Seller>> patchSellerWithHttpInfo(UUID sellerId, SellerUpdateRequest sellerUpdateRequest) throws WebClientResponseException {
         ParameterizedTypeReference<Seller> localVarReturnType = new ParameterizedTypeReference<Seller>() {};
         return patchSellerRequestCreation(sellerId, sellerUpdateRequest).toEntity(localVarReturnType);
+    }
+
+    /**
+     * 
+     * 
+     * <p><b>404</b> - Not Found
+     * <p><b>400</b> - Bad Request
+     * <p><b>403</b> - Forbidden
+     * <p><b>503</b> - Service Unavailable
+     * <p><b>200</b> - OK
+     * @param sellerId The sellerId parameter
+     * @param sellerUpdateRequest The sellerUpdateRequest parameter
+     * @return ResponseSpec
+     * @throws WebClientResponseException if an error occurs while attempting to invoke the API
+     */
+    public ResponseSpec patchSellerWithResponseSpec(UUID sellerId, SellerUpdateRequest sellerUpdateRequest) throws WebClientResponseException {
+        return patchSellerRequestCreation(sellerId, sellerUpdateRequest);
     }
     /**
      * 
@@ -356,8 +467,36 @@ public class SellerApi {
         return postSellerRequestCreation(sellerCreateRequest).bodyToMono(localVarReturnType);
     }
 
+    /**
+     * 
+     * 
+     * <p><b>404</b> - Not Found
+     * <p><b>400</b> - Bad Request
+     * <p><b>403</b> - Forbidden
+     * <p><b>503</b> - Service Unavailable
+     * <p><b>201</b> - Created
+     * @param sellerCreateRequest The sellerCreateRequest parameter
+     * @return ResponseEntity&lt;Seller&gt;
+     * @throws WebClientResponseException if an error occurs while attempting to invoke the API
+     */
     public Mono<ResponseEntity<Seller>> postSellerWithHttpInfo(SellerCreateRequest sellerCreateRequest) throws WebClientResponseException {
         ParameterizedTypeReference<Seller> localVarReturnType = new ParameterizedTypeReference<Seller>() {};
         return postSellerRequestCreation(sellerCreateRequest).toEntity(localVarReturnType);
+    }
+
+    /**
+     * 
+     * 
+     * <p><b>404</b> - Not Found
+     * <p><b>400</b> - Bad Request
+     * <p><b>403</b> - Forbidden
+     * <p><b>503</b> - Service Unavailable
+     * <p><b>201</b> - Created
+     * @param sellerCreateRequest The sellerCreateRequest parameter
+     * @return ResponseSpec
+     * @throws WebClientResponseException if an error occurs while attempting to invoke the API
+     */
+    public ResponseSpec postSellerWithResponseSpec(SellerCreateRequest sellerCreateRequest) throws WebClientResponseException {
+        return postSellerRequestCreation(sellerCreateRequest);
     }
 }

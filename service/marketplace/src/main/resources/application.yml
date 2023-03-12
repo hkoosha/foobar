@@ -3,23 +3,12 @@ spring:
     name: FoobarMarketplace
   main:
     banner-mode: off
-  zipkin:
-    enabled: false
+  datasource:
+    hikari:
+      maximum-pool-size: 64
   r2dbc:
-    url: 'r2dbc:mariadb://${FOOBAR_MYSQL_HOST:localhost:3306}/foobar_marketplace'
-    username: ${FOOBAR_MYSQL_USER:root}
-    password: ${FOOBAR_MYSQL_PASS:.}
     pool:
-      enabled: true
-      initial-size: 1280
-      max-size: 10240
-  flyway:
-    create-schemas: false
-    fail-on-missing-locations: true
-    baseline-on-migrate: true
-    user: ${FOOBAR_MYSQL_USER:root}
-    password: ${FOOBAR_MYSQL_PASS:.}
-    url: 'jdbc:mariadb://${FOOBAR_MYSQL_HOST:localhost:3306}/foobar_marketplace'
+      max-size: 64
 
 server:
   port: ${FOOBAR_SERVICE_PORT_MARKETPLACE:4041}
@@ -57,11 +46,11 @@ resilience4j:
           - java.io.IOException
 
 
-logging:
-  level:
-    org.apache.kafka: error
-    io.koosha.foobar: ${FOOBAR_LOG_LEVEL:info}
-    org.mariadb.r2dbc.message.server: error
+#logging:
+#  level:
+#    org.apache.kafka: error
+#    io.koosha.foobar: ${FOOBAR_LOG_LEVEL:info}
+#    org.mariadb.r2dbc.message.server: error
 
 
 foobar:

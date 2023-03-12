@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.Clock
 import java.util.*
-import javax.validation.Validator
+import jakarta.validation.Validator
 
 
 @Service
@@ -262,7 +262,6 @@ class ProductServiceAvailabilityUpdaterImpl(
         )
         this.kafka
             .sendDefault(send)
-            .completable()
             .join()
 
     }

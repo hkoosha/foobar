@@ -11,6 +11,7 @@
     <springProfile name="json-logging">
         <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
             <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+                <findAndRegisterJacksonModules>false</findAndRegisterJacksonModules>
                 <providers>
                     <mdc/>
                     <message/>
@@ -60,6 +61,7 @@
     <springProfile name="json-local-logging">
         <appender name="JSON_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
             <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+                <findAndRegisterJacksonModules>false</findAndRegisterJacksonModules>
                 <providers>
                     <mdc/>
                     <message/>

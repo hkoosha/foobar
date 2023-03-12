@@ -20,8 +20,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonValue;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
@@ -34,7 +32,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
   SellerCreateRequestAddress.JSON_PROPERTY_COUNTRY,
   SellerCreateRequestAddress.JSON_PROPERTY_CITY
 })
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen")
+@jakarta.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen")
 public class SellerCreateRequestAddress {
   public static final String JSON_PROPERTY_ZIPCODE = "zipcode";
   private String zipcode;
@@ -48,7 +46,7 @@ public class SellerCreateRequestAddress {
   public static final String JSON_PROPERTY_CITY = "city";
   private String city;
 
-  public SellerCreateRequestAddress() { 
+  public SellerCreateRequestAddress() {
   }
 
   public SellerCreateRequestAddress zipcode(String zipcode) {
@@ -61,8 +59,7 @@ public class SellerCreateRequestAddress {
    * Get zipcode
    * @return zipcode
   **/
-  @javax.annotation.Nonnull
-  @ApiModelProperty(required = true, value = "")
+  @jakarta.annotation.Nonnull
   @JsonProperty(JSON_PROPERTY_ZIPCODE)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
 
@@ -88,8 +85,7 @@ public class SellerCreateRequestAddress {
    * Get addressLine1
    * @return addressLine1
   **/
-  @javax.annotation.Nonnull
-  @ApiModelProperty(required = true, value = "")
+  @jakarta.annotation.Nonnull
   @JsonProperty(JSON_PROPERTY_ADDRESS_LINE1)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
 
@@ -115,8 +111,7 @@ public class SellerCreateRequestAddress {
    * Get country
    * @return country
   **/
-  @javax.annotation.Nonnull
-  @ApiModelProperty(required = true, value = "")
+  @jakarta.annotation.Nonnull
   @JsonProperty(JSON_PROPERTY_COUNTRY)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
 
@@ -142,8 +137,7 @@ public class SellerCreateRequestAddress {
    * Get city
    * @return city
   **/
-  @javax.annotation.Nonnull
-  @ApiModelProperty(required = true, value = "")
+  @jakarta.annotation.Nonnull
   @JsonProperty(JSON_PROPERTY_CITY)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
 

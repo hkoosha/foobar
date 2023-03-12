@@ -20,8 +20,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonValue;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
@@ -33,7 +31,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
   AvailabilityUpdateRequest.JSON_PROPERTY_UNITS_TO_FREEZE,
   AvailabilityUpdateRequest.JSON_PROPERTY_PRICE_PER_UNIT
 })
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen")
+@jakarta.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen")
 public class AvailabilityUpdateRequest {
   public static final String JSON_PROPERTY_UNITS_AVAILABLE = "unitsAvailable";
   private Long unitsAvailable;
@@ -44,7 +42,7 @@ public class AvailabilityUpdateRequest {
   public static final String JSON_PROPERTY_PRICE_PER_UNIT = "pricePerUnit";
   private Long pricePerUnit;
 
-  public AvailabilityUpdateRequest() { 
+  public AvailabilityUpdateRequest() {
   }
 
   public AvailabilityUpdateRequest unitsAvailable(Long unitsAvailable) {
@@ -58,8 +56,7 @@ public class AvailabilityUpdateRequest {
    * minimum: 0
    * @return unitsAvailable
   **/
-  @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @jakarta.annotation.Nullable
   @JsonProperty(JSON_PROPERTY_UNITS_AVAILABLE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
 
@@ -86,8 +83,7 @@ public class AvailabilityUpdateRequest {
    * minimum: 0
    * @return unitsToFreeze
   **/
-  @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @jakarta.annotation.Nullable
   @JsonProperty(JSON_PROPERTY_UNITS_TO_FREEZE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
 
@@ -114,8 +110,7 @@ public class AvailabilityUpdateRequest {
    * minimum: 0
    * @return pricePerUnit
   **/
-  @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @jakarta.annotation.Nullable
   @JsonProperty(JSON_PROPERTY_PRICE_PER_UNIT)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
 

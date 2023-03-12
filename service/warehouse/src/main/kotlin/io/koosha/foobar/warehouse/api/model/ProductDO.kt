@@ -8,12 +8,12 @@ import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.time.LocalDateTime
 import java.util.*
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.EntityListeners
-import javax.persistence.Id
-import javax.persistence.Table
-import javax.persistence.Version
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.EntityListeners
+import jakarta.persistence.Id
+import jakarta.persistence.Table
+import jakarta.persistence.Version
 
 
 @Entity
@@ -26,7 +26,7 @@ open class ProductDO(
         name = "PRODUCT_ID",
         length = 36,
     )
-    @org.hibernate.annotations.Type(type = "uuid-char")
+    // @org.hibernate.annotations.Type(type = "uuid-char")
     open var productId: UUID? = null,
 
     @Version

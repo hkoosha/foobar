@@ -79,7 +79,6 @@ class ProductServiceAvailabilityDeleterImpl(
         )
         this.kafka
             .sendDefault(send)
-            .completable()
             .join()
     }
 

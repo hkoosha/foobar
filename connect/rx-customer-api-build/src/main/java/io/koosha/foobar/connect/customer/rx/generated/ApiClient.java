@@ -60,7 +60,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TimeZone;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 import java.time.OffsetDateTime;
 
@@ -69,7 +69,7 @@ import io.koosha.foobar.connect.customer.rx.generated.auth.HttpBasicAuth;
 import io.koosha.foobar.connect.customer.rx.generated.auth.HttpBearerAuth;
 import io.koosha.foobar.connect.customer.rx.generated.auth.ApiKeyAuth;
 
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen")
+@jakarta.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen")
 public class ApiClient extends JavaTimeFormatter {
     public enum CollectionFormat {
         CSV(","), TSV("\t"), SSV(" "), PIPES("|"), MULTI(null);
@@ -488,7 +488,7 @@ public class ApiClient extends JavaTimeFormatter {
      * @return boolean true if the MediaType represents JSON, false otherwise
      */
     public boolean isJsonMime(MediaType mediaType) {
-        return mediaType != null && (MediaType.APPLICATION_JSON.isCompatibleWith(mediaType) || mediaType.getSubtype().matches("^.*\\+json[;]?\\s*$"));
+        return mediaType != null && (MediaType.APPLICATION_JSON.isCompatibleWith(mediaType) || mediaType.getSubtype().matches("^.*(\\+json|ndjson)[;]?\\s*$"));
     }
 
     /**

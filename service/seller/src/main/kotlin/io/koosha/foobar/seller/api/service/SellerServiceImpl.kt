@@ -11,7 +11,7 @@ import net.logstash.logback.argument.StructuredArguments.v
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
-import javax.validation.Validator
+import jakarta.validation.Validator
 
 
 @Service

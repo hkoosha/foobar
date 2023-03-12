@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import reactor.core.publisher.Mono
 import java.util.*
-import javax.validation.Validator
+import jakarta.validation.Validator
 
 
 // TODO handle and translate retryable errors.

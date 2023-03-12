@@ -1,9 +1,9 @@
 package io.koosha.foobar.customer.api.service
 
 import io.koosha.foobar.customer.api.model.Title
-import javax.validation.Valid
-import javax.validation.constraints.NotNull
-import javax.validation.constraints.Size
+import jakarta.validation.Valid
+import jakarta.validation.constraints.NotNull
+import jakarta.validation.constraints.Size
 
 
 internal const val FIRST_NAME_MAX_LEN = 127

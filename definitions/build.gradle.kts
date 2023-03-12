@@ -1,7 +1,5 @@
 @file:Suppress("RemoveRedundantQualifierName")
 
-import com.google.protobuf.gradle.protobuf
-import com.google.protobuf.gradle.protoc
 import io.koosha.foobar.Foobar
 import io.koosha.foobar.Libraries
 
@@ -41,9 +39,10 @@ protobuf {
         artifact = "com.google.protobuf:protoc:${Libraries.Proto.proto}"
     }
 
-    generatedFilesBaseDir = "$projectDir/src/generated"
+    // generatedFilesBaseDir = "$projectDir/src/generated"
 }
 
-tasks.getByName<Delete>("clean") {
-    delete.add(protobuf.protobuf.generatedFilesBaseDir)
-}
+// tasks.getByName<Delete>("clean") {
+//     delete.add(protobuf.generatedFilesBaseDir)
+// }
+

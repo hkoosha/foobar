@@ -12,7 +12,7 @@ import net.logstash.logback.argument.StructuredArguments.v
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
 import java.util.*
-import javax.validation.Validator
+import jakarta.validation.Validator
 
 
 @Service

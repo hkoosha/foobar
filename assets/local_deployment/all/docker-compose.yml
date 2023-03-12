@@ -5,6 +5,16 @@ services:
   # image: docker.io/bitnami/redis:latest
   # ports:
   #   - '6379:6379'
+  postgres:
+    image: docker.io/bitnami/postgresql:latest
+    ports:
+      - '5432:5432'
+    volumes:
+      - 'postgres_data:/bitnami/postgresql'
+    environment:
+      - POSTGRESQL_USERNAME=root
+      - POSTGRESQL_PASSWORD=.
+      - POSTGRESQL_EXTRA_FLAGS=--max_connections=2048
   mariadb:
     image: docker.io/bitnami/mariadb:latest
     ports:
@@ -20,6 +30,7 @@ services:
       - MARIADB_SKIP_TEST_DB=yes
       - ALLOW_EMPTY_PASSWORD=yes
       - MARIADB_ROOT_PASSWORD=.
+      - MARIADB_EXTRA_FLAGS=--max_connections=2048
   zookeeper:
     image: docker.io/bitnami/zookeeper:latest
     ports:
@@ -62,5 +73,7 @@ volumes:
   zookeeper_data:
     driver: local
   kafka_data:
+    driver: local
+  postgres_data:
     driver: local
 

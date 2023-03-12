@@ -1,0 +1,9 @@
+spring:
+  config:
+    activate:
+      on-profile:
+        - db-postgres
+  datasource:
+    url: jdbc:postgresql://${FOOBAR_POSTGRES_HOST:localhost:5432}/foobar_warehouse
+    username: ${FOOBAR_POSTGRES_USER:root}
+    password: ${FOOBAR_POSTGRES_PASS:.}

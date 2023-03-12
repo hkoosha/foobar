@@ -8,6 +8,7 @@ import io.koosha.foobar.loader.api.service.storage.IdStorageService
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
+import java.util.*
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
 
@@ -82,8 +83,8 @@ class LineItemGeneratorService(
         if (this.numLineItems >= this.ids.getProductRange().last)
             return false
 
-        val orderRequestId = this.queue.getOrderRequestForLineItem()
-        val productIds = this.ids.getRandomProducts(this.rand.int(max = this.numLineItems, min = 1))
+        val orderRequestId: UUID = this.queue.getOrderRequestForLineItem()
+        val productIds: Set<UUID> = this.ids.getRandomProducts(this.rand.int(max = this.numLineItems, min = 1))
 
         var ok = true
 

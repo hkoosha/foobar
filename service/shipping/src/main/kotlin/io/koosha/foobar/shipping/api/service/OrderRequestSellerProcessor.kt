@@ -37,7 +37,7 @@ class OrderRequestSellerProcessor(
         rollbackForClassName = ["java.lang.Exception"]
     )
     fun onOrderRequestSeller(
-        @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) key: UUID,
+        @Header(KafkaHeaders.KEY) key: UUID,
         @Payload payload: OrderRequestSellerFoundProto.OrderRequestSellerFound,
         ack: Acknowledgment,
     ) {
