@@ -20,8 +20,6 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.koosha.foobar.connect.seller.rx.generated.api.EntityInfo;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import org.junit.Assert;

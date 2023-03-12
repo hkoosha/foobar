@@ -55,7 +55,7 @@ class OrderRequestSellerProcessor(
         containerFactory = KafkaConfig.LISTENER_CONTAINER_FACTORY__ORDER_REQUEST__SELLER_FOUND,
     )
     fun onOrderRequestSeller(
-        @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY)
+        @Header(KafkaHeaders.KEY)
         orderRequestId: UUID,
         @Payload
         payload: OrderRequestSellerFoundProto.OrderRequestSellerFound,

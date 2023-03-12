@@ -21,8 +21,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.koosha.foobar.connect.customer.rx.generated.api.CustomerCreateRequestName;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
@@ -32,7 +30,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 @JsonPropertyOrder({
   CustomerCreateRequest.JSON_PROPERTY_NAME
 })
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen")
+@jakarta.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen")
 public class CustomerCreateRequest {
   public static final String JSON_PROPERTY_NAME = "name";
   private CustomerCreateRequestName name;
@@ -50,8 +48,7 @@ public class CustomerCreateRequest {
    * Get name
    * @return name
   **/
-  @javax.annotation.Nonnull
-  @ApiModelProperty(required = true, value = "")
+  @jakarta.annotation.Nonnull
   @JsonProperty(JSON_PROPERTY_NAME)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
 

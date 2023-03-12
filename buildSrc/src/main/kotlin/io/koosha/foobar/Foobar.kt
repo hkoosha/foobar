@@ -63,11 +63,12 @@ object Foobar {
     object Boot {
 
         fun jvmArgs(project: Project) = listOf(
-            "-javaagent:${project.rootDir}/libs/opentelemetry-javaagent-1.17.0.jar",
+            "-javaagent:${project.rootDir}/libs/opentelemetry-javaagent-1.23.0.jar",
             "-Dotel.service.name=${project.name}",
             // "-Dotel.traces.sampler=always_on",
             "-Dotel.traces.sampler=parentbased_traceidratio",
             "-Dotel.traces.sampler.arg=0.1",
+            "-Dlogback.debug=true"
         )
 
     }
@@ -79,7 +80,7 @@ object Foobar {
         )
 
         fun jvmFlags(project: Project) = listOf(
-            "-javaagent:/opentelemetry-javaagent-1.17.0.jar",
+            "-javaagent:/opentelemetry-javaagent-1.23.0.jar",
             "-Dotel.service.name=${project.name}",
             // "-Dotel.traces.sampler=always_on",
             "-Dotel.traces.sampler=parentbased_traceidratio",
@@ -120,5 +121,84 @@ object Foobar {
         if (!registry.endsWith("/"))
             throw GradleException("foobar docker registry (env var: FOOBAR_DOCKER_REGISTRY) must end with a slash, actual value: $registry")
         return registry
+    }
+
+    fun fixApiBuilder(toFix: String, flux: Boolean = false): String {
+        val lines = toFix
+            .lines()
+            .map {
+                it
+                    .replace(
+                        "main = System.getProperty('mainClass')",
+                        "mainClass.set(System.getProperty('mainClass'))",
+                    )
+                    .replace(
+                        "classifier = 'sources'",
+                        "archiveClassifier = 'sources'",
+                    )
+                    .replace(
+                        "classifier = 'javadoc'",
+                        "archiveClassifier = 'javadoc'",
+                    )
+                    .replace(
+                        "apply plugin: 'eclipse'",
+                        "apply plugin: 'java'",
+                    )
+                    .replace(
+                        "version = 'v0'",
+                        """
+                        version = 'v0'
+                        java.sourceCompatibility = JavaVersion.VERSION_17
+                        java.targetCompatibility = JavaVersion.VERSION_17
+                        java.disableAutoTargetJvm()
+                        """.trimIndent(),
+                    )
+            }
+        var inExt = false
+        val newContent = StringBuilder()
+        val versionReplacements = mapOf(
+            "swagger_annotations_version" to Libraries.OpenApi.swaggerAnnotations,
+            "spring_boot_version" to when(Libraries.Spring.boot) {
+                "3.0.4" ->
+                    if(flux)
+                        "3.0.3" // not released as of writing this.
+                    else
+                        Libraries.Spring.boot
+                else -> Libraries.Spring.boot
+            },
+            "jackson_version" to Libraries.Jackson.core,
+            "jackson_databind_version" to Libraries.Jackson.core,
+            "jackson_databind_nullable_version" to Libraries.OpenApi.jacksonNullable,
+            "jakarta_annotation_version" to Libraries.jakartaAnnotationApi,
+            "reactor_version" to Libraries.Reactor.core,
+            "reactor_netty_version" to Libraries.Reactor.nettyHttp,
+        )
+        for (line in lines) {
+            if (line == "ext {") {
+                inExt = true
+                newContent.append("\n").append(line)
+            }
+            else if (inExt && line == "}") {
+                inExt = false
+                newContent.append("\n").append(line)
+            }
+            else if (!inExt) {
+                newContent.append("\n").append(line)
+            }
+            else {
+                var anyReplacement = false
+                for ((artifact, versionReplacement) in versionReplacements)
+                    if (line.contains(" $artifact =")) {
+                        newContent.append("\n    $artifact = \"$versionReplacement\"")
+                        anyReplacement = true
+                        break
+                    }
+                if (!anyReplacement) {
+                    newContent.append("\n").append(line)
+                }
+            }
+        }
+
+        return newContent.toString()
     }
 }

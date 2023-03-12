@@ -24,7 +24,7 @@ import reactor.core.publisher.Mono
 import reactor.kotlin.core.publisher.toMono
 import java.time.Clock
 import java.util.*
-import javax.validation.Validator
+import jakarta.validation.Validator
 
 
 @Service

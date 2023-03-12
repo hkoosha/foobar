@@ -14,7 +14,7 @@ FOOBAR_K8S_SPRING_PROFILES_CUSTOMER ?= db-mysql,json-logging,expose,zipkin
 FOOBAR_MINIKUBE_MEMORY ?= 80g
 FOOBAR_MINIKUBE_NUM_CPU ?= 16
 FOOBAR_MINIKUBE_DRIVER ?= docker
-FOOBAR_MINIKUBE_NODES ?= 6
+FOOBAR_MINIKUBE_NODES ?= 4
 FOOBAR_MINIKUBE_ADDONS ?= dashboard,storage-provisioner,registry,metrics-server
 #FOOBAR_MINIKUBE_ADDONS ?= dashboard,storage-provisioner,ingress,registry,default-storageclass,volumesnapshots,csi-hostpath-driver
 FOOBAR_DOCKER_IMAGE_VERSION ?= 0.0.1-SNAPSHOT
@@ -117,9 +117,8 @@ sos-local:
 
 
 
-libs/opentelemetry-javaagent-1.17.0.jar: # get the OpenTelemetry library injected in docker containers as java agent
+libs/opentelemetry-javaagent-1.23.0.jar: # get the OpenTelemetry library injected in docker containers as java agent
 	wget \
-		https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v1.17.0/opentelemetry-javaagent.jar \
-		-O libs/opentelemetry-javaagent-1.17.0.jar
-
+		https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v1.23.0/opentelemetry-javaagent.jar \
+		-O libs/opentelemetry-javaagent-1.23.0.jar
 

@@ -20,8 +20,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonValue;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
@@ -32,7 +30,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
   EntityInfo.JSON_PROPERTY_ENTITY_TYPE,
   EntityInfo.JSON_PROPERTY_ENTITY_ID
 })
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen")
+@jakarta.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen")
 public class EntityInfo {
   public static final String JSON_PROPERTY_ENTITY_TYPE = "entityType";
   private String entityType;
@@ -53,8 +51,7 @@ public class EntityInfo {
    * Get entityType
    * @return entityType
   **/
-  @javax.annotation.Nonnull
-  @ApiModelProperty(required = true, value = "")
+  @jakarta.annotation.Nonnull
   @JsonProperty(JSON_PROPERTY_ENTITY_TYPE)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
 
@@ -80,8 +77,7 @@ public class EntityInfo {
    * Get entityId
    * @return entityId
   **/
-  @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @jakarta.annotation.Nullable
   @JsonProperty(JSON_PROPERTY_ENTITY_ID)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
 

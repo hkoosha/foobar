@@ -2,8 +2,8 @@ package io.koosha.foobar.marketplace.api.service
 
 import io.koosha.foobar.marketplace.api.model.OrderRequestState
 import java.util.*
-import javax.validation.constraints.Min
-import javax.validation.constraints.NotNull
+import jakarta.validation.constraints.Min
+import jakarta.validation.constraints.NotNull
 
 
 data class OrderRequestCreateRequest(

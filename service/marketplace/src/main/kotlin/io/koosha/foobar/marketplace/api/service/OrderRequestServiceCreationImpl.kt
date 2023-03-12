@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import reactor.core.publisher.Mono
 import java.util.*
-import javax.validation.Validator
+import jakarta.validation.Validator
 
 
 @Service

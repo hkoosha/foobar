@@ -3,8 +3,6 @@ spring:
     name: FoobarMarketplace
   main:
     banner-mode: off
-  zipkin:
-    enabled: false
   datasource:
     hikari:
       maximum-pool-size: 64
@@ -48,11 +46,11 @@ resilience4j:
           - java.io.IOException
 
 
-logging:
-  level:
-    org.apache.kafka: error
-    io.koosha.foobar: ${FOOBAR_LOG_LEVEL:info}
-    org.mariadb.r2dbc.message.server: error
+#logging:
+#  level:
+#    org.apache.kafka: error
+#    io.koosha.foobar: ${FOOBAR_LOG_LEVEL:info}
+#    org.mariadb.r2dbc.message.server: error
 
 
 foobar:

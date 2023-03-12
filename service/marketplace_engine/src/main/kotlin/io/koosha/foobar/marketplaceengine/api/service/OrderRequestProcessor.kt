@@ -70,7 +70,7 @@ class OrderRequestProcessor(
         containerFactory = KafkaConfig.LISTENER_CONTAINER_FACTORY__ORDER_REQUEST__STATE_CHANGED,
     )
     fun onEntityStateChanged(
-        @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY)
+        @Header(KafkaHeaders.KEY)
         key: UUID,
         @Payload
         stateChange: OrderRequestStateChangedProto.OrderRequestStateChanged,
@@ -78,7 +78,7 @@ class OrderRequestProcessor(
     ) {
 
         if (stateChange.to == "LIVE")
-            timer.record {
+            timer.record(Runnable {
                 try {
                     this.txTemplate.execute {
                         this.onEntityStateChanged0(key, stateChange)
@@ -95,7 +95,7 @@ class OrderRequestProcessor(
                     log.error("failed to process entity state change -> ${e.javaClass} -> ${e.message}")
                     ack.nack(Duration.ofMillis(KAFKA_TIMEOUT_MILLIS))
                 }
-            }
+            })
     }
 
     @Suppress("ReturnCount")

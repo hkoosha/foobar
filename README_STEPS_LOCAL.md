@@ -1,6 +1,6 @@
 ```bash
 make clean \
-  libs/opentelemetry-javaagent-1.17.0.jar \
+  libs/opentelemetry-javaagent-1.23.0.jar \
   build-proto \
   build-api-generator
 
@@ -8,8 +8,8 @@ ENV=no_db make build-api
 make build
   
 make local-run-dependencies
-local-init-my-create-db
-local-init-pg-create-db
+make local-init-my-create-db
+make local-init-pg-create-db
 make local-init-create-topics
 
 make run-customer

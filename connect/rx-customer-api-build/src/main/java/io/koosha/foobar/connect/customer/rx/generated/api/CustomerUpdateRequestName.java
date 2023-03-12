@@ -20,8 +20,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonValue;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
@@ -33,7 +31,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
   CustomerUpdateRequestName.JSON_PROPERTY_FIRST_NAME,
   CustomerUpdateRequestName.JSON_PROPERTY_LAST_NAME
 })
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen")
+@jakarta.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen")
 public class CustomerUpdateRequestName {
   /**
    * Gets or Sets title
@@ -96,8 +94,7 @@ public class CustomerUpdateRequestName {
    * Get title
    * @return title
   **/
-  @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @jakarta.annotation.Nullable
   @JsonProperty(JSON_PROPERTY_TITLE)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
 
@@ -123,8 +120,7 @@ public class CustomerUpdateRequestName {
    * Get firstName
    * @return firstName
   **/
-  @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @jakarta.annotation.Nullable
   @JsonProperty(JSON_PROPERTY_FIRST_NAME)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
 
@@ -150,8 +146,7 @@ public class CustomerUpdateRequestName {
    * Get lastName
    * @return lastName
   **/
-  @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
+  @jakarta.annotation.Nullable
   @JsonProperty(JSON_PROPERTY_LAST_NAME)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
 

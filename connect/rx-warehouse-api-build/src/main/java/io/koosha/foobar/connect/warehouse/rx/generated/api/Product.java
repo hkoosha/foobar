@@ -20,8 +20,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonValue;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonTypeName;
@@ -36,7 +34,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
   Product.JSON_PROPERTY_UNIT_MULTIPLE,
   Product.JSON_PROPERTY_UNIT_SINGLE
 })
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen")
+@jakarta.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen")
 public class Product {
   public static final String JSON_PROPERTY_PRODUCT_ID = "productId";
   private UUID productId;
@@ -66,8 +64,7 @@ public class Product {
    * Get productId
    * @return productId
   **/
-  @javax.annotation.Nonnull
-  @ApiModelProperty(required = true, value = "")
+  @jakarta.annotation.Nonnull
   @JsonProperty(JSON_PROPERTY_PRODUCT_ID)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
 
@@ -93,8 +90,7 @@ public class Product {
    * Get active
    * @return active
   **/
-  @javax.annotation.Nonnull
-  @ApiModelProperty(required = true, value = "")
+  @jakarta.annotation.Nonnull
   @JsonProperty(JSON_PROPERTY_ACTIVE)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
 
@@ -120,8 +116,7 @@ public class Product {
    * Get name
    * @return name
   **/
-  @javax.annotation.Nonnull
-  @ApiModelProperty(required = true, value = "")
+  @jakarta.annotation.Nonnull
   @JsonProperty(JSON_PROPERTY_NAME)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
 
@@ -147,8 +142,7 @@ public class Product {
    * Get unitMultiple
    * @return unitMultiple
   **/
-  @javax.annotation.Nonnull
-  @ApiModelProperty(required = true, value = "")
+  @jakarta.annotation.Nonnull
   @JsonProperty(JSON_PROPERTY_UNIT_MULTIPLE)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
 
@@ -174,8 +168,7 @@ public class Product {
    * Get unitSingle
    * @return unitSingle
   **/
-  @javax.annotation.Nonnull
-  @ApiModelProperty(required = true, value = "")
+  @jakarta.annotation.Nonnull
   @JsonProperty(JSON_PROPERTY_UNIT_SINGLE)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
 

@@ -3,20 +3,20 @@
 package io.koosha.foobar.seller.api.model
 
 import io.koosha.foobar.seller.API_PREFIX
+import jakarta.persistence.Column
+import jakarta.persistence.Embedded
+import jakarta.persistence.Entity
+import jakarta.persistence.EntityListeners
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
+import jakarta.persistence.Id
+import jakarta.persistence.Table
+import jakarta.persistence.Version
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.time.LocalDateTime
 import java.util.*
-import javax.persistence.Column
-import javax.persistence.Embedded
-import javax.persistence.Entity
-import javax.persistence.EntityListeners
-import javax.persistence.EnumType
-import javax.persistence.Enumerated
-import javax.persistence.Id
-import javax.persistence.Table
-import javax.persistence.Version
 
 
 @Entity
@@ -29,7 +29,7 @@ open class SellerDO(
         name = "SELLER_ID",
         length = 36,
     )
-    @org.hibernate.annotations.Type(type = "uuid-char")
+    // @org.hibernate.annotations.Type(type = "uuid-char")
     open var sellerId: UUID? = null,
 
     @Version

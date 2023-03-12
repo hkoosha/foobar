@@ -39,9 +39,10 @@ protobuf {
         artifact = "com.google.protobuf:protoc:${Libraries.Proto.proto}"
     }
 
-    generatedFilesBaseDir = "$projectDir/src/generated"
+    // generatedFilesBaseDir = "$projectDir/src/generated"
 }
 
-tasks.getByName<Delete>("clean") {
-    delete.add(protobuf.generatedFilesBaseDir)
-}
+// tasks.getByName<Delete>("clean") {
+//     delete.add(protobuf.generatedFilesBaseDir)
+// }
+

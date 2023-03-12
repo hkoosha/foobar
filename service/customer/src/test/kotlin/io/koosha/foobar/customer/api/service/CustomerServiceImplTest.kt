@@ -43,7 +43,7 @@ import org.springframework.transaction.TransactionStatus
 import org.springframework.transaction.support.TransactionCallback
 import org.springframework.transaction.support.TransactionTemplate
 import java.util.*
-import javax.validation.Validator
+import jakarta.validation.Validator
 
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.NONE,

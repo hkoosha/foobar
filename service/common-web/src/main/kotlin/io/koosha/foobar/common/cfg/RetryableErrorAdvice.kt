@@ -1,6 +1,7 @@
 package io.koosha.foobar.common.cfg
 
 import io.koosha.foobar.common.error.ResourceCurrentlyUnavailableException
+import jakarta.servlet.http.HttpServletResponse
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication
@@ -11,7 +12,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import java.time.Duration
-import javax.servlet.http.HttpServletResponse
 
 
 @ConditionalOnWebApplication

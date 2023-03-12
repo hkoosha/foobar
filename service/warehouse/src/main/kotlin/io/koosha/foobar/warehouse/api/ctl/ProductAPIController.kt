@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder
 import java.util.*
-import javax.servlet.http.HttpServletResponse
+import jakarta.servlet.http.HttpServletResponse
 
 
 @RestController

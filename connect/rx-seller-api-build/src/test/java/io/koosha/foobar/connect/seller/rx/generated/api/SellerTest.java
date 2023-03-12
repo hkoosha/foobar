@@ -19,8 +19,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.koosha.foobar.connect.seller.rx.generated.api.Address;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Ignore;

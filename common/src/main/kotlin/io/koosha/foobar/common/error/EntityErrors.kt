@@ -1,7 +1,7 @@
 package io.koosha.foobar.common.error
 
 import io.koosha.foobar.common.model.EntityInfo
-import javax.validation.ConstraintViolation
+import jakarta.validation.ConstraintViolation
 
 
 abstract class EntityException : RuntimeException {

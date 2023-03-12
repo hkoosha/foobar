@@ -12,7 +12,7 @@ plugins {
 
     id("io.gitlab.arturbosch.detekt") version k.detekt
     id("io.spring.dependency-management") version s.DependencyManagement
-    id("org.springframework.boot") version s.springBoot2
+    id("org.springframework.boot") version s.boot
     kotlin("jvm") version k.jvm
     kotlin("plugin.spring") version k.spring
 }
@@ -48,8 +48,6 @@ dependencyManagement {
 dependencies {
     implementation(project(":common"))
 
-    implementation("org.springframework.cloud:spring-cloud-starter-sleuth")
-    implementation("org.springframework.cloud:spring-cloud-sleuth-zipkin")
     implementation("org.springframework.boot:spring-boot-starter-web")
 
     implementation("io.github.microutils:kotlin-logging-jvm:${Libraries.microutilsKotlinLoggingJvm}")

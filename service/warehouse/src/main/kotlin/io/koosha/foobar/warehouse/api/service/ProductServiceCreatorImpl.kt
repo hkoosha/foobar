@@ -3,12 +3,12 @@ package io.koosha.foobar.warehouse.api.service
 import io.koosha.foobar.common.error.EntityBadValueException
 import io.koosha.foobar.warehouse.api.model.ProductDO
 import io.koosha.foobar.warehouse.api.model.ProductRepository
+import jakarta.validation.Validator
 import mu.KotlinLogging
 import net.logstash.logback.argument.StructuredArguments.v
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
-import javax.validation.Validator
 
 
 @Service

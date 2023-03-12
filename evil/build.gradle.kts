@@ -11,7 +11,7 @@ plugins {
     val k = io.koosha.foobar.Libraries.Kotlin
 
     id("io.gitlab.arturbosch.detekt") version k.detekt
-    id("org.springframework.boot") version s.springBoot2
+    id("org.springframework.boot") version s.boot
     id("io.spring.dependency-management") version s.DependencyManagement
     kotlin("jvm") version k.jvm
     kotlin("plugin.spring") version k.spring

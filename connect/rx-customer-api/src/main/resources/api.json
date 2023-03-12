@@ -2,5 +2,6 @@
     "groupId": "io.koosha.foobar.customer",
     "packageName": "io.koosha.foobar.connect.customer.rx.generated.api",
     "serializationLibrary": "jackson",
-    "hideGenerationTimestamp": true
+    "hideGenerationTimestamp": true,
+    "useJakartaEe": true
 }

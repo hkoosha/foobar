@@ -20,8 +20,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonValue;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
@@ -36,7 +34,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
   Address.JSON_PROPERTY_COUNTRY,
   Address.JSON_PROPERTY_CITY
 })
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen")
+@jakarta.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen")
 public class Address {
   public static final String JSON_PROPERTY_ADDRESS_ID = "addressId";
   private Long addressId;
@@ -69,8 +67,7 @@ public class Address {
    * Get addressId
    * @return addressId
   **/
-  @javax.annotation.Nonnull
-  @ApiModelProperty(required = true, value = "")
+  @jakarta.annotation.Nonnull
   @JsonProperty(JSON_PROPERTY_ADDRESS_ID)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
 
@@ -96,8 +93,7 @@ public class Address {
    * Get name
    * @return name
   **/
-  @javax.annotation.Nonnull
-  @ApiModelProperty(required = true, value = "")
+  @jakarta.annotation.Nonnull
   @JsonProperty(JSON_PROPERTY_NAME)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
 
@@ -123,8 +119,7 @@ public class Address {
    * Get zipcode
    * @return zipcode
   **/
-  @javax.annotation.Nonnull
-  @ApiModelProperty(required = true, value = "")
+  @jakarta.annotation.Nonnull
   @JsonProperty(JSON_PROPERTY_ZIPCODE)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
 
@@ -150,8 +145,7 @@ public class Address {
    * Get addressLine1
    * @return addressLine1
   **/
-  @javax.annotation.Nonnull
-  @ApiModelProperty(required = true, value = "")
+  @jakarta.annotation.Nonnull
   @JsonProperty(JSON_PROPERTY_ADDRESS_LINE1)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
 
@@ -177,8 +171,7 @@ public class Address {
    * Get country
    * @return country
   **/
-  @javax.annotation.Nonnull
-  @ApiModelProperty(required = true, value = "")
+  @jakarta.annotation.Nonnull
   @JsonProperty(JSON_PROPERTY_COUNTRY)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
 
@@ -204,8 +197,7 @@ public class Address {
    * Get city
    * @return city
   **/
-  @javax.annotation.Nonnull
-  @ApiModelProperty(required = true, value = "")
+  @jakarta.annotation.Nonnull
   @JsonProperty(JSON_PROPERTY_CITY)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
 

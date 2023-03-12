@@ -3,7 +3,7 @@ package io.koosha.foobar.warehouse.api.model
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Lock
 import java.util.*
-import javax.persistence.LockModeType
+import jakarta.persistence.LockModeType
 
 interface ProductRepository : JpaRepository<ProductDO, UUID> {
 
