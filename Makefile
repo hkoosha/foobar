@@ -117,8 +117,8 @@ sos-local:
 
 
 
-libs/opentelemetry-javaagent-1.23.0.jar: # get the OpenTelemetry library injected in docker containers as java agent
+libs/opentelemetry-javaagent-1.27.0.jar: # get the OpenTelemetry library injected in docker containers as java agent
 	wget \
-		https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v1.23.0/opentelemetry-javaagent.jar \
-		-O libs/opentelemetry-javaagent-1.23.0.jar
+		https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v1.27.0/opentelemetry-javaagent.jar \
+		-O libs/opentelemetry-javaagent-1.27.0.jar
 

@@ -50,7 +50,7 @@ class PrometheusScrapper {
                     .newCall(Request.Builder().url("http://foobar-maker:8080/actuator/prometheus").build())
                     .execute()
                     .use {
-                        it.body?.string() ?: throw RuntimeException("received empty body")
+                        it.body?.string() ?: error("received empty body")
                     }
                 this.lastSuccessfulRead = System.currentTimeMillis()
                 this.lastError = null

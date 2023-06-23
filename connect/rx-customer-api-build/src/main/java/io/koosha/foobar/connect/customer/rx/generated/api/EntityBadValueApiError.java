@@ -130,7 +130,6 @@ public class EntityBadValueApiError {
     this.error = error;
   }
 
-
   @Override
   public boolean equals(Object o) {
     if (this == o) {

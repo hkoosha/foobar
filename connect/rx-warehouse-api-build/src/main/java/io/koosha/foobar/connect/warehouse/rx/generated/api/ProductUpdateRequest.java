@@ -152,7 +152,6 @@ public class ProductUpdateRequest {
     this.unitMultiple = unitMultiple;
   }
 
-
   @Override
   public boolean equals(Object o) {
     if (this == o) {

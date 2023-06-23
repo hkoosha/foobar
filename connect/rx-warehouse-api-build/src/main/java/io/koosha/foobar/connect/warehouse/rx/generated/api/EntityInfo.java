@@ -92,7 +92,6 @@ public class EntityInfo {
     this.entityId = entityId;
   }
 
-
   @Override
   public boolean equals(Object o) {
     if (this == o) {

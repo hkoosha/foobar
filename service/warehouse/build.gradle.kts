@@ -159,5 +159,5 @@ tasks.withType<DetektCreateBaselineTask>().configureEach {
 
 tasks.withType<com.github.psxpaul.task.JavaExecFork> {
     dependsOn(tasks.named("jar"))
-    dependsOn(tasks.named("inspectClassesForKotlinIC"))
+    // dependsOn(tasks.named("inspectClassesForKotlinIC"))
 }

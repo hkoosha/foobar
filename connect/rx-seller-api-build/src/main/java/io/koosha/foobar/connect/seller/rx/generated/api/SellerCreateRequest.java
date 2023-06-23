@@ -93,7 +93,6 @@ public class SellerCreateRequest {
     this.address = address;
   }
 
-
   @Override
   public boolean equals(Object o) {
     if (this == o) {

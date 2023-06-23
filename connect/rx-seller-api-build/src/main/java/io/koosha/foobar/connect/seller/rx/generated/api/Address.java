@@ -152,7 +152,6 @@ public class Address {
     this.city = city;
   }
 
-
   @Override
   public boolean equals(Object o) {
     if (this == o) {

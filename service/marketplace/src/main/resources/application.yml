@@ -9,6 +9,14 @@ spring:
   r2dbc:
     pool:
       max-size: 64
+  zipkin:
+    enabled: false
+  datasource:
+    hikari:
+      maximum-pool-size: 64
+  r2dbc:
+    pool:
+      max-size: 64
 
 server:
   port: ${FOOBAR_SERVICE_PORT_MARKETPLACE:4041}

@@ -125,7 +125,6 @@ public class AvailabilityCreateRequest {
     this.pricePerUnit = pricePerUnit;
   }
 
-
   @Override
   public boolean equals(Object o) {
     if (this == o) {
