@@ -183,7 +183,6 @@ public class Product {
     this.unitSingle = unitSingle;
   }
 
-
   @Override
   public boolean equals(Object o) {
     if (this == o) {

@@ -36,8 +36,8 @@ if(hasProperty('target') && target == 'android') {
         }
 
         compileOptions {
-            sourceCompatibility JavaVersion.VERSION_1_8
-            targetCompatibility JavaVersion.VERSION_1_8
+            sourceCompatibility JavaVersion.VERSION_17
+            targetCompatibility JavaVersion.VERSION_17
         }
 
         // Rename the aar correctly
@@ -82,8 +82,8 @@ if(hasProperty('target') && target == 'android') {
     apply plugin: 'java'
     apply plugin: 'maven-publish'
 
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 
     publishing {
         publications {
@@ -95,7 +95,7 @@ if(hasProperty('target') && target == 'android') {
     }
 
     task execute(type:JavaExec) {
-       mainClass.set(System.getProperty('mainClass'))
+       mainClass = System.getProperty('mainClass')
        classpath = sourceSets.main.runtimeClasspath
     }
 
@@ -116,20 +116,17 @@ if(hasProperty('target') && target == 'android') {
 }
 
 ext {
-    swagger_annotations_version = "1.6.9"
-    spring_boot_version = "3.0.3"
-    jackson_version = "2.14.2"
-    jackson_databind_version = "2.14.2"
-    jackson_databind_nullable_version = "0.2.6"
+    spring_boot_version = "3.1.1"
     jakarta_annotation_version = "1.3.5"
-    reactor_version = "3.5.3"
-    reactor_netty_version = "1.1.4"
-    jodatime_version = "2.9.9"
+    reactor_version = "3.5.7"
+    reactor_netty_version = "1.1.8"
+    jackson_version = "2.15.2"
+    jackson_databind_version = "2.15.2"
+    jackson_databind_nullable_version = "0.2.6"
     junit_version = "4.13.2"
 }
 
 dependencies {
-    implementation "io.swagger:swagger-annotations:$swagger_annotations_version"
     implementation "com.google.code.findbugs:jsr305:3.0.2"
     implementation "io.projectreactor:reactor-core:$reactor_version"
     implementation "org.springframework.boot:spring-boot-starter-webflux:$spring_boot_version"
