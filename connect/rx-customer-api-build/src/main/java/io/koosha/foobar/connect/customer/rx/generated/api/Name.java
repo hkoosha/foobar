@@ -161,7 +161,6 @@ public class Name {
     this.lastName = lastName;
   }
 
-
   @Override
   public boolean equals(Object o) {
     if (this == o) {

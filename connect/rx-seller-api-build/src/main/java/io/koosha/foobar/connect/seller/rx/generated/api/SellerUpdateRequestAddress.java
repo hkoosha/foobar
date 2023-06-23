@@ -152,7 +152,6 @@ public class SellerUpdateRequestAddress {
     this.city = city;
   }
 
-
   @Override
   public boolean equals(Object o) {
     if (this == o) {

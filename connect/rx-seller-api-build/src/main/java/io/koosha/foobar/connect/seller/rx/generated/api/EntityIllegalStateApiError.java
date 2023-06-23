@@ -82,6 +82,9 @@ public class EntityIllegalStateApiError {
   }
 
   public EntityIllegalStateApiError addContextItem(EntityInfo contextItem) {
+    if (this.context == null) {
+      this.context = new LinkedHashSet<>();
+    }
     this.context.add(contextItem);
     return this;
   }
@@ -131,7 +134,6 @@ public class EntityIllegalStateApiError {
   public void setError(String error) {
     this.error = error;
   }
-
 
   @Override
   public boolean equals(Object o) {

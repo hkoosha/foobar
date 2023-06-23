@@ -161,7 +161,6 @@ public class CustomerUpdateRequestName {
     this.lastName = lastName;
   }
 
-
   @Override
   public boolean equals(Object o) {
     if (this == o) {

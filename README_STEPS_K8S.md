@@ -12,7 +12,7 @@ make k8s-init-create-db
 make k8s-init-create-topics
 
 make clean \
-  libs/opentelemetry-javaagent-1.23.0.jar \
+  libs/opentelemetry-javaagent-1.27.0.jar \
   build-proto \
   build-api-generator
 ENV=no_db make build-api

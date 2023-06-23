@@ -154,7 +154,6 @@ public class Seller {
     this.isActive = isActive;
   }
 
-
   @Override
   public boolean equals(Object o) {
     if (this == o) {

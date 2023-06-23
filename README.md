@@ -133,7 +133,7 @@ all foobar microservices locally on host:
 ```bash
 # Build the services dependencies and the services themselves. 
 make clean \
-  libs/opentelemetry-javaagent-1.23.0.jar \
+  libs/opentelemetry-javaagent-1.27.0.jar \
   build-proto \
   build-api-generator \
   build-api \
