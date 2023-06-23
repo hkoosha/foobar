@@ -62,7 +62,7 @@ object Libraries {
     const val mariadbR2dbc = "1.1.4"
     const val mariadb = "3.1.4"
     const val postgres = "42.6.0"
-    const val flyway = "9.20.0"
+    const val flyway = "9.19.4"
 
     const val jakartaAnnotationApi = "1.3.5"
     const val javaxAnnotation = "1.3.2"
