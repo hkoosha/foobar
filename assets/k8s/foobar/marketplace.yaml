@@ -46,7 +46,7 @@ spec:
             - name: SPRING_PROFILES_ACTIVE
               value: ${FOOBAR_K8S_SPRING_PROFILES_KAFKA}
             - name: FOOBAR_KAFKA_BOOTSTRAP_SERVER
-              value: 'kafka-0.kafka-headless.foobar.svc.cluster.local:9092'
+              value: 'kafka:9092'
             - name: FOOBAR_LOG_LEVEL
               value: ${FOOBAR_LOG_LEVEL}
             - name: FOOBAR_DDL_AUTO
@@ -81,8 +81,6 @@ spec:
               value: '8080'
             - name: OTEL_METRICS_EXPORTER
               value: 'none'
-            - name: FOOBAR_ZIPKIN_HOST
-              value: 'http://zipkin:9411'
           livenessProbe:
             failureThreshold: 10
             initialDelaySeconds: 10

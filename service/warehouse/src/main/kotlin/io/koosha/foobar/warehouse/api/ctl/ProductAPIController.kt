@@ -1,14 +1,15 @@
 package io.koosha.foobar.warehouse.api.ctl
 
-import io.koosha.foobar.warehouse.API_PATH_PREFIX
-import io.koosha.foobar.warehouse.api.model.ProductDO
-import io.koosha.foobar.warehouse.api.service.ProductCreateRequest
+import io.koosha.foobar.warehouse.api.model.dto.ProductCreateRequestDto
+import io.koosha.foobar.warehouse.api.model.dto.ProductUpdateRequestDto
+import io.koosha.foobar.warehouse.api.model.entity.ProductDO
 import io.koosha.foobar.warehouse.api.service.ProductService
-import io.koosha.foobar.warehouse.api.service.ProductUpdateRequest
 import io.swagger.v3.oas.annotations.tags.Tag
 import io.swagger.v3.oas.annotations.tags.Tags
+import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
@@ -20,43 +21,28 @@ import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder
-import java.util.*
-import jakarta.servlet.http.HttpServletResponse
+import java.util.UUID
 
 
 @RestController
-@RequestMapping(ProductAPIController.URI)
+@RequestMapping("/foobar/warehouse/v1/product")
 @Tags(
-    Tag(name = ProductDO.ENTITY_TYPE)
+    Tag(name = "product")
 )
 class ProductAPIController(
     private val service: ProductService,
 ) {
 
-    companion object {
-
-        const val URI = "/$API_PATH_PREFIX/products"
-        const val URI__PART__PRODUCT_ID = "productId"
-
-    }
-
-    @GetMapping
-    @ResponseBody
-    fun getProducts(): List<Product> = service.findAll().map(::Product)
-
-    @GetMapping("/{$URI__PART__PRODUCT_ID}")
-    @ResponseBody
-    fun getProduct(
-        @PathVariable
-        productId: UUID,
-    ): Product = Product(service.findByIdOrFail(productId))
-
+    @Transactional(
+        rollbackFor = [Exception::class],
+    )
     @PostMapping
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
-    fun postProduct(
+    fun create(
         @RequestBody
-        request: ProductCreateRequest,
+        request: ProductCreateRequestDto,
+
         response: HttpServletResponse,
     ): Product {
 
@@ -65,7 +51,7 @@ class ProductAPIController(
         val location = MvcUriComponentsBuilder
             .fromMethodName(
                 ProductAPIController::class.java,
-                "getProduct",
+                "read",
                 entity.productId,
             )
             .buildAndExpand(
@@ -78,18 +64,41 @@ class ProductAPIController(
         return Product(entity)
     }
 
-    @PatchMapping("/{$URI__PART__PRODUCT_ID}")
+    @Transactional(readOnly = true)
+    @GetMapping
     @ResponseBody
-    fun patchProduct(
+    fun readAll(): List<Product> =
+        this.service
+            .findAll()
+            .map(::Product)
+
+    @Transactional(readOnly = true)
+    @GetMapping("/{productId}")
+    @ResponseBody
+    fun read(
         @PathVariable
         productId: UUID,
-        @RequestBody
-        request: ProductUpdateRequest,
-    ): Product = Product(service.update(productId, request))
+    ): Product = Product(this.service.findByIdOrFail(productId))
 
-    @DeleteMapping("/{$URI__PART__PRODUCT_ID}")
+    @Transactional(
+        rollbackFor = [Exception::class],
+    )
+    @PatchMapping("/{productId}")
+    @ResponseBody
+    fun update(
+        @PathVariable
+        productId: UUID,
+
+        @RequestBody
+        request: ProductUpdateRequestDto,
+    ): Product = Product(this.service.update(productId, request))
+
+    @Transactional(
+        rollbackFor = [Exception::class],
+    )
+    @DeleteMapping("/{productId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun deleteProduct(
+    fun delete(
         @PathVariable
         productId: UUID,
     ) = this.service.delete(productId)
@@ -104,7 +113,6 @@ class ProductAPIController(
     ) {
 
         constructor(entity: ProductDO) : this(
-
             productId = entity.productId!!,
             active = entity.active!!,
             name = entity.name!!,
@@ -112,4 +120,5 @@ class ProductAPIController(
             unitSingle = entity.unitSingle!!,
         )
     }
+
 }

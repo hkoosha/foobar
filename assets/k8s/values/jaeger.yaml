@@ -1,0 +1,31 @@
+provisionDataStore:
+  cassandra: false
+  elasticsearch: false
+
+agent:
+  enabled: false
+
+storage:
+  type: elasticsearch
+  options:
+    es:
+      server-urls: http://elasticsearch:9200
+      version: 7
+      create-index-templates: "false"
+  elasticsearch:
+    host: elasticsearch
+    port: 9200
+    scheme: http
+    password: ''
+
+collector:
+  enabled: true
+  cmdlineParams:
+    es.use-aliases: true
+    es.use-ilm: true
+
+query:
+  enabled: true
+  cmdlineParams:
+    es.use-aliases: true
+    es.use-ilm: true

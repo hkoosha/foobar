@@ -1,17 +1,17 @@
 package io.koosha.foobar.customer.api.ctl
 
-import io.koosha.foobar.customer.API_PATH_PREFIX
-import io.koosha.foobar.customer.api.model.CustomerDO
 import io.koosha.foobar.customer.api.model.CustomerState
 import io.koosha.foobar.customer.api.model.Title
-import io.koosha.foobar.customer.api.service.CustomerCreateRequest
+import io.koosha.foobar.customer.api.model.dto.CustomerCreateRequestDto
+import io.koosha.foobar.customer.api.model.dto.CustomerUpdateRequestDto
+import io.koosha.foobar.customer.api.model.entity.CustomerDO
 import io.koosha.foobar.customer.api.service.CustomerService
-import io.koosha.foobar.customer.api.service.CustomerUpdateRequest
 import io.swagger.v3.oas.annotations.tags.Tag
 import io.swagger.v3.oas.annotations.tags.Tags
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
@@ -23,51 +23,27 @@ import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder
-import java.util.*
-
+import java.util.UUID
 
 @RestController
-@RequestMapping(CustomerApiController.URI)
+@RequestMapping("/foobar/customer/v1/customer")
 @Tags(
-    Tag(name = CustomerDO.ENTITY_TYPE)
+    Tag(name = "customer")
 )
 class CustomerApiController(
     private val service: CustomerService,
 ) {
 
-    companion object {
-
-        const val URI__PART__CUSTOMER_ID = "customerId"
-        const val URI = "/$API_PATH_PREFIX/customers"
-
-    }
-
-    @GetMapping
-    @ResponseBody
-    fun getCustomers(): List<Customer> = service.findAll().map(::Customer)
-
-    @GetMapping("/{$URI__PART__CUSTOMER_ID}")
-    @ResponseBody
-    fun getCustomer(
-        @PathVariable
-        customerId: UUID,
-    ): Customer = Customer(service.findByCustomerIdOrFail(customerId))
-
-    @PatchMapping("/{$URI__PART__CUSTOMER_ID}")
-    @ResponseBody
-    fun patchCustomer(
-        @PathVariable
-        customerId: UUID,
-        @RequestBody
-        request: CustomerUpdateRequest,
-    ): Customer = Customer(service.update(customerId, request))
-
+    @Transactional(
+        rollbackFor = [Exception::class],
+    )
     @PostMapping
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
-    fun postCustomer(
+    fun create(
         @RequestBody
-        request: CustomerCreateRequest,
+        request: CustomerCreateRequestDto,
+
         response: HttpServletResponse,
     ): Customer {
 
@@ -76,7 +52,7 @@ class CustomerApiController(
         val location = MvcUriComponentsBuilder
             .fromMethodName(
                 CustomerApiController::class.java,
-                "getCustomer",
+                "read",
                 entity.customerId,
             )
             .buildAndExpand(
@@ -89,28 +65,57 @@ class CustomerApiController(
         return Customer(entity)
     }
 
-    @DeleteMapping("/{$URI__PART__CUSTOMER_ID}")
+    @Transactional(readOnly = true)
+    @GetMapping
+    @ResponseBody
+    fun read(): List<Customer> =
+        this.service
+            .findAll()
+            .map(::Customer)
+
+    @Transactional(readOnly = true)
+    @GetMapping("/{customerId}")
+    @ResponseBody
+    fun read(
+        @PathVariable
+        customerId: UUID,
+    ): Customer = Customer(this.service.findByCustomerIdOrFail(customerId))
+
+    @Transactional(
+        rollbackFor = [Exception::class],
+    )
+    @PatchMapping("/{customerId}")
+    @ResponseBody
+    fun update(
+        @PathVariable
+        customerId: UUID,
+
+        @RequestBody
+        request: CustomerUpdateRequestDto,
+    ): Customer = Customer(this.service.update(customerId, request))
+
+    @Transactional(
+        rollbackFor = [Exception::class],
+    )
+    @DeleteMapping("/{customerId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun deleteCustomer(
+    fun delete(
         @PathVariable
         customerId: UUID,
     ) = this.service.delete(customerId)
 
 
     data class Name(
-
         val title: Title,
         val firstName: String,
         val lastName: String,
     )
 
     data class Customer(
-
         val customerId: UUID,
         val name: Name,
         val isActive: Boolean,
-
-        ) {
+    ) {
 
         constructor(entity: CustomerDO) : this(
             customerId = entity.customerId!!,

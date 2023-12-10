@@ -1,9 +1,0 @@
-spring:
-  config:
-    activate:
-      on-profile:
-        - db-mysql
-  datasource:
-    url: jdbc:mariadb://${FOOBAR_MYSQL_HOST:localhost:3306}/foobar_warehouse
-    username: ${FOOBAR_MYSQL_USER:root}
-    password: ${FOOBAR_MYSQL_PASS:.}

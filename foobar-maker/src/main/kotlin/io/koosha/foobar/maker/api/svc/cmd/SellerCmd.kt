@@ -1,23 +1,16 @@
 package io.koosha.foobar.maker.api.svc.cmd
 
-import io.koosha.foobar.connect.seller.generated.api.Seller
-import io.koosha.foobar.connect.seller.generated.api.SellerApi
-import io.koosha.foobar.connect.seller.generated.api.SellerCreateRequest
-import io.koosha.foobar.connect.seller.generated.api.SellerCreateRequestAddress
-import io.koosha.foobar.connect.seller.generated.api.SellerUpdateRequest
-import io.koosha.foobar.connect.seller.generated.api.SellerUpdateRequestAddress
 import io.koosha.foobar.maker.api.Command
-import io.koosha.foobar.maker.api.assertStatusCode
+import io.koosha.foobar.maker.api.connect.SellerApi
 import io.koosha.foobar.maker.api.firstOrNull
 import io.koosha.foobar.maker.api.firstOrRandom
 import io.koosha.foobar.maker.api.firstOrRandomUnPrefixed
 import io.koosha.foobar.maker.api.matches
 import io.koosha.foobar.maker.api.model.EntityId
 import io.koosha.foobar.maker.api.svc.EntityIdService
-import mu.KotlinLogging
+import org.slf4j.LoggerFactory
 import org.springframework.boot.ApplicationArguments
 import org.springframework.stereotype.Component
-
 
 @Component
 class SellerCmd(
@@ -25,9 +18,9 @@ class SellerCmd(
     private val entityIdService: EntityIdService,
 ) : Command {
 
-    private val log = KotlinLogging.logger {}
+    private val log = LoggerFactory.getLogger(this::class.java)
 
-    override val commandName: String = SellerApi.ENTITY_TYPE
+    override val commandName: String = "seller"
 
     override fun handle(
         args: ApplicationArguments,
@@ -55,7 +48,7 @@ class SellerCmd(
             Unit
         }
 
-        else -> log.error { "unknown seller command: ${freeArgs[0]}" }
+        else -> log.error("unknown seller command: {}", freeArgs[0])
     }
 
     fun postSeller(
@@ -63,34 +56,37 @@ class SellerCmd(
         doLog: Boolean = true,
     ) {
 
-        val req = SellerCreateRequest()
-        req.name = args.firstOrRandom("name")
-        req.address = SellerCreateRequestAddress()
-        req.address.addressLine1 = args.firstOrRandom("addressLine1")
-        req.address.city = args.firstOrRandom("city")
-        req.address.country = args.firstOrRandom("country")
-        req.address.zipcode = args.firstOrRandomUnPrefixed("zipcode")
-
-        if (doLog)
-            log.info { "request:\n$req" }
-        val response = this.sellerApi.postSellerWithHttpInfo(req)
-        assertStatusCode(response.statusCode)
-        val entity = response.data
-
-        val internalId = this.entityIdService
-            .findMaxInternalIdByEntityType(SellerApi.ENTITY_TYPE)
-            .map { it + 1 }
-            .orElse(0L)
-        this.entityIdService.save(
-            EntityId(
-                entityId = entity.sellerId.toString(),
-                internalId = internalId,
-                entityType = SellerApi.ENTITY_TYPE,
+        val req = SellerApi.CreateDto(
+            name = args.firstOrRandom("name"),
+            address = SellerApi.AddressDto(
+                addressLine1 = args.firstOrRandom("addressLine1"),
+                city = args.firstOrRandom("city"),
+                country = args.firstOrRandom("country"),
+                zipcode = args.firstOrRandomUnPrefixed("zipcode"),
             )
         )
 
         if (doLog)
-            log.info { "posted seller:\n${response.headers}\ninternalId=$internalId\nentity:\n$entity" }
+            log.info("request:\n{}", req)
+
+        val response = this.sellerApi.create(req)
+
+        val internalId =
+            this.entityIdService
+                .findMaxInternalIdByEntityType("seller")
+                .map { it + 1 }
+                .orElse(0L)
+
+        this.entityIdService.save(
+            EntityId(
+                entityId = response.sellerId.toString(),
+                internalId = internalId,
+                entityType = "seller",
+            )
+        )
+
+        if (doLog)
+            log.info("posted seller:\ninternalId={}\nentity:\n{}", internalId, response)
     }
 
     fun patchSeller(
@@ -98,54 +94,52 @@ class SellerCmd(
         freeArgs: List<String>,
     ) {
 
-        val sellerId = this.entityIdService.findUUIDOrLast(SellerApi.ENTITY_TYPE, freeArgs.firstOrNull())
+        val sellerId = this.entityIdService.findUUIDOrLast("seller", freeArgs.firstOrNull())
 
-        val req = SellerUpdateRequest()
-        req.name = args.firstOrNull("name")
-        req.address = SellerUpdateRequestAddress()
-        req.address!!.addressLine1 = args.firstOrNull("addressLine1")
-        req.address!!.city = args.firstOrNull("city")
-        req.address!!.country = args.firstOrNull("country")
-        req.address!!.zipcode = args.firstOrNull("zipcode")
+        val req = SellerApi.UpdateDto(
+            name = args.firstOrNull("name"),
+            address = SellerApi.AddressUpdateDto(
+                addressLine1 = args.firstOrNull("addressLine1"),
+                city = args.firstOrNull("city"),
+                country = args.firstOrNull("country"),
+                zipcode = args.firstOrNull("zipcode"),
+            ),
+        )
 
-        log.info { "request:\n$req" }
-        val response = this.sellerApi.patchSellerWithHttpInfo(sellerId, req)
-        assertStatusCode(response.statusCode)
-        val entity = response.data
-        log.info { "patched seller:\n${response.headers}\n$entity" }
+        log.info("request:\n{}", {})
+
+        val response = this.sellerApi.update(sellerId, req)
+
+        log.info("patched seller:\n{}", response)
     }
 
     fun getSeller(
         freeArgs: List<String>,
     ) = if (freeArgs.isEmpty()) {
 
-        val response = this.sellerApi.sellersWithHttpInfo
-        assertStatusCode(response.statusCode)
-        val all = response.data
-        this.log.info { "sellers:\n${response.headers}\n$all" }
+        val response = this.sellerApi.readAll()
+        log.info("sellers:\n{}", response)
 
     }
     else {
 
-        val sellerId = this.entityIdService.findUUID(SellerApi.ENTITY_TYPE, freeArgs.first())
+        val sellerId = this.entityIdService.findUUID("seller", freeArgs.first())
 
-        val response = this.sellerApi.getSellerWithHttpInfo(sellerId)
-        assertStatusCode(response.statusCode)
-        val entity = response.data
+        val response = this.sellerApi.read(sellerId)
 
-        log.info { "seller:\n${response.headers}\n$entity" }
+        log.info("seller:\n{}", response)
 
     }
 
-    fun getLastSeller(doLog: Boolean): Seller {
+    fun getLastSeller(doLog: Boolean): SellerApi.ReadDto {
 
-        val sellerId = this.entityIdService.findUUIDOrLast(SellerApi.ENTITY_TYPE, null)
-        val response = this.sellerApi.getSellerWithHttpInfo(sellerId)
-        assertStatusCode(response.statusCode)
-        val entity: Seller = response.data
+        val sellerId = this.entityIdService.findUUIDOrLast("seller", null)
+        val response = this.sellerApi.read(sellerId)
+
         if (doLog)
-            log.info { "seller:\n${response.headers}\n$entity" }
-        return entity
+            log.info("seller:\n{}", response)
+
+        return response
     }
 
 }

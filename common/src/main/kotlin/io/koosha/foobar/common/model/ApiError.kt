@@ -1,27 +1,14 @@
 package io.koosha.foobar.common.model
 
-
-sealed class ApiError(val message: String) {
+sealed class ApiError(
+    val message: String
+) {
 
     abstract val error: String
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other)
-            return true
-        if (javaClass != other?.javaClass)
-            return false
+    abstract override fun equals(other: Any?): Boolean
 
-        other as ApiError
-
-        if (message != other.message)
-            return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        return message.hashCode()
-    }
+    abstract override fun hashCode(): Int
 
 }
 
@@ -39,24 +26,20 @@ class EntityNotFoundApiError(
     override fun equals(other: Any?): Boolean {
         if (this === other)
             return true
-        if (javaClass != other?.javaClass)
-            return false
-        if (!super.equals(other))
-            return false
 
-        other as EntityNotFoundApiError
+        val that = other as? EntityNotFoundApiError
 
-        if (context != other.context)
-            return false
-
-        return true
+        return that != null &&
+                this.message == that.message &&
+                this.context == that.context
     }
 
     override fun hashCode(): Int {
-        var result = super.hashCode()
+        var result = super.message.hashCode()
         result = 31 * result + context.hashCode()
         return result
     }
+
 }
 
 class EntityBadValueApiError(
@@ -69,6 +52,23 @@ class EntityBadValueApiError(
     }
 
     override val error = ERROR
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other)
+            return true
+
+        val that = other as? EntityBadValueApiError
+
+        return that != null &&
+                this.message == that.message &&
+                this.context == that.context
+    }
+
+    override fun hashCode(): Int {
+        var result = super.message.hashCode()
+        result = 31 * result + context.hashCode()
+        return result
+    }
 
 }
 
@@ -83,6 +83,23 @@ class EntityIllegalStateApiError(
 
     override val error = ERROR
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other)
+            return true
+
+        val that = other as? EntityIllegalStateApiError
+
+        return that != null &&
+                this.message == that.message &&
+                this.context == that.context
+    }
+
+    override fun hashCode(): Int {
+        var result = super.message.hashCode()
+        result = 31 * result + context.hashCode()
+        return result
+    }
+
 }
 
 // TODO remove extra info from here!
@@ -96,5 +113,19 @@ class ServerError(
     }
 
     override val error = ERROR
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other)
+            return true
+
+        val that = other as? EntityIllegalStateApiError
+
+        return that != null &&
+                this.message == that.message
+    }
+
+    override fun hashCode(): Int {
+        return super.message.hashCode()
+    }
 
 }

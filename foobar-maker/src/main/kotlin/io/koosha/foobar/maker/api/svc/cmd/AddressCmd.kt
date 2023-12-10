@@ -1,33 +1,27 @@
 package io.koosha.foobar.maker.api.svc.cmd
 
-import io.koosha.foobar.connect.customer.generated.api.Address
-import io.koosha.foobar.connect.customer.generated.api.AddressApi
-import io.koosha.foobar.connect.customer.generated.api.ApiResponse
-import io.koosha.foobar.connect.customer.generated.api.CustomerAddressCreateRequest
-import io.koosha.foobar.connect.customer.generated.api.CustomerApi
 import io.koosha.foobar.maker.api.CliException
 import io.koosha.foobar.maker.api.Command
-import io.koosha.foobar.maker.api.assertStatusCode
+import io.koosha.foobar.maker.api.connect.CustomerAddressApi
 import io.koosha.foobar.maker.api.firstOrRandom
 import io.koosha.foobar.maker.api.firstOrRandomUnPrefixed
 import io.koosha.foobar.maker.api.matches
 import io.koosha.foobar.maker.api.model.EntityId
 import io.koosha.foobar.maker.api.svc.EntityIdService
-import mu.KotlinLogging
+import org.slf4j.LoggerFactory
 import org.springframework.boot.ApplicationArguments
 import org.springframework.stereotype.Component
-import java.util.*
-
+import java.util.UUID
 
 @Component
 class AddressCmd(
-    private val addressApi: AddressApi,
+    private val addressApi: CustomerAddressApi,
     private val entityIdService: EntityIdService,
 ) : Command {
 
-    private val log = KotlinLogging.logger {}
+    private val log = LoggerFactory.getLogger(this::class.java)
 
-    override val commandName: String = AddressApi.ENTITY_TYPE
+    override val commandName: String = "address"
 
     override fun handle(
         args: ApplicationArguments,
@@ -52,7 +46,7 @@ class AddressCmd(
             Unit
         }
 
-        else -> log.error { "unknown address command: ${freeArgs[0]}" }
+        else -> log.error("unknown address command: {}", freeArgs[0])
     }
 
     fun postAddress(
@@ -61,40 +55,41 @@ class AddressCmd(
         doLog: Boolean = true,
     ) {
 
-        val customerId: UUID = this.entityIdService.findUUIDOrLast(CustomerApi.ENTITY_TYPE, freeArgs.firstOrNull())
+        val customerId: UUID = this.entityIdService.findUUIDOrLast("customer", freeArgs.firstOrNull())
 
-        val req = CustomerAddressCreateRequest()
-        req.name = args.firstOrRandom("name")
-        req.city = args.firstOrRandom("city")
-        req.country = args.firstOrRandom("country")
-        req.zipcode = args.firstOrRandomUnPrefixed("zipcode")
-        req.addressLine1 = args.firstOrRandom("addressLine1")
+        val req = CustomerAddressApi.CreateDto(
+            name = args.firstOrRandom("name"),
+            city = args.firstOrRandom("city"),
+            country = args.firstOrRandom("country"),
+            zipcode = args.firstOrRandomUnPrefixed("zipcode"),
+            addressLine1 = args.firstOrRandom("addressLine1"),
+        )
 
         if (doLog)
-            log.info { "request:\n$req" }
-        val response = this.addressApi.postAddressWithHttpInfo(customerId, req)
-        assertStatusCode(response.statusCode)
-        val entity = response.data
+            log.info("request:\n{}", req)
+        val response = this.addressApi.create(customerId, req)
 
         val id = this.entityIdService
-            .findMaxInternalIdByEntityType(AddressApi.ENTITY_TYPE)
+            .findMaxInternalIdByEntityType("address")
             .map { it + 1 }
             .orElse(0L)
         this.entityIdService.save(
             EntityId(
-                entityId = "$customerId/${entity.addressId}",
+                entityId = "$customerId/${response.addressId}",
                 internalId = id,
-                entityType = AddressApi.ENTITY_TYPE,
+                entityType = "address",
             )
         )
 
         if (doLog)
-            log.info { "posted address:\n${response.headers}\n\n$entity" }
+            log.info("posted address: {}", response)
     }
 
-    fun getAddress(freeArgs: List<String>) {
+    fun getAddress(
+        freeArgs: List<String>,
+    ) {
 
-        val customerId: UUID = this.entityIdService.findUUIDOrLast(CustomerApi.ENTITY_TYPE, freeArgs.firstOrNull())
+        val customerId: UUID = this.entityIdService.findUUIDOrLast("customer", freeArgs.firstOrNull())
         val addressId: Long? =
             if (freeArgs.size > 1) {
                 try {
@@ -110,31 +105,27 @@ class AddressCmd(
 
         if (addressId == null) {
 
-            val response = this.addressApi.getAddressesWithHttpInfo(customerId)
-            assertStatusCode(response.statusCode)
-            val all = response.data
-            this.log.info { "customer addresses:\n$all" }
+            val response = this.addressApi.readAll(customerId)
+            this.log.info("customer addresses:\n{}", response)
 
         }
         else {
 
-            val response = this.addressApi.getAddressWithHttpInfo(customerId, addressId)
-            assertStatusCode(response.statusCode)
-            val entity = response.data
-            log.info { "customer address:\n$entity" }
+            val response = this.addressApi.read(customerId, addressId)
+            log.info("customer address:\n{}", response)
 
         }
     }
 
-    fun getLastCustomerAddresses(doLog: Boolean): List<Address> {
+    fun getLastCustomerAddresses(
+        doLog: Boolean,
+    ): Collection<CustomerAddressApi.ReadDto> {
 
-        val customerId: UUID = this.entityIdService.findUUIDOrLast(CustomerApi.ENTITY_TYPE, null)
-        val response: ApiResponse<MutableList<Address>> = this.addressApi.getAddressesWithHttpInfo(customerId)
-        assertStatusCode(response.statusCode)
-        val entities: List<Address> = response.data
+        val customerId: UUID = this.entityIdService.findUUIDOrLast("customer", null)
+        val response = this.addressApi.readAll(customerId)
         if (doLog)
-            log.info { "addresses:\n${response.headers}\n$entities" }
-        return entities
+            log.info("addresses:\n{}", response)
+        return response
     }
 
 }

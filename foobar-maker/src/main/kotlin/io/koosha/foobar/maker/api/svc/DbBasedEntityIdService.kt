@@ -4,11 +4,11 @@ import io.koosha.foobar.common.PROFILE__DISABLE_DB
 import io.koosha.foobar.maker.api.CliException
 import io.koosha.foobar.maker.api.model.EntityId
 import io.koosha.foobar.maker.api.model.EntityIdRepository
-import mu.KotlinLogging
+import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Service
-import java.util.*
-
+import java.util.Optional
+import java.util.UUID
 
 @Service
 @Profile("!$PROFILE__DISABLE_DB")
@@ -16,19 +16,23 @@ class DbBasedEntityIdService(
     private val repo: EntityIdRepository,
 ) : EntityIdService {
 
-    private val log = KotlinLogging.logger {}
+    private val log = LoggerFactory.getLogger(this::class.java)
 
     override fun putOrderRequestIntoLineItemWorkQueue(orderRequestId: UUID) {
         log.warn(
             "!!!operation ignored!!! it is not implemented -> " +
-                    "putOrderRequestIntoLineItemWorkQueue($orderRequestId)"
+                    "putOrderRequestIntoLineItemWorkQueue({})",
+            orderRequestId
         )
     }
 
     override fun getOrderRequestFromLineItemWorkQueue(): Optional<UUID> = TODO("Not yet implemented")
 
     override fun putOrderRequestIntoUpdateWorkQueue(orderRequestId: UUID) {
-        log.warn("!!!operation ignored!!! it is not implemented -> putOrderRequestIntoUpdateWorkQueue($orderRequestId)")
+        log.warn(
+            "!!!operation ignored!!! it is not implemented -> putOrderRequestIntoUpdateWorkQueue({})",
+            orderRequestId
+        )
     }
 
     override fun getOrderRequestFromUpdateWorkQueue(): Optional<UUID> = TODO("Not yet implemented")
@@ -37,7 +41,10 @@ class DbBasedEntityIdService(
         TODO("Not yet implemented")
 
     override fun putAvailableProduct(units: Long, productId: UUID) {
-        log.warn("!!!operation ignored!!! it is not implemented -> putAvailableProduct($units, $productId)")
+        log.warn(
+            "!!!operation ignored!!! it is not implemented -> putAvailableProduct({}, {})",
+            units, productId
+        )
     }
 
     override fun findUUID(
@@ -68,7 +75,7 @@ class DbBasedEntityIdService(
                     throw CliException("invalid id, neither valid UUID nor a valid long, id=$givenId")
                 }
 
-        log.trace { "mapped entityType=$entityType givenId=$givenId to=$id" }
+        log.trace("mapped entityType={} givenId={} to={}", entityType, givenId, id)
 
         return id
     }
@@ -85,7 +92,7 @@ class DbBasedEntityIdService(
                 }
                 .toString()
             val id = this.findUUID(entityType, latest)
-            log.trace { "mapped entityType=$entityType givenId=last($latest) to=$id" }
+            log.trace("mapped entityType={} givenId=last({}) to={}", entityType, latest, id)
             id
         }
         else {

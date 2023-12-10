@@ -5,7 +5,6 @@ import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.Table
 
-
 @Entity
 @Table(name = "maker__entity_id")
 open class EntityId(
@@ -29,10 +28,9 @@ open class EntityId(
     override fun equals(other: Any?): Boolean {
         if (this === other)
             return true
-        if (this.javaClass != other?.javaClass)
-            return false
-        val rhs = other as EntityId
-        return this.entityId != null
+        val rhs = other as? EntityId
+        return rhs != null
+                && this.entityId != null
                 && this.entityId == rhs.entityId
     }
 

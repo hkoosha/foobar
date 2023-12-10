@@ -10,11 +10,15 @@ spring:
     properties:
       hibernate:
         auto_quote_keyword: true
-  zipkin:
-    enabled: false
   datasource:
     hikari:
       maximum-pool-size: 64
+  cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: true
+      okhttp:
+        enabled: true
 
 
 server:
@@ -29,13 +33,9 @@ logging:
     io.koosha.foobar: ${FOOBAR_LOG_LEVEL:info}
 
 
-foobar:
-  rest:
-    on-concurrency-error-retry-after: 1s
-
 management:
-  metrics:
-    tags:
+  observations:
+    key-values:
       foobar-service: foobar-seller
   endpoints:
     web:

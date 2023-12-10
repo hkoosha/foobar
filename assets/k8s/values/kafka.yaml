@@ -1,0 +1,19 @@
+deleteTopicEnable: true
+autoCreateTopicsEnable: false
+
+kraft:
+  enabled: true
+
+listeners:
+  external:
+    protocol: PLAINTEXT
+  interbroker:
+    protocol: PLAINTEXT
+  controller:
+    protocol: PLAINTEXT
+  client:
+    protocol: PLAINTEXT
+
+volumePermissions:
+  enabled: true
+

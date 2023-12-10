@@ -1,16 +1,16 @@
 package io.koosha.foobar.customer.api
 
-import io.koosha.foobar.customer.api.model.AddressDO
-import io.koosha.foobar.customer.api.model.CustomerDO
 import io.koosha.foobar.customer.api.model.CustomerState
 import io.koosha.foobar.customer.api.model.Title
-import io.koosha.foobar.customer.api.service.CustomerAddressCreateRequest
+import io.koosha.foobar.customer.api.model.dto.CustomerAddressCreateRequestDto
+import io.koosha.foobar.customer.api.model.entity.AddressDO
+import io.koosha.foobar.customer.api.model.entity.CustomerDO
 import org.assertj.core.api.Assertions.assertThat
-import java.time.LocalDateTime
-import java.util.*
+import java.time.Instant
+import java.util.UUID
 
 
-val NOW: LocalDateTime = LocalDateTime.now()
+val NOW: Instant = Instant.now()
 
 
 private val customer0Id = UUID.fromString("00000000-0000-0000-0000-000000000000")
@@ -65,7 +65,7 @@ val IDS = setOf(
     customer2().customerId!!,
 )
 
-fun addressReq0() = CustomerAddressCreateRequest(
+fun addressReq0() = CustomerAddressCreateRequestDto(
     "40211",
     "Germany",
     "Frankfurt",
@@ -73,7 +73,7 @@ fun addressReq0() = CustomerAddressCreateRequest(
     "home address"
 )
 
-fun addressReq1() = CustomerAddressCreateRequest(
+fun addressReq1() = CustomerAddressCreateRequestDto(
     "11222",
     "Germany",
     "Berlin",
@@ -82,7 +82,7 @@ fun addressReq1() = CustomerAddressCreateRequest(
 )
 
 fun addressDO0() = AddressDO(
-    addressPk = AddressDO.Pk(
+    addressPk = AddressDO.AddressPk(
         addressId = 3,
         customer = customer0(),
     ),
@@ -97,7 +97,7 @@ fun addressDO0() = AddressDO(
 )
 
 fun addressDO1() = AddressDO(
-    addressPk = AddressDO.Pk(
+    addressPk = AddressDO.AddressPk(
         addressId = 4,
         customer = customer0(),
     ),

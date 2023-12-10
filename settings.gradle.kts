@@ -1,16 +1,8 @@
 rootProject.name = "foobar"
 
 include(
-    "foobar-gen",
-
     "definitions",
     "common",
-    "common-jpa",
-    "common-meter",
-
-    "service:common-kafka",
-    "service:common-service",
-    "service:common-web",
 
     "service:customer",
     "service:seller",
@@ -19,24 +11,7 @@ include(
     "service:warehouse",
     "service:shipping",
 
-    "connect:customer-api",
-    "connect:customer-api-build",
-    "connect:seller-api",
-    "connect:seller-api-build",
-    "connect:warehouse-api",
-    "connect:warehouse-api-build",
-    "connect:marketplace-api",
-    "connect:marketplace-api-build",
-
-    "connect:rx-customer-api",
-    "connect:rx-customer-api-build",
-    "connect:rx-seller-api",
-    "connect:rx-seller-api-build",
-    "connect:rx-warehouse-api",
-    "connect:rx-warehouse-api-build",
-
     "foobar-maker",
     "foobar-maker-exporter",
-    "evil",
-    "loader",
+    "foobar-loader",
 )

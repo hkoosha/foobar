@@ -1,14 +1,14 @@
 package io.koosha.foobar.marketplace.api.ctl
 
 import io.koosha.foobar.common.toUUID
-import io.koosha.foobar.marketplace.API_PATH_PREFIX
-import io.koosha.foobar.marketplace.api.model.OrderRequestDO
 import io.koosha.foobar.marketplace.api.model.OrderRequestState
-import io.koosha.foobar.marketplace.api.service.OrderRequestCreateRequest
+import io.koosha.foobar.marketplace.api.model.dto.OrderRequestCreateRequestDto
+import io.koosha.foobar.marketplace.api.model.dto.OrderRequestUpdateRequestDto
+import io.koosha.foobar.marketplace.api.model.entity.OrderRequestDO
 import io.koosha.foobar.marketplace.api.service.OrderRequestService
-import io.koosha.foobar.marketplace.api.service.OrderRequestUpdateRequest
 import io.swagger.v3.oas.annotations.tags.Tag
 import io.swagger.v3.oas.annotations.tags.Tags
+import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -22,21 +22,31 @@ import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
-import java.util.*
-import jakarta.validation.Valid
-
+import java.util.UUID
 
 @RestController
-@RequestMapping("/$API_PATH_PREFIX/order-requests")
+@RequestMapping("/foobar/marketplace/v1/order-request")
 @Tags(
-    Tag(name = OrderRequestDO.ENTITY_TYPE_DASHED)
+    Tag(name = "order-request")
 )
 class OrderRequestApiController(
     private val service: OrderRequestService,
 ) {
 
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    fun create(
+        @RequestBody
+        @Valid
+        request: OrderRequestCreateRequestDto,
+    ): Mono<OrderRequest> =
+        // TODO set http location header.
+        this.service
+            .create(request)
+            .map(::OrderRequest)
+
     @GetMapping
-    fun getOrderRequests(
+    fun readAll(
         @RequestParam(required = false)
         customerId: UUID?,
     ): Flux<OrderRequest> =
@@ -46,7 +56,7 @@ class OrderRequestApiController(
         }.map(::OrderRequest)
 
     @GetMapping("/{orderRequestId}")
-    fun getOrderRequest(
+    fun read(
         @PathVariable
         orderRequestId: UUID,
     ): Mono<OrderRequest> =
@@ -54,24 +64,13 @@ class OrderRequestApiController(
             .findByIdOrFail(orderRequestId)
             .map(::OrderRequest)
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    fun postOrderRequest(
-        @RequestBody
-        @Valid
-        request: OrderRequestCreateRequest,
-    ): Mono<OrderRequest> =
-        // TODO set http location header.
-        this.service
-            .create(request)
-            .map(::OrderRequest)
-
     @PatchMapping("/{orderRequestId}")
-    fun patchOrderRequest(
+    fun update(
         @PathVariable
         orderRequestId: UUID,
+
         @RequestBody
-        request: OrderRequestUpdateRequest,
+        request: OrderRequestUpdateRequestDto,
     ): Mono<OrderRequest> =
         this.service
             .update(orderRequestId, request)
@@ -79,23 +78,20 @@ class OrderRequestApiController(
 
     @DeleteMapping("/{orderRequestId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun deleteOrderRequest(
+    fun delete(
         @PathVariable
         orderRequestId: UUID,
     ): Mono<Void> =
         this.service.delete(orderRequestId)
 
     data class OrderRequest(
-
         val orderRequestId: UUID,
         val customerId: UUID,
         val sellerId: UUID?,
         val state: OrderRequestState,
         val subTotal: Long?,
     ) {
-
         constructor(entity: OrderRequestDO) : this(
-
             orderRequestId = entity.orderRequestId!!.toUUID(),
             customerId = entity.customerId!!.toUUID(),
             sellerId = entity.sellerId?.toUUID(),

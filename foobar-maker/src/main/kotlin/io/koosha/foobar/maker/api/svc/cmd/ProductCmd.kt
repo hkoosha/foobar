@@ -1,11 +1,7 @@
 package io.koosha.foobar.maker.api.svc.cmd
 
-import io.koosha.foobar.connect.warehouse.generated.api.Product
-import io.koosha.foobar.connect.warehouse.generated.api.ProductApi
-import io.koosha.foobar.connect.warehouse.generated.api.ProductCreateRequest
-import io.koosha.foobar.connect.warehouse.generated.api.ProductUpdateRequest
 import io.koosha.foobar.maker.api.Command
-import io.koosha.foobar.maker.api.assertStatusCode
+import io.koosha.foobar.maker.api.connect.ProductApi
 import io.koosha.foobar.maker.api.firstOrDef
 import io.koosha.foobar.maker.api.firstOrNull
 import io.koosha.foobar.maker.api.firstOrRandom
@@ -13,10 +9,9 @@ import io.koosha.foobar.maker.api.firstOrRandomUnPrefixed
 import io.koosha.foobar.maker.api.matches
 import io.koosha.foobar.maker.api.model.EntityId
 import io.koosha.foobar.maker.api.svc.EntityIdService
-import mu.KotlinLogging
+import org.slf4j.LoggerFactory
 import org.springframework.boot.ApplicationArguments
 import org.springframework.stereotype.Component
-
 
 @Component
 class ProductCmd(
@@ -24,9 +19,9 @@ class ProductCmd(
     private val entityIdService: EntityIdService,
 ) : Command {
 
-    private val log = KotlinLogging.logger {}
+    private val log = LoggerFactory.getLogger(this::class.java)
 
-    override val commandName: String = ProductApi.ENTITY_TYPE
+    override val commandName: String = "product"
 
     override fun handle(
         args: ApplicationArguments,
@@ -54,7 +49,7 @@ class ProductCmd(
             Unit
         }
 
-        else -> log.error { "unknown product command: ${freeArgs[0]}" }
+        else -> log.error("unknown product command: {}", freeArgs[0])
     }
 
     fun postProduct(
@@ -62,32 +57,34 @@ class ProductCmd(
         doLog: Boolean = true,
     ) {
 
-        val req = ProductCreateRequest()
-        req.name = args.firstOrRandom("name")
-        req.active = args.firstOrDef("active", "true").toBooleanStrict()
-        req.unitSingle = args.firstOrRandomUnPrefixed("unitSingle")
-        req.unitMultiple = args.firstOrRandomUnPrefixed("unitMultiple")
+        val req = ProductApi.CreateDto(
+            name = args.firstOrRandom("name"),
+            active = args.firstOrDef("active", "true").toBooleanStrict(),
+            unitSingle = args.firstOrRandomUnPrefixed("unitSingle"),
+            unitMultiple = args.firstOrRandomUnPrefixed("unitMultiple"),
+        )
 
         if (doLog)
-            log.info { "request:\n$req" }
-        val response = this.productApi.postProductWithHttpInfo(req)
-        assertStatusCode(response.statusCode)
-        val entity = response.data
+            log.info("request:\n{}", req)
 
-        val internalId = this.entityIdService
-            .findMaxInternalIdByEntityType(ProductApi.ENTITY_TYPE)
-            .map { it + 1 }
-            .orElse(0L)
+        val response = this.productApi.create(req)
+
+        val internalId =
+            this.entityIdService
+                .findMaxInternalIdByEntityType("product")
+                .map { it + 1 }
+                .orElse(0L)
+
         this.entityIdService.save(
             EntityId(
-                entityId = entity.productId.toString(),
+                entityId = response.productId.toString(),
                 internalId = internalId,
-                entityType = ProductApi.ENTITY_TYPE,
+                entityType = "product",
             )
         )
 
         if (doLog)
-            log.info { "posted product:\n${response.headers}\ninternalId=$internalId\nentity:\n$entity" }
+            log.info("posted product:\ninternalId={}\nentity:\n{}", internalId, response)
     }
 
     fun patchProduct(
@@ -95,52 +92,49 @@ class ProductCmd(
         freeArgs: List<String>,
     ) {
 
-        val productId = this.entityIdService.findUUIDOrLast(ProductApi.ENTITY_TYPE, freeArgs.firstOrNull())
+        val productId = this.entityIdService.findUUIDOrLast("product", freeArgs.firstOrNull())
 
-        val req = ProductUpdateRequest()
-        req.name = args.firstOrNull("name")
-        req.active = args.firstOrNull("active")?.toBooleanStrict()
-        req.unitSingle = args.firstOrNull("unitSingle")
-        req.unitMultiple = args.firstOrNull("unitMultiple")
+        val req = ProductApi.UpdateDto(
+            name = args.firstOrNull("name"),
+            active = args.firstOrNull("active")?.toBooleanStrict(),
+            unitSingle = args.firstOrNull("unitSingle"),
+            unitMultiple = args.firstOrNull("unitMultiple"),
+        )
 
-        log.info { "request:\n$req" }
-        val response = this.productApi.patchProductWithHttpInfo(productId, req)
-        assertStatusCode(response.statusCode)
-        val entity = response.data
-        log.info { "patched product:\n${response.headers}\n$entity" }
+        log.info("request:\n{}", req)
+
+        val response = this.productApi.update(productId, req)
+
+        log.info("patched product:\n{}", response)
     }
 
     fun getProduct(
         freeArgs: List<String>,
     ) = if (freeArgs.isEmpty()) {
 
-        val response = this.productApi.productsWithHttpInfo
-        assertStatusCode(response.statusCode)
-        val all = response.data
-        this.log.info { "products:\n${response.statusCode}\n$all" }
+        val response = this.productApi.readAll()
+        this.log.info("products:\n{}", response)
 
     }
     else {
 
-        val productId = this.entityIdService.findUUID(ProductApi.ENTITY_TYPE, freeArgs.first())
+        val productId = this.entityIdService.findUUID("product", freeArgs.first())
 
-        val response = this.productApi.getProductWithHttpInfo(productId)
-        assertStatusCode(response.statusCode)
-        val entity = response.data
+        val response = this.productApi.read(productId)
 
-        log.info { "product:\n${response.headers}\n$entity" }
+        log.info("product:\n{}", response)
 
     }
 
-    fun getLastProduct(doLog: Boolean): Product {
+    fun getLastProduct(doLog: Boolean): ProductApi.ReadDto {
 
-        val productId = this.entityIdService.findUUIDOrLast(ProductApi.ENTITY_TYPE, null)
-        val response = this.productApi.getProductWithHttpInfo(productId)
-        assertStatusCode(response.statusCode)
-        val entity: Product = response.data
+        val productId = this.entityIdService.findUUIDOrLast("product", null)
+        val response = this.productApi.read(productId)
+
         if (doLog)
-            log.info { "product:\n${response.headers}\n$entity" }
-        return entity
+            log.info("product:\n{}", response)
+
+        return response
     }
 
 }

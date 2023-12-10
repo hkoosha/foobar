@@ -3,50 +3,44 @@ package io.koosha.foobar
 object Libraries {
 
     object Kotlin {
-        const val jvm = "1.8.21"
+        const val jvm = "1.9.21" // held back by detekt.
         const val spring = jvm
         const val jpa = jvm
 
-        const val detekt = "1.23.0"
+        const val detekt = "1.23.4"
     }
 
     object Spring {
-        const val DependencyManagement = "1.1.0"
-        const val springCloudVersion = "2022.0.3"
-        const val boot = "3.1.1"
-        const val retry = "2.0.0"
+        const val dependencyManagement = "1.1.4"
+        const val springCloudVersion = "2023.0.0"
+        const val boot = "3.2.1"
     }
 
     object Proto {
-        const val protoPlugin = "0.9.3"
-        const val proto = "3.23.2"
+        const val protoPlugin = "0.9.4"
+        const val proto = "3.25.1"
     }
 
     object Kafka {
-        const val kafka = "3.5.0"
+        const val kafka = "3.6.1"
     }
 
     object OpenApi {
-        const val ui = "2.1.0"
-        const val kotlin = "1.7.0"
-        const val rest = ui
-        const val webMvcCore = ui
-        const val gradlePlugin = "1.6.0"
-        const val generatorPlugin = "6.6.0"
+        const val ui = "2.3.0"
+        const val gradlePlugin = "1.8.0"
         const val jacksonNullable = "0.2.6"
-        const val swaggerAnnotations = "1.6.11"
     }
 
     object Feign {
-        const val core = "12.3"
+        const val core = "13.1"
     }
 
     object Jackson {
-        const val core = "2.15.2"
+        const val core = "2.16.0"
     }
 
     object Jib {
-        const val gradlePlugin = "3.3.2"
+        const val gradlePlugin = "3.4.0"
     }
 
     object Log {
@@ -54,18 +48,17 @@ object Libraries {
     }
 
     object Reactor {
-        const val core = "3.5.7"
-        const val nettyHttp = "1.1.8"
+        const val core = "3.6.0"
+        const val nettyHttp = "1.1.13"
     }
 
-    const val postgresR2dbc = "1.0.1.RELEASE"
-    const val mariadbR2dbc = "1.1.4"
-    const val mariadb = "3.1.4"
-    const val postgres = "42.6.0"
-    const val flyway = "9.19.4"
+    const val postgresR2dbc = "1.0.3.RELEASE"
+    const val postgres = "42.7.1"
 
-    const val jakartaAnnotationApi = "1.3.5"
+    const val flyway = "10.4.1"
+    const val flywayPg = flyway
+
+
     const val javaxAnnotation = "1.3.2"
-    const val microutilsKotlinLoggingJvm = "3.0.5"
 
 }

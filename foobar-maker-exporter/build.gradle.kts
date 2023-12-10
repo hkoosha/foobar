@@ -14,15 +14,17 @@ plugins {
     id("io.gitlab.arturbosch.detekt") version k.detekt
     id("com.google.cloud.tools.jib") version j.gradlePlugin
     id("org.springframework.boot") version s.boot
-    id("io.spring.dependency-management") version s.DependencyManagement
+    id("io.spring.dependency-management") version s.dependencyManagement
     kotlin("jvm") version k.jvm
     kotlin("plugin.spring") version k.spring
 }
 
-group = Foobar.group
-version = Foobar.appVersion
-java.sourceCompatibility = JavaVersion.valueOf(Foobar.javaVersion)
-java.targetCompatibility = JavaVersion.valueOf(Foobar.javaVersion)
+java {
+    group = Foobar.group
+    version = Foobar.appVersion
+    sourceCompatibility = JavaVersion.valueOf(Foobar.javaVersion)
+    targetCompatibility = JavaVersion.valueOf(Foobar.javaVersion)
+}
 
 extra["springCloudVersion"] = Libraries.Spring.springCloudVersion
 
@@ -58,25 +60,28 @@ dependencies {
 
     implementation("org.springframework.boot:spring-boot-starter-web")
 
-    implementation("io.github.microutils:kotlin-logging-jvm:${Libraries.microutilsKotlinLoggingJvm}")
-
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${Libraries.Jackson.core}")
 
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib")
 
     implementation("com.squareup.okhttp3:okhttp")
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 jib {
     setAllowInsecureRegistries(true)
     container {
         ports = listOf("8080")
+    }
+    from {
+        image = Foobar.Jib.fromImage
     }
     to {
         image = "${Foobar.dockerRegistry()}foobar-maker-exporter:${Foobar.appVersion}"

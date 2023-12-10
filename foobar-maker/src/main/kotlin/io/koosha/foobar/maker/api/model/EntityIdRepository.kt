@@ -2,7 +2,8 @@ package io.koosha.foobar.maker.api.model
 
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
-import java.util.*
+import java.util.Optional
+import java.util.UUID
 
 
 interface EntityIdRepository : JpaRepository<EntityId, UUID> {
@@ -18,6 +19,8 @@ interface EntityIdRepository : JpaRepository<EntityId, UUID> {
     ): Optional<EntityId>
 
     @Query("SELECT MAX(internalId) FROM EntityId WHERE entityType = :entityType")
-    fun findMaxInternalIdByEntityType(entityType: String): Optional<Long>
+    fun findMaxInternalIdByEntityType(
+        entityType: String,
+    ): Optional<Long>
 
 }

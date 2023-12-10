@@ -81,7 +81,7 @@ docker-image-maker-exporter: docker-image-maker-exporter-unpush docker-image-mak
 
 .PHONY: docker-image-loader-build
 docker-image-loader-build:
-	$(GRADLE_RUNNER) :loader:jib
+	$(GRADLE_RUNNER) :foobar-loader:jib
 
 .PHONY: docker-image-loader-push
 docker-image-loader-push:

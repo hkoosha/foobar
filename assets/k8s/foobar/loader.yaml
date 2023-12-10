@@ -44,15 +44,13 @@ spec:
               protocol: TCP
           env:
             - name: SPRING_PROFILES_ACTIVE
-              value: 'json-logging,zipkin'
+              value: 'json-logging'
             - name: FOOBAR_LOG_LEVEL
               value: ${FOOBAR_LOG_LEVEL}
             - name: OTEL_EXPORTER_JAEGER_ENDPOINT
               value: 'http://jaeger-collector.foobar.svc.cluster.local:14250'
             - name: OTEL_METRICS_EXPORTER
               value: 'none'
-            - name: FOOBAR_ZIPKIN_HOST
-              value: 'http://zipkin:9411'
             - name: FOOBAR_SERVICE_PORT_MARKETPLACE
               value: '8080'
             - name: FOOBAR_SERVICE_PORT_WAREHOUSE

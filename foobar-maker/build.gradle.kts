@@ -11,19 +11,26 @@ plugins {
     val s = io.koosha.foobar.Libraries.Spring
     val k = io.koosha.foobar.Libraries.Kotlin
 
-    id("io.gitlab.arturbosch.detekt") version k.detekt
-    id("com.google.cloud.tools.jib") version j.gradlePlugin
-    id("org.springframework.boot") version s.boot
-    id("io.spring.dependency-management") version s.DependencyManagement
     kotlin("jvm") version k.jvm
     kotlin("plugin.spring") version k.spring
     kotlin("plugin.jpa") version k.jpa
+
+    `jvm-test-suite`
+    id("io.gitlab.arturbosch.detekt") version k.detekt
+
+    id("com.google.cloud.tools.jib") version j.gradlePlugin
+
+    id("org.springframework.boot") version s.boot
+    id("io.spring.dependency-management") version s.dependencyManagement
 }
 
 group = Foobar.group
 version = Foobar.appVersion
-java.sourceCompatibility = JavaVersion.valueOf(Foobar.javaVersion)
-java.targetCompatibility = JavaVersion.valueOf(Foobar.javaVersion)
+
+java {
+    sourceCompatibility = JavaVersion.valueOf(Foobar.javaVersion)
+    targetCompatibility = JavaVersion.valueOf(Foobar.javaVersion)
+}
 
 extra["springCloudVersion"] = Libraries.Spring.springCloudVersion
 
@@ -56,41 +63,32 @@ dependencyManagement {
 
 dependencies {
     implementation(project(":common"))
-    implementation(project(":common-jpa"))
-    implementation(project(":common-meter"))
 
-    implementation(project(":connect:customer-api-build"))
-    implementation(project(":connect:seller-api-build"))
-    implementation(project(":connect:warehouse-api-build"))
-    implementation(project(":connect:marketplace-api-build"))
-
-    implementation("org.springframework.boot:spring-boot-starter-actuator")
-    implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
     implementation("org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j")
 
-    implementation("io.github.microutils:kotlin-logging-jvm:${Libraries.microutilsKotlinLoggingJvm}")
-
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${Libraries.Jackson.core}")
 
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib")
 
     runtimeOnly("io.micrometer:micrometer-registry-prometheus")
     runtimeOnly("io.github.openfeign:feign-micrometer")
-    runtimeOnly("io.github.openfeign:feign-okhttp")
+    implementation("io.github.openfeign:feign-okhttp")
     runtimeOnly("com.squareup.okhttp3:okhttp")
     runtimeOnly("org.postgresql:postgresql:${Libraries.postgres}")
-    runtimeOnly("org.mariadb.jdbc:mariadb-java-client:${Libraries.mariadb}")
     runtimeOnly("com.h2database:h2")
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 jib {
@@ -103,8 +101,12 @@ jib {
         entrypoint = listOf(
             "bash",
             "-c",
-            "chmod +x /maker.sh && echo alias maker=/maker.sh >> ~/.bashrc && echo alias foobar=\"$foobarCmd\" >> ~/.bashrc && sleep infinity",
+            "chmod +x /maker.sh && echo alias maker=/maker.sh >> ~/.bashrc && echo alias foobar=\"$foobarCmd\"" +
+                    " >> ~/.bashrc && sleep infinity",
         )
+    }
+    from {
+        image = Foobar.Jib.fromImage
     }
     to {
         image = "${Foobar.dockerRegistry()}foobar-maker:${Foobar.appVersion}"

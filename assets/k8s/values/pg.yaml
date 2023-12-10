@@ -1,0 +1,18 @@
+auth:
+  postgresPassword: '.'
+  username: root
+  password: '.'
+
+primary:
+  extendedConfiguration: |
+    max_connections = 2048
+  podSecurityContext:
+    enabled: false
+  containerSecurityContext:
+    enabled: false
+    seccompProfile:
+      drop: []
+
+volumePermissions:
+  enabled: true
+

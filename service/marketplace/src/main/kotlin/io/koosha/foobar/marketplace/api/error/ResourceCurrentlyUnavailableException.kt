@@ -1,6 +1,5 @@
 package io.koosha.foobar.marketplace.api.error
 
-
 class ResourceCurrentlyUnavailableException : Exception {
 
     constructor() : super()

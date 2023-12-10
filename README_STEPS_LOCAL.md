@@ -1,14 +1,14 @@
+================================
+==== RUNNING FOOBAR LOCALLY ====
+================================
+
 ```bash
 make clean \
-  libs/opentelemetry-javaagent-1.27.0.jar \
+  libs/opentelemetry-javaagent-1.32.0.jar \
   build-proto \
-  build-api-generator
-
-ENV=no_db make build-api
-make build
+  build
   
 make local-run-dependencies
-make local-init-my-create-db
 make local-init-pg-create-db
 make local-init-create-topics
 

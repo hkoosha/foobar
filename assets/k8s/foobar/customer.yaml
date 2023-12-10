@@ -67,8 +67,6 @@ spec:
               value: 'http://jaeger-collector.foobar.svc.cluster.local:14250'
             - name: OTEL_METRICS_EXPORTER
               value: 'none'
-            - name: FOOBAR_ZIPKIN_HOST
-              value: 'http://zipkin:9411'
           livenessProbe:
             failureThreshold: 10
             initialDelaySeconds: 10

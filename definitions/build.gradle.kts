@@ -10,10 +10,12 @@ plugins {
     id("com.google.protobuf") version p.protoPlugin apply true
 }
 
-group = Foobar.group
-version = Foobar.appVersion
-java.sourceCompatibility = JavaVersion.valueOf(Foobar.javaVersion)
-java.targetCompatibility = JavaVersion.valueOf(Foobar.javaVersion)
+java {
+    group = Foobar.group
+    version = Foobar.appVersion
+    sourceCompatibility = JavaVersion.valueOf(Foobar.javaVersion)
+    targetCompatibility = JavaVersion.valueOf(Foobar.javaVersion)
+}
 
 repositories {
     Foobar.addRepositories(this)

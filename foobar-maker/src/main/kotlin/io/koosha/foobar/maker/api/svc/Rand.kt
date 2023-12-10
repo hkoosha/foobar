@@ -3,7 +3,6 @@ package io.koosha.foobar.maker.api.svc
 import org.springframework.stereotype.Service
 import java.util.concurrent.ThreadLocalRandom
 
-
 @Service
 class Rand {
 

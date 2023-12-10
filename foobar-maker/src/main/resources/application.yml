@@ -11,6 +11,12 @@ spring:
     properties:
       hibernate:
         auto_quote_keyword: true
+  cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: true
+      okhttp:
+        enabled: true
 
 server:
   port: ${FOOBAR_SERVICE_PORT_MAKER:4048}
@@ -27,8 +33,8 @@ logging:
     com.zaxxer: error
 
 management:
-  metrics:
-    tags:
+  observations:
+    key-values:
       foobar-service: foobar-maker
   endpoints:
     web:
@@ -40,13 +46,12 @@ foobar:
   port:
     marketplace: ${FOOBAR_SERVICE_PORT_MARKETPLACE:4041}
     warehouse: ${FOOBAR_SERVICE_PORT_WAREHOUSE:4046}
-    shipping: ${FOOBAR_SERVICE_PORT_SHIPPING:4044}
     customer: ${FOOBAR_SERVICE_PORT_CUSTOMER:4040}
     seller: ${FOOBAR_SERVICE_PORT_SELLER:4043}
   url:
-    defaultUrl: ${FOOBAR_URL_DEFAULT:http://localhost}
-    marketplace: ${FOOBAR_URL_MARKETPLACE:}
-    warehouse: ${FOOBAR_URL_WAREHOUSE:}
-    shipping: ${FOOBAR_URL_SHIPPING:}
-    customer: ${FOOBAR_URL_CUSTOMER:}
-    seller: ${FOOBAR_URL_SELLER:}
+    # defaultUrl: ${FOOBAR_URL_DEFAULT:http://localhost}
+    marketplace: ${FOOBAR_URL_MARKETPLACE:http://localhost}
+    warehouse: ${FOOBAR_URL_WAREHOUSE:http://localhost}
+    customer: ${FOOBAR_URL_CUSTOMER:http://localhost}
+    seller: ${FOOBAR_URL_SELLER:http://localhost}
+

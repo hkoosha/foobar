@@ -1,22 +1,14 @@
 package io.koosha.foobar.maker.api.svc.cmd
 
-
-import io.koosha.foobar.connect.marketplace.generated.api.ApiResponse
-import io.koosha.foobar.connect.marketplace.generated.api.LineItemRequest
-import io.koosha.foobar.connect.marketplace.generated.api.OrderRequestApi
-import io.koosha.foobar.connect.marketplace.generated.api.OrderRequestLineItem
-import io.koosha.foobar.connect.marketplace.generated.api.OrderRequestLineItemApi
-import io.koosha.foobar.connect.warehouse.generated.api.ProductApi
 import io.koosha.foobar.maker.api.Command
-import io.koosha.foobar.maker.api.assertStatusCode
+import io.koosha.foobar.maker.api.connect.OrderRequestLineItemApi
 import io.koosha.foobar.maker.api.firstOrDef
 import io.koosha.foobar.maker.api.matches
 import io.koosha.foobar.maker.api.svc.EntityIdService
-import mu.KotlinLogging
+import org.slf4j.LoggerFactory
 import org.springframework.boot.ApplicationArguments
 import org.springframework.stereotype.Component
-import java.util.*
-
+import java.util.UUID
 
 @Component
 class LineItemCmd(
@@ -24,7 +16,7 @@ class LineItemCmd(
     private val entityIdService: EntityIdService,
 ) : Command {
 
-    private val log = KotlinLogging.logger {}
+    private val log = LoggerFactory.getLogger(this::class.java)
 
     override val commandName: String = "line-item"
 
@@ -51,7 +43,7 @@ class LineItemCmd(
             Unit
         }
 
-        else -> log.error { "unknown lineItem command: ${freeArgs[0]}" }
+        else -> log.error("unknown lineItem command: {}", freeArgs[0])
     }
 
     fun postLineItem(
@@ -61,63 +53,61 @@ class LineItemCmd(
     ) {
 
         val orderRequestId: UUID =
-            this.entityIdService.findUUIDOrLast(OrderRequestApi.ENTITY_TYPE, freeArgs.firstOrNull())
+            this.entityIdService.findUUIDOrLast("order_request", freeArgs.firstOrNull())
         val productId: UUID =
-            this.entityIdService.findUUIDOrLast(ProductApi.ENTITY_TYPE, freeArgs.getOrNull(1))
+            this.entityIdService.findUUIDOrLast("product", freeArgs.getOrNull(1))
 
-        val req = LineItemRequest()
-        req.productId = productId
-        req.units = args.firstOrDef("units", "3").toLong()
-
-        if (doLog)
-            log.info { "request:\n$req" }
-        val response = this.lineItemApi.postLineItemWithHttpInfo(orderRequestId, req)
-        assertStatusCode(response.statusCode)
-        val entity = response.data
+        val req = OrderRequestLineItemApi.CreateDto(
+            productId = productId,
+            units = args.firstOrDef("units", "3").toLong()
+        )
 
         if (doLog)
-            log.info { "posted lineItem:\n${response.headers}\n$entity" }
+            log.info("request:\n{}", req)
+
+        val response = this.lineItemApi.create(orderRequestId, req)
+
+        if (doLog)
+            log.info("posted lineItem:\n{}", response)
     }
 
     fun getLineItem(
         freeArgs: List<String>,
     ) {
+        val orderRequestId: UUID = this.entityIdService.findUUIDOrLast("order_request", freeArgs.firstOrNull())
 
-        val orderRequestId: UUID =
-            this.entityIdService.findUUIDOrLast(OrderRequestApi.ENTITY_TYPE, freeArgs.firstOrNull())
+        val response = this.lineItemApi.readAll(orderRequestId)
 
-        val response = this.lineItemApi.getLineItemsWithHttpInfo(orderRequestId)
-        assertStatusCode(response.statusCode)
-        val all = response.data
-
-        this.log.info { "line-items:\n$all" }
-
+        this.log.info("line-items:\n{}", response)
     }
 
-    fun getLastOrderRequestLineItems(doLog: Boolean): List<OrderRequestLineItem> {
+    fun getLastOrderRequestLineItems(
+        doLog: Boolean,
+    ): Collection<OrderRequestLineItemApi.ReadDto> {
 
-        val productId: UUID = this.entityIdService.findUUIDOrLast(ProductApi.ENTITY_TYPE, null)
-        val response: ApiResponse<MutableList<OrderRequestLineItem>> =
-            this.lineItemApi.getLineItemsWithHttpInfo(productId)
-        assertStatusCode(response.statusCode)
-        val entities: List<OrderRequestLineItem> = response.data
+        val productId: UUID = this.entityIdService.findUUIDOrLast("product", null)
+        val response = this.lineItemApi.readAll(productId)
+
         if (doLog)
-            log.info { "line items:\n${response.headers}\n$entities" }
-        return entities
+            log.info("line items:\n{}", response)
+
+        return response
     }
 
     fun postLineItem(
         orderRequestId: UUID,
         productId: UUID,
         units: Long,
-    ): OrderRequestLineItem {
+    ): OrderRequestLineItemApi.CreateRespDto {
 
-        val req = LineItemRequest()
-        req.productId = productId
-        req.units = units
+        val req = OrderRequestLineItemApi.CreateDto(
+            productId = productId,
+            units = units,
+        )
 
-        val response = this.lineItemApi.postLineItemWithHttpInfo(orderRequestId, req)
-        assertStatusCode(response.statusCode)
-        return response.data!!
+        val response = this.lineItemApi.create(orderRequestId, req)
+
+        return response
     }
+
 }

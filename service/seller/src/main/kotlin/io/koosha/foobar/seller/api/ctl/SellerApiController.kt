@@ -1,16 +1,16 @@
 package io.koosha.foobar.seller.api.ctl
 
-import io.koosha.foobar.seller.API_PATH_PREFIX
-import io.koosha.foobar.seller.api.model.SellerDO
 import io.koosha.foobar.seller.api.model.SellerState
-import io.koosha.foobar.seller.api.service.SellerCreateRequest
+import io.koosha.foobar.seller.api.model.dto.SellerCreateRequestDto
+import io.koosha.foobar.seller.api.model.dto.SellerUpdateRequestDto
+import io.koosha.foobar.seller.api.model.entity.SellerDO
 import io.koosha.foobar.seller.api.service.SellerService
-import io.koosha.foobar.seller.api.service.SellerUpdateRequest
 import io.swagger.v3.oas.annotations.tags.Tag
 import io.swagger.v3.oas.annotations.tags.Tags
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
@@ -22,51 +22,28 @@ import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder
-import java.util.*
+import java.util.UUID
 
 
 @RestController
-@RequestMapping(SellerApiController.URI)
+@RequestMapping("/foobar/seller/v1/seller")
 @Tags(
-    Tag(name = SellerDO.ENTITY_TYPE)
+    Tag(name = "seller")
 )
 class SellerApiController(
     private val service: SellerService,
 ) {
 
-    companion object {
-
-        const val URI = "/$API_PATH_PREFIX/sellers"
-        const val URI__PART__SELLER_ID = "sellerId"
-
-    }
-
-    @GetMapping
-    @ResponseBody
-    fun getSellers(): List<Seller> = service.findAll().map(::Seller)
-
-    @GetMapping("/{$URI__PART__SELLER_ID}")
-    @ResponseBody
-    fun getSeller(
-        @PathVariable
-        sellerId: UUID,
-    ): Seller = Seller(service.findByIdOrFail(sellerId))
-
-    @PatchMapping("/{$URI__PART__SELLER_ID}")
-    @ResponseBody
-    fun patchSeller(
-        @PathVariable
-        sellerId: UUID,
-        @RequestBody
-        request: SellerUpdateRequest,
-    ): Seller = Seller(service.update(sellerId, request))
-
+    @Transactional(
+        rollbackFor = [Exception::class],
+    )
     @PostMapping
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
-    fun postSeller(
+    fun create(
         @RequestBody
-        request: SellerCreateRequest,
+        request: SellerCreateRequestDto,
+
         response: HttpServletResponse,
     ): Seller {
 
@@ -75,7 +52,7 @@ class SellerApiController(
         val location = MvcUriComponentsBuilder
             .fromMethodName(
                 SellerApiController::class.java,
-                "getSeller",
+                "read",
                 entity.sellerId,
             )
             .buildAndExpand(
@@ -88,9 +65,39 @@ class SellerApiController(
         return Seller(entity)
     }
 
-    @DeleteMapping("/{$URI__PART__SELLER_ID}")
+    @Transactional(readOnly = true)
+    @GetMapping
+    @ResponseBody
+    fun readAll(): List<Seller> =
+        this.service.findAll().map(::Seller)
+
+    @Transactional(readOnly = true)
+    @GetMapping("/{sellerId}")
+    @ResponseBody
+    fun read(
+        @PathVariable
+        sellerId: UUID,
+    ): Seller = Seller(this.service.findByIdOrFail(sellerId))
+
+    @Transactional(
+        rollbackFor = [Exception::class],
+    )
+    @PatchMapping("/{sellerId}")
+    @ResponseBody
+    fun update(
+        @PathVariable
+        sellerId: UUID,
+
+        @RequestBody
+        request: SellerUpdateRequestDto,
+    ): Seller = Seller(this.service.update(sellerId, request))
+
+    @Transactional(
+        rollbackFor = [Exception::class],
+    )
+    @DeleteMapping("/{sellerId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun deleteSeller(
+    fun delete(
         @PathVariable
         sellerId: UUID,
     ) = this.service.delete(sellerId)

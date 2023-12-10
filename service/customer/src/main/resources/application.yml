@@ -27,16 +27,13 @@ logging:
     io.koosha.foobar: ${FOOBAR_LOG_LEVEL:info}
 
 
-foobar:
-  rest:
-    on-concurrency-error-retry-after: 1s
-
 management:
-  metrics:
-    tags:
+  observations:
+    key-values:
       foobar-service: foobar-customer
   endpoints:
     web:
       exposure:
-        include:
-          - '*'
+        include: '*'
+      discovery:
+        enabled: true

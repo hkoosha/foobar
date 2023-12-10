@@ -2,7 +2,6 @@ package io.koosha.foobar.customer.api.ctl
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.koosha.foobar.common.PROFILE__TEST
-import io.koosha.foobar.common.cfg.EntityErrorAdvice
 import io.koosha.foobar.common.model.EntityBadValueApiError
 import io.koosha.foobar.common.model.EntityNotFoundApiError
 import io.koosha.foobar.customer.api.IDS
@@ -11,16 +10,16 @@ import io.koosha.foobar.customer.api.addressReq0
 import io.koosha.foobar.customer.api.addressReq1
 import io.koosha.foobar.customer.api.customer1
 import io.koosha.foobar.customer.api.customer2
-import io.koosha.foobar.customer.api.model.AddressDO
-import io.koosha.foobar.customer.api.model.AddressRepository
-import io.koosha.foobar.customer.api.model.CustomerDO
-import io.koosha.foobar.customer.api.model.CustomerRepository
-import io.koosha.foobar.customer.api.service.ADDRESS_ADDRESS_LINE1_MAX_LEN
-import io.koosha.foobar.customer.api.service.ADDRESS_CITY_MAX_LEN
-import io.koosha.foobar.customer.api.service.ADDRESS_COUNTRY_MAX_LEN
-import io.koosha.foobar.customer.api.service.ADDRESS_NAME_MAX_LEN
-import io.koosha.foobar.customer.api.service.ADDRESS_ZIPCODE_MAX_LEN
-import io.koosha.foobar.customer.api.service.CustomerAddressCreateRequest
+import io.koosha.foobar.customer.api.model.ADDRESS_ADDRESS_LINE1_MAX_LEN
+import io.koosha.foobar.customer.api.model.ADDRESS_CITY_MAX_LEN
+import io.koosha.foobar.customer.api.model.ADDRESS_COUNTRY_MAX_LEN
+import io.koosha.foobar.customer.api.model.ADDRESS_NAME_MAX_LEN
+import io.koosha.foobar.customer.api.model.ADDRESS_ZIPCODE_MAX_LEN
+import io.koosha.foobar.customer.api.model.dto.CustomerAddressCreateRequestDto
+import io.koosha.foobar.customer.api.model.entity.AddressDO
+import io.koosha.foobar.customer.api.model.entity.CustomerDO
+import io.koosha.foobar.customer.api.model.repo.AddressRepository
+import io.koosha.foobar.customer.api.model.repo.CustomerRepository
 import io.koosha.foobar.customer.api.strOfLen
 import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.Matchers.equalTo
@@ -48,8 +47,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPat
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.web.util.UriComponentsBuilder
-import java.util.*
-
+import java.util.Optional
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -69,7 +67,7 @@ class AddressApiControllerTest {
     lateinit var om: ObjectMapper
 
 
-    private val postCustomerAddressRequest = CustomerAddressCreateRequest(
+    private val postCustomerAddressRequest = CustomerAddressCreateRequestDto(
         name = addressDO0().name,
         zipcode = addressDO0().zipcode,
         addressLine1 = addressDO0().addressLine1,
@@ -82,7 +80,7 @@ class AddressApiControllerTest {
     }
 
     private fun addressDO0() = AddressDO(
-        AddressDO.Pk(
+        AddressDO.AddressPk(
             addressId = 0,
             customer = this.customer0(),
         ),
@@ -97,7 +95,7 @@ class AddressApiControllerTest {
     )
 
     private fun addressDO1() = AddressDO(
-        AddressDO.Pk(
+        AddressDO.AddressPk(
             addressId = 1,
             customer = this.customer0(),
         ),
@@ -119,20 +117,20 @@ class AddressApiControllerTest {
         val uriBuilder =
             if (addressId == null) {
                 UriComponentsBuilder
-                    .fromUriString(AddressApiController.URI)
+                    .fromUriString("/foobar/customer/v1/customer/{customerId}/address")
                     .buildAndExpand(
                         mutableMapOf(
-                            CustomerApiController.URI__PART__CUSTOMER_ID to customerId.toString(),
+                            "customerId" to customerId.toString(),
                         )
                     )
             }
             else {
                 UriComponentsBuilder
-                    .fromUriString("${AddressApiController.URI}/{${AddressApiController.URI__PART__ADDRESS_ID}}")
+                    .fromUriString("/foobar/customer/v1/customer/{customerId}/address/{addressId}")
                     .buildAndExpand(
                         mutableMapOf(
-                            CustomerApiController.URI__PART__CUSTOMER_ID to customerId.toString(),
-                            AddressApiController.URI__PART__ADDRESS_ID to addressId.toString(),
+                            "customerId" to customerId.toString(),
+                            "addressId" to addressId.toString(),
                         )
                     )
             }
@@ -172,7 +170,7 @@ class AddressApiControllerTest {
     fun `test addressDOMapper`() {
 
         val entity = AddressDO(
-            addressPk = AddressDO.Pk(
+            addressPk = AddressDO.AddressPk(
                 addressId = 42L,
                 customer = this.customer0(),
             ),
@@ -226,10 +224,10 @@ class AddressApiControllerTest {
             mvc
                 .perform(get(uri))
                 .andExpect(status().`is`(HttpStatus.NOT_FOUND.value()))
-                .andExpect(jsonPath("$.message", equalTo(EntityErrorAdvice.ENTITY_NOT_FOUND_MSG)))
+                .andExpect(jsonPath("$.message", equalTo("entity or entities not found")))
                 .andExpect(jsonPath("$.error", equalTo(EntityNotFoundApiError.ERROR)))
                 .andExpect(jsonPath("$.context", hasSize<List<*>>(1)))
-                .andExpect(jsonPath("$.context[0].entityType", equalTo(CustomerDO.ENTITY_TYPE)))
+                .andExpect(jsonPath("$.context[0].entityType", equalTo("customer")))
                 .andExpect(jsonPath("$.context[0].entityId", equalTo(customer2().customerId.toString())))
         }
 
@@ -264,12 +262,12 @@ class AddressApiControllerTest {
             val uri0 = uri(customer0().customerId!!, 42)
             mvc.perform(get(uri0))
                 .andExpect(status().`is`(HttpStatus.NOT_FOUND.value()))
-                .andExpect(jsonPath("$.message", equalTo(EntityErrorAdvice.ENTITY_NOT_FOUND_MSG)))
+                .andExpect(jsonPath("$.message", equalTo("entity or entities not found")))
                 .andExpect(jsonPath("$.error", equalTo(EntityNotFoundApiError.ERROR)))
                 .andExpect(jsonPath("$.context", hasSize<List<*>>(2)))
-                .andExpect(jsonPath("$.context[0].entityType", equalTo(CustomerDO.ENTITY_TYPE)))
+                .andExpect(jsonPath("$.context[0].entityType", equalTo("customer")))
                 .andExpect(jsonPath("$.context[0].entityId", equalTo(customer0().customerId.toString())))
-                .andExpect(jsonPath("$.context[1].entityType", equalTo(AddressDO.ENTITY_TYPE)))
+                .andExpect(jsonPath("$.context[1].entityType", equalTo("address")))
                 .andExpect(jsonPath("$.context[1].entityId", equalTo(42)))
         }
     }
@@ -289,9 +287,9 @@ class AddressApiControllerTest {
             `when`(addressRepo.save(any()))
                 .thenReturn(
                     AddressDO(
-                        addressPk = AddressDO.Pk(
+                        addressPk = AddressDO.AddressPk(
                             addressId = expectedId.toLong(),
-                            customer= customer0(),
+                            customer = customer0(),
                         ),
                         name = postCustomerAddressRequest.name,
                         zipcode = postCustomerAddressRequest.zipcode,
@@ -320,7 +318,7 @@ class AddressApiControllerTest {
         @Test
         open fun `test postCustomerAddress rejects null values`() {
 
-            val req = CustomerAddressCreateRequest(
+            val req = CustomerAddressCreateRequestDto(
                 name = null,
                 zipcode = null,
                 addressLine1 = null,
@@ -338,7 +336,7 @@ class AddressApiControllerTest {
                         .content(content)
                 )
                 .andExpect(status().`is`(HttpStatus.BAD_REQUEST.value()))
-                .andExpect(jsonPath("$.message", equalTo(EntityErrorAdvice.ENTITY_BAD_VALUE_MSG)))
+                .andExpect(jsonPath("$.message", equalTo("bad value for entity")))
                 .andExpect(jsonPath("$.error", equalTo(EntityBadValueApiError.ERROR)))
                 .andExpect(jsonPath("$.context.zipcode", hasItems("must not be null")))
                 .andExpect(jsonPath("$.context.country", hasItems("must not be null")))
@@ -350,7 +348,7 @@ class AddressApiControllerTest {
         @Test
         open fun `test postCustomerAddress rejects empty values`() {
 
-            val req = CustomerAddressCreateRequest(
+            val req = CustomerAddressCreateRequestDto(
                 name = "",
                 zipcode = "",
                 addressLine1 = "",
@@ -367,7 +365,7 @@ class AddressApiControllerTest {
                         .content(content)
                 )
                 .andExpect(status().`is`(HttpStatus.BAD_REQUEST.value()))
-                .andExpect(jsonPath("$.message", equalTo(EntityErrorAdvice.ENTITY_BAD_VALUE_MSG)))
+                .andExpect(jsonPath("$.message", equalTo("bad value for entity")))
                 .andExpect(jsonPath("$.error", equalTo(EntityBadValueApiError.ERROR)))
                 .andExpect(
                     jsonPath(
@@ -394,7 +392,7 @@ class AddressApiControllerTest {
         @Test
         open fun `test postCustomerAddress rejects too long values`() {
 
-            val req = CustomerAddressCreateRequest(
+            val req = CustomerAddressCreateRequestDto(
                 name = strOfLen(ADDRESS_NAME_MAX_LEN + 1),
                 zipcode = strOfLen(ADDRESS_ZIPCODE_MAX_LEN + 1),
                 addressLine1 = strOfLen(ADDRESS_ADDRESS_LINE1_MAX_LEN + 1),
@@ -411,7 +409,7 @@ class AddressApiControllerTest {
                         .content(content)
                 )
                 .andExpect(status().`is`(HttpStatus.BAD_REQUEST.value()))
-                .andExpect(jsonPath("$.message", equalTo(EntityErrorAdvice.ENTITY_BAD_VALUE_MSG)))
+                .andExpect(jsonPath("$.message", equalTo("bad value for entity")))
                 .andExpect(jsonPath("$.error", equalTo(EntityBadValueApiError.ERROR)))
                 .andExpect(
                     jsonPath(
@@ -449,9 +447,9 @@ class AddressApiControllerTest {
                 )
                 .andExpect(status().`is`(HttpStatus.FORBIDDEN.value()))
                 .andExpect(jsonPath("$.context.length()", equalTo(1)))
-                .andExpect(jsonPath("$.context[0].entityType", equalTo(CustomerDO.ENTITY_TYPE)))
+                .andExpect(jsonPath("$.context[0].entityType", equalTo("customer")))
                 .andExpect(jsonPath("$.context[0].entityId", equalTo(customer1().customerId.toString())))
-                .andExpect(jsonPath("$.message", equalTo(EntityErrorAdvice.ENTITY_ILLEGAL_STATE_MSG)))
+                .andExpect(jsonPath("$.message", equalTo("operation not allowed with current state of entity")))
         }
     }
 
@@ -489,9 +487,9 @@ class AddressApiControllerTest {
                 .perform(delete(uri))
                 .andExpect(status().`is`(HttpStatus.NOT_FOUND.value()))
                 .andExpect(jsonPath("$.error", equalTo(EntityNotFoundApiError.ERROR)))
-                .andExpect(jsonPath("$.message", equalTo(EntityErrorAdvice.ENTITY_NOT_FOUND_MSG)))
+                .andExpect(jsonPath("$.message", equalTo("entity or entities not found")))
                 .andExpect(jsonPath("$.context.length()", equalTo(1)))
-                .andExpect(jsonPath("$.context[0].entityType", equalTo(CustomerDO.ENTITY_TYPE)))
+                .andExpect(jsonPath("$.context[0].entityType", equalTo("customer")))
                 .andExpect(jsonPath("$.context[0].entityId", equalTo(customer2().customerId.toString())))
 
         }
@@ -504,9 +502,9 @@ class AddressApiControllerTest {
             mvc
                 .perform(delete(uri))
                 .andExpect(status().`is`(HttpStatus.FORBIDDEN.value()))
-                .andExpect(jsonPath("$.context[0].entityType", equalTo(CustomerDO.ENTITY_TYPE)))
+                .andExpect(jsonPath("$.context[0].entityType", equalTo("customer")))
                 .andExpect(jsonPath("$.context[0].entityId", equalTo(customer1().customerId.toString())))
-                .andExpect(jsonPath("$.message", equalTo(EntityErrorAdvice.ENTITY_ILLEGAL_STATE_MSG)))
+                .andExpect(jsonPath("$.message", equalTo("operation not allowed with current state of entity")))
         }
 
     }

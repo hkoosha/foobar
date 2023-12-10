@@ -99,12 +99,12 @@ And the microservices in the service directory:
 ### A note on k8s practices:
 
 This project is far from using k8s best practices. Even the most basic rules are
-broken: mariadb password is hardcoded in plain text rather than using k8s
+broken: pg password is hardcoded in plain text rather than using k8s
 secrets.
 However, it's a welcoming change to make Foobar k8s compliant, it should not
 make things more complicated. For instance if using secrets to store randomly
-generated passwords for mariadb, it must still be as easy as running a single
-make command to spawn a mariadb cli.
+generated passwords for pg, it must still be as easy as running a single
+make command to spawn a pg cli.
 
 ### A note on microservices practices:
 
@@ -133,16 +133,14 @@ all foobar microservices locally on host:
 ```bash
 # Build the services dependencies and the services themselves. 
 make clean \
-  libs/opentelemetry-javaagent-1.27.0.jar \
+  libs/opentelemetry-javaagent-1.32.0.jar \
   build-proto \
-  build-api-generator
-ENV=no_db make build-api
-make build
+  build
   
 # Run the services foobar depends on.
 make local-run-dependencies
 
-# If this fails, you might need to adjust your mariadb credentials.
+# If this fails, you might need to adjust your pg credentials.
 make local-init-create-db
 
 # Create and configure kafka topics. Kafka should be running by now, by the
@@ -190,13 +188,13 @@ make k8s-namespace
 # command. But makes life in cli easier.
 make kubectl-set-ns
 
-# Deploy supporting services: kafka, mariadb, elasticsearch, ...
+# Deploy supporting services: kafka, pg, elasticsearch, ...
 # Important: please wait until all pods are running before running next
 # commands.
-make helm-add-bitnami
+make helm-add-repos
 make k8s-deploy-deps
 
-# Create the empty mariadb databases. They'll be initialized on services startup
+# Create the empty pg databases. They'll be initialized on services startup
 # by Hibernate.
 make k8s-init-create-db
 
@@ -207,9 +205,7 @@ make k8s-init-create-topics
 make clean \
   libs/opentelemetry-javaagent-1.17.0.jar \
   build-proto \
-  build-api-generator
-ENV=no_db build-api
-make build
+  build
 
 # Push to minikube and run on k8s.
 make docker-image

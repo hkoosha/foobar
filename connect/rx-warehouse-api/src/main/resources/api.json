@@ -1,7 +1,0 @@
-{
-    "groupId": "io.koosha.foobar.warehouse",
-    "packageName": "io.koosha.foobar.connect.warehouse.rx.generated.api",
-    "serializationLibrary": "jackson",
-    "hideGenerationTimestamp": true,
-    "useJakartaEe": true
-}

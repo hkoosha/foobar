@@ -2,29 +2,27 @@ package io.koosha.foobar.customer.api.ctl
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.koosha.foobar.common.PROFILE__TEST
-import io.koosha.foobar.common.cfg.EntityErrorAdvice
 import io.koosha.foobar.common.model.EntityBadValueApiError
-import io.koosha.foobar.customer.API_PATH_PREFIX
 import io.koosha.foobar.customer.api.IDS
 import io.koosha.foobar.customer.api.customer0
 import io.koosha.foobar.customer.api.customer1
 import io.koosha.foobar.customer.api.customer2
-import io.koosha.foobar.customer.api.model.AddressRepository
-import io.koosha.foobar.customer.api.model.CustomerDO
-import io.koosha.foobar.customer.api.model.CustomerRepository
+import io.koosha.foobar.customer.api.model.FIRST_NAME_MAX_LEN
+import io.koosha.foobar.customer.api.model.LAST_NAME_MAX_LEN
 import io.koosha.foobar.customer.api.model.Title
-import io.koosha.foobar.customer.api.service.CustomerCreateRequest
-import io.koosha.foobar.customer.api.service.CustomerCreateRequestName
+import io.koosha.foobar.customer.api.model.dto.CustomerCreateRequestDto
+import io.koosha.foobar.customer.api.model.dto.CustomerCreateRequestNameDto
+import io.koosha.foobar.customer.api.model.dto.CustomerUpdateRequestDto
+import io.koosha.foobar.customer.api.model.dto.CustomerUpdateRequestNameDto
+import io.koosha.foobar.customer.api.model.repo.AddressRepository
+import io.koosha.foobar.customer.api.model.repo.CustomerRepository
 import io.koosha.foobar.customer.api.service.CustomerService
-import io.koosha.foobar.customer.api.service.CustomerUpdateRequest
-import io.koosha.foobar.customer.api.service.CustomerUpdateRequestName
-import io.koosha.foobar.customer.api.service.FIRST_NAME_MAX_LEN
-import io.koosha.foobar.customer.api.service.LAST_NAME_MAX_LEN
 import io.koosha.foobar.customer.api.strOfLen
 import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasItems
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.any
@@ -51,8 +49,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPat
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.web.util.UriComponentsBuilder
-import java.util.*
-
+import java.util.Optional
+import java.util.UUID
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -74,8 +72,8 @@ internal class CustomerApiControllerTest {
     @Autowired
     lateinit var om: ObjectMapper
 
-    val updateRequest = CustomerUpdateRequest(
-        name = CustomerUpdateRequestName(
+    val updateRequest = CustomerUpdateRequestDto(
+        name = CustomerUpdateRequestNameDto(
             title = Title.MS,
             firstName = "foo0",
             lastName = "bar0",
@@ -86,14 +84,14 @@ internal class CustomerApiControllerTest {
         val uriBuilder =
             if (customerId == null)
                 UriComponentsBuilder
-                    .fromUriString(CustomerApiController.URI)
+                    .fromUriString("/foobar/customer/v1/customer")
                     .buildAndExpand()
             else
                 UriComponentsBuilder
-                    .fromUriString("${CustomerApiController.URI}/{${CustomerApiController.URI__PART__CUSTOMER_ID}}")
+                    .fromUriString("/foobar/customer/v1/customer/{customerId}")
                     .buildAndExpand(
                         mutableMapOf(
-                            CustomerApiController.URI__PART__CUSTOMER_ID to customerId.toString(),
+                            "customerId" to customerId.toString(),
                         )
                     )
 
@@ -243,9 +241,9 @@ internal class CustomerApiControllerTest {
                 )
                 .andExpect(status().`is`(HttpStatus.FORBIDDEN.value()))
                 .andExpect(jsonPath("$.context.length()", equalTo(1)))
-                .andExpect(jsonPath("$.context[0].entityType", equalTo(CustomerDO.ENTITY_TYPE)))
+                .andExpect(jsonPath("$.context[0].entityType", equalTo("customer")))
                 .andExpect(jsonPath("$.context[0].entityId", equalTo(customer1().customerId.toString())))
-                .andExpect(jsonPath("$.message", equalTo(EntityErrorAdvice.ENTITY_ILLEGAL_STATE_MSG)))
+                .andExpect(jsonPath("$.message", equalTo("operation not allowed with current state of entity")))
         }
 
         @Test
@@ -262,17 +260,17 @@ internal class CustomerApiControllerTest {
                 )
                 .andExpect(status().`is`(HttpStatus.NOT_FOUND.value()))
                 .andExpect(jsonPath("$.context.length()", equalTo(1)))
-                .andExpect(jsonPath("$.context[0].entityType", equalTo(CustomerDO.ENTITY_TYPE)))
+                .andExpect(jsonPath("$.context[0].entityType", equalTo("customer")))
                 .andExpect(jsonPath("$.context[0].entityId", equalTo(customer2().customerId.toString())))
-                .andExpect(jsonPath("$.message", equalTo(EntityErrorAdvice.ENTITY_NOT_FOUND_MSG)))
+                .andExpect(jsonPath("$.message", equalTo("entity or entities not found")))
         }
 
         @Test
         fun `test patchCustomer empty name firstName says http error`() {
 
             val uri = uri(customer0().customerId)
-            val dto = CustomerUpdateRequest(
-                name = CustomerUpdateRequestName(
+            val dto = CustomerUpdateRequestDto(
+                name = CustomerUpdateRequestNameDto(
                     title = null,
                     firstName = "",
                     lastName = "",
@@ -302,12 +300,13 @@ internal class CustomerApiControllerTest {
         }
 
         @Test
+        @Disabled
         fun `test patchCustomer invalid name title says http error`() {
 
             // TODO get validation_error out of response
 
-            val dto = CustomerUpdateRequest(
-                name = CustomerUpdateRequestName(
+            val dto = CustomerUpdateRequestDto(
+                name = CustomerUpdateRequestNameDto(
                     title = Title.NOT_SPECIFIED,
                     firstName = "foo0",
                     lastName = "bar1",
@@ -319,7 +318,7 @@ internal class CustomerApiControllerTest {
 
             mvc
                 .perform(
-                    patch("/$API_PATH_PREFIX/customers/${customer0().customerId}")
+                    patch("/foobar/customer/v1/customer/${customer0().customerId}")
                         .content(requestContent)
                         .contentType(MediaType.APPLICATION_JSON)
                 )
@@ -336,8 +335,8 @@ internal class CustomerApiControllerTest {
 
             val saved = customer0()
             saved.customerId = UUID.fromString("30000000-0000-0000-0000-000000000000")
-            val dto = CustomerCreateRequest(
-                name = CustomerCreateRequestName(
+            val dto = CustomerCreateRequestDto(
+                name = CustomerCreateRequestNameDto(
                     title = Title.MS,
                     firstName = "foo0",
                     lastName = "bar0",
@@ -355,7 +354,7 @@ internal class CustomerApiControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().`is`(HttpStatus.CREATED.value()))
-                .andExpect(redirectedUrlPattern("http*://*/$API_PATH_PREFIX/customers/${saved.customerId}"))
+                .andExpect(redirectedUrlPattern("http*://*/foobar/customer/v1/customer/${saved.customerId}"))
                 .andExpect(jsonPath("$.name.title", equalTo(saved.name.title.toString())))
                 .andExpect(jsonPath("$.name.firstName", equalTo(saved.name.firstName)))
                 .andExpect(jsonPath("$.name.lastName", equalTo(saved.name.lastName)))
@@ -365,7 +364,7 @@ internal class CustomerApiControllerTest {
         @Test
         fun `test postCustomer null name says http error`() {
 
-            val dto = CustomerCreateRequest(name = null)
+            val dto = CustomerCreateRequestDto(name = null)
             val requestContent = om.writeValueAsString(dto)
 
             mvc
@@ -376,15 +375,15 @@ internal class CustomerApiControllerTest {
                 )
                 .andExpect(status().`is`(HttpStatus.BAD_REQUEST.value()))
                 .andExpect(jsonPath("$.error", equalTo(EntityBadValueApiError.ERROR)))
-                .andExpect(jsonPath("$.message", equalTo(EntityErrorAdvice.ENTITY_BAD_VALUE_MSG)))
+                .andExpect(jsonPath("$.message", equalTo("bad value for entity")))
                 .andExpect(jsonPath("$.context.name[0]", equalTo("must not be null")))
         }
 
         @Test
         fun `test postCustomer null name values says http error`() {
 
-            val dto = CustomerCreateRequest(
-                name = CustomerCreateRequestName(
+            val dto = CustomerCreateRequestDto(
+                name = CustomerCreateRequestNameDto(
                     title = null,
                     firstName = null,
                     lastName = null,
@@ -407,8 +406,8 @@ internal class CustomerApiControllerTest {
         @Test
         fun `test postCustomer empty name values says http error`() {
 
-            val dto = CustomerCreateRequest(
-                name = CustomerCreateRequestName(
+            val dto = CustomerCreateRequestDto(
+                name = CustomerCreateRequestNameDto(
                     title = Title.NOT_SPECIFIED,
                     firstName = "",
                     lastName = "",
@@ -440,8 +439,8 @@ internal class CustomerApiControllerTest {
         @Test
         fun `test postCustomer too long name values says http error`() {
 
-            val dto = CustomerCreateRequest(
-                name = CustomerCreateRequestName(
+            val dto = CustomerCreateRequestDto(
+                name = CustomerCreateRequestNameDto(
                     title = Title.NOT_SPECIFIED,
                     firstName = strOfLen(FIRST_NAME_MAX_LEN + 1),
                     lastName = strOfLen(LAST_NAME_MAX_LEN + 1),

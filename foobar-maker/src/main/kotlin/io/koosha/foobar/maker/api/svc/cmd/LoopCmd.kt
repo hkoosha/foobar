@@ -8,10 +8,10 @@ import io.koosha.foobar.maker.api.matches
 import io.koosha.foobar.maker.api.svc.EntityIdService
 import io.micrometer.core.instrument.MeterRegistry
 import io.micrometer.core.instrument.Tag
-import mu.KotlinLogging
+import org.slf4j.LoggerFactory
 import org.springframework.boot.ApplicationArguments
 import org.springframework.stereotype.Component
-import java.util.*
+import java.util.UUID
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicReference
 
@@ -37,7 +37,7 @@ class LoopCmd(
         private const val UNITS = 3L
     }
 
-    private val log = KotlinLogging.logger {}
+    private val log = LoggerFactory.getLogger(this::class.java)
 
     override val commandName = "loop"
 
@@ -235,7 +235,7 @@ class LoopCmd(
                 okCount++
             }
             catch (e: Exception) {
-                log.trace("$name error: ${e.javaClass.name} -> ${e.message}")
+                log.trace("{} error: {} -> {}", name, e::class.java, e.message)
                 errCount++
             }
 

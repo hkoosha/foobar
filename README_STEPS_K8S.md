@@ -1,23 +1,24 @@
-Consider defining `FOOBAR_FAST_DOCKER_REGISTRY=true` to make deployments faster.
+=================================
+===== RUNNING FOOBAR ON K8S =====
+=================================
 
 ```bash
 make minikube-start
 make k8s-namespace
 make kubectl-set-ns
 
-make helm-add-bitnami
+make helm-add-repos
 
 make k8s-deploy-deps
 make k8s-init-create-db
 make k8s-init-create-topics
 
 make clean \
-  libs/opentelemetry-javaagent-1.27.0.jar \
+  libs/opentelemetry-javaagent-1.32.0.jar \
   build-proto \
-  build-api-generator
-ENV=no_db make build-api
-make build
+  build
 
+# do not forget to open port 5000 if you have a firewall.
 make docker-image
 make k8s-deploy 
 

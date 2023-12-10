@@ -1,52 +1,88 @@
 package io.koosha.foobar.marketplace.api.service
 
-import io.koosha.foobar.marketplace.api.model.OrderRequestDO
-import io.koosha.foobar.marketplace.api.model.OrderRequestLineItemDO
+import io.koosha.foobar.marketplace.api.model.dto.LineItemRequestDto
+import io.koosha.foobar.marketplace.api.model.dto.LineItemUpdateRequestDto
+import io.koosha.foobar.marketplace.api.model.dto.OrderRequestCreateRequestDto
+import io.koosha.foobar.marketplace.api.model.dto.OrderRequestUpdateRequestDto
+import io.koosha.foobar.marketplace.api.model.entity.OrderRequestDO
+import io.koosha.foobar.marketplace.api.model.entity.OrderRequestLineItemDO
+import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
-import java.util.*
+import java.util.UUID
 
+@Service
+final class OrderRequestService(
+    private val finder: OrderRequestServiceFinding,
+    private val creator: OrderRequestServiceCreation,
+    private val deleter: OrderRequestServiceDeletion,
+    private val updater: OrderRequestServiceUpdater,
+    private val lineItemCreator: OrderRequestServiceLineItemCreator,
+    private val lineItemFinder: OrderRequestServiceLineItemFinder,
+    private val lineItemDeleter: OrderRequestServiceLineItemDeletion,
+    private val lineItemUpdater: OrderRequestServiceLineItemUpdater,
+) {
 
-interface OrderRequestService {
+    fun findById(
+        orderRequestId: UUID,
+    ): Mono<OrderRequestDO> = this.finder.findById(orderRequestId)
 
-    fun findById(orderRequestId: UUID): Mono<OrderRequestDO>
+    fun findByIdOrFail(
+        orderRequestId: UUID,
+    ): Mono<OrderRequestDO> = this.finder.findByIdOrFail(orderRequestId)
 
-    fun findByIdOrFail(orderRequestId: UUID): Mono<OrderRequestDO>
+    fun findAll(): Flux<OrderRequestDO> =
+        this.finder.findAll()
 
-    fun findAll(): Flux<OrderRequestDO>
+    fun findAllOrderRequestsOfCustomer(
+        customerId: UUID,
+    ): Flux<OrderRequestDO> =
+        this.finder.findAllOrderRequestsOfCustomer(customerId)
 
-    fun findAllOrderRequestsOfCustomer(customerId: UUID): Flux<OrderRequestDO>
+    fun create(
+        request: OrderRequestCreateRequestDto,
+    ): Mono<OrderRequestDO> =
+        this.creator.create(request)
 
-    fun create(request: OrderRequestCreateRequest): Mono<OrderRequestDO>
-
-    fun delete(orderRequestId: UUID): Mono<Void>
+    fun delete(
+        orderRequestId: UUID,
+    ): Mono<Void> =
+        this.deleter.delete(orderRequestId)
 
     fun update(
         orderRequestId: UUID,
-        request: OrderRequestUpdateRequest,
-    ): Mono<OrderRequestDO>
+        request: OrderRequestUpdateRequestDto,
+    ): Mono<OrderRequestDO> =
+        this.updater.update(orderRequestId, request)
 
     fun addLineItem(
         orderRequestId: UUID,
-        request: LineItemRequest,
-    ): Mono<OrderRequestLineItemDO>
+        request: LineItemRequestDto,
+    ): Mono<OrderRequestLineItemDO> =
+        this.lineItemCreator.addLineItem(orderRequestId, request)
 
     fun deleteLineItem(
         orderRequestId: UUID,
         lineItemId: Long,
-    ): Mono<Void>
+    ): Mono<Void> =
+        this.lineItemDeleter.deleteLineItem(orderRequestId, lineItemId)
 
-    fun getLineItems(orderRequestId: UUID): Flux<OrderRequestLineItemDO>
+    fun getLineItems(
+        orderRequestId: UUID,
+    ): Flux<OrderRequestLineItemDO> =
+        this.lineItemFinder.getLineItems(orderRequestId)
 
     fun getLineItem(
         orderRequestId: UUID,
         lineItemId: Long,
-    ): Mono<OrderRequestLineItemDO>
+    ): Mono<OrderRequestLineItemDO> =
+        this.lineItemFinder.getLineItem(orderRequestId, lineItemId)
 
     fun updateLineItem(
         orderRequestId: UUID,
         lineItemId: Long,
-        request: LineItemUpdateRequest,
-    ): Mono<OrderRequestLineItemDO>
+        request: LineItemUpdateRequestDto,
+    ): Mono<OrderRequestLineItemDO> =
+        this.lineItemUpdater.updateLineItem(orderRequestId, lineItemId, request)
 
 }

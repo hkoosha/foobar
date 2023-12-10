@@ -1,6 +1,5 @@
 package io.koosha.foobar.marketplace.api.model
 
-
 enum class OrderRequestState(val deletionAllowed: Boolean) {
 
     // Line items are being added

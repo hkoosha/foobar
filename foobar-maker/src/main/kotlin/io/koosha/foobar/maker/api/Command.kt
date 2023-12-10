@@ -2,7 +2,6 @@ package io.koosha.foobar.maker.api
 
 import org.springframework.boot.ApplicationArguments
 
-
 interface Command {
 
     val commandName: String

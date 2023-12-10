@@ -1,0 +1,50 @@
+version: "3"
+
+services:
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+    ports:
+     - "16686:16686"
+     - "4317:4317"
+     - "4318:4318"
+     - "9412:9411"
+  postgres:
+    image: docker.io/bitnami/postgresql:latest
+    ports:
+      - '5432:5432'
+    volumes:
+      - 'postgres_data:/bitnami/postgresql'
+    environment:
+      - POSTGRESQL_USERNAME=root
+      - POSTGRESQL_PASSWORD=.
+      - POSTGRESQL_EXTRA_FLAGS=--max_connections=2048
+  kafka:
+    image: docker.io/bitnami/kafka:latest
+    ports:
+      - "9092:9092"
+      - "9093:9093"
+    volumes:
+      - "kafka_data:/bitnami"
+    environment:
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://127.0.0.1:9092
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_NODE_ID=1001
+      - KAFKA_CFG_PROCESS_ROLES=controller,broker
+      - KAFKA_CFG_LISTENERS=CONTROLLER://:9093,PLAINTEXT://:9092
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1001@127.0.0.1:9093
+      - KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+      - KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1
+      - KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR=1
+      - KAFKA_KRAFT_CLUSTER_ID=MDAwMDAwMDAtMDAwMC0wMD
+
+
+volumes:
+  kafka_data:
+    driver: local
+  postgres_data:
+    driver: local
+

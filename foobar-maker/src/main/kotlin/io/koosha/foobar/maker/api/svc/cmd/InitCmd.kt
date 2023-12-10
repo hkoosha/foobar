@@ -5,7 +5,6 @@ import io.koosha.foobar.maker.api.firstOrDef
 import org.springframework.boot.ApplicationArguments
 import org.springframework.stereotype.Component
 
-
 @Component
 class InitCmd(
     private val customerCmd: CustomerCmd,
@@ -48,12 +47,10 @@ class InitCmd(
             this.lineItemCmd.handle(args, emptyList())
         }
 
-        @Suppress("MagicNumber")
         Thread.sleep(500)
         if (args.containsOption("live"))
             this.orderRequestCmd.patchOrderRequest()
 
-        @Suppress("MagicNumber")
         Thread.sleep(500)
         this.orderRequestCmd.getOrderRequest(emptyList())
         this.lineItemCmd.getLineItem(emptyList())

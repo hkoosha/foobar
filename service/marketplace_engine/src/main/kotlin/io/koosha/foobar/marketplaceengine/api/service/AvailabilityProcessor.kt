@@ -1,24 +1,21 @@
 package io.koosha.foobar.marketplaceengine.api.service
 
-
 import io.koosha.foobar.common.TAG
 import io.koosha.foobar.common.TAG_VALUE
-import io.koosha.foobar.common.cfg.KafkaConfig
+import io.koosha.foobar.kafka.KafkaDefinitions
 import io.koosha.foobar.common.toUUID
-import io.koosha.foobar.marketplaceengine.SOURCE
-import io.koosha.foobar.marketplaceengine.api.model.AvailabilityDO
-import io.koosha.foobar.marketplaceengine.api.model.AvailabilityRepository
+import io.koosha.foobar.marketplaceengine.api.model.entity.AvailabilityDO
+import io.koosha.foobar.marketplaceengine.api.model.repo.AvailabilityRepository
 import io.koosha.foobar.product.AvailabilityProto
 import io.micrometer.core.annotation.Timed
-import mu.KotlinLogging
 import net.logstash.logback.argument.StructuredArguments.v
+import org.slf4j.LoggerFactory
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.kafka.support.Acknowledgment
 import org.springframework.messaging.handler.annotation.Payload
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import java.time.Duration
-
 
 @Component
 class AvailabilityProcessor(
@@ -29,15 +26,18 @@ class AvailabilityProcessor(
         private const val KAFKA_TIMEOUT_MILLIS = 3000L
     }
 
+    private val log = LoggerFactory.getLogger(this::class.java)
 
-    private val log = KotlinLogging.logger {}
+    init {
+        log.info("listening to: {}", KafkaDefinitions.TOPIC__AVAILABILITY)
+    }
 
     @Timed(extraTags = [TAG, TAG_VALUE])
     @KafkaListener(
-        groupId = "${SOURCE}__availability",
+        groupId = "marketplace_engine__availability",
         concurrency = "2",
-        topics = [KafkaConfig.TOPIC__AVAILABILITY],
-        containerFactory = KafkaConfig.LISTENER_CONTAINER_FACTORY__AVAILABILITY,
+        topics = [KafkaDefinitions.TOPIC__AVAILABILITY],
+        containerFactory = KafkaDefinitions.LISTENER_CONTAINER_FACTORY__AVAILABILITY,
     )
     fun listenAvailability(
         @Payload payload: AvailabilityProto.Availability,
@@ -49,7 +49,7 @@ class AvailabilityProcessor(
             ack.acknowledge()
         }
         catch (e: Exception) {
-            log.error("error adding availability: ${e.javaClass} -> ${e.message}")
+            log.error("error adding availability: {} -> {}", e::class.java, e.message)
             ack.nack(Duration.ofMillis(KAFKA_TIMEOUT_MILLIS))
         }
     }
@@ -57,7 +57,7 @@ class AvailabilityProcessor(
     @Transactional
     internal fun storeAvailability(payload: AvailabilityProto.Availability) {
 
-        val id = AvailabilityDO.Pk(
+        val id = AvailabilityDO.AvailabilityPk(
             payload.sellerId.toUUID(),
             payload.productId.toUUID(),
         )

@@ -1,5 +1,5 @@
 SHELL := /bin/bash
-.DEFAULT_GOAL := help
+.DEFAULT_GOAL := sos
 
 
 MYSQL_PASSWORD ?= .
@@ -7,12 +7,12 @@ MYSQL_USER ?= root
 POSTGRES_PASSWORD ?= .
 POSTGRES_USER ?= root
 
-FOOBAR_K8S_SPRING_PROFILES ?= db-postgres,json-logging,expose,zipkin
-FOOBAR_K8S_SPRING_PROFILES_KAFKA ?= db-postgres,json-logging,expose,zipkin,kafka
-FOOBAR_K8S_SPRING_PROFILES_CUSTOMER ?= db-mysql,json-logging,expose,zipkin
+FOOBAR_K8S_SPRING_PROFILES ?= db-postgres,json-logging,expose
+FOOBAR_K8S_SPRING_PROFILES_KAFKA ?= db-postgres,json-logging,expose,kafka
+FOOBAR_K8S_SPRING_PROFILES_CUSTOMER ?= db-mysql,json-logging,expose
 
-FOOBAR_MINIKUBE_MEMORY ?= 80g
-FOOBAR_MINIKUBE_NUM_CPU ?= 16
+FOOBAR_MINIKUBE_MEMORY ?= 100g
+FOOBAR_MINIKUBE_NUM_CPU ?= 14
 FOOBAR_MINIKUBE_DRIVER ?= docker
 FOOBAR_MINIKUBE_NODES ?= 4
 FOOBAR_MINIKUBE_ADDONS ?= dashboard,storage-provisioner,registry,metrics-server
@@ -34,6 +34,7 @@ FOOBAR_OTEL_TRACES_SAMPLER ?= always_on
 
 FOOBAR_DOCKER_REGISTRY ?= localhost:5000/
 
+FOOBAR_FAST_DOCKER_REGISTRY = true
 
 ifeq ($(FOOBAR_FAST_DOCKER_REGISTRY),true)
 	FOOBAR_DOCKER_IMAGE_BASE=host.minikube.internal:5000
@@ -57,8 +58,6 @@ ifneq (,$(wildcard ./assets/env/${ENV}.env))
 endif
 
 
-# include ./assets/legacy_maker/Makefile
-
 include ./assets/make/build.Makefile
 include ./assets/make/demo.Makefile
 ifeq ($(FOOBAR_FAST_DOCKER_REGISTRY),true)
@@ -66,9 +65,9 @@ ifeq ($(FOOBAR_FAST_DOCKER_REGISTRY),true)
 else
 	include ./assets/make/foobar_docker.Makefile
 endif
-include ./assets/make/k8s_foobar.Makefile
-include ./assets/make/k8s_services.Makefile
-include ./assets/make/local_services.Makefile
+include ./assets/k8s/foobar.Makefile
+include ./assets/k8s/dependencies.Makefile
+include ./assets/docker/dependencies.Makefile
 include ./assets/make/local_foobar.Makefile
 
 
@@ -109,16 +108,14 @@ about:
 
 .PHONY: sos
 sos:
+	@cat ./README_STEPS_LOCAL.md
+	@echo
+	@echo
 	@cat ./README_STEPS_K8S.md
 
-.PHONY: sos-local
-sos-local:
-	@cat ./README_STEPS_LOCAL.md
 
-
-
-libs/opentelemetry-javaagent-1.27.0.jar: # get the OpenTelemetry library injected in docker containers as java agent
+libs/opentelemetry-javaagent-1.32.0.jar: # get the OpenTelemetry library injected in docker containers as java agent
 	wget \
-		https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v1.27.0/opentelemetry-javaagent.jar \
-		-O libs/opentelemetry-javaagent-1.27.0.jar
+		https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v1.32.0/opentelemetry-javaagent.jar \
+		-O libs/opentelemetry-javaagent-1.32.0.jar
 

@@ -1,8 +1,8 @@
 package io.koosha.foobar.maker.api.svc
 
-import mu.KotlinLogging
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.time.Instant
 
@@ -15,7 +15,7 @@ class PrometheusScrapper {
             """{foobar_service="foobar-maker-exporter",foobar_tool="foobar-maker-exporter",} """
     }
 
-    private val log = KotlinLogging.logger {}
+    private val log = LoggerFactory.getLogger(this::class.java)
 
     private final val lock = Any()
 
@@ -58,7 +58,7 @@ class PrometheusScrapper {
             }
             catch (e: Exception) {
                 log.trace("failed to scarp", e)
-                log.error("failed to scarp, ${e.javaClass} -> ${e.message}")
+                log.error("failed to scarp, {} -> {}", e::class.java, e.message)
                 log.warn("zeroing out")
                 this.lastError = (e.javaClass.name + " -> " + e.message).replace("\n", " ")
                 this.zeroOut(this.lastReadContent)

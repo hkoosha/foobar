@@ -10,11 +10,10 @@ spring:
     properties:
       hibernate:
         auto_quote_keyword: true
-  zipkin:
-    enabled: false
   datasource:
     hikari:
       maximum-pool-size: 64
+
 
 server:
   port: ${FOOBAR_SERVICE_PORT_MARKETPLACE_ENGINE:4042}
@@ -25,17 +24,14 @@ server:
 
 logging:
   level:
-    org.apache.kafka: error
+    org.apache.kafka: ${FOOBAR_LOG_LEVEL_KAFKA:warn}
+    org.springframework.kafka: ${FOOBAR_LOG_LEVEL_KAFKA:warn}
     io.koosha.foobar: ${FOOBAR_LOG_LEVEL:info}
 
 
-foobar:
-  rest:
-    on-concurrency-error-retry-after: 10s
-
 management:
-  metrics:
-    tags:
+  observations:
+    key-values:
       foobar-service: foobar-marketplace-engine
   endpoints:
     web:

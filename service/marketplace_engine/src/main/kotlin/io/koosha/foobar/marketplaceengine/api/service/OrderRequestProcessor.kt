@@ -3,22 +3,20 @@ package io.koosha.foobar.marketplaceengine.api.service
 import io.koosha.foobar.HeaderHelper
 import io.koosha.foobar.common.TAG
 import io.koosha.foobar.common.TAG_VALUE
-import io.koosha.foobar.common.cfg.KafkaConfig
-import io.koosha.foobar.common.isDuplicateEntry
 import io.koosha.foobar.common.toUUID
 import io.koosha.foobar.entity.DeadLetterErrorProto
 import io.koosha.foobar.entity.EntityHelper
-import io.koosha.foobar.marketplaceengine.SOURCE
-import io.koosha.foobar.marketplaceengine.api.model.AvailabilityRepository
-import io.koosha.foobar.marketplaceengine.api.model.ProcessedOrderRequestDO
-import io.koosha.foobar.marketplaceengine.api.model.ProcessedOrderRequestRepository
+import io.koosha.foobar.kafka.KafkaDefinitions
+import io.koosha.foobar.marketplaceengine.api.model.entity.ProcessedOrderRequestDO
+import io.koosha.foobar.marketplaceengine.api.model.repo.AvailabilityRepository
+import io.koosha.foobar.marketplaceengine.api.model.repo.ProcessedOrderRequestRepository
 import io.koosha.foobar.order_request.OrderRequestSellerFoundProto
 import io.koosha.foobar.order_request.OrderRequestStateChangedProto
 import io.micrometer.core.instrument.MeterRegistry
 import io.micrometer.core.instrument.Timer
-import mu.KotlinLogging
 import net.logstash.logback.argument.StructuredArguments.v
 import org.apache.kafka.common.TopicPartition
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.kafka.annotation.KafkaListener
@@ -33,25 +31,23 @@ import org.springframework.stereotype.Component
 import org.springframework.transaction.support.TransactionTemplate
 import java.time.Clock
 import java.time.Duration
-import java.util.*
+import java.util.Optional
+import java.util.UUID
 import java.util.concurrent.TimeUnit
-import java.util.stream.Collectors
-
 
 // FIXME fix tx mess
 @Component
 class OrderRequestProcessor(
-    private val clock: Clock,
     meterRegistry: MeterRegistry,
-
+    private val clock: Clock,
     private val availabilityRepo: AvailabilityRepository,
     private val processedRepo: ProcessedOrderRequestRepository,
-
     private val txTemplate: TransactionTemplate,
 
-    @Qualifier(KafkaConfig.TEMPLATE__ORDER_REQUEST__STATE_CHANGED__DEAD_LETTER)
+    @Qualifier(KafkaDefinitions.TEMPLATE__ORDER_REQUEST__STATE_CHANGED__DEAD_LETTER)
     private val deadLetter: KafkaTemplate<UUID, DeadLetterErrorProto.DeadLetterError>,
-    @Qualifier(KafkaConfig.TEMPLATE__ORDER_REQUEST__SELLER_FOUND)
+
+    @Qualifier(KafkaDefinitions.TEMPLATE__ORDER_REQUEST__SELLER_FOUND)
     private val kafka: KafkaTemplate<UUID, OrderRequestSellerFoundProto.OrderRequestSellerFound>,
 ) : ConsumerSeekAware {
 
@@ -59,21 +55,29 @@ class OrderRequestProcessor(
         private const val KAFKA_TIMEOUT_MILLIS = 3000L
     }
 
-    private val log = KotlinLogging.logger {}
+    private val log = LoggerFactory.getLogger(this::class.java)
 
     private val timer: Timer = meterRegistry.timer("onEntityStateChanged", TAG, TAG_VALUE)
 
+    init {
+        log.info("sending to topic: {}", this.kafka.defaultTopic)
+        log.info("sending to topic: {}", this.deadLetter.defaultTopic)
+        log.info("listening to: {}", KafkaDefinitions.TOPIC__ORDER_REQUEST__STATE_CHANGED)
+    }
+
     @KafkaListener(
-        groupId = "${SOURCE}__state_change",
+        groupId = "marketplace_engine__state_change",
         concurrency = "2",
-        topics = [KafkaConfig.TOPIC__ORDER_REQUEST__STATE_CHANGED],
-        containerFactory = KafkaConfig.LISTENER_CONTAINER_FACTORY__ORDER_REQUEST__STATE_CHANGED,
+        topics = [KafkaDefinitions.TOPIC__ORDER_REQUEST__STATE_CHANGED],
+        containerFactory = KafkaDefinitions.LISTENER_CONTAINER_FACTORY__ORDER_REQUEST__STATE_CHANGED,
     )
     fun onEntityStateChanged(
-        @Header(KafkaHeaders.KEY)
+        @Header(KafkaHeaders.RECEIVED_KEY)
         key: UUID,
+
         @Payload
         stateChange: OrderRequestStateChangedProto.OrderRequestStateChanged,
+
         ack: Acknowledgment,
     ) {
 
@@ -91,8 +95,8 @@ class OrderRequestProcessor(
                 catch (@Suppress("SwallowedException") e: ObjectOptimisticLockingFailureException) {
                     ack.acknowledge()
                 }
-                catch (e: Throwable) {
-                    log.error("failed to process entity state change -> ${e.javaClass} -> ${e.message}")
+                catch (e: Exception) {
+                    log.error("failed to process entity state change -> {} -> {}", e::class.java, e.message)
                     ack.nack(Duration.ofMillis(KAFKA_TIMEOUT_MILLIS))
                 }
             })
@@ -126,7 +130,7 @@ class OrderRequestProcessor(
 
         val send = OrderRequestSellerFoundProto.OrderRequestSellerFound
             .newBuilder()
-            .setHeader(HeaderHelper.create(SOURCE, this.clock.millis()))
+            .setHeader(HeaderHelper.create("marketplace_engine", this.clock.millis()))
 
         if (luckySeller == null) {
             log.info("no seller found, orderRequestId={}", v("orderRequestId", orderRequestId))
@@ -168,15 +172,18 @@ class OrderRequestProcessor(
                 "order request has no line item, sending to dead letter queue. orderRequestId={}",
                 v("orderRequestId", orderRequestId),
             )
+
             this.storeUUIDAsProcessed(orderRequestId)
+
             this.deadLetter.sendDefault(
                 orderRequestId,
                 EntityHelper.deadLetterErrorOf(
-                    SOURCE,
+                    "marketplace_engine",
                     this.clock.millis(),
                     "order request has no line item"
                 ),
             )
+
             null
         }
     }
@@ -189,18 +196,21 @@ class OrderRequestProcessor(
         val productToSellers: Map<UUID, List<UUID>> =
             try {
                 lineItems
-                    .stream()
-                    .collect(
-                        Collectors.toUnmodifiableMap(
-                            { lineItem -> lineItem.productId.toUUID() },
-                            { lineItem ->
-                                this.availabilityRepo.findAllByProductIdAndUnitsAvailableGreaterThanEqual(
-                                    lineItem.productId.toUUID(),
-                                    lineItem.units,
-                                ).map { availability -> availability.availabilityPk.sellerId!! }
-                            }
-                        )
-                    )
+                    .asSequence()
+                    .map {
+                        val productId: UUID = it.productId.toUUID()
+
+                        val availabilities: List<UUID> = this
+                            .availabilityRepo
+                            .findAllByProductIdAndUnitsAvailableGreaterThanEqual(
+                                productId,
+                                it.units
+                            )
+                            .map { a -> a.availabilityPk.sellerId!! }
+
+                        productId to availabilities
+                    }
+                    .toMap()
             }
             catch (ex: IllegalStateException) {
                 if (ex.message?.startsWith("Duplicate key ") == true
@@ -216,7 +226,7 @@ class OrderRequestProcessor(
                     this.deadLetter.sendDefault(
                         orderRequestId,
                         EntityHelper.deadLetterErrorOf(
-                            SOURCE,
+                            "marketplace_engine",
                             this.clock.millis(),
                             "order request has duplicated line item"
                         ),
@@ -235,18 +245,18 @@ class OrderRequestProcessor(
         productToSellers: Map<UUID, List<UUID>>,
     ): UUID? {
 
-        var luckySeller: UUID? = null
+        return sellers
+            .asSequence()
+            .filter { seller ->
+                // A seller who has availability for all requested line items in the order.
+                for ((_, productSeller) in productToSellers)
+                    if (!productSeller.contains(seller))
+                        return@filter false
 
-        // A seller who has availability for all line items
-        next_seller@ for (seller in sellers) {
-            for ((_, productSeller) in productToSellers)
-                if (!productSeller.contains(seller))
-                    continue@next_seller
-            luckySeller = seller
-            break
-        }
-
-        return luckySeller
+                true
+            }
+            .toList()
+            .randomOrNull()
     }
 
     private fun getSubTotal(
@@ -281,7 +291,7 @@ class OrderRequestProcessor(
             )
         }
         catch (e: DataIntegrityViolationException) {
-            if (isDuplicateEntry(e))
+            if (this.isDuplicateEntry(e))
                 throw SkipProcessing
             else
                 throw e
@@ -294,6 +304,21 @@ class OrderRequestProcessor(
         callback.seekToBeginning(topicPartition.topic(), topicPartition.partition())
     }
 
+    private fun isDuplicateEntry(
+        it: Throwable,
+    ): Boolean {
 
-    private object SkipProcessing : RuntimeException()
+        if (it !is DataIntegrityViolationException)
+            return false
+
+        return it.cause?.message?.contains("Duplicate entry") == true ||
+                it.message?.contains("Duplicate entry") == true ||
+                it.cause?.message?.contains("duplicate key value violates unique constraint") == true ||
+                it.message?.contains("duplicate key value violates unique constraint") == true
+    }
+
+    private object SkipProcessing : RuntimeException() {
+        private fun readResolve(): Any = SkipProcessing
+    }
+
 }

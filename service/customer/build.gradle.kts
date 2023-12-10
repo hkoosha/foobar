@@ -5,7 +5,6 @@ import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
 import io.koosha.foobar.Foobar
 import io.koosha.foobar.Libraries
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.springdoc.openapi.gradle.plugin.OpenApiGeneratorTask
 import org.springframework.boot.gradle.tasks.run.BootRun
 
 plugins {
@@ -14,20 +13,28 @@ plugins {
     val k = io.koosha.foobar.Libraries.Kotlin
     val d = io.koosha.foobar.Libraries.OpenApi
 
-    id("io.gitlab.arturbosch.detekt") version k.detekt
-    id("com.google.cloud.tools.jib") version j.gradlePlugin
-    id("org.springdoc.openapi-gradle-plugin") version d.gradlePlugin
-    id("org.springframework.boot") version s.boot
-    id("io.spring.dependency-management") version s.DependencyManagement
     kotlin("jvm") version k.jvm
     kotlin("plugin.spring") version k.spring
     kotlin("plugin.jpa") version k.jpa
+
+    `jvm-test-suite`
+    id("io.gitlab.arturbosch.detekt") version k.detekt
+
+    id("com.google.cloud.tools.jib") version j.gradlePlugin
+
+    id("org.springframework.boot") version s.boot
+    id("io.spring.dependency-management") version s.dependencyManagement
+
+    id("org.springdoc.openapi-gradle-plugin") version d.gradlePlugin
 }
 
 group = Foobar.group
 version = Foobar.appVersion
-java.sourceCompatibility = JavaVersion.valueOf(Foobar.javaVersion)
-java.targetCompatibility = JavaVersion.valueOf(Foobar.javaVersion)
+
+java {
+    sourceCompatibility = JavaVersion.valueOf(Foobar.javaVersion)
+    targetCompatibility = JavaVersion.valueOf(Foobar.javaVersion)
+}
 
 extra["springCloudVersion"] = Libraries.Spring.springCloudVersion
 
@@ -60,38 +67,34 @@ dependencyManagement {
 
 dependencies {
     implementation(project(":common"))
-    implementation(project(":common-jpa"))
-    implementation(project(":common-meter"))
 
-    implementation(project(":service:common-service"))
-    implementation(project(":service:common-web"))
-
+    implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-web")
-    // implementation("org.springframework.cloud:spring-cloud-starter-sleuth")
-    // implementation("org.springframework.cloud:spring-cloud-sleuth-zipkin")
+    implementation("org.springframework.boot:spring-boot-starter-aop")
 
-    implementation("io.github.microutils:kotlin-logging-jvm:${Libraries.microutilsKotlinLoggingJvm}")
     implementation("net.logstash.logback:logstash-logback-encoder:${Libraries.Log.logstashLogbackEncoder}")
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib")
 
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:${Libraries.OpenApi.ui}")
-    // implementation("org.springdoc:springdoc-openapi-kotlin:${Libraries.OpenApi.kotlin}")
 
+    implementation("io.micrometer:micrometer-tracing-bridge-brave")
     runtimeOnly("io.micrometer:micrometer-registry-prometheus")
+
     runtimeOnly("org.postgresql:postgresql:${Libraries.postgres}")
-    runtimeOnly("org.mariadb.jdbc:mariadb-java-client:${Libraries.mariadb}")
     runtimeOnly("com.h2database:h2")
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 openApi {
@@ -109,10 +112,6 @@ tasks.named<Delete>("clean") {
     this.dependsOn(tasks.named(Foobar.Gradle.foobarCleanOpenApiTask))
 }
 
-tasks.withType(OpenApiGeneratorTask::class.java) {
-    outputs.upToDateWhen { false }
-}
-
 tasks.withType<BootRun> {
     jvmArgs = Foobar.Boot.jvmArgs(project)
 }
@@ -125,6 +124,9 @@ jib {
     container {
         ports = listOf("8080")
         jvmFlags = Foobar.Jib.jvmFlags(project)
+    }
+    from {
+        image = Foobar.Jib.fromImage
     }
     to {
         image = "${Foobar.dockerRegistry()}foobar-customer:${Foobar.appVersion}"
@@ -139,7 +141,3 @@ tasks.withType<DetektCreateBaselineTask>().configureEach {
     jvmTarget = Foobar.kotlinJvmTarget
 }
 
-tasks.withType<com.github.psxpaul.task.JavaExecFork> {
-    dependsOn(tasks.named("jar"))
-    // dependsOn(tasks.named("inspectClassesForKotlinIC"))
-}

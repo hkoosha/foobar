@@ -1,14 +1,15 @@
 package io.koosha.foobar.warehouse.api.ctl
 
-import io.koosha.foobar.warehouse.API_PATH_PREFIX
-import io.koosha.foobar.warehouse.api.model.AvailabilityDO
-import io.koosha.foobar.warehouse.api.service.AvailabilityCreateRequest
-import io.koosha.foobar.warehouse.api.service.AvailabilityUpdateRequest
+import io.koosha.foobar.warehouse.api.model.dto.AvailabilityCreateRequestDto
+import io.koosha.foobar.warehouse.api.model.dto.AvailabilityUpdateRequestDto
+import io.koosha.foobar.warehouse.api.model.entity.AvailabilityDO
 import io.koosha.foobar.warehouse.api.service.ProductService
 import io.swagger.v3.oas.annotations.tags.Tag
 import io.swagger.v3.oas.annotations.tags.Tags
+import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
@@ -20,62 +21,32 @@ import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder
-import java.util.*
-import jakarta.servlet.http.HttpServletResponse
+import java.util.UUID
 
 
 // We fake sellerId for availabilityId, although prone to timing attacks on access checks.
 @RestController
-@RequestMapping(AvailabilityAPIController.URI)
+@RequestMapping("/foobar/warehouse/v1/product/{productId}/availability")
 @Tags(
-    Tag(name = AvailabilityDO.ENTITY_TYPE)
+    Tag(name = "availability")
 )
 class AvailabilityAPIController(
     private val service: ProductService,
 ) {
 
-    companion object {
-
-        const val URI = "/$API_PATH_PREFIX/products/{${ProductAPIController.URI__PART__PRODUCT_ID}}/availabilities"
-        const val URI__PART__SELLER_ID = "sellerId"
-
-    }
-
-    @GetMapping
-    @ResponseBody
-    fun getAvailabilities(
-        @PathVariable
-        productId: UUID,
-    ): List<Availability> = service.getAvailabilitiesOf(productId).map(::Availability)
-
-    @GetMapping("/{$URI__PART__SELLER_ID}")
-    @ResponseBody
-    fun getAvailability(
-        @PathVariable
-        productId: UUID,
-        @PathVariable
-        sellerId: UUID,
-    ): Availability = Availability(service.getAvailability(productId, sellerId))
-
-    @PatchMapping("{$URI__PART__SELLER_ID}")
-    @ResponseBody
-    fun patchAvailability(
-        @PathVariable
-        productId: UUID,
-        @PathVariable
-        sellerId: UUID,
-        @RequestBody
-        request: AvailabilityUpdateRequest,
-    ): Availability = Availability(service.updateAvailability(productId, sellerId, request))
-
+    @Transactional(
+        rollbackFor = [Exception::class],
+    )
     @PostMapping
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
-    fun postAvailability(
+    fun create(
         @PathVariable
         productId: UUID,
+
         @RequestBody
-        request: AvailabilityCreateRequest,
+        request: AvailabilityCreateRequestDto,
+
         response: HttpServletResponse,
     ): Availability {
 
@@ -84,7 +55,7 @@ class AvailabilityAPIController(
         val location = MvcUriComponentsBuilder
             .fromMethodName(
                 AvailabilityAPIController::class.java,
-                "getAvailability",
+                "read",
                 productId,
                 entity.availabilityPk.sellerId,
             )
@@ -99,11 +70,53 @@ class AvailabilityAPIController(
         return Availability(entity)
     }
 
-    @DeleteMapping("/{$URI__PART__SELLER_ID}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun deleteAvailability(
+    @Transactional(readOnly = true)
+    @GetMapping
+    @ResponseBody
+    fun readAll(
         @PathVariable
         productId: UUID,
+    ): List<Availability> =
+        this.service
+            .getAvailabilitiesOf(productId)
+            .map(::Availability)
+
+    @Transactional(readOnly = true)
+    @GetMapping("/{sellerId}")
+    @ResponseBody
+    fun read(
+        @PathVariable
+        productId: UUID,
+
+        @PathVariable
+        sellerId: UUID,
+    ): Availability = Availability(this.service.getAvailability(productId, sellerId))
+
+    @Transactional(
+        rollbackFor = [Exception::class],
+    )
+    @PatchMapping("{sellerId}")
+    @ResponseBody
+    fun update(
+        @PathVariable
+        productId: UUID,
+
+        @PathVariable
+        sellerId: UUID,
+
+        @RequestBody
+        request: AvailabilityUpdateRequestDto,
+    ): Availability = Availability(this.service.updateAvailability(productId, sellerId, request))
+
+    @Transactional(
+        rollbackFor = [Exception::class],
+    )
+    @DeleteMapping("/{sellerId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun delete(
+        @PathVariable
+        productId: UUID,
+
         @PathVariable
         sellerId: UUID,
     ) = this.service.deleteAvailability(productId, sellerId)
@@ -123,4 +136,5 @@ class AvailabilityAPIController(
             pricePerUnit = entity.pricePerUnit!!,
         )
     }
+
 }

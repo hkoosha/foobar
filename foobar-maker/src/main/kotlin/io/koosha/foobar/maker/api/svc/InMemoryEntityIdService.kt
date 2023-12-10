@@ -3,20 +3,20 @@ package io.koosha.foobar.maker.api.svc
 import io.koosha.foobar.common.PROFILE__DISABLE_DB
 import io.koosha.foobar.maker.api.CliException
 import io.koosha.foobar.maker.api.model.EntityId
-import mu.KotlinLogging
+import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Service
-import java.util.*
+import java.util.Optional
+import java.util.UUID
 import java.util.concurrent.locks.ReentrantReadWriteLock
 import kotlin.concurrent.read
 import kotlin.concurrent.write
-
 
 @Service
 @Profile(PROFILE__DISABLE_DB)
 class InMemoryEntityIdService : EntityIdService {
 
-    private val log = KotlinLogging.logger {}
+    private val log = LoggerFactory.getLogger(this::class.java)
 
     private val lock = ReentrantReadWriteLock()
 
@@ -57,7 +57,7 @@ class InMemoryEntityIdService : EntityIdService {
                     throw CliException("invalid id, neither valid UUID nor a valid long, id=$givenId")
                 }
 
-        log.trace { "mapped entityType=$entityType givenId=$givenId to=$id" }
+        log.trace("mapped entityType={} givenId={} to={}", entityType, givenId, id)
 
         return id
     }
@@ -72,7 +72,7 @@ class InMemoryEntityIdService : EntityIdService {
                     ?: throw CliException("unknown entity type or no ids yet, entityType=$entityType")
             }
             val id = this.findUUID(entityType, latest.toString())
-            log.trace { "mapped entityType=$entityType givenId=last($latest) to=$id" }
+            log.trace("mapped entityType={} givenId=last({}) to={}", entityType, latest, id)
             id
         }
         else {

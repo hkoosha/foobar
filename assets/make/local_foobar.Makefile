@@ -30,7 +30,7 @@ run-marketplace-engine:
 
 .PHONY: run-loader
 run-loader:
-	$(GRADLE_RUNNER) :loader:bootRun
+	$(GRADLE_RUNNER) :foobar-loader:bootRun
 
 	
 
@@ -61,5 +61,5 @@ debug-marketplace-engine:
 
 .PHONY: debug-loader
 debug-loader:
-	$(GRADLE_RUNNER) :loader:bootRun --debug-jvm
+	$(GRADLE_RUNNER) :foobar-loader:bootRun --debug-jvm
 

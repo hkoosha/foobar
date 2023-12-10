@@ -1,13 +1,7 @@
 package io.koosha.foobar.maker.api.svc.cmd
 
-import io.koosha.foobar.connect.customer.generated.api.Customer
-import io.koosha.foobar.connect.customer.generated.api.CustomerApi
-import io.koosha.foobar.connect.customer.generated.api.CustomerCreateRequest
-import io.koosha.foobar.connect.customer.generated.api.CustomerCreateRequestName
-import io.koosha.foobar.connect.customer.generated.api.CustomerUpdateRequest
-import io.koosha.foobar.connect.customer.generated.api.CustomerUpdateRequestName
 import io.koosha.foobar.maker.api.Command
-import io.koosha.foobar.maker.api.assertStatusCode
+import io.koosha.foobar.maker.api.connect.CustomerApi
 import io.koosha.foobar.maker.api.first
 import io.koosha.foobar.maker.api.firstOrNull
 import io.koosha.foobar.maker.api.firstOrRandom
@@ -16,10 +10,9 @@ import io.koosha.foobar.maker.api.model.EntityId
 import io.koosha.foobar.maker.api.stringAll
 import io.koosha.foobar.maker.api.svc.EntityIdService
 import io.koosha.foobar.maker.api.svc.Rand
-import mu.KotlinLogging
+import org.slf4j.LoggerFactory
 import org.springframework.boot.ApplicationArguments
 import org.springframework.stereotype.Component
-
 
 @Component
 class CustomerCmd(
@@ -28,9 +21,9 @@ class CustomerCmd(
     private val entityIdService: EntityIdService,
 ) : Command {
 
-    private val log = KotlinLogging.logger {}
+    private val log = LoggerFactory.getLogger(this::class.java)
 
-    override val commandName: String = CustomerApi.ENTITY_TYPE
+    override val commandName: String = "customer"
 
     override fun handle(
         args: ApplicationArguments,
@@ -58,7 +51,7 @@ class CustomerCmd(
             Unit
         }
 
-        else -> log.error { "unknown customer command: ${freeArgs[0]}" }
+        else -> log.error("unknown customer command: {}", freeArgs[0])
     }
 
     fun postCustomer(
@@ -66,36 +59,36 @@ class CustomerCmd(
         doLog: Boolean = true,
     ) {
 
-        val req = CustomerCreateRequest()
-        req.name = CustomerCreateRequestName()
-        req.name.firstName = args.firstOrRandom("firstName")
-        req.name.lastName = args.firstOrRandom("lastName")
-        req.name.title =
-            if (args.firstOrNull("title") == null)
-                this.rand.selectEnum(CustomerCreateRequestName.TitleEnum::class.java)
-            else
-                CustomerCreateRequestName.TitleEnum.valueOf(args.first("title"))
-
-        if (doLog)
-            log.info { "request:\n$req" }
-        val response = this.customerApi.postCustomerWithHttpInfo(req)
-        assertStatusCode(response.statusCode)
-        val entity = response.data
-
-        val id = this.entityIdService
-            .findMaxInternalIdByEntityType(CustomerApi.ENTITY_TYPE)
-            .map { it + 1 }
-            .orElse(0L)
-        this.entityIdService.save(
-            EntityId(
-                entityId = entity.customerId.toString(),
-                internalId = id,
-                entityType = CustomerApi.ENTITY_TYPE,
+        val req = CustomerApi.CreateDto(
+            name = CustomerApi.NameDto(
+                firstName = args.firstOrRandom("firstName"),
+                lastName = args.firstOrRandom("lastName"),
+                title = if (args.firstOrNull("title") == null)
+                    this.rand.selectEnum(CustomerApi.Title::class.java)
+                else
+                    CustomerApi.Title.valueOf(args.first("title"))
             )
         )
 
         if (doLog)
-            log.info { "posted customer:\n${response.headers}\nId=$id\nentity:\n$entity" }
+            log.info("request:\n{}", req)
+
+        val response = this.customerApi.create(req)
+
+        val id = this.entityIdService
+            .findMaxInternalIdByEntityType("customer")
+            .map { it + 1 }
+            .orElse(0L)
+        this.entityIdService.save(
+            EntityId(
+                entityId = response.customerId.toString(),
+                internalId = id,
+                entityType = "customer",
+            )
+        )
+
+        if (doLog)
+            log.info("posted customer:\nId={}\nentity:\n{}", id, response)
     }
 
     fun patchCustomer(
@@ -103,23 +96,22 @@ class CustomerCmd(
         freeArgs: List<String>,
     ) {
 
-        val customerId = this.entityIdService.findUUIDOrLast(CustomerApi.ENTITY_TYPE, freeArgs.firstOrNull())
+        val customerId = this.entityIdService.findUUIDOrLast("customer", freeArgs.firstOrNull())
 
-        val req = CustomerUpdateRequest()
-        req.name = CustomerUpdateRequestName()
-        req.name!!.firstName = args.firstOrNull("firstName")
-        req.name!!.lastName = args.firstOrNull("lastName")
-        req.name!!.title =
-            if (args.firstOrNull("title") == null)
-                null
-            else
-                CustomerUpdateRequestName.TitleEnum.valueOf(args.first("title"))
+        val req = CustomerApi.UpdateDto(
+            name = CustomerApi.NameUpdateDto(
+                firstName = args.firstOrNull("firstName"),
+                lastName = args.firstOrNull("lastName"),
+                title = if (args.firstOrNull("title") == null)
+                    null
+                else
+                    CustomerApi.Title.valueOf(args.first("title"))
+            )
+        )
 
-        log.info { "request:\n$req" }
-        val response = this.customerApi.patchCustomerWithHttpInfo(customerId, req)
-        assertStatusCode(response.statusCode)
-        val entity = response.data
-        log.info { "patched customer:\n${response.headers}\n$entity" }
+        log.info("request:\n{}", req)
+        val response = this.customerApi.update(customerId, req)
+        log.info("patched customer:\n{}", response)
     }
 
     fun getCustomer(
@@ -127,32 +119,28 @@ class CustomerCmd(
     ) =
         if (freeArgs.isEmpty()) {
 
-            val response = this.customerApi.customersWithHttpInfo
-            assertStatusCode(response.statusCode)
-            val all = response.data
-            val s = stringAll(this.entityIdService, CustomerApi.ENTITY_TYPE, all) { it.customerId.toString() }
-            log.info { s }
+            val response = this.customerApi.readAll()
+            val s = stringAll(this.entityIdService, "customer", response) {
+                it.customerId.toString()
+            }
+            log.info(s)
 
         }
         else {
 
-            val customerId = this.entityIdService.findUUID(CustomerApi.ENTITY_TYPE, freeArgs.first())
-            val response = this.customerApi.getCustomerWithHttpInfo(customerId)
-            assertStatusCode(response.statusCode)
-            val entity: Customer? = response.data
-            log.info { "customer:\n${response.headers}\n$entity" }
+            val customerId = this.entityIdService.findUUID("customer", freeArgs.first())
+            val response = this.customerApi.read(customerId)
+            log.info("customer:\n{}", response)
 
         }
 
-    fun getLastCustomer(doLog: Boolean): Customer {
+    fun getLastCustomer(doLog: Boolean): CustomerApi.ReadDto {
 
-        val customerId = this.entityIdService.findUUIDOrLast(CustomerApi.ENTITY_TYPE, null)
-        val response = this.customerApi.getCustomerWithHttpInfo(customerId)
-        assertStatusCode(response.statusCode)
-        val entity: Customer = response.data
+        val customerId = this.entityIdService.findUUIDOrLast("customer", null)
+        val response = this.customerApi.read(customerId)
         if (doLog)
-            log.info { "customer:\n${response.headers}\n$entity" }
-        return entity
+            log.info("customer:\n{}", response)
+        return response
     }
 
 }

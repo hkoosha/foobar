@@ -3,7 +3,6 @@ package io.koosha.foobar.common.error
 import io.koosha.foobar.common.model.EntityInfo
 import jakarta.validation.ConstraintViolation
 
-
 abstract class EntityException : RuntimeException {
 
     val context: Set<EntityInfo>
@@ -317,4 +316,5 @@ open class EntityNotFoundException : EntityException {
         msg: String,
         throwable: Throwable,
     ) : super(entityType, entityId, msg, throwable)
+
 }

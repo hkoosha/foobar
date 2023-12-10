@@ -5,7 +5,6 @@ import io.koosha.foobar.maker.api.svc.EntityIdService
 import io.koosha.foobar.maker.api.svc.Rand
 import org.springframework.boot.ApplicationArguments
 
-
 fun ApplicationArguments.firstOrRandomUnPrefixed(name: String, len: Int = 9): String =
     this.getOptionValues(name)?.firstOrNull() ?: Rand().string(len)
 
@@ -37,17 +36,17 @@ fun matches(
 fun <T> stringAll(
     repo: EntityIdService,
     entityType: String,
-    all: MutableList<T>,
+    all: Collection<T>,
     idExtractor: (T) -> String,
 ): String {
 
-    all.sortBy {
+    val sorted = all.sortedBy {
         repo.findInternalIdByEntityTypeAndEntityId(entityType, idExtractor(it))
             .map { it1 -> it1.internalId }
             .orElse(-1)
     }
     val sb = StringBuilder()
-    for (entity in all) {
+    for (entity in sorted) {
         val id: EntityId? =
             repo.findInternalIdByEntityTypeAndEntityId(entityType, idExtractor(entity))
                 .orElse(null)
@@ -58,10 +57,4 @@ fun <T> stringAll(
             .append(entity.toString())
     }
     return sb.toString()
-}
-
-@Suppress("MagicNumber")
-fun assertStatusCode(statusCode: Int) {
-    if (statusCode < 200 || statusCode > 299)
-        throw CliException("status_code=$statusCode")
 }

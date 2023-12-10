@@ -1,6 +1,0 @@
-{
-    "name": "ThingTank",
-    "unitMultiple": "things",
-    "unitSingle": "thing",
-    "active": true
-}

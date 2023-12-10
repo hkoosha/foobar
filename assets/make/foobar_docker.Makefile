@@ -45,7 +45,7 @@ docker-image-maker: \
 
 .PHONY: docker-image-loader-build
 docker-image-loader-build:
-	$(GRADLE_RUNNER) :loader:jibDockerBuild
+	$(GRADLE_RUNNER) :foobar-loader:jibDockerBuild
 
 .PHONY: docker-image-loader-push
 docker-image-loader-push:

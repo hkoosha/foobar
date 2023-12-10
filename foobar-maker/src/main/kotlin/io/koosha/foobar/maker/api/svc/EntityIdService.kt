@@ -3,9 +3,7 @@ package io.koosha.foobar.maker.api.svc
 import io.koosha.foobar.maker.api.model.EntityId
 import java.util.*
 
-
 interface EntityIdService {
-
 
     fun putOrderRequestIntoLineItemWorkQueue(orderRequestId: UUID)
 
@@ -23,7 +21,6 @@ interface EntityIdService {
         units: Long,
         productId: UUID,
     )
-
 
     fun findUUID(
         entityType: String,

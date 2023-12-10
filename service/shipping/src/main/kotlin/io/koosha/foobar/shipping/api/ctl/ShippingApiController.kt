@@ -1,12 +1,12 @@
 package io.koosha.foobar.shipping.api.ctl
 
 import io.github.resilience4j.bulkhead.annotation.Bulkhead
-import io.koosha.foobar.shipping.API_PATH_PREFIX
-import io.koosha.foobar.shipping.api.model.ShippingDO
+import io.koosha.foobar.shipping.api.model.dto.ShippingUpdateRequestDto
+import io.koosha.foobar.shipping.api.model.entity.ShippingDO
 import io.koosha.foobar.shipping.api.model.ShippingState
 import io.koosha.foobar.shipping.api.service.ShippingService
-import io.koosha.foobar.shipping.api.service.ShippingUpdateRequest
 import org.springframework.http.HttpStatus
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
@@ -16,46 +16,50 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
-import java.util.*
+import java.util.UUID
 
 
 @RestController
-@RequestMapping(ShippingApiController.URI)
+@RequestMapping("/foobar/shipping/v1/shipping")
 class ShippingApiController(
     private val service: ShippingService,
 ) {
 
-    companion object {
-
-        const val URI = "/$API_PATH_PREFIX/shippings"
-        const val URI__PART__SHIPPING_ID = "shippingId"
-
-    }
-
+    @Transactional(readOnly = true)
     @GetMapping
     @ResponseBody
-    fun getShippings(): List<Shipping> = this.service.findAll().map(::Shipping)
+    fun read(): List<Shipping> =
+        this.service
+            .findAll()
+            .map(::Shipping)
 
-    @GetMapping("/{$URI__PART__SHIPPING_ID}")
+    @Transactional(readOnly = true)
+    @GetMapping("/{shippingId}")
     @ResponseBody
-    fun getShipping(
+    fun read(
         @PathVariable
         shippingId: UUID,
     ): Shipping = Shipping(this.service.findByIdOrFail(shippingId))
 
-    @PatchMapping("/{$URI__PART__SHIPPING_ID}")
+    @Transactional(
+        rollbackFor = [Exception::class],
+    )
+    @PatchMapping("/{shippingId}")
     @ResponseBody
     @Bulkhead(name = "patch-shipping")
-    fun patchShipping(
+    fun update(
         @PathVariable
         shippingId: UUID,
         @RequestBody
-        request: ShippingUpdateRequest,
+        request: ShippingUpdateRequestDto,
     ): Shipping = Shipping(this.service.update(shippingId, request))
 
-    @DeleteMapping("/{$URI__PART__SHIPPING_ID}")
+    @Transactional(
+        rollbackFor = [Exception::class],
+    )
+    @DeleteMapping("/{shippingId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun deleteShipping(
+    fun delete(
         @PathVariable
         shippingId: UUID,
     ) = this.service.delete(shippingId)

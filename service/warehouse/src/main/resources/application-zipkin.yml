@@ -1,8 +1,0 @@
-spring:
-  config:
-    activate:
-      on-profile:
-        - zipkin
-  zipkin:
-    enabled: true
-    base-url: ${FOOBAR_ZIPKIN_HOST:http://localhost:9411}
